@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
       <PackageReference Include="HTTPlease" Version="1.1.0" />
       <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
       <PackageReference Include="System.Reactive" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+      <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
   <Import Project="..\Common.props" />
