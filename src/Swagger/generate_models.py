@@ -25,10 +25,11 @@ class KubeModel(object):
     Represents a Kubernetes API model.
     """
 
-    def __init__(self, name, summary, api_version):
+    def __init__(self, name, summary, api_version, pretty_api_version):
         self.name = name
         self.api_version = api_version
-        self.clr_name = self.name + self.api_version
+        self.pretty_api_version = pretty_api_version
+        self.clr_name = self.name + self.pretty_api_version
         self.summary = summary or 'No summary provided'
         self.properties = {}
 
@@ -86,27 +87,28 @@ class KubeModel(object):
 
     @classmethod
     def from_definition(cls, definition_name, definition):
-        (name, api_version) = KubeModel.get_model_info(definition_name)
+        (name, api_version, pretty_api_version) = KubeModel.get_model_info(definition_name)
         summary = definition.get('description', 'No description provided.')
 
-        return KubeModel(name, summary, api_version)
+        return KubeModel(name, summary, api_version, pretty_api_version)
 
 
     @classmethod
     def get_model_info(cls, definition_name):
         name_components = definition_name.split('.')
         if len(name_components) < 2:
-            return (definition_name[-1], '')
+            return (definition_name[-1], '', '')
 
         name = capitalize_name(name_components[-1])
 
-        api_version = name_components[-2].capitalize().replace(
+        api_version = name_components[-2]
+        pretty_api_version = api_version.capitalize().replace(
             'alpha', 'Alpha'
         ).replace(
             'beta', 'Beta'
         )
 
-        return (name, api_version)
+        return (name, api_version, pretty_api_version)
 
     def __repr__(self):
         return 'KubeModel(name="{}",version="{}")\n{}'.format(
@@ -245,7 +247,7 @@ def capitalize_name(name):
     return name[0].capitalize() + name[1:]
 
 def get_defname_sort_key(definition_name):
-    (type_name, _) = KubeModel.get_model_info(definition_name)
+    (type_name, _, _) = KubeModel.get_model_info(definition_name)
 
     return type_name
 
@@ -330,6 +332,12 @@ def main():
             for model_summary_line in model.summary.split('\n'):
                 class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
             class_file.write('    /// </summary>' + LINE_ENDING)
+
+            class_file.write('    [KubeResource("{0}", "{1}")]{2}'.format(
+                model.name,
+                model.api_version,
+                LINE_ENDING
+            ))
 
             class_file.write('    public class ' + model.clr_name)
             if model.is_resource():
