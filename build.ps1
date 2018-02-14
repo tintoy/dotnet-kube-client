@@ -1,7 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
 $versionInfo = .\tools\GitVersion\GitVersion.exe | ConvertFrom-Json
-Write-Host $versionInfo
 
 $versionPrefix = $versionInfo.MajorMinorPatch
 $versionSuffix = $versionInfo.NuGetPreReleaseTagV2

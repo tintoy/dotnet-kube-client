@@ -1,5 +1,52 @@
 assembly-versioning-scheme: Major
 mode: ContinuousDelivery
-branches: {}
 ignore:
   sha: []
+
+branches: 
+  master:
+    regex: master
+    mode: ContinuousDelivery
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+
+  release:
+    regex: release?[/-]
+    mode: ContinuousDelivery
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
+  
+  develop:
+    mode: ContinuousDeployment
+    tag: unstable
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+
+  feature:
+    mode: ContinuousDeployment
+    regex: feature?[/-]
+    tag: useBranchName
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+
+  pull-request:
+    regex: (pull|pull\-request|pr)[/-]
+    mode: ContinuousDelivery
+    tag: PullRequest
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  
