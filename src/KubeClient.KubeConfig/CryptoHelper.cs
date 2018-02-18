@@ -19,10 +19,10 @@ namespace KubeClient.KubeConfig
         /// <summary>
         ///     Build a PFX (PKCS12) store containing the specified certificate and private key.
         /// </summary>
-        /// <param name="certificateData">
+        /// <param name="certificatePem">
         ///     A PEM block containing the certificate data.
         /// </param>
-        /// <param name="keyData">
+        /// <param name="keyPem">
         ///     A PEM block containing the private key data.
         /// </param>
         /// <param name="password">
@@ -31,13 +31,13 @@ namespace KubeClient.KubeConfig
         /// <returns>
         ///     A byte array containing the exported data.
         /// </returns>
-        public static byte[] BuildPfx(string certificateData, string keyData, string password)
+        public static byte[] BuildPfx(string certificatePem, string keyPem, string password)
         {
-            if (String.IsNullOrWhiteSpace(certificateData))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'certificateData'.", nameof(certificateData));
+            if (String.IsNullOrWhiteSpace(certificatePem))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'certificateData'.", nameof(certificatePem));
             
-            if (String.IsNullOrWhiteSpace(keyData))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'keyData'.", nameof(keyData));
+            if (String.IsNullOrWhiteSpace(keyPem))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'keyData'.", nameof(keyPem));
 
             if (String.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'password'.", nameof(password));
@@ -45,7 +45,7 @@ namespace KubeClient.KubeConfig
             List<X509CertificateEntry> chain = new List<X509CertificateEntry>();
             AsymmetricCipherKeyPair privateKey = null;
 
-            foreach (object pemObject in EnumeratePemObjects(password, certificateData, keyData))
+            foreach (object pemObject in EnumeratePemObjects(password, certificatePem, keyPem))
             {
                 if (pemObject is BCX509Certificate certificate)
                     chain.Add(new X509CertificateEntry(certificate));

@@ -1,4 +1,7 @@
-﻿using YamlDotNet.Serialization;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.KubeConfig.Models
 {
@@ -30,5 +33,24 @@ namespace KubeClient.KubeConfig.Models
         /// </summary>
         [YamlMember(Alias = "certificate-authority-data")]
         public string CertificateAuthorityData { get; set; }
+
+        /// <summary>
+        ///     Get the cluster's certification authority certificate.
+        /// </summary>
+        /// <returns>
+        ///     The CA certificate, as an <see cref="X509Certificate2"/>, if configured; otherwise, <c>null</c>.
+        /// </returns>
+        public X509Certificate2 GetCACertificate()
+        {
+            byte[] certificateData;
+            if (!String.IsNullOrWhiteSpace(CertificateAuthorityFile))
+                certificateData = File.ReadAllBytes(CertificateAuthorityFile);
+            else if (!String.IsNullOrWhiteSpace(CertificateAuthorityData))
+                certificateData = Convert.FromBase64String(CertificateAuthorityData);
+            else
+                return null;
+
+            return new X509Certificate2(certificateData);
+        }
     }
 }
