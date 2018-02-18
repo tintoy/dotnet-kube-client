@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https:/foo.bar.com/r/projects/1a27585/kubernetes:6443
+  name: Kube8
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://diddly.do-see-do.net:8080/r/projects/1a7/kubernetes:6443
+  name: daas-demo
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://localhost:6445
+  name: docker-for-desktop-cluster
+- cluster:
+    certificate-authority: C:\Users\tintoy\.minikube\ca.crt
+    server: https://123.456.789.1:8443
+  name: minikube
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN3akNDQWFxZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFTTVJBd0RnWURWUVFERXdkcmRXSmwKTFdOaE1CNFhEVEU0TURJd05qQXhNREkwTUZvWERUSTRNREl3TkRBeE1ESTBNRm93RWpFUU1BNEdBMVVFQXhNSAphM1ZpWlMxallUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQU9CTzlkTjJka2orCnZSTzBvdldkVW5Qd0tPNkl1c2NnWGhrWTE1MGZHdExydWpsMjhkUnFOdHpwZExLVlNhRm1JekJnOGg4bnFmOGwKYUhEVEFqNTdNelRnZkFZUGpQY2tzYVFjWE9wODQ0dzB0SmNQSW0wZ3ZzbHNENzNVQ1MvVnRwWmV1Q1FRbXFXNwpXc2dKNUVXZEhSR292dVpwSVlCN2lxVnJRaGxiRksyU1hxanZHbHhBVGsvV294VUJJSzhKMEZZcTkybXFNUzNqCmREM1B1NmdrOVBXcGxEWTFvNVhIVDJwbnY1UkdvOFpjRURIcFRqckE3RUZDTUZQRWJ5ZzV3RkQ4RitndXpoeWQKUlpWNTBIKzM2U2ZucHBRRUxLTmpTV2NUcG5uSW5zdlFQbU9YdXpJeDVHWGNFblU5NFFhNzVqNGpOS2lhSkVUUwp6QW5iWENFblU3MENBd0VBQWFNak1DRXdEZ1lEVlIwUEFRSC9CQVFEQWdLa01BOEdBMVVkRXdFQi93UUZNQU1CCkFmOHdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBTW5aUVkzQkJTMFpOQmhqa1Zza2FaWFNMcCtRVkZWeXRFSjIKSno4cStyMmh1d3ZFRGZyTW9ZV2psdUJ3LzNrdjQ1MWVxbHNESDlQTmp4dkd6MGJ3VGxRMk5UQk9zVlVTdmZpagpwd1VyUnh1bDIzcmpDTHdFbnhvR0tUTVVub0hCRDFQQkgrTFpiZTgxSWtXbzlVNEJrNll6NHA4NDZKRjVzZ21wCjdEKy96NjN2Z2t1YkVWNWEybnllV0lGTlFha0xMb3ZkNWZKcFI0aEUxU3lwUWNMYzFSRk9kVTVlUWRoZFdDSTQKUHNDenNTamVTdE5YRTE0NjNDQm8zMmtEQjc3YkdSZTFvY3FXUVg0QnBqM3BmNTkvQlRRK0hzeUo3RE4zcDBFdApVd04zT2h2NkVpdExPQWtVRng5aWRCcEFFQm9qM281TVkva3JFVmlMZ0cvWHIvU3VjOFk9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    server: https://100.200.300.400:6443
+  name: rke
+contexts:
+- context:
+    cluster: Kube8
+    user: Kube8
+  name: Kube8
+- context:
+    cluster: daas-demo
+    user: daas-demo
+  name: daas-demo
+- context:
+    cluster: docker-for-desktop-cluster
+    user: docker-for-desktop
+  name: docker-for-desktop
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+- context:
+    cluster: rke
+    user: rke-admin
+  name: rke
+current-context: docker-for-desktop
+preferences: {}
+# Note: none of these tokens, certificates, or keys are valid (but they *are* valid Base64).
+users:
+- name: Kube8
+  user:
+    token: TXktVG9rZW4=
+- name: daas-demo
+  user:
+    token: QW5vdGhlci1Ub2tlbg==
+- name: docker-for-desktop
+  user:
+    client-certificate-data: TXktQ2xpZW50LUNlcnRpZmljYXRl
+    client-key-data: TXktQ2xpZW50LUtleQ==
+- name: minikube
+  user:
+    client-certificate: ~/.minikube/client.crt
+    client-key: ~/.minikube/client.key
+- name: rke-admin
+  user:
+    client-certificate-data: QW5vdGhlci1DbGllbnQtQ2VydGlmaWNhdGU=
+    client-key-data: QW5vdGhlci1DbGllbnQtS2V5
