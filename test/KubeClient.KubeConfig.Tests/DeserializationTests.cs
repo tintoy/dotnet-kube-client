@@ -24,11 +24,11 @@ namespace KubeClient.KubeConfig.Tests
             Config kubeConfig = Config.Load(configFile);
             Assert.Equal("v1", kubeConfig.ApiVersion);
             Assert.Equal("Config", kubeConfig.Kind);
-            Assert.Equal("docker-for-desktop", kubeConfig.CurrentContext);
+            Assert.Equal("docker-for-desktop", kubeConfig.CurrentContextName);
 
             Assert.Equal(5, kubeConfig.Contexts.Count);
             Assert.Equal(5, kubeConfig.Clusters.Count);
-            Assert.Equal(5, kubeConfig.Users.Count);
+            Assert.Equal(5, kubeConfig.UserIdentities.Count);
         }
     }
 }

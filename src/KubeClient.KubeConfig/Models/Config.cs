@@ -26,7 +26,7 @@ namespace KubeClient.KubeConfig.Models
         ///     The currently-selected Kubernetes context.
         /// </summary>
         [YamlMember(Alias = "current-context")]
-        public string CurrentContext { get; set; }
+        public string CurrentContextName { get; set; }
 
         /// <summary>
         ///     Kubernetes contexts.
@@ -44,7 +44,7 @@ namespace KubeClient.KubeConfig.Models
         ///     Kubernetes user identities.
         /// </summary>
         [YamlMember(Alias = "users")]
-        public List<UserIdentity> Users { get; set; } = new List<UserIdentity>();
+        public List<UserIdentity> UserIdentities { get; set; } = new List<UserIdentity>();
 
         /// <summary>
         ///     Load and parse configuration from the specified file (usually ~/.kube/config).

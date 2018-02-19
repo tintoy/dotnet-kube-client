@@ -42,6 +42,29 @@ namespace KubeClient.KubeConfig.Models
         public string ClientKeyData { get; set; }
 
         /// <summary>
+        ///     Get the raw Kubernetes authentication token (if any).
+        /// </summary>
+        /// <returns>
+        ///     The authentication token, if configured; otherwise, <c>null</c>.
+        /// </returns>
+        /// <remarks>
+        ///     If the token starts with a "Bearer " prefix (i.e. already in HTTP Authorization header format), then this prefix will be stripped.
+        /// </remarks>
+        public string GetRawToken()
+        {
+            if (String.IsNullOrWhiteSpace(Token))
+                return null;
+
+            string token = Encoding.ASCII.GetString(
+                Convert.FromBase64String(Token)
+            );
+            if (token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                return token.Substring("Bearer ".Length);
+
+            return Token;
+        }
+
+        /// <summary>
         ///     Get the user's client certificate (if configured).
         /// </summary>
         /// <returns>

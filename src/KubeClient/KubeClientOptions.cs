@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace KubeClient
 {
     /// <summary>
@@ -16,8 +18,13 @@ namespace KubeClient
         public string ApiEndPoint { get; set; }
 
         /// <summary>
-        ///     The access token for the Kubernetes API end-point.
+        ///     The access token used to authenticate to the Kubernetes API.
         /// </summary>
         public string Token { get; set; }
+
+        /// <summary>
+        ///     The client certificate used to authenticate to the Kubernetes API.
+        /// </summary>
+        public X509Certificate2 ClientCertificate { get; set; }
     }
 }
