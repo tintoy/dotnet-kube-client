@@ -4,12 +4,12 @@ using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 
-namespace KubeClient.KubeConfig
+namespace KubeClient
 {
     /// <summary>
     ///     Extension methods for registering Kubernetes client options.
     /// </summary>
-    public static class OptionsRegistrationExtensions
+    public static class KubeClientOptionsRegistrationExtensions
     {
         /// <summary>
         ///     Add <see cref="KubeClientOptions"/> from local Kubernetes client configuration.
@@ -54,21 +54,19 @@ namespace KubeClient.KubeConfig
                 if (targetContext == null)
                     throw new InvalidOperationException($"Cannot find a context in the Kubernetes client configuration named '{targetContextName}'.");
 
-                Cluster targetCluster = config.Clusters.Find(cluster => cluster.Name == targetContext.ClusterName);
+                Cluster targetCluster = config.Clusters.Find(cluster => cluster.Name == targetContext.Config.ClusterName);
                 if (targetCluster == null)
-                    throw new InvalidOperationException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.ClusterName}'.");
+                    throw new InvalidOperationException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
 
-                UserIdentity targetUser = config.UserIdentities.Find(user => user.Name == targetContext.UserName);
+                UserIdentity targetUser = config.UserIdentities.Find(user => user.Name == targetContext.Config.UserName);
                 if (targetUser == null)
-                    throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.UserName}'.");
-
-                if (String.IsNullOrWhiteSpace(targetUser.Config.Token))
-                    throw new InvalidOperationException($"User identity in the Kubernetes client configuration named '{targetContext.UserName}' does not use token-based authentication (client certificates are not supported in KubeClientOptions yet).");
+                    throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
 
                 KubeClientOptions options = new KubeClientOptions
                 {
                     ApiEndPoint = targetCluster.Config.Server,
                     ClientCertificate = targetUser.Config.GetClientCertificate(),
+                    CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate(),
                     Token = targetUser.Config.GetRawToken()
                 };
 

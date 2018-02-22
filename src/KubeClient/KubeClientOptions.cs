@@ -26,5 +26,10 @@ namespace KubeClient
         ///     The client certificate used to authenticate to the Kubernetes API.
         /// </summary>
         public X509Certificate2 ClientCertificate { get; set; }
+
+        /// <summary>
+        ///     The expected CA certificate used by the Kubernetes API.
+        /// </summary>
+        public X509Certificate2 CertificationAuthorityCertificate { get; set; }
     }
 }

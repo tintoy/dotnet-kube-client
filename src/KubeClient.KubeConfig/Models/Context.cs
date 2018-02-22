@@ -14,6 +14,18 @@ namespace KubeClient.KubeConfig.Models
         public string Name { get; set; }
 
         /// <summary>
+        ///     The context configuration.
+        /// </summary>
+        [YamlMember(Alias = "context")]
+        public ContextConfig Config { get; set; } = new ContextConfig();
+    }
+
+    /// <summary>
+    ///     Configuration for a Kubernetes client context.
+    /// </summary>
+    public class ContextConfig
+    {
+        /// <summary>
         ///     The name of the target cluster.
         /// </summary>
         [YamlMember(Alias = "cluster")]

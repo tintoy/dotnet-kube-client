@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using System;
 
-namespace KubeClient.Extensions.DependencyInjection
+namespace KubeClient
 {
     /// <summary>
     ///     Extension methods for registering <see cref="KubeApiClient"/> as a component.
@@ -42,10 +42,25 @@ namespace KubeClient.Extensions.DependencyInjection
                     if (String.IsNullOrWhiteSpace(kubeOptions.Token))
                         throw new InvalidOperationException("Application configuration is missing Kubernetes API token.");
 
-                    return KubeClient.KubeApiClient.Create(
-                        endPointUri: new Uri(kubeOptions.ApiEndPoint),
-                        accessToken: kubeOptions.Token
-                    );
+                    if (!String.IsNullOrWhiteSpace(kubeOptions.Token))
+                    {
+                        return KubeClient.KubeApiClient.Create(
+                            endPointUri: new Uri(kubeOptions.ApiEndPoint),
+                            accessToken: kubeOptions.Token,
+                            expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
+                        );
+                    }
+
+                    if (kubeOptions.ClientCertificate != null)
+                    {
+                        return KubeClient.KubeApiClient.Create(
+                            endPointUri: new Uri(kubeOptions.ApiEndPoint),
+                            clientCertificate: kubeOptions.ClientCertificate,
+                            expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
+                        );
+                    }
+
+                    throw new InvalidOperationException($"KubeClientOptions for '{kubeOptions.ApiEndPoint}' do not contain valid credentials.");
                 });
             }
         }
