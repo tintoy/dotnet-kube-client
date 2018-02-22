@@ -1,7 +1,7 @@
 using System.IO;
 using Xunit;
 
-namespace KubeClient.KubeConfig.Tests
+namespace KubeClient.Extensions.KubeConfig.Tests
 {
     using Models;
 

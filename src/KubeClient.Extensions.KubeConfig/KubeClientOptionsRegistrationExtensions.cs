@@ -1,11 +1,12 @@
-﻿using KubeClient.KubeConfig.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 
 namespace KubeClient
 {
+    using Extensions.KubeConfig.Models;
+    
     /// <summary>
     ///     Extension methods for registering Kubernetes client options.
     /// </summary>

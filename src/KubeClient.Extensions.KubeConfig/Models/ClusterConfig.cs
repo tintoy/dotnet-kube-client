@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using YamlDotNet.Serialization;
 
-namespace KubeClient.KubeConfig.Models
+namespace KubeClient.Extensions.KubeConfig.Models
 {
     /// <summary>
     ///     Client configuration for a Kubernetes cluster.

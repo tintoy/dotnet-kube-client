@@ -1,10 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.IO;
 using Xunit;
 
-namespace KubeClient.KubeConfig.Tests
+namespace KubeClient.Extensions.KubeConfig.Tests
 {
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
     using Models;
 
     /// <summary>

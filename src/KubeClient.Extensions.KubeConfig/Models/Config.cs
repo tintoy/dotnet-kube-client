@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using YamlDotNet.Serialization;
 
-namespace KubeClient.KubeConfig.Models
+namespace KubeClient.Extensions.KubeConfig.Models
 {
     /// <summary>
     ///     Kubernetes client configuration.
