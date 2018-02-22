@@ -8,11 +8,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient", "src\KubeClien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.Extensions.DependencyInjection", "src\KubeClient.Extensions.DependencyInjection\KubeClient.Extensions.DependencyInjection.csproj", "{5364297F-03CE-4FFA-9A60-B9E154056428}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.KubeConfig", "src\KubeClient.KubeConfig\KubeClient.KubeConfig.csproj", "{7D9B22D4-1E8F-4F97-BF9F-DE83A8BA6776}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.Extensions.KubeConfig", "src\KubeClient.Extensions.KubeConfig\KubeClient.Extensions.KubeConfig.csproj", "{7D9B22D4-1E8F-4F97-BF9F-DE83A8BA6776}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0F92C90F-A489-4059-AE24-36361B883E81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.KubeConfig.Tests", "test\KubeClient.KubeConfig.Tests\KubeClient.KubeConfig.Tests.csproj", "{BE51905A-ACB7-48CD-96DC-6C8CC426A95E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.Extensions.KubeConfig.Tests", "test\KubeClient.Extensions.KubeConfig.Tests\KubeClient.Extensions.KubeConfig.Tests.csproj", "{BE51905A-ACB7-48CD-96DC-6C8CC426A95E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

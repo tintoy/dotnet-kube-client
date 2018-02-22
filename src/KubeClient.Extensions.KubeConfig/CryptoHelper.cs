@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
-namespace KubeClient.KubeConfig
+namespace KubeClient.Extensions.KubeConfig
 {
     /// <summary>
     ///     Cryptographic helper methods.

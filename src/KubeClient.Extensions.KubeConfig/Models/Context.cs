@@ -1,6 +1,6 @@
 ﻿using YamlDotNet.Serialization;
 
-namespace KubeClient.KubeConfig.Models
+namespace KubeClient.Extensions.KubeConfig.Models
 {
     /// <summary>
     ///     A Kubernetes context links a cluster with a specific user identity.

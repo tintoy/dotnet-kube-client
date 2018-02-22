@@ -4,7 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using YamlDotNet.Serialization;
 
-namespace KubeClient.KubeConfig.Models
+namespace KubeClient.Extensions.KubeConfig.Models
 {
     /// <summary>
     ///     User identity configuration for a Kubernetes client.

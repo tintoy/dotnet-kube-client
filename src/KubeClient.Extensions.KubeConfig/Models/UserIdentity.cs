@@ -1,6 +1,6 @@
 ﻿using YamlDotNet.Serialization;
 
-namespace KubeClient.KubeConfig.Models
+namespace KubeClient.Extensions.KubeConfig.Models
 {
     /// <summary>
     ///     A user identity that clients can use when authenticating to a Kubernetes cluster.
