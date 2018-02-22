@@ -39,25 +39,30 @@ namespace KubeClient
                     if (String.IsNullOrWhiteSpace(kubeOptions.ApiEndPoint))
                         throw new InvalidOperationException("Application configuration is missing Kubernetes API end-point.");
 
+                    KubeClient.KubeApiClient client = null;
+
                     if (!String.IsNullOrWhiteSpace(kubeOptions.Token))
                     {
-                        return KubeClient.KubeApiClient.Create(
+                        client = KubeClient.KubeApiClient.Create(
                             endPointUri: new Uri(kubeOptions.ApiEndPoint),
                             accessToken: kubeOptions.Token,
                             expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
                         );
                     }
-
-                    if (kubeOptions.ClientCertificate != null)
+                    else if (kubeOptions.ClientCertificate != null)
                     {
-                        return KubeClient.KubeApiClient.Create(
+                        client = KubeClient.KubeApiClient.Create(
                             endPointUri: new Uri(kubeOptions.ApiEndPoint),
                             clientCertificate: kubeOptions.ClientCertificate,
                             expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
                         );
                     }
+                    else
+                        throw new InvalidOperationException($"KubeClientOptions for '{kubeOptions.ApiEndPoint}' do not contain valid credentials.");
 
-                    throw new InvalidOperationException($"KubeClientOptions for '{kubeOptions.ApiEndPoint}' do not contain valid credentials.");
+                    client.DefaultNamespace = kubeOptions.KubeNamespace;
+
+                    return client;
                 });
             }
         }
