@@ -39,9 +39,6 @@ namespace KubeClient
                     if (String.IsNullOrWhiteSpace(kubeOptions.ApiEndPoint))
                         throw new InvalidOperationException("Application configuration is missing Kubernetes API end-point.");
 
-                    if (String.IsNullOrWhiteSpace(kubeOptions.Token))
-                        throw new InvalidOperationException("Application configuration is missing Kubernetes API token.");
-
                     if (!String.IsNullOrWhiteSpace(kubeOptions.Token))
                     {
                         return KubeClient.KubeApiClient.Create(
