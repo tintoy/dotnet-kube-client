@@ -15,19 +15,19 @@ namespace KubeClient.Models
         /// <param name="kind">
         ///     The resource kind.
         /// </param>
-        /// <param name="version">
+        /// <param name="apiVersion">
         ///     The resource API version.
         /// </param>
-        public KubeResourceAttribute(string kind, string version)
+        public KubeResourceAttribute(string kind, string apiVersion)
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(kind));
 
-            if (String.IsNullOrWhiteSpace(version))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'version'.", nameof(version));
+            if (String.IsNullOrWhiteSpace(apiVersion))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'version'.", nameof(apiVersion));
 
             Kind = kind;
-            Version = version;
+            ApiVersion = apiVersion;
         }
 
         /// <summary>
@@ -38,6 +38,6 @@ namespace KubeClient.Models
         /// <summary>
         ///     The resource API version.
         /// </summary>
-        public string Version { get; }
+        public string ApiVersion { get; }
     }
 }
