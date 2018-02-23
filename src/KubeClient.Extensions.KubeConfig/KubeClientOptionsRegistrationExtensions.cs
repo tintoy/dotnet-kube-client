@@ -24,13 +24,19 @@ namespace KubeClient
         /// <param name="kubeContextName">
         ///     The optional name of a specific Kubernetes client context to use.
         /// </param>
+        /// <param name="defaultNamespace">
+        ///     The default namespace to use (if not specified, "default" is used).
+        /// </param>
         /// <returns>
         ///     The configured service collection.
         /// </returns>
-        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string kubeConfigFileName = null, string kubeContextName = null)
+        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string kubeConfigFileName = null, string kubeContextName = null, string defaultNamespace = "default")
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
+
+            if (String.IsNullOrWhiteSpace(defaultNamespace))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'defaultNamespace'.", nameof(defaultNamespace));
 
             if (String.IsNullOrWhiteSpace(kubeConfigFileName))
             {
@@ -43,7 +49,7 @@ namespace KubeClient
             FileInfo kubeConfigFile = new FileInfo(kubeConfigFileName);
 
             // IOptions<KubeClientOptions>
-            services.AddScoped(serviceProvider =>
+            services.Configure<KubeClientOptions>(kubeClientOptions =>
             {
                 Config config = Config.Load(kubeConfigFile);
 
@@ -63,15 +69,12 @@ namespace KubeClient
                 if (targetUser == null)
                     throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
 
-                KubeClientOptions options = new KubeClientOptions
-                {
-                    ApiEndPoint = targetCluster.Config.Server,
-                    ClientCertificate = targetUser.Config.GetClientCertificate(),
-                    CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate(),
-                    Token = targetUser.Config.GetRawToken()
-                };
-
-                return Options.Create(options);
+                kubeClientOptions.ApiEndPoint = targetCluster.Config.Server;
+                kubeClientOptions.KubeNamespace = defaultNamespace;
+                
+                kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
+                kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
+                kubeClientOptions.Token = targetUser.Config.GetRawToken();
             });
 
             return services;
