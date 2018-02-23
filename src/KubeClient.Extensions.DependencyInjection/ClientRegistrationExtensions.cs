@@ -26,24 +26,24 @@ namespace KubeClient
             if (usePodServiceAccount)
             {
                 // When running inside Kubernetes, use pod-level service account (e.g. access token from mounted Secret).
-                services.AddScoped<KubeClient.KubeApiClient>(
-                    serviceProvider => KubeClient.KubeApiClient.CreateFromPodServiceAccount()
+                services.AddScoped<KubeApiClient>(
+                    serviceProvider => KubeApiClient.CreateFromPodServiceAccount()
                 );
             }
             else
             {
-                services.AddScoped<KubeClient.KubeApiClient>(serviceProvider =>
+                services.AddScoped<KubeApiClient>(serviceProvider =>
                 {
                     KubeClientOptions kubeOptions = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
 
                     if (String.IsNullOrWhiteSpace(kubeOptions.ApiEndPoint))
                         throw new InvalidOperationException("Application configuration is missing Kubernetes API end-point.");
 
-                    KubeClient.KubeApiClient client = null;
+                    KubeApiClient client = null;
 
                     if (!String.IsNullOrWhiteSpace(kubeOptions.Token))
                     {
-                        client = KubeClient.KubeApiClient.Create(
+                        client = KubeApiClient.Create(
                             endPointUri: new Uri(kubeOptions.ApiEndPoint),
                             accessToken: kubeOptions.Token,
                             expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
@@ -51,7 +51,7 @@ namespace KubeClient
                     }
                     else if (kubeOptions.ClientCertificate != null)
                     {
-                        client = KubeClient.KubeApiClient.Create(
+                        client = KubeApiClient.Create(
                             endPointUri: new Uri(kubeOptions.ApiEndPoint),
                             clientCertificate: kubeOptions.ClientCertificate,
                             expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
@@ -92,9 +92,13 @@ namespace KubeClient
 
             Uri endPointUri = new Uri(kubeOptions.ApiEndPoint);
 
-            services.AddScoped<KubeClient.KubeApiClient>(
-                serviceProvider => KubeClient.KubeApiClient.Create(endPointUri, kubeOptions.Token)
-            );
+            services.AddScoped<KubeApiClient>(serviceProvider =>
+            {
+                var client = KubeApiClient.Create(endPointUri, kubeOptions.Token);
+                client.DefaultNamespace = kubeOptions.KubeNamespace;
+
+                return client;
+            });
         }
     }
 }
