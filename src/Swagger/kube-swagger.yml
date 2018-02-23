@@ -35388,6 +35388,9 @@ definitions:
       path:
         description: 'Path of the directory on the host. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath'
         type: string
+      type:
+        description: 'The volume type. Can be one of ["File", "Directory", "FileOrCreate", "DirectoryOrCreate", "Socket", "CharDevice", "BlockDevice"].'
+        type: string
     required:
     - path
   io.k8s.kubernetes.pkg.api.v1.ISCSIVolumeSource:
