@@ -159,24 +159,25 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="StatusV1"/> indicating the result of the request.
         /// </returns>
-        public async Task<StatusV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public async Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
         {
-            return
-                await Http.DeleteAsJsonAsync(
-                    Requests.ByName.WithTemplateParameters(new
-                    {
-                        Name = name,
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace
-                    }),
-                    deleteBody: new
-                    {
-                        apiVersion = "v1",
-                        kind = "DeleteOptions",
-                        propagationPolicy = propagationPolicy
-                    },
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            var request = Http.DeleteAsJsonAsync(
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                }),
+                deleteBody: new DeleteOptionsV1
+                {
+                    PropagationPolicy = propagationPolicy
+                },
+                cancellationToken: cancellationToken
+            );
+
+            if (propagationPolicy == DeletePropagationPolicy.Foreground)
+                return await request.ReadContentAsObjectV1Async<ReplicationControllerV1>(HttpStatusCode.OK);
+            
+            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

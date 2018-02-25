@@ -9,20 +9,33 @@ namespace KubeClient.Models
     ///     The base class for Kubernetes resources.
     /// </summary>
     public abstract class KubeResourceV1
+        : KubeObjectV1
     {
         /// <summary>
-        ///     Resource type metadata.
+        ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
-        static readonly ConcurrentDictionary<Type, (string kind, string apiVersion)> ResourceMetadata = new ConcurrentDictionary<Type, (string kind, string apiVersion)>();
+        [JsonProperty("metadata")]
+        public ObjectMetaV1 Metadata { get; set; }
+    }
+
+    /// <summary>
+    ///     The base class for Kubernetes models.
+    /// </summary>
+    public class KubeObjectV1
+    {
+        /// <summary>
+        ///     Model type metadata.
+        /// </summary>
+        static readonly ConcurrentDictionary<Type, (string kind, string apiVersion)> ModelMetadata = new ConcurrentDictionary<Type, (string kind, string apiVersion)>();
 
         /// <summary>
-        ///     Create a new <see cref="KubeResourceV1"/>, automatically initialising <see cref="Kind"/> and <see cref="ApiVersion"/> (if possible).
+        ///     Create a new <see cref="KubeObjectV1"/>, automatically initialising <see cref="Kind"/> and <see cref="ApiVersion"/> (if possible).
         /// </summary>
-        protected KubeResourceV1()
+        protected KubeObjectV1()
         {
-            (Kind, ApiVersion) = ResourceMetadata.GetOrAdd(GetType(), resourceType =>
+            (Kind, ApiVersion) = ModelMetadata.GetOrAdd(GetType(), modelType =>
             {
-                var kubeResourceAttribute = resourceType.GetTypeInfo().GetCustomAttribute<KubeResourceAttribute>();
+                var kubeResourceAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeResourceAttribute>();
                 if (kubeResourceAttribute == null)
                     return (kubeResourceAttribute.Kind, kubeResourceAttribute.ApiVersion);
 
@@ -41,11 +54,5 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("apiVersion")]
         public string ApiVersion { get; set; }
-
-        /// <summary>
-        ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-        /// </summary>
-        [JsonProperty("metadata")]
-        public ObjectMetaV1 Metadata { get; set; }
     }
 }

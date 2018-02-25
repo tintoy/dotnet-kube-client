@@ -157,26 +157,27 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="JobV1"/> representing the job's most recent state before it was deleted.
+        ///     A <see cref="JobV1"/> representing the job's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public async Task<JobV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public async Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
         {
-            return await Http
-                .DeleteAsJsonAsync(
-                    Requests.ByName.WithTemplateParameters(new
-                    {
-                        Name = name,
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace
-                    }),
-                    deleteBody: new
-                    {
-                        apiVersion = "v1",
-                        kind = "DeleteOptions",
-                        propagationPolicy = propagationPolicy
-                    },
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<JobV1, StatusV1>(HttpStatusCode.OK);
+            var request = Http.DeleteAsJsonAsync(
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                }),
+                deleteBody: new DeleteOptionsV1
+                {
+                    PropagationPolicy = propagationPolicy
+                },
+                cancellationToken: cancellationToken
+            );
+            
+            if (propagationPolicy == DeletePropagationPolicy.Foreground)
+                return await request.ReadContentAsObjectV1Async<JobV1>(HttpStatusCode.OK);
+            
+            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>
