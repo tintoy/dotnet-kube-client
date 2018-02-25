@@ -113,7 +113,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="Service"/>.
+        ///     Request creation of a <see cref="ServiceV1"/>.
         /// </summary>
         /// <param name="newService">
         ///     A <see cref="ServiceV1"/> representing the Service to create.

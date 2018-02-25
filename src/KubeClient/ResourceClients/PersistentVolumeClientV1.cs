@@ -113,7 +113,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="PersistentVolume"/>.
+        ///     Request creation of a <see cref="PersistentVolumeV1"/>.
         /// </summary>
         /// <param name="newPersistentVolume">
         ///     A <see cref="PersistentVolumeV1"/> representing the PersistentVolume to create.

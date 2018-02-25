@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public class ContainerStateTerminatedV1
     {
         /// <summary>
-        ///     Container's ID in the format 'docker://<container_id>'
+        ///     Container's ID in the format 'docker://&lt;container_id&gt;'
         /// </summary>
         [JsonProperty("containerID")]
         public string ContainerID { get; set; }

@@ -113,7 +113,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="Deployment"/>.
+        ///     Request creation of a <see cref="DeploymentV1Beta1"/>.
         /// </summary>
         /// <param name="newDeployment">
         ///     A <see cref="DeploymentV1Beta1"/> representing the Deployment to create.
@@ -142,7 +142,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request update (PATCH) of a <see cref="Deployment"/>.
+        ///     Request update (PATCH) of a <see cref="DeploymentV1Beta1"/>.
         /// </summary>
         /// <param name="deployment">
         ///     A <see cref="DeploymentV1Beta1"/> representing the Deployment to update.

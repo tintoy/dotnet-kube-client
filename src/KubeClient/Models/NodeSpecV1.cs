@@ -17,7 +17,7 @@ namespace KubeClient.Models
         public string ExternalID { get; set; }
 
         /// <summary>
-        ///     ID of the node assigned by the cloud provider in the format: <ProviderName>://<ProviderSpecificNodeID>
+        ///     ID of the node assigned by the cloud provider in the format: &lt;ProviderName&gt;://&lt;ProviderSpecificNodeID&gt;
         /// </summary>
         [JsonProperty("providerID")]
         public string ProviderID { get; set; }

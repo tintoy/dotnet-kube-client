@@ -179,24 +179,5 @@ namespace KubeClient
                 client => new DeploymentClientV1Beta1(client)
             );
         }
-
-        /// <summary>
-        ///     Get the Kubernetes PrometheusServiceMonitors (v1) resource client.
-        /// </summary>
-        /// <param name="kubeClient">
-        ///     The Kubernetes API client.
-        /// </param>
-        /// <returns>
-        ///     The resource client.
-        /// </returns>
-        public static PrometheusServiceMonitorClientV1 PrometheusServiceMonitorsV1(this KubeApiClient kubeClient)
-        {
-            if (kubeClient == null)
-                throw new ArgumentNullException(nameof(kubeClient));
-            
-            return kubeClient.ResourceClient(
-                client => new PrometheusServiceMonitorClientV1(client)
-            );
-        }
     }
 }

@@ -2,6 +2,7 @@
   <!-- Common settings for projects -->
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- Common package properties -->

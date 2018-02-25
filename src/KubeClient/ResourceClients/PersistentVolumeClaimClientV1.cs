@@ -89,7 +89,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="PersistentVolumeClaim"/>.
+        ///     Request creation of a <see cref="PersistentVolumeClaimV1"/>.
         /// </summary>
         /// <param name="newPersistentVolumeClaim">
         ///     A <see cref="PersistentVolumeClaimV1"/> representing the PersistentVolumeClaim to create.
@@ -125,6 +125,9 @@ namespace KubeClient.ResourceClients
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> value indicating how (or if) dependent resources should be deleted.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
