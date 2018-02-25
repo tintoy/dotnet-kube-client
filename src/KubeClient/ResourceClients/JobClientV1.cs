@@ -113,7 +113,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="Job"/>.
+        ///     Request creation of a <see cref="JobV1"/>.
         /// </summary>
         /// <param name="newJob">
         ///     A <see cref="JobV1"/> representing the Job to create.

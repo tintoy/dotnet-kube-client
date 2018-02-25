@@ -121,7 +121,7 @@ namespace KubeClient
         /// </param>
         /// <param name="expectServerCertificate">
         ///     An optional server certificate to expect.
-        /// <param>
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
@@ -163,7 +163,7 @@ namespace KubeClient
         /// </param>
         /// <param name="expectServerCertificate">
         ///     An optional server certificate to expect.
-        /// <param>
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>

@@ -125,6 +125,7 @@ class KubeModelProperty(object):
         self.name = capitalize_name(name)
         self.json_name = name
         self.summary = summary or 'No summary provided'
+        self.summary = self.summary.replace('<', '&lt;').replace('>', '&gt;', '&', '&amp;')
         self.data_type = data_type
         self.is_optional = is_optional
 

@@ -89,7 +89,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="Secret"/>.
+        ///     Request creation of a <see cref="SecretV1"/>.
         /// </summary>
         /// <param name="newSecret">
         ///     A <see cref="SecretV1"/> representing the Secret to create.

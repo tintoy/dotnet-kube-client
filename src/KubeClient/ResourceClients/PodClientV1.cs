@@ -156,7 +156,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="Pod"/>.
+        ///     Request creation of a <see cref="PodV1"/>.
         /// </summary>
         /// <param name="newPod">
         ///     A <see cref="PodV1"/> representing the Pod to create.

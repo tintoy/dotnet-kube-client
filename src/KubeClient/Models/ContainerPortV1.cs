@@ -29,13 +29,13 @@ namespace KubeClient.Models
         public string Protocol { get; set; }
 
         /// <summary>
-        ///     Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
+        ///     Number of port to expose on the pod's IP address. This must be a valid port number, 0 &lt; x &lt; 65536.
         /// </summary>
         [JsonProperty("containerPort")]
         public int ContainerPort { get; set; }
 
         /// <summary>
-        ///     Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+        ///     Number of port to expose on the host. If specified, this must be a valid port number, 0 &lt; x &lt; 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
         /// </summary>
         [JsonProperty("hostPort")]
         public int HostPort { get; set; }

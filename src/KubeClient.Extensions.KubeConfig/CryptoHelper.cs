@@ -82,7 +82,7 @@ namespace KubeClient.Extensions.KubeConfig
         ///     The PEM-encoded blocks.
         /// </param>
         /// <returns>
-        ///     A sequence of BouncyCastle cryptographic objects (e.g. <see cref="X509Certificate"/>, <see cref="AsymmetricCipherKeyPair"/>, etc).
+        ///     A sequence of BouncyCastle cryptographic objects (e.g. <see cref="BCX509Certificate"/>, <see cref="AsymmetricCipherKeyPair"/>, etc).
         /// </returns>
         public static IEnumerable<object> EnumeratePemObjects(string pemPassword, params string[] pemBlocks) => EnumeratePemObjects(pemPassword, (IEnumerable<string>)pemBlocks);
 
@@ -96,7 +96,7 @@ namespace KubeClient.Extensions.KubeConfig
         ///     The PEM-encoded blocks.
         /// </param>
         /// <returns>
-        ///     A sequence of BouncyCastle cryptographic objects (e.g. <see cref="X509Certificate"/>, <see cref="AsymmetricCipherKeyPair"/>, etc).
+        ///     A sequence of BouncyCastle cryptographic objects (e.g. <see cref="BCX509Certificate"/>, <see cref="AsymmetricCipherKeyPair"/>, etc).
         /// </returns>
         public static IEnumerable<object> EnumeratePemObjects(string pemPassword, IEnumerable<string> pemBlocks)
         {

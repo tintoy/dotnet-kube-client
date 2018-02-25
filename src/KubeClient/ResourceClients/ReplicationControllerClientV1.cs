@@ -113,7 +113,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="ReplicationController"/>.
+        ///     Request creation of a <see cref="ReplicationControllerV1"/>.
         /// </summary>
         /// <param name="newController">
         ///     A <see cref="ReplicationControllerV1"/> representing the ReplicationController to create.

@@ -89,7 +89,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="ConfigMap"/>.
+        ///     Request creation of a <see cref="ConfigMapV1"/>.
         /// </summary>
         /// <param name="newConfigMap">
         ///     A <see cref="ConfigMapV1"/> representing the ConfigMap to create.
