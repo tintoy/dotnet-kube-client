@@ -157,9 +157,9 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     An <see cref="JobV1"/> representing the job's most recent state before it was deleted.
         /// </returns>
-        public async Task<StatusV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public async Task<JobV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
         {
             return await Http
                 .DeleteAsJsonAsync(
@@ -176,7 +176,7 @@ namespace KubeClient.ResourceClients
                     },
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsAsync<JobV1, StatusV1>(HttpStatusCode.OK);
         }
 
         /// <summary>
