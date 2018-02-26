@@ -34,35 +34,9 @@ namespace KubeClient
             {
                 services.AddScoped<KubeApiClient>(serviceProvider =>
                 {
-                    KubeClientOptions kubeOptions = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
+                    KubeClientOptions options = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
 
-                    if (String.IsNullOrWhiteSpace(kubeOptions.ApiEndPoint))
-                        throw new InvalidOperationException("Application configuration is missing Kubernetes API end-point.");
-
-                    KubeApiClient client = null;
-
-                    if (!String.IsNullOrWhiteSpace(kubeOptions.Token))
-                    {
-                        client = KubeApiClient.Create(
-                            endPointUri: new Uri(kubeOptions.ApiEndPoint),
-                            accessToken: kubeOptions.Token,
-                            expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
-                        );
-                    }
-                    else if (kubeOptions.ClientCertificate != null)
-                    {
-                        client = KubeApiClient.Create(
-                            endPointUri: new Uri(kubeOptions.ApiEndPoint),
-                            clientCertificate: kubeOptions.ClientCertificate,
-                            expectServerCertificate: kubeOptions.CertificationAuthorityCertificate
-                        );
-                    }
-                    else
-                        throw new InvalidOperationException($"KubeClientOptions for '{kubeOptions.ApiEndPoint}' do not contain valid credentials.");
-
-                    client.DefaultNamespace = kubeOptions.KubeNamespace;
-
-                    return client;
+                    return KubeApiClient.Create(options);
                 });
             }
         }
@@ -73,32 +47,22 @@ namespace KubeClient
         /// <param name="services">
 	        ///     The service collection to configure.
         /// </param>
-        /// <param name="kubeOptions">
+        /// <param name="options">
         ///     <see cref="KubeClientOptions"/> containing the client configuration to use.
         /// </param>
-        public static void AddKubeClient(this IServiceCollection services, KubeClientOptions kubeOptions)
+        public static void AddKubeClient(this IServiceCollection services, KubeClientOptions options)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
             
-            if (kubeOptions == null)
-                throw new ArgumentNullException(nameof(kubeOptions));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
 
-            if (String.IsNullOrWhiteSpace(kubeOptions.ApiEndPoint))
-                throw new ArgumentException("Application configuration is missing Kubernetes API end-point.", nameof(kubeOptions));
+            options.EnsureValid();
 
-            if (String.IsNullOrWhiteSpace(kubeOptions.Token))
-                throw new ArgumentException("Application configuration is missing Kubernetes API token.", nameof(kubeOptions));
-
-            Uri endPointUri = new Uri(kubeOptions.ApiEndPoint);
-
-            services.AddScoped<KubeApiClient>(serviceProvider =>
-            {
-                var client = KubeApiClient.Create(endPointUri, kubeOptions.Token);
-                client.DefaultNamespace = kubeOptions.KubeNamespace;
-
-                return client;
-            });
+            services.AddScoped<KubeApiClient>(
+                serviceProvider => KubeApiClient.Create(options)
+            );
         }
     }
 }
