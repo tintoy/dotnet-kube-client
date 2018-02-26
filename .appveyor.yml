@@ -13,11 +13,23 @@ nuget:
   project_feed: true
 
 deploy:
-  provider: NuGet
-  on:
-    appveyor_repo_tag: true
+  # MyGet feed
+  - provider: NuGet
+    artifact: /.*\.nupkg$/    
+    server: https://www.myget.org/F/dotnet-kube-client/api/v2/package
+    symbol_server: https://www.myget.org/F/dotnet-kube-client/symbols/api/v2/package
+    skip_symbols: false
+    api_key:
+      secure: FIA0E1YzvgpRKQTPH+ky8bh2wYBcyHiO/XINMQl8KoXpqpGLTX95bslkR1mspq/I
+    on:
+      # Development branch, feature branch, release branch, or master branch.
+      branch: /(develop|development|feature|release|master)(\/)?.*/
 
-  skip_symbols: false
+  # Public feed
+  provider: NuGet
   artifact: /.*\.nupkg$/
+  skip_symbols: false
   api_key:
     secure: ljl/r7XeQm+KBzR7pm1OOW4+YcDUsYiWlr9jWFztMh/8/orG4V9ylTi+P1jGME7g
+  on:
+    appveyor_repo_tag: true
