@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ThirdPartyResourceList is a list of ThirdPartyResources.
     /// </summary>
-    [KubeObject("ThirdPartyResourceList", "v1beta1")]
+    [KubeObject("ThirdPartyResourceList", "extensions/v1beta1")]
     public class ThirdPartyResourceListV1Beta1 : KubeResourceListV1
     {
         /// <summary>

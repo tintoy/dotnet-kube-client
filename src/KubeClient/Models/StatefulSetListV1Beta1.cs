@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     StatefulSetList is a collection of StatefulSets.
     /// </summary>
-    [KubeObject("StatefulSetList", "v1beta1")]
+    [KubeObject("StatefulSetList", "apps/v1beta1")]
     public class StatefulSetListV1Beta1 : KubeResourceListV1
     {
         /// <summary>

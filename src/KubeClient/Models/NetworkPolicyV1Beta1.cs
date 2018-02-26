@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicy describes what network traffic is allowed for a set of Pods
     /// </summary>
-    [KubeObject("NetworkPolicy", "v1beta1")]
+    [KubeObject("NetworkPolicy", "extensions/v1beta1")]
     public class NetworkPolicyV1Beta1 : KubeResourceV1
     {
         /// <summary>

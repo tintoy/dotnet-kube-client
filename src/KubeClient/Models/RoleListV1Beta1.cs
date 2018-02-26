@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     RoleList is a collection of Roles
     /// </summary>
-    [KubeObject("RoleList", "v1beta1")]
+    [KubeObject("RoleList", "rbac.authorization.k8s.io/v1beta1")]
     public class RoleListV1Beta1 : KubeResourceListV1
     {
         /// <summary>
