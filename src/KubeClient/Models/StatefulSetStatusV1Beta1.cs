@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     StatefulSetStatus represents the current state of a StatefulSet.
     /// </summary>
-    [KubeResource("StatefulSetStatus", "v1beta1")]
+    [KubeObject("StatefulSetStatus", "v1beta1")]
     public class StatefulSetStatusV1Beta1
     {
         /// <summary>

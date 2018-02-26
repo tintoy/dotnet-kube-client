@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentCondition describes the state of a deployment at a certain point.
     /// </summary>
-    [KubeResource("DeploymentCondition", "v1beta1")]
+    [KubeObject("DeploymentCondition", "v1beta1")]
     public class DeploymentConditionV1Beta1
     {
         /// <summary>

@@ -18,7 +18,7 @@ namespace KubeClient.Models
     ///         },
     ///      ]
     /// </summary>
-    [KubeResource("Endpoints", "v1")]
+    [KubeObject("Endpoints", "v1")]
     public class EndpointsV1 : KubeResourceV1
     {
         /// <summary>

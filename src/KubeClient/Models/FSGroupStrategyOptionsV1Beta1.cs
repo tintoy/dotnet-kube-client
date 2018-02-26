@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     FSGroupStrategyOptions defines the strategy type and options used to create the strategy.
     /// </summary>
-    [KubeResource("FSGroupStrategyOptions", "v1beta1")]
+    [KubeObject("FSGroupStrategyOptions", "v1beta1")]
     public class FSGroupStrategyOptionsV1Beta1
     {
         /// <summary>

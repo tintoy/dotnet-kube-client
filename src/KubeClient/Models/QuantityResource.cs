@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeResource("Quantity", "resource")]
+    [KubeObject("Quantity", "resource")]
     public class QuantityResource
     {
     }

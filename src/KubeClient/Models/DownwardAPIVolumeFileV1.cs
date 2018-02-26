@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DownwardAPIVolumeFile represents information to create the file containing the pod field
     /// </summary>
-    [KubeResource("DownwardAPIVolumeFile", "v1")]
+    [KubeObject("DownwardAPIVolumeFile", "v1")]
     public class DownwardAPIVolumeFileV1
     {
         /// <summary>

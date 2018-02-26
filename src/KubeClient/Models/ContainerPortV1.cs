@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ContainerPort represents a network port in a single container.
     /// </summary>
-    [KubeResource("ContainerPort", "v1")]
+    [KubeObject("ContainerPort", "v1")]
     public class ContainerPortV1
     {
         /// <summary>

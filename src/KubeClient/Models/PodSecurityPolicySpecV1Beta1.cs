@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Pod Security Policy Spec defines the policy enforced.
     /// </summary>
-    [KubeResource("PodSecurityPolicySpec", "v1beta1")]
+    [KubeObject("PodSecurityPolicySpec", "v1beta1")]
     public class PodSecurityPolicySpecV1Beta1
     {
         /// <summary>

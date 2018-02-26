@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentSpec is the specification of the desired behavior of the Deployment.
     /// </summary>
-    [KubeResource("DeploymentSpec", "v1beta1")]
+    [KubeObject("DeploymentSpec", "v1beta1")]
     public class DeploymentSpecV1Beta1
     {
         /// <summary>

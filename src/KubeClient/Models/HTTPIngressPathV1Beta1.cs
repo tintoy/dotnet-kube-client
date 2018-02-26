@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     HTTPIngressPath associates a path regex with a backend. Incoming urls matching the path are forwarded to the backend.
     /// </summary>
-    [KubeResource("HTTPIngressPath", "v1beta1")]
+    [KubeObject("HTTPIngressPath", "v1beta1")]
     public class HTTPIngressPathV1Beta1
     {
         /// <summary>

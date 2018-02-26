@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ClusterRoleBindingList is a collection of ClusterRoleBindings
     /// </summary>
-    [KubeResource("ClusterRoleBindingList", "v1beta1")]
+    [KubeObject("ClusterRoleBindingList", "v1beta1")]
     public class ClusterRoleBindingListV1Beta1 : KubeResourceListV1
     {
         /// <summary>

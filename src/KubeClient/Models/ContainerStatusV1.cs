@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ContainerStatus contains details for the current status of this container.
     /// </summary>
-    [KubeResource("ContainerStatus", "v1")]
+    [KubeObject("ContainerStatus", "v1")]
     public class ContainerStatusV1
     {
         /// <summary>

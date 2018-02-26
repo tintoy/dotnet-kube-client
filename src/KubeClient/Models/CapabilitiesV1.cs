@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Adds and removes POSIX capabilities from running containers.
     /// </summary>
-    [KubeResource("Capabilities", "v1")]
+    [KubeObject("Capabilities", "v1")]
     public class CapabilitiesV1
     {
         /// <summary>

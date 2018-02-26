@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     EnvVarSource represents a source for the value of an EnvVar.
     /// </summary>
-    [KubeResource("EnvVarSource", "v1")]
+    [KubeObject("EnvVarSource", "v1")]
     public class EnvVarSourceV1
     {
         /// <summary>

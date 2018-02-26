@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Ingress is a collection of rules that allow inbound connections to reach the endpoints defined by a backend. An Ingress can be configured to give services externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting etc.
     /// </summary>
-    [KubeResource("Ingress", "v1beta1")]
+    [KubeObject("Ingress", "v1beta1")]
     public class IngressV1Beta1 : KubeResourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     A StatefulSetSpec is the specification of a StatefulSet.
     /// </summary>
-    [KubeResource("StatefulSetSpec", "v1beta1")]
+    [KubeObject("StatefulSetSpec", "v1beta1")]
     public class StatefulSetSpecV1Beta1
     {
         /// <summary>

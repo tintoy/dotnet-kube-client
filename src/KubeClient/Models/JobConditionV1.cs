@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     JobCondition describes current state of a job.
     /// </summary>
-    [KubeResource("JobCondition", "v1")]
+    [KubeObject("JobCondition", "v1")]
     public class JobConditionV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     EnvVar represents an environment variable present in a Container.
     /// </summary>
-    [KubeResource("EnvVar", "v1")]
+    [KubeObject("EnvVar", "v1")]
     public class EnvVarV1
     {
         /// <summary>

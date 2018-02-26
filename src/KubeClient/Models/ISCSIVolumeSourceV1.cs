@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents an ISCSI disk. ISCSI volumes can only be mounted as read/write once. ISCSI volumes support ownership management and SELinux relabeling.
     /// </summary>
-    [KubeResource("ISCSIVolumeSource", "v1")]
+    [KubeObject("ISCSIVolumeSource", "v1")]
     public class ISCSIVolumeSourceV1
     {
         /// <summary>

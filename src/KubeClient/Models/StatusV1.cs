@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Status is a return value for calls that don't return other objects.
     /// </summary>
-    [KubeResource("Status", "v1")]
+    [KubeObject("Status", "v1")]
     public class StatusV1 : KubeResourceListV1
     {
         /// <summary>

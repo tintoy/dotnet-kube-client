@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Initializers tracks the progress of initialization.
     /// </summary>
-    [KubeResource("Initializers", "v1")]
+    [KubeObject("Initializers", "v1")]
     public class InitializersV1
     {
         /// <summary>

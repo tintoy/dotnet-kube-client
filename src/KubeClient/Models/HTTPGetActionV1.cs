@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     HTTPGetAction describes an action based on HTTP Get requests.
     /// </summary>
-    [KubeResource("HTTPGetAction", "v1")]
+    [KubeObject("HTTPGetAction", "v1")]
     public class HTTPGetActionV1
     {
         /// <summary>

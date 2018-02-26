@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeSpec is the specification of a persistent volume.
     /// </summary>
-    [KubeResource("PersistentVolumeSpec", "v1")]
+    [KubeObject("PersistentVolumeSpec", "v1")]
     public class PersistentVolumeSpecV1
     {
         /// <summary>

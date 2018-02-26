@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIServiceSpec contains information for locating and communicating with a server. Only https is supported, though you are able to disable certificate verification.
     /// </summary>
-    [KubeResource("APIServiceSpec", "v1beta1")]
+    [KubeObject("APIServiceSpec", "v1beta1")]
     public class APIServiceSpecV1Beta1
     {
         /// <summary>

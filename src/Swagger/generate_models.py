@@ -334,7 +334,7 @@ def main():
                 class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
             class_file.write('    /// </summary>' + LINE_ENDING)
 
-            class_file.write('    [KubeResource("{0}", "{1}")]{2}'.format(
+            class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
                 model.name,
                 model.api_version,
                 LINE_ENDING

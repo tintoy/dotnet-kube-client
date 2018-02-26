@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     This NetworkPolicyIngressRule matches traffic if and only if the traffic matches both ports AND from.
     /// </summary>
-    [KubeResource("NetworkPolicyIngressRule", "v1beta1")]
+    [KubeObject("NetworkPolicyIngressRule", "v1beta1")]
     public class NetworkPolicyIngressRuleV1Beta1
     {
         /// <summary>

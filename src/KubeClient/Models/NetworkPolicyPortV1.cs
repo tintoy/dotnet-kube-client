@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicyPort describes a port to allow traffic on
     /// </summary>
-    [KubeResource("NetworkPolicyPort", "v1")]
+    [KubeObject("NetworkPolicyPort", "v1")]
     public class NetworkPolicyPortV1
     {
         /// <summary>

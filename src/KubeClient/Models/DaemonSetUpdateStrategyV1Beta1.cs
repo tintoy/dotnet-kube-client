@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeResource("DaemonSetUpdateStrategy", "v1beta1")]
+    [KubeObject("DaemonSetUpdateStrategy", "v1beta1")]
     public class DaemonSetUpdateStrategyV1Beta1
     {
         /// <summary>

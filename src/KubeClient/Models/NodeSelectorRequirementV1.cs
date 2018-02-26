@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
     /// </summary>
-    [KubeResource("NodeSelectorRequirement", "v1")]
+    [KubeObject("NodeSelectorRequirement", "v1")]
     public class NodeSelectorRequirementV1
     {
         /// <summary>

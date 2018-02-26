@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJobSpec describes how the job execution will look like and when it will actually run.
     /// </summary>
-    [KubeResource("CronJobSpec", "v2alpha1")]
+    [KubeObject("CronJobSpec", "v2alpha1")]
     public class CronJobSpecV2Alpha1
     {
         /// <summary>

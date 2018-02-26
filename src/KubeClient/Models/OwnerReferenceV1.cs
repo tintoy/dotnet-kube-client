@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     OwnerReference contains enough information to let you identify an owning object. Currently, an owning object must be in the same namespace, so there is no namespace field.
     /// </summary>
-    [KubeResource("OwnerReference", "v1")]
+    [KubeObject("OwnerReference", "v1")]
     public class OwnerReferenceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
     /// </summary>
-    [KubeResource("ObjectMeta", "v1")]
+    [KubeObject("ObjectMeta", "v1")]
     public class ObjectMetaV1
     {
         /// <summary>

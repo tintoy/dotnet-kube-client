@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SecurityContext holds security configuration that will be applied to a container. Some fields are present in both SecurityContext and PodSecurityContext.  When both are set, the values in SecurityContext take precedence.
     /// </summary>
-    [KubeResource("SecurityContext", "v1")]
+    [KubeObject("SecurityContext", "v1")]
     public class SecurityContextV1
     {
         /// <summary>

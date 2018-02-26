@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolume (PV) is a storage resource provisioned by an administrator. It is analogous to a node. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes
     /// </summary>
-    [KubeResource("PersistentVolume", "v1")]
+    [KubeObject("PersistentVolume", "v1")]
     public class PersistentVolumeV1 : KubeResourceV1
     {
         /// <summary>

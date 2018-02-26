@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NamespaceSpec describes the attributes on a Namespace.
     /// </summary>
-    [KubeResource("NamespaceSpec", "v1")]
+    [KubeObject("NamespaceSpec", "v1")]
     public class NamespaceSpecV1
     {
         /// <summary>

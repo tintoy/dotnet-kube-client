@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     EventSource contains information for an event.
     /// </summary>
-    [KubeResource("EventSource", "v1")]
+    [KubeObject("EventSource", "v1")]
     public class EventSourceV1
     {
         /// <summary>

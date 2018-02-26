@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServiceAccount binds together: * a name, understood by users, and perhaps by peripheral systems, for an identity * a principal that can be authenticated and authorized * a set of secrets
     /// </summary>
-    [KubeResource("ServiceAccount", "v1")]
+    [KubeObject("ServiceAccount", "v1")]
     public class ServiceAccountV1 : KubeResourceV1
     {
         /// <summary>

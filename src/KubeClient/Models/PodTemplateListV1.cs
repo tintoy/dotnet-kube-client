@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodTemplateList is a list of PodTemplates.
     /// </summary>
-    [KubeResource("PodTemplateList", "v1")]
+    [KubeObject("PodTemplateList", "v1")]
     public class PodTemplateListV1 : KubeResourceListV1
     {
         /// <summary>

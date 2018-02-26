@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIServiceStatus contains derived information about an API server
     /// </summary>
-    [KubeResource("APIServiceStatus", "v1beta1")]
+    [KubeObject("APIServiceStatus", "v1beta1")]
     public class APIServiceStatusV1Beta1
     {
         /// <summary>

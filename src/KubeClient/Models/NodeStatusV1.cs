@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeStatus is information about the current status of a node.
     /// </summary>
-    [KubeResource("NodeStatus", "v1")]
+    [KubeObject("NodeStatus", "v1")]
     public class NodeStatusV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeClaimSpec describes the common attributes of storage devices and allows a Source for provider-specific attributes
     /// </summary>
-    [KubeResource("PersistentVolumeClaimSpec", "v1")]
+    [KubeObject("PersistentVolumeClaimSpec", "v1")]
     public class PersistentVolumeClaimSpecV1
     {
         /// <summary>

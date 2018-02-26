@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Spec to control the desired behavior of rolling update.
     /// </summary>
-    [KubeResource("RollingUpdateDeployment", "v1beta1")]
+    [KubeObject("RollingUpdateDeployment", "v1beta1")]
     public class RollingUpdateDeploymentV1Beta1
     {
         /// <summary>

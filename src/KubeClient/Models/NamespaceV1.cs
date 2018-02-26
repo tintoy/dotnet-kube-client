@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Namespace provides a scope for Names. Use of multiple namespaces is optional.
     /// </summary>
-    [KubeResource("Namespace", "v1")]
+    [KubeObject("Namespace", "v1")]
     public class NamespaceV1 : KubeResourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
     /// </summary>
-    [KubeResource("LabelSelectorRequirement", "v1")]
+    [KubeObject("LabelSelectorRequirement", "v1")]
     public class LabelSelectorRequirementV1
     {
         /// <summary>

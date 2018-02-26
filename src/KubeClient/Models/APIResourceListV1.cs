@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.
     /// </summary>
-    [KubeResource("APIResourceList", "v1")]
+    [KubeObject("APIResourceList", "v1")]
     public class APIResourceListV1
     {
         /// <summary>

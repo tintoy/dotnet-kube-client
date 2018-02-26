@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     StatusCause provides more information about an api.Status failure, including cases when multiple errors are encountered.
     /// </summary>
-    [KubeResource("StatusCause", "v1")]
+    [KubeObject("StatusCause", "v1")]
     public class StatusCauseV1
     {
         /// <summary>

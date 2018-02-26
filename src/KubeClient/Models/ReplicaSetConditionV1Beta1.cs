@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicaSetCondition describes the state of a replica set at a certain point.
     /// </summary>
-    [KubeResource("ReplicaSetCondition", "v1beta1")]
+    [KubeObject("ReplicaSetCondition", "v1beta1")]
     public class ReplicaSetConditionV1Beta1
     {
         /// <summary>

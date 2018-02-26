@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationController represents the configuration of a replication controller.
     /// </summary>
-    [KubeResource("ReplicationController", "v1")]
+    [KubeObject("ReplicationController", "v1")]
     public class ReplicationControllerV1 : KubeResourceV1
     {
         /// <summary>

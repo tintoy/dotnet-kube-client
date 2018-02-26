@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationControllerSpec is the specification of a replication controller.
     /// </summary>
-    [KubeResource("ReplicationControllerSpec", "v1")]
+    [KubeObject("ReplicationControllerSpec", "v1")]
     public class ReplicationControllerSpecV1
     {
         /// <summary>

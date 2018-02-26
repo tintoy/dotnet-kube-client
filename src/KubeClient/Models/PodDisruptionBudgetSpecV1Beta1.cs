@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodDisruptionBudgetSpec is a description of a PodDisruptionBudget.
     /// </summary>
-    [KubeResource("PodDisruptionBudgetSpec", "v1beta1")]
+    [KubeObject("PodDisruptionBudgetSpec", "v1beta1")]
     public class PodDisruptionBudgetSpecV1Beta1
     {
         /// <summary>

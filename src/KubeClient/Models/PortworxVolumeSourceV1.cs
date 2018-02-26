@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PortworxVolumeSource represents a Portworx volume resource.
     /// </summary>
-    [KubeResource("PortworxVolumeSource", "v1")]
+    [KubeObject("PortworxVolumeSource", "v1")]
     public class PortworxVolumeSourceV1
     {
         /// <summary>

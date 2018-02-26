@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicyPeer describes a peer to allow traffic from. Exactly one of its fields must be specified.
     /// </summary>
-    [KubeResource("NetworkPolicyPeer", "v1")]
+    [KubeObject("NetworkPolicyPeer", "v1")]
     public class NetworkPolicyPeerV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeResource("RollbackConfig", "v1beta1")]
+    [KubeObject("RollbackConfig", "v1beta1")]
     public class RollbackConfigV1Beta1
     {
         /// <summary>

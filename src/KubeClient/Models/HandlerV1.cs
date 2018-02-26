@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Handler defines a specific action that should be taken
     /// </summary>
-    [KubeResource("Handler", "v1")]
+    [KubeObject("Handler", "v1")]
     public class HandlerV1
     {
         /// <summary>

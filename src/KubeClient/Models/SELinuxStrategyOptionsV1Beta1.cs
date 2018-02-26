@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SELinux  Strategy Options defines the strategy type and any options used to create the strategy.
     /// </summary>
-    [KubeResource("SELinuxStrategyOptions", "v1beta1")]
+    [KubeObject("SELinuxStrategyOptions", "v1beta1")]
     public class SELinuxStrategyOptionsV1Beta1
     {
         /// <summary>

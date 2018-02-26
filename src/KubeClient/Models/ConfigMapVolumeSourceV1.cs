@@ -9,7 +9,7 @@ namespace KubeClient.Models
     ///     
     ///     The contents of the target ConfigMap's Data field will be presented in a volume as files using the keys in the Data field as the file names, unless the items element is populated with specific mappings of keys to paths. ConfigMap volumes support ownership management and SELinux relabeling.
     /// </summary>
-    [KubeResource("ConfigMapVolumeSource", "v1")]
+    [KubeObject("ConfigMapVolumeSource", "v1")]
     public class ConfigMapVolumeSourceV1
     {
         /// <summary>

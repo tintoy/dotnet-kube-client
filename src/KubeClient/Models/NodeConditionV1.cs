@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeCondition contains condition information for a node.
     /// </summary>
-    [KubeResource("NodeCondition", "v1")]
+    [KubeObject("NodeCondition", "v1")]
     public class NodeConditionV1
     {
         /// <summary>

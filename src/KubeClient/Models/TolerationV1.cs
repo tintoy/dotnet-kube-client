@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     The pod this Toleration is attached to tolerates any taint that matches the triple &lt;key,value,effect&gt; using the matching operator &lt;operator&gt;.
     /// </summary>
-    [KubeResource("Toleration", "v1")]
+    [KubeObject("Toleration", "v1")]
     public class TolerationV1
     {
         /// <summary>

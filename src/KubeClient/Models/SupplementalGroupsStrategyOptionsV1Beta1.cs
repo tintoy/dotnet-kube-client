@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SupplementalGroupsStrategyOptions defines the strategy type and options used to create the strategy.
     /// </summary>
-    [KubeResource("SupplementalGroupsStrategyOptions", "v1beta1")]
+    [KubeObject("SupplementalGroupsStrategyOptions", "v1beta1")]
     public class SupplementalGroupsStrategyOptionsV1Beta1
     {
         /// <summary>

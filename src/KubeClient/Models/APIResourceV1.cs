@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIResource specifies the name of a resource and whether it is namespaced.
     /// </summary>
-    [KubeResource("APIResource", "v1")]
+    [KubeObject("APIResource", "v1")]
     public class APIResourceV1
     {
         /// <summary>

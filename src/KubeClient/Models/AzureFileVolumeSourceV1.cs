@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
     /// </summary>
-    [KubeResource("AzureFileVolumeSource", "v1")]
+    [KubeObject("AzureFileVolumeSource", "v1")]
     public class AzureFileVolumeSourceV1
     {
         /// <summary>

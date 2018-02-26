@@ -9,7 +9,7 @@ namespace KubeClient.Models
     ///     
     ///     StorageClasses are non-namespaced; the name of the storage class according to etcd is in ObjectMeta.Name.
     /// </summary>
-    [KubeResource("StorageClass", "v1")]
+    [KubeObject("StorageClass", "v1")]
     public class StorageClassV1 : KubeResourceV1
     {
         /// <summary>

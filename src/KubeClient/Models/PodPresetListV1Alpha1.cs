@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodPresetList is a list of PodPreset objects.
     /// </summary>
-    [KubeResource("PodPresetList", "v1alpha1")]
+    [KubeObject("PodPresetList", "v1alpha1")]
     public class PodPresetListV1Alpha1 : KubeResourceListV1
     {
         /// <summary>

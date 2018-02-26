@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicaSetStatus represents the current status of a ReplicaSet.
     /// </summary>
-    [KubeResource("ReplicaSetStatus", "v1beta1")]
+    [KubeObject("ReplicaSetStatus", "v1beta1")]
     public class ReplicaSetStatusV1Beta1
     {
         /// <summary>

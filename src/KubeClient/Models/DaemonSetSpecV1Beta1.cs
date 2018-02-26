@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DaemonSetSpec is the specification of a daemon set.
     /// </summary>
-    [KubeResource("DaemonSetSpec", "v1beta1")]
+    [KubeObject("DaemonSetSpec", "v1beta1")]
     public class DaemonSetSpecV1Beta1
     {
         /// <summary>

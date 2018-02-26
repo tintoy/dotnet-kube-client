@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ConfigMap holds configuration data for pods to consume.
     /// </summary>
-    [KubeResource("ConfigMap", "v1")]
+    [KubeObject("ConfigMap", "v1")]
     public class ConfigMapV1 : KubeResourceV1
     {
         /// <summary>

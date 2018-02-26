@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a vSphere volume resource.
     /// </summary>
-    [KubeResource("VsphereVirtualDiskVolumeSource", "v1")]
+    [KubeObject("VsphereVirtualDiskVolumeSource", "v1")]
     public class VsphereVirtualDiskVolumeSourceV1
     {
         /// <summary>

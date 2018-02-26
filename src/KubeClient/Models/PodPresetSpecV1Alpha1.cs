@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodPresetSpec is a description of a pod preset.
     /// </summary>
-    [KubeResource("PodPresetSpec", "v1alpha1")]
+    [KubeObject("PodPresetSpec", "v1alpha1")]
     public class PodPresetSpecV1Alpha1
     {
         /// <summary>

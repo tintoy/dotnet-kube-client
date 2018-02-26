@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. This is an alpha feature and may change in future.
     /// </summary>
-    [KubeResource("FlexVolumeSource", "v1")]
+    [KubeObject("FlexVolumeSource", "v1")]
     public class FlexVolumeSourceV1
     {
         /// <summary>

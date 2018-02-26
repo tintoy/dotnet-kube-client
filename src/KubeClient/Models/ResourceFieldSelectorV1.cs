@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceFieldSelector represents container resources (cpu, memory) and their output format
     /// </summary>
-    [KubeResource("ResourceFieldSelector", "v1")]
+    [KubeObject("ResourceFieldSelector", "v1")]
     public class ResourceFieldSelectorV1
     {
         /// <summary>

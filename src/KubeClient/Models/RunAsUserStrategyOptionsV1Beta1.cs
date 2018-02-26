@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Run A sUser Strategy Options defines the strategy type and any options used to create the strategy.
     /// </summary>
-    [KubeResource("RunAsUserStrategyOptions", "v1beta1")]
+    [KubeObject("RunAsUserStrategyOptions", "v1beta1")]
     public class RunAsUserStrategyOptionsV1Beta1
     {
         /// <summary>

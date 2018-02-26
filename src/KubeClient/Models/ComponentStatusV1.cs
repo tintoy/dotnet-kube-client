@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ComponentStatus (and ComponentStatusList) holds the cluster validation info.
     /// </summary>
-    [KubeResource("ComponentStatus", "v1")]
+    [KubeObject("ComponentStatus", "v1")]
     public class ComponentStatusV1 : KubeResourceV1
     {
         /// <summary>

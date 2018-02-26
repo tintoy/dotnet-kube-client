@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Describe a container image
     /// </summary>
-    [KubeResource("ContainerImage", "v1")]
+    [KubeObject("ContainerImage", "v1")]
     public class ContainerImageV1
     {
         /// <summary>

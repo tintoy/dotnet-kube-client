@@ -9,7 +9,7 @@ namespace KubeClient.Models
     ///     
     ///     The contents of the target ConfigMap's Data field will represent the key-value pairs as environment variables.
     /// </summary>
-    [KubeResource("ConfigMapEnvSource", "v1")]
+    [KubeObject("ConfigMapEnvSource", "v1")]
     public class ConfigMapEnvSourceV1
     {
         /// <summary>

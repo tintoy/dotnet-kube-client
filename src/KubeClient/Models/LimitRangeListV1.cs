@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     LimitRangeList is a list of LimitRange items.
     /// </summary>
-    [KubeResource("LimitRangeList", "v1")]
+    [KubeObject("LimitRangeList", "v1")]
     public class LimitRangeListV1 : KubeResourceListV1
     {
         /// <summary>

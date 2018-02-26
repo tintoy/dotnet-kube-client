@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceQuotaStatus defines the enforced hard limits and observed use.
     /// </summary>
-    [KubeResource("ResourceQuotaStatus", "v1")]
+    [KubeObject("ResourceQuotaStatus", "v1")]
     public class ResourceQuotaStatusV1
     {
         /// <summary>

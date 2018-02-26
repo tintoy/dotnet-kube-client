@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     JobSpec describes how the job execution will look like.
     /// </summary>
-    [KubeResource("JobSpec", "v1")]
+    [KubeObject("JobSpec", "v1")]
     public class JobSpecV1
     {
         /// <summary>

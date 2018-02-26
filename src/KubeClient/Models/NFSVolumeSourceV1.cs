@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents an NFS mount that lasts the lifetime of a pod. NFS volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    [KubeResource("NFSVolumeSource", "v1")]
+    [KubeObject("NFSVolumeSource", "v1")]
     public class NFSVolumeSourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentStrategy describes how to replace existing pods with new ones.
     /// </summary>
-    [KubeResource("DeploymentStrategy", "v1beta1")]
+    [KubeObject("DeploymentStrategy", "v1beta1")]
     public class DeploymentStrategyV1Beta1
     {
         /// <summary>

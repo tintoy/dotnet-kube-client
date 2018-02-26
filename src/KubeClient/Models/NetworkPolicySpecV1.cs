@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicySpec provides the specification of a NetworkPolicy
     /// </summary>
-    [KubeResource("NetworkPolicySpec", "v1")]
+    [KubeObject("NetworkPolicySpec", "v1")]
     public class NetworkPolicySpecV1
     {
         /// <summary>

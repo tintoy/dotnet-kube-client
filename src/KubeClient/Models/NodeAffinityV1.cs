@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Node affinity is a group of node affinity scheduling rules.
     /// </summary>
-    [KubeResource("NodeAffinity", "v1")]
+    [KubeObject("NodeAffinity", "v1")]
     public class NodeAffinityV1
     {
         /// <summary>

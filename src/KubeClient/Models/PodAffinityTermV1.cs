@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key &lt;topologyKey&gt; matches that of any node on which a pod of the set of pods is running
     /// </summary>
-    [KubeResource("PodAffinityTerm", "v1")]
+    [KubeObject("PodAffinityTerm", "v1")]
     public class PodAffinityTermV1
     {
         /// <summary>

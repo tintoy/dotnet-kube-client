@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ObjectReference contains enough information to let you inspect or modify the referred object.
     /// </summary>
-    [KubeResource("ObjectReference", "v1")]
+    [KubeObject("ObjectReference", "v1")]
     public class ObjectReferenceV1
     {
         /// <summary>

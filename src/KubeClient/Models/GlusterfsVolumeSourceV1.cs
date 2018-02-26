@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a Glusterfs mount that lasts the lifetime of a pod. Glusterfs volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    [KubeResource("GlusterfsVolumeSource", "v1")]
+    [KubeObject("GlusterfsVolumeSource", "v1")]
     public class GlusterfsVolumeSourceV1
     {
         /// <summary>

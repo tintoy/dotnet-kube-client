@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Information about the condition of a component.
     /// </summary>
-    [KubeResource("ComponentCondition", "v1")]
+    [KubeObject("ComponentCondition", "v1")]
     public class ComponentConditionV1
     {
         /// <summary>

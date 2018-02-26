@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Describes a certificate signing request
     /// </summary>
-    [KubeResource("CertificateSigningRequest", "v1beta1")]
+    [KubeObject("CertificateSigningRequest", "v1beta1")]
     public class CertificateSigningRequestV1Beta1 : KubeResourceV1
     {
         /// <summary>
