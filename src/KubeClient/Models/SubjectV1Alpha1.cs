@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
     /// </summary>
-    [KubeResource("Subject", "v1alpha1")]
+    [KubeObject("Subject", "v1alpha1")]
     public class SubjectV1Alpha1
     {
         /// <summary>

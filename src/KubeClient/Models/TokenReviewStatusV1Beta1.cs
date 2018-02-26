@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     TokenReviewStatus is the result of the token authentication request.
     /// </summary>
-    [KubeResource("TokenReviewStatus", "v1beta1")]
+    [KubeObject("TokenReviewStatus", "v1beta1")]
     public class TokenReviewStatusV1Beta1
     {
         /// <summary>

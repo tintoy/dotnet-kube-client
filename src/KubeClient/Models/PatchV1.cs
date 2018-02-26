@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.
     /// </summary>
-    [KubeResource("Patch", "v1")]
+    [KubeObject("Patch", "v1")]
     public class PatchV1
     {
     }

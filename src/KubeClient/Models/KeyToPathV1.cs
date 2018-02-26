@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Maps a string key to a path within a volume.
     /// </summary>
-    [KubeResource("KeyToPath", "v1")]
+    [KubeObject("KeyToPath", "v1")]
     public class KeyToPathV1
     {
         /// <summary>

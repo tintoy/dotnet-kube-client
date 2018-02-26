@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     LimitRange sets resource usage limits for each kind of resource in a Namespace.
     /// </summary>
-    [KubeResource("LimitRange", "v1")]
+    [KubeObject("LimitRange", "v1")]
     public class LimitRangeV1 : KubeResourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a Quobyte mount that lasts the lifetime of a pod. Quobyte volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    [KubeResource("QuobyteVolumeSource", "v1")]
+    [KubeObject("QuobyteVolumeSource", "v1")]
     public class QuobyteVolumeSourceV1
     {
         /// <summary>

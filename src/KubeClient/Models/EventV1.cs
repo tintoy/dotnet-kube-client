@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Event is a report of an event somewhere in the cluster.
     /// </summary>
-    [KubeResource("Event", "v1")]
+    [KubeObject("Event", "v1")]
     public class EventV1 : KubeResourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     CrossVersionObjectReference contains enough information to let you identify the referred resource.
     /// </summary>
-    [KubeResource("CrossVersionObjectReference", "v1")]
+    [KubeObject("CrossVersionObjectReference", "v1")]
     public class CrossVersionObjectReferenceV1
     {
         /// <summary>

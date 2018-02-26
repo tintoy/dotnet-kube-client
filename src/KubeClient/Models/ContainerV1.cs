@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     A single application container that you want to run within a pod.
     /// </summary>
-    [KubeResource("Container", "v1")]
+    [KubeObject("Container", "v1")]
     public class ContainerV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Selects a key from a ConfigMap.
     /// </summary>
-    [KubeResource("ConfigMapKeySelector", "v1")]
+    [KubeObject("ConfigMapKeySelector", "v1")]
     public class ConfigMapKeySelectorV1
     {
         /// <summary>

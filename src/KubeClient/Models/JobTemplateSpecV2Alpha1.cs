@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     JobTemplateSpec describes the data a Job should have when created from a template
     /// </summary>
-    [KubeResource("JobTemplateSpec", "v2alpha1")]
+    [KubeObject("JobTemplateSpec", "v2alpha1")]
     public class JobTemplateSpecV2Alpha1
     {
         /// <summary>

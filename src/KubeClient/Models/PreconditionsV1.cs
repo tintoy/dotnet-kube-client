@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.
     /// </summary>
-    [KubeResource("Preconditions", "v1")]
+    [KubeObject("Preconditions", "v1")]
     public class PreconditionsV1
     {
         /// <summary>

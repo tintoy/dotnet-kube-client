@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeleteOptions may be provided when deleting an API object.
     /// </summary>
-    [KubeResource("DeleteOptions", "v1")]
+    [KubeObject("DeleteOptions", "v1")]
     public class DeleteOptionsV1
         : KubeObjectV1
     {

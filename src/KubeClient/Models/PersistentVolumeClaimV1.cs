@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeClaim is a user's request for and claim to a persistent volume
     /// </summary>
-    [KubeResource("PersistentVolumeClaim", "v1")]
+    [KubeObject("PersistentVolumeClaim", "v1")]
     public class PersistentVolumeClaimV1 : KubeResourceV1
     {
         /// <summary>

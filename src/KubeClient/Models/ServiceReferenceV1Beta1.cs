@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServiceReference holds a reference to Service.legacy.k8s.io
     /// </summary>
-    [KubeResource("ServiceReference", "v1beta1")]
+    [KubeObject("ServiceReference", "v1beta1")]
     public class ServiceReferenceV1Beta1
     {
         /// <summary>

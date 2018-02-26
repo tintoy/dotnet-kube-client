@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentStatus is the most recently observed status of the Deployment.
     /// </summary>
-    [KubeResource("DeploymentStatus", "v1beta1")]
+    [KubeObject("DeploymentStatus", "v1beta1")]
     public class DeploymentStatusV1Beta1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIServiceList is a list of APIService objects.
     /// </summary>
-    [KubeResource("APIServiceList", "v1beta1")]
+    [KubeObject("APIServiceList", "v1beta1")]
     public class APIServiceListV1Beta1 : KubeResourceListV1
     {
         /// <summary>

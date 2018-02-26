@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceRequirements describes the compute resource requirements.
     /// </summary>
-    [KubeResource("ResourceRequirements", "v1")]
+    [KubeObject("ResourceRequirements", "v1")]
     public class ResourceRequirementsV1
     {
         /// <summary>

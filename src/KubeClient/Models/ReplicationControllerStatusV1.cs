@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationControllerStatus represents the current status of a replication controller.
     /// </summary>
-    [KubeResource("ReplicationControllerStatus", "v1")]
+    [KubeObject("ReplicationControllerStatus", "v1")]
     public class ReplicationControllerStatusV1
     {
         /// <summary>

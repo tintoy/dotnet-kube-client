@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     LoadBalancerStatus represents the status of a load-balancer.
     /// </summary>
-    [KubeResource("LoadBalancerStatus", "v1")]
+    [KubeObject("LoadBalancerStatus", "v1")]
     public class LoadBalancerStatusV1
     {
         /// <summary>

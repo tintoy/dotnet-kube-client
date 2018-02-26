@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     AttachedVolume describes a volume attached to a node
     /// </summary>
-    [KubeResource("AttachedVolume", "v1")]
+    [KubeObject("AttachedVolume", "v1")]
     public class AttachedVolumeV1
     {
         /// <summary>

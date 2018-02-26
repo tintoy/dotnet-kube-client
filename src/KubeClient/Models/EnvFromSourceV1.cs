@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     EnvFromSource represents the source of a set of ConfigMaps
     /// </summary>
-    [KubeResource("EnvFromSource", "v1")]
+    [KubeObject("EnvFromSource", "v1")]
     public class EnvFromSourceV1
     {
         /// <summary>

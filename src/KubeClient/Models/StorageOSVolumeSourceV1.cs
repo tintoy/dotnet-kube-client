@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a StorageOS persistent volume resource.
     /// </summary>
-    [KubeResource("StorageOSVolumeSource", "v1")]
+    [KubeObject("StorageOSVolumeSource", "v1")]
     public class StorageOSVolumeSourceV1
     {
         /// <summary>

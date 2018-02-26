@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a Fibre Channel volume. Fibre Channel volumes can only be mounted as read/write once. Fibre Channel volumes support ownership management and SELinux relabeling.
     /// </summary>
-    [KubeResource("FCVolumeSource", "v1")]
+    [KubeObject("FCVolumeSource", "v1")]
     public class FCVolumeSourceV1
     {
         /// <summary>

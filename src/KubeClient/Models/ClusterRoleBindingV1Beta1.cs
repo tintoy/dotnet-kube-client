@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject.
     /// </summary>
-    [KubeResource("ClusterRoleBinding", "v1beta1")]
+    [KubeObject("ClusterRoleBinding", "v1beta1")]
     public class ClusterRoleBindingV1Beta1 : KubeResourceV1
     {
         /// <summary>

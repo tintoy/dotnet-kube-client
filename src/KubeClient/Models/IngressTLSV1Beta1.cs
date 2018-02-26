@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     IngressTLS describes the transport layer security associated with an Ingress.
     /// </summary>
-    [KubeResource("IngressTLS", "v1beta1")]
+    [KubeObject("IngressTLS", "v1beta1")]
     public class IngressTLSV1Beta1
     {
         /// <summary>

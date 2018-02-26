@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     /// </summary>
-    [KubeResource("AzureDiskVolumeSource", "v1")]
+    [KubeObject("AzureDiskVolumeSource", "v1")]
     public class AzureDiskVolumeSourceV1
     {
         /// <summary>

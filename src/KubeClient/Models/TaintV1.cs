@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     The node this Taint is attached to has the effect "effect" on any pod that that does not tolerate the Taint.
     /// </summary>
-    [KubeResource("Taint", "v1")]
+    [KubeObject("Taint", "v1")]
     public class TaintV1
     {
         /// <summary>

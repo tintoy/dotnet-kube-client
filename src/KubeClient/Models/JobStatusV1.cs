@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     JobStatus represents the current state of a Job.
     /// </summary>
-    [KubeResource("JobStatus", "v1")]
+    [KubeObject("JobStatus", "v1")]
     public class JobStatusV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ScaleIOVolumeSource represents a persistent ScaleIO volume
     /// </summary>
-    [KubeResource("ScaleIOVolumeSource", "v1")]
+    [KubeObject("ScaleIOVolumeSource", "v1")]
     public class ScaleIOVolumeSourceV1
     {
         /// <summary>

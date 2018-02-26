@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Node is a worker node in Kubernetes. Each node will have a unique identifier in the cache (i.e. in etcd).
     /// </summary>
-    [KubeResource("Node", "v1")]
+    [KubeObject("Node", "v1")]
     public class NodeV1 : KubeResourceV1
     {
         /// <summary>

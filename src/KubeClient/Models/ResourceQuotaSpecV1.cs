@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceQuotaSpec defines the desired hard limits to enforce for Quota.
     /// </summary>
-    [KubeResource("ResourceQuotaSpec", "v1")]
+    [KubeObject("ResourceQuotaSpec", "v1")]
     public class ResourceQuotaSpecV1
     {
         /// <summary>

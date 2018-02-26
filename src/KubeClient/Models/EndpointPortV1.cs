@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     EndpointPort is a tuple that describes a single port.
     /// </summary>
-    [KubeResource("EndpointPort", "v1")]
+    [KubeObject("EndpointPort", "v1")]
     public class EndpointPortV1
     {
         /// <summary>

@@ -9,7 +9,7 @@ namespace KubeClient.Models
     ///     
     ///     The contents of the target Secret's Data field will represent the key-value pairs as environment variables.
     /// </summary>
-    [KubeResource("SecretEnvSource", "v1")]
+    [KubeObject("SecretEnvSource", "v1")]
     public class SecretEnvSourceV1
     {
         /// <summary>

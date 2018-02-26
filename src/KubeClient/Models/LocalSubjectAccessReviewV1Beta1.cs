@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     LocalSubjectAccessReview checks whether or not a user or group can perform an action in a given namespace. Having a namespace scoped resource makes it much easier to grant namespace scoped policy that includes permissions checking.
     /// </summary>
-    [KubeResource("LocalSubjectAccessReview", "v1beta1")]
+    [KubeObject("LocalSubjectAccessReview", "v1beta1")]
     public class LocalSubjectAccessReviewV1Beta1 : KubeResourceV1
     {
         /// <summary>

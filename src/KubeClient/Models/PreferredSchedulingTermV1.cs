@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
     /// </summary>
-    [KubeResource("PreferredSchedulingTerm", "v1")]
+    [KubeObject("PreferredSchedulingTerm", "v1")]
     public class PreferredSchedulingTermV1
     {
         /// <summary>

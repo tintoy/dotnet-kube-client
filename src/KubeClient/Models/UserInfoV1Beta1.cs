@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     UserInfo holds the information about the user needed to implement the user.Info interface.
     /// </summary>
-    [KubeResource("UserInfo", "v1beta1")]
+    [KubeObject("UserInfo", "v1beta1")]
     public class UserInfoV1Beta1
     {
         /// <summary>

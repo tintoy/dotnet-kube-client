@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SELinuxOptions are the labels to be applied to the container
     /// </summary>
-    [KubeResource("SELinuxOptions", "v1")]
+    [KubeObject("SELinuxOptions", "v1")]
     public class SELinuxOptionsV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServiceStatus represents the current status of a service.
     /// </summary>
-    [KubeResource("ServiceStatus", "v1")]
+    [KubeObject("ServiceStatus", "v1")]
     public class ServiceStatusV1
     {
         /// <summary>

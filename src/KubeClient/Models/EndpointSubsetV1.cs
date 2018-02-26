@@ -14,7 +14,7 @@ namespace KubeClient.Models
     ///         a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
     ///         b: [ 10.10.1.1:309, 10.10.2.2:309 ]
     /// </summary>
-    [KubeResource("EndpointSubset", "v1")]
+    [KubeObject("EndpointSubset", "v1")]
     public class EndpointSubsetV1
     {
         /// <summary>

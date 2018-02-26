@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeResource("APIServiceCondition", "v1beta1")]
+    [KubeObject("APIServiceCondition", "v1beta1")]
     public class APIServiceConditionV1Beta1
     {
         /// <summary>

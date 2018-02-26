@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ScaleStatus represents the current status of a scale subresource.
     /// </summary>
-    [KubeResource("ScaleStatus", "v1")]
+    [KubeObject("ScaleStatus", "v1")]
     public class ScaleStatusV1
     {
         /// <summary>

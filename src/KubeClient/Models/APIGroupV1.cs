@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIGroup contains the name, the supported versions, and the preferred version of a group.
     /// </summary>
-    [KubeResource("APIGroup", "v1")]
+    [KubeObject("APIGroup", "v1")]
     public class APIGroupV1
     {
         /// <summary>

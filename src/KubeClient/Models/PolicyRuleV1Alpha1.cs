@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PolicyRule holds information that describes a policy rule, but does not contain information about who the rule applies to or which namespace the rule applies to.
     /// </summary>
-    [KubeResource("PolicyRule", "v1alpha1")]
+    [KubeObject("PolicyRule", "v1alpha1")]
     public class PolicyRuleV1Alpha1
     {
         /// <summary>

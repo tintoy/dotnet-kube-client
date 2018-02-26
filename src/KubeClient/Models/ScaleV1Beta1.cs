@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     represents a scaling request for a resource.
     /// </summary>
-    [KubeResource("Scale", "v1beta1")]
+    [KubeObject("Scale", "v1beta1")]
     public class ScaleV1Beta1 : KubeResourceV1
     {
         /// <summary>

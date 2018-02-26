@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     RoleRef contains information that points to the role being used
     /// </summary>
-    [KubeResource("RoleRef", "v1beta1")]
+    [KubeObject("RoleRef", "v1beta1")]
     public class RoleRefV1Beta1
     {
         /// <summary>

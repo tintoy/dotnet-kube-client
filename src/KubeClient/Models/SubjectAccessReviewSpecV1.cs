@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SubjectAccessReviewSpec is a description of the access request.  Exactly one of ResourceAuthorizationAttributes and NonResourceAuthorizationAttributes must be set
     /// </summary>
-    [KubeResource("SubjectAccessReviewSpec", "v1")]
+    [KubeObject("SubjectAccessReviewSpec", "v1")]
     public class SubjectAccessReviewSpecV1
     {
         /// <summary>

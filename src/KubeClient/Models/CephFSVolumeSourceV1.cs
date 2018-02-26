@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a Ceph Filesystem mount that lasts the lifetime of a pod Cephfs volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    [KubeResource("CephFSVolumeSource", "v1")]
+    [KubeObject("CephFSVolumeSource", "v1")]
     public class CephFSVolumeSourceV1
     {
         /// <summary>

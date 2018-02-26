@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodTemplate describes a template for creating copies of a predefined pod.
     /// </summary>
-    [KubeResource("PodTemplate", "v1")]
+    [KubeObject("PodTemplate", "v1")]
     public class PodTemplateV1 : KubeResourceV1
     {
         /// <summary>

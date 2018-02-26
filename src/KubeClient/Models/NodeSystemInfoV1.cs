@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeSystemInfo is a set of ids/uuids to uniquely identify the node.
     /// </summary>
-    [KubeResource("NodeSystemInfo", "v1")]
+    [KubeObject("NodeSystemInfo", "v1")]
     public class NodeSystemInfoV1
     {
         /// <summary>

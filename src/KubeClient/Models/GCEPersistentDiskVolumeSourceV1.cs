@@ -9,7 +9,7 @@ namespace KubeClient.Models
     ///     
     ///     A GCE PD must exist before mounting to a container. The disk must also be in the same GCE project and zone as the kubelet. A GCE PD can only be mounted as read/write once or read-only many times. GCE PDs support ownership management and SELinux relabeling.
     /// </summary>
-    [KubeResource("GCEPersistentDiskVolumeSource", "v1")]
+    [KubeObject("GCEPersistentDiskVolumeSource", "v1")]
     public class GCEPersistentDiskVolumeSourceV1
     {
         /// <summary>

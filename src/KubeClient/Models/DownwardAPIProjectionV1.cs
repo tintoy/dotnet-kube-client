@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents downward API info for projecting into a projected volume. Note that this is identical to a downwardAPI volume source without the default mode.
     /// </summary>
-    [KubeResource("DownwardAPIProjection", "v1")]
+    [KubeObject("DownwardAPIProjection", "v1")]
     public class DownwardAPIProjectionV1
     {
         /// <summary>

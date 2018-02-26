@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     StorageClassList is a collection of storage classes.
     /// </summary>
-    [KubeResource("StorageClassList", "v1")]
+    [KubeObject("StorageClassList", "v1")]
     public class StorageClassListV1 : KubeResourceListV1
     {
         /// <summary>

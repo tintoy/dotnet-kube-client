@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeSpec describes the attributes that a node is created with.
     /// </summary>
-    [KubeResource("NodeSpec", "v1")]
+    [KubeObject("NodeSpec", "v1")]
     public class NodeSpecV1
     {
         /// <summary>

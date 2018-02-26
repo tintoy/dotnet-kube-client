@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Lifecycle describes actions that the management system should take in response to container lifecycle events. For the PostStart and PreStop lifecycle handlers, management of the container blocks until the action is complete, unless the container process fails, in which case the handler is aborted.
     /// </summary>
-    [KubeResource("Lifecycle", "v1")]
+    [KubeObject("Lifecycle", "v1")]
     public class LifecycleV1
     {
         /// <summary>

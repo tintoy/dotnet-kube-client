@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJobStatus represents the current state of a cron job.
     /// </summary>
-    [KubeResource("CronJobStatus", "v2alpha1")]
+    [KubeObject("CronJobStatus", "v2alpha1")]
     public class CronJobStatusV2Alpha1
     {
         /// <summary>

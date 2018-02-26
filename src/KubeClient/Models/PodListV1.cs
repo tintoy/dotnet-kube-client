@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodList is a list of Pods.
     /// </summary>
-    [KubeResource("PodList", "v1")]
+    [KubeObject("PodList", "v1")]
     public class PodListV1 : KubeResourceListV1
     {
         /// <summary>

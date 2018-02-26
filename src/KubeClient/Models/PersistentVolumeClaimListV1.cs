@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeClaimList is a list of PersistentVolumeClaim items.
     /// </summary>
-    [KubeResource("PersistentVolumeClaimList", "v1")]
+    [KubeObject("PersistentVolumeClaimList", "v1")]
     public class PersistentVolumeClaimListV1 : KubeResourceListV1
     {
         /// <summary>

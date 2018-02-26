@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     VolumeMount describes a mounting of a Volume within a container.
     /// </summary>
-    [KubeResource("VolumeMount", "v1")]
+    [KubeObject("VolumeMount", "v1")]
     public class VolumeMountV1
     {
         /// <summary>

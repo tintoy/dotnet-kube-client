@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIGroupList is a list of APIGroup, to allow clients to discover the API at /apis.
     /// </summary>
-    [KubeResource("APIGroupList", "v1")]
+    [KubeObject("APIGroupList", "v1")]
     public class APIGroupListV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeAddress contains information for the node's address.
     /// </summary>
-    [KubeResource("NodeAddress", "v1")]
+    [KubeObject("NodeAddress", "v1")]
     public class NodeAddressV1
     {
         /// <summary>

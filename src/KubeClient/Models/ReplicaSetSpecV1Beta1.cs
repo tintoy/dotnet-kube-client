@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicaSetSpec is the specification of a ReplicaSet.
     /// </summary>
-    [KubeResource("ReplicaSetSpec", "v1beta1")]
+    [KubeObject("ReplicaSetSpec", "v1beta1")]
     public class ReplicaSetSpecV1Beta1
     {
         /// <summary>

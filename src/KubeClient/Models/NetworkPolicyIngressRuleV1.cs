@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and from.
     /// </summary>
-    [KubeResource("NetworkPolicyIngressRule", "v1")]
+    [KubeObject("NetworkPolicyIngressRule", "v1")]
     public class NetworkPolicyIngressRuleV1
     {
         /// <summary>

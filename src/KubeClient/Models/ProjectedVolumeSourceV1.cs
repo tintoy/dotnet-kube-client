@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a projected volume source
     /// </summary>
-    [KubeResource("ProjectedVolumeSource", "v1")]
+    [KubeObject("ProjectedVolumeSource", "v1")]
     public class ProjectedVolumeSourceV1
     {
         /// <summary>

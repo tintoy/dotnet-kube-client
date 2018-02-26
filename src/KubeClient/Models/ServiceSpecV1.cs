@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServiceSpec describes the attributes that a user creates on a service.
     /// </summary>
-    [KubeResource("ServiceSpec", "v1")]
+    [KubeObject("ServiceSpec", "v1")]
     public class ServiceSpecV1
     {
         /// <summary>

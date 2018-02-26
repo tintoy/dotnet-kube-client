@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DaemonSet represents the configuration of a daemon set.
     /// </summary>
-    [KubeResource("DaemonSet", "v1beta1")]
+    [KubeObject("DaemonSet", "v1beta1")]
     public class DaemonSetV1Beta1 : KubeResourceV1
     {
         /// <summary>

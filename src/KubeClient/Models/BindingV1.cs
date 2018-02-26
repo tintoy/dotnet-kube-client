@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Binding ties one object to another; for example, a pod is bound to a node by a scheduler. Deprecated in 1.7, please use the bindings subresource of pods instead.
     /// </summary>
-    [KubeResource("Binding", "v1")]
+    [KubeObject("Binding", "v1")]
     public class BindingV1 : KubeResourceV1
     {
         /// <summary>

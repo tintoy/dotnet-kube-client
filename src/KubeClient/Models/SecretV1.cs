@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Secret holds secret data of a certain type. The total bytes of the values in the Data field must be less than MaxSecretSize bytes.
     /// </summary>
-    [KubeResource("Secret", "v1")]
+    [KubeObject("Secret", "v1")]
     public class SecretV1 : KubeResourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceQuota sets aggregate quota restrictions enforced per namespace
     /// </summary>
-    [KubeResource("ResourceQuota", "v1")]
+    [KubeObject("ResourceQuota", "v1")]
     public class ResourceQuotaV1 : KubeResourceV1
     {
         /// <summary>

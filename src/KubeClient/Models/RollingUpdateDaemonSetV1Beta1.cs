@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Spec to control the desired behavior of daemon set rolling update.
     /// </summary>
-    [KubeResource("RollingUpdateDaemonSet", "v1beta1")]
+    [KubeObject("RollingUpdateDaemonSet", "v1beta1")]
     public class RollingUpdateDaemonSetV1Beta1
     {
         /// <summary>

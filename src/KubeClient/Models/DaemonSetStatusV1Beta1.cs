@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DaemonSetStatus represents the current status of a daemon set.
     /// </summary>
-    [KubeResource("DaemonSetStatus", "v1beta1")]
+    [KubeObject("DaemonSetStatus", "v1beta1")]
     public class DaemonSetStatusV1Beta1
     {
         /// <summary>

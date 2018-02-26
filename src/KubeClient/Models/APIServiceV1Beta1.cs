@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIService represents a server for a particular GroupVersion. Name must be "version.group".
     /// </summary>
-    [KubeResource("APIService", "v1beta1")]
+    [KubeObject("APIService", "v1beta1")]
     public class APIServiceV1Beta1 : KubeResourceV1
     {
         /// <summary>

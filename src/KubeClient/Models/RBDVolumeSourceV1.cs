@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents a Rados Block Device mount that lasts the lifetime of a pod. RBD volumes support ownership management and SELinux relabeling.
     /// </summary>
-    [KubeResource("RBDVolumeSource", "v1")]
+    [KubeObject("RBDVolumeSource", "v1")]
     public class RBDVolumeSourceV1
     {
         /// <summary>

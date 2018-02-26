@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Volume represents a named volume in a pod that may be accessed by any container in the pod.
     /// </summary>
-    [KubeResource("Volume", "v1")]
+    [KubeObject("Volume", "v1")]
     public class VolumeV1
     {
         /// <summary>

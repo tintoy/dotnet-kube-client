@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Host Port Range defines a range of host ports that will be enabled by a policy for pods to use.  It requires both the start and end to be defined.
     /// </summary>
-    [KubeResource("HostPortRange", "v1beta1")]
+    [KubeObject("HostPortRange", "v1beta1")]
     public class HostPortRangeV1Beta1
     {
         /// <summary>

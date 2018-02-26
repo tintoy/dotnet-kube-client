@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceQuotaList is a list of ResourceQuota items.
     /// </summary>
-    [KubeResource("ResourceQuotaList", "v1")]
+    [KubeObject("ResourceQuotaList", "v1")]
     public class ResourceQuotaListV1 : KubeResourceListV1
     {
         /// <summary>

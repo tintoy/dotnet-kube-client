@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     IngressSpec describes the Ingress the user wishes to exist.
     /// </summary>
-    [KubeResource("IngressSpec", "v1beta1")]
+    [KubeObject("IngressSpec", "v1beta1")]
     public class IngressSpecV1Beta1
     {
         /// <summary>

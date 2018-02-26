@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeDaemonEndpoints lists ports opened by daemons running on the Node.
     /// </summary>
-    [KubeResource("NodeDaemonEndpoints", "v1")]
+    [KubeObject("NodeDaemonEndpoints", "v1")]
     public class NodeDaemonEndpointsV1
     {
         /// <summary>

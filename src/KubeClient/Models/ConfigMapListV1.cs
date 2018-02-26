@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ConfigMapList is a resource containing a list of ConfigMap objects.
     /// </summary>
-    [KubeResource("ConfigMapList", "v1")]
+    [KubeObject("ConfigMapList", "v1")]
     public class ConfigMapListV1 : KubeResourceListV1
     {
         /// <summary>

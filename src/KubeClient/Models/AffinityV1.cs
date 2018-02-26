@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Affinity is a group of affinity scheduling rules.
     /// </summary>
-    [KubeResource("Affinity", "v1")]
+    [KubeObject("Affinity", "v1")]
     public class AffinityV1
     {
         /// <summary>

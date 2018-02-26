@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
     /// </summary>
-    [KubeResource("LabelSelector", "v1")]
+    [KubeObject("LabelSelector", "v1")]
     public class LabelSelectorV1
     {
         /// <summary>

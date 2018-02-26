@@ -9,7 +9,7 @@ namespace KubeClient.Models
     ///     
     ///     The contents of the target ConfigMap's Data field will be presented in a projected volume as files using the keys in the Data field as the file names, unless the items element is populated with specific mappings of keys to paths. Note that this is identical to a configmap volume source without the default mode.
     /// </summary>
-    [KubeResource("ConfigMapProjection", "v1")]
+    [KubeObject("ConfigMapProjection", "v1")]
     public class ConfigMapProjectionV1
     {
         /// <summary>

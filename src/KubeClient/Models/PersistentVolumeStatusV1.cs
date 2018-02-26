@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeStatus is the current status of a persistent volume.
     /// </summary>
-    [KubeResource("PersistentVolumeStatus", "v1")]
+    [KubeObject("PersistentVolumeStatus", "v1")]
     public class PersistentVolumeStatusV1
     {
         /// <summary>

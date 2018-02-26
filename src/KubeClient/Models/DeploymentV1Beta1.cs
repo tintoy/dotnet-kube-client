@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
-    [KubeResource("Deployment", "v1beta1")]
+    [KubeObject("Deployment", "v1beta1")]
     public class DeploymentV1Beta1 : KubeResourceV1
     {
         /// <summary>

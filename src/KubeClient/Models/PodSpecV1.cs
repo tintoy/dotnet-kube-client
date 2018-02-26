@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodSpec is a description of a pod.
     /// </summary>
-    [KubeResource("PodSpec", "v1")]
+    [KubeObject("PodSpec", "v1")]
     public class PodSpecV1
     {
         /// <summary>

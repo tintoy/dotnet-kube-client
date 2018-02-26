@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodStatus represents information about the status of a pod. Status may trail the actual state of a system.
     /// </summary>
-    [KubeResource("PodStatus", "v1")]
+    [KubeObject("PodStatus", "v1")]
     public class PodStatusV1
     {
         /// <summary>

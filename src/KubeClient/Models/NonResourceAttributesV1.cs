@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NonResourceAttributes includes the authorization attributes available for non-resource requests to the Authorizer interface
     /// </summary>
-    [KubeResource("NonResourceAttributes", "v1")]
+    [KubeObject("NonResourceAttributes", "v1")]
     public class NonResourceAttributesV1
     {
         /// <summary>

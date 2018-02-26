@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     configuration of a horizontal pod autoscaler.
     /// </summary>
-    [KubeResource("HorizontalPodAutoscaler", "v1")]
+    [KubeObject("HorizontalPodAutoscaler", "v1")]
     public class HorizontalPodAutoscalerV1 : KubeResourceV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NamespaceStatus is information about the current status of a Namespace.
     /// </summary>
-    [KubeResource("NamespaceStatus", "v1")]
+    [KubeObject("NamespaceStatus", "v1")]
     public class NamespaceStatusV1
     {
         /// <summary>

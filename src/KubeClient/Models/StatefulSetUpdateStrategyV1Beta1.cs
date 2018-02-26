@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     StatefulSetUpdateStrategy indicates the strategy that the StatefulSet controller will use to perform updates. It includes any additional parameters necessary to perform the update for the indicated strategy.
     /// </summary>
-    [KubeResource("StatefulSetUpdateStrategy", "v1beta1")]
+    [KubeObject("StatefulSetUpdateStrategy", "v1beta1")]
     public class StatefulSetUpdateStrategyV1Beta1
     {
         /// <summary>

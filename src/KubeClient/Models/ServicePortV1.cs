@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServicePort contains information on service's port.
     /// </summary>
-    [KubeResource("ServicePort", "v1")]
+    [KubeObject("ServicePort", "v1")]
     public class ServicePortV1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SecretKeySelector selects a key of a Secret.
     /// </summary>
-    [KubeResource("SecretKeySelector", "v1")]
+    [KubeObject("SecretKeySelector", "v1")]
     public class SecretKeySelectorV1
     {
         /// <summary>

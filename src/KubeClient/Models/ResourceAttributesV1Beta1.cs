@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceAttributes includes the authorization attributes available for resource requests to the Authorizer interface
     /// </summary>
-    [KubeResource("ResourceAttributes", "v1beta1")]
+    [KubeObject("ResourceAttributes", "v1beta1")]
     public class ResourceAttributesV1Beta1
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
     /// </summary>
-    [KubeResource("Service", "v1")]
+    [KubeObject("Service", "v1")]
     public class ServiceV1 : KubeResourceV1
     {
         /// <summary>

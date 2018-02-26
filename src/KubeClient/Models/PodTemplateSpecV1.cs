@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodTemplateSpec describes the data a pod should have when created from a template
     /// </summary>
-    [KubeResource("PodTemplateSpec", "v1")]
+    [KubeObject("PodTemplateSpec", "v1")]
     public class PodTemplateSpecV1
     {
         /// <summary>

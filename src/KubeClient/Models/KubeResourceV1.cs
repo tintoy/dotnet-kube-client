@@ -35,9 +35,9 @@ namespace KubeClient.Models
         {
             (Kind, ApiVersion) = ModelMetadata.GetOrAdd(GetType(), modelType =>
             {
-                var kubeResourceAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeResourceAttribute>();
-                if (kubeResourceAttribute != null)
-                    return (kubeResourceAttribute.Kind, kubeResourceAttribute.ApiVersion);
+                var kubeObjectAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeObjectAttribute>();
+                if (kubeObjectAttribute != null)
+                    return (kubeObjectAttribute.Kind, kubeObjectAttribute.ApiVersion);
 
                 return (null, null);
             });

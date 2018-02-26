@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIVersions lists the versions that are available, to allow clients to discover the API at /api, which is the root path of the legacy v1 API.
     /// </summary>
-    [KubeResource("APIVersions", "v1")]
+    [KubeObject("APIVersions", "v1")]
     public class APIVersionsV1
     {
         /// <summary>

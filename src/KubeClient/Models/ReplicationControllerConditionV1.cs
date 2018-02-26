@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationControllerCondition describes the state of a replication controller at a certain point.
     /// </summary>
-    [KubeResource("ReplicationControllerCondition", "v1")]
+    [KubeObject("ReplicationControllerCondition", "v1")]
     public class ReplicationControllerConditionV1
     {
         /// <summary>

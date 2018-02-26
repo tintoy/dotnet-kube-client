@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     LimitRangeItem defines a min/max usage limit for any resource that matches on kind.
     /// </summary>
-    [KubeResource("LimitRangeItem", "v1")]
+    [KubeObject("LimitRangeItem", "v1")]
     public class LimitRangeItemV1
     {
         /// <summary>

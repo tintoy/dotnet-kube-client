@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Projection that may be projected along with other supported volume types
     /// </summary>
-    [KubeResource("VolumeProjection", "v1")]
+    [KubeObject("VolumeProjection", "v1")]
     public class VolumeProjectionV1
     {
         /// <summary>
