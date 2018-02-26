@@ -26,10 +26,10 @@ deploy:
       branch: /(develop|development|feature|release|master)(\/)?.*/
 
   # Public feed
-  provider: NuGet
-  artifact: /.*\.nupkg$/
-  skip_symbols: false
-  api_key:
-    secure: ljl/r7XeQm+KBzR7pm1OOW4+YcDUsYiWlr9jWFztMh/8/orG4V9ylTi+P1jGME7g
-  on:
-    appveyor_repo_tag: true
+  - provider: NuGet
+    artifact: /.*\.nupkg$/
+    skip_symbols: false
+    api_key:
+      secure: ljl/r7XeQm+KBzR7pm1OOW4+YcDUsYiWlr9jWFztMh/8/orG4V9ylTi+P1jGME7g
+    on:
+      appveyor_repo_tag: true
