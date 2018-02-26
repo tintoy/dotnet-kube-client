@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     RoleBindingList is a collection of RoleBindings
     /// </summary>
-    [KubeObject("RoleBindingList", "v1alpha1")]
+    [KubeObject("RoleBindingList", "rbac.authorization.k8s.io/v1alpha1")]
     public class RoleBindingListV1Alpha1 : KubeResourceListV1
     {
         /// <summary>

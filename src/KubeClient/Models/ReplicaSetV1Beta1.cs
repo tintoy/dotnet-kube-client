@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicaSet represents the configuration of a ReplicaSet.
     /// </summary>
-    [KubeObject("ReplicaSet", "v1beta1")]
+    [KubeObject("ReplicaSet", "extensions/v1beta1")]
     public class ReplicaSetV1Beta1 : KubeResourceV1
     {
         /// <summary>

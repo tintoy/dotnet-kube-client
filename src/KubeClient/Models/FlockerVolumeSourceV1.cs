@@ -17,7 +17,7 @@ namespace KubeClient.Models
         public string DatasetUUID { get; set; }
 
         /// <summary>
-        ///     Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+        ///     Name of the dataset stored as metadata -&gt; name on the dataset for Flocker should be considered as deprecated
         /// </summary>
         [JsonProperty("datasetName")]
         public string DatasetName { get; set; }

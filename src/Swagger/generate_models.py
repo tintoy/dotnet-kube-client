@@ -9,7 +9,8 @@ import yaml
 BASE_DIRECTORY = os.path.abspath('../KubeClient/Models')
 ROOT_NAMESPACE = 'KubeClient.Models'
 IGNORE_MODELS = [
-    'io.k8s.apimachinery.pkg.apis.meta.v1.Time'
+    'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
+    'io.k8s.apimachinery.pkg.apis.meta.v1.Time',
     'io.k8s.apimachinery.pkg.api.resource.Quantity',
     'io.k8s.apimachinery.pkg.util.intstr.IntOrString'
 ]
@@ -25,10 +26,11 @@ class KubeModel(object):
     Represents a Kubernetes API model.
     """
 
-    def __init__(self, name, summary, api_version, pretty_api_version):
+    def __init__(self, name, summary, api_version, pretty_api_version, kube_group):
         self.name = name
         self.api_version = api_version
         self.pretty_api_version = pretty_api_version
+        self.kube_group = kube_group
         self.clr_name = self.name + self.pretty_api_version
         self.summary = summary or 'No summary provided'
         self.properties = {}
@@ -88,9 +90,33 @@ class KubeModel(object):
     @classmethod
     def from_definition(cls, definition_name, definition):
         (name, api_version, pretty_api_version) = KubeModel.get_model_info(definition_name)
-        summary = definition.get('description', 'No description provided.')
+        summary = definition.get(
+            'description',
+            'No description provided.'
+        ).replace(
+            '&', '&amp;'
+        ).replace(
+            '<', '&lt;'
+        ).replace(
+            '>', '&gt;'
+        )
 
-        return KubeModel(name, summary, api_version, pretty_api_version)
+        # Override model metadata with Kubernetes-specific values, if available.
+        kube_group = None
+        if 'x-kubernetes-group-version-kind' in definition:
+            kube_metadata = definition['x-kubernetes-group-version-kind'][0]
+            kube_group = kube_metadata.get('group', '')
+            kube_kind = kube_metadata['kind']
+            kube_api_version = kube_metadata['version']
+
+            name = kube_kind
+
+            if kube_group:
+                api_version = kube_group + '/' + kube_api_version
+            else:
+                api_version = kube_api_version
+
+        return KubeModel(name, summary, api_version, pretty_api_version, kube_group)
 
 
     @classmethod
@@ -125,7 +151,13 @@ class KubeModelProperty(object):
         self.name = capitalize_name(name)
         self.json_name = name
         self.summary = summary or 'No summary provided'
-        self.summary = self.summary.replace('<', '&lt;').replace('>', '&gt;', '&', '&amp;')
+        self.summary = self.summary.replace(
+            '&', '&amp;'
+        ).replace(
+            '<', '&lt;'
+        ).replace(
+            '>', '&gt;'
+        )
         self.data_type = data_type
         self.is_optional = is_optional
 
@@ -318,6 +350,8 @@ def main():
             continue
 
         model = models[definition_name]
+        if model.kube_group == 'extensions':
+            continue
 
         class_file_name = os.path.join(BASE_DIRECTORY, model.clr_name + '.cs')
         with open(class_file_name, 'w') as class_file:

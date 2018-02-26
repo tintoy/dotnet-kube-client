@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     IngressList is a collection of Ingress.
     /// </summary>
-    [KubeObject("IngressList", "v1beta1")]
+    [KubeObject("IngressList", "extensions/v1beta1")]
     public class IngressListV1Beta1 : KubeResourceListV1
     {
         /// <summary>

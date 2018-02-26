@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentRollback stores the information required to rollback a deployment.
     /// </summary>
-    [KubeObject("DeploymentRollback", "v1beta1")]
+    [KubeObject("DeploymentRollback", "apps/v1beta1")]
     public class DeploymentRollbackV1Beta1
     {
         /// <summary>

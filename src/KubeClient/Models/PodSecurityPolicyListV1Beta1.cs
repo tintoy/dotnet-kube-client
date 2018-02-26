@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Pod Security Policy List is a list of PodSecurityPolicy objects.
     /// </summary>
-    [KubeObject("PodSecurityPolicyList", "v1beta1")]
+    [KubeObject("PodSecurityPolicyList", "extensions/v1beta1")]
     public class PodSecurityPolicyListV1Beta1 : KubeResourceListV1
     {
         /// <summary>

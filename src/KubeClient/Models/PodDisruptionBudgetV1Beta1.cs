@@ -7,7 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
     /// </summary>
-    [KubeObject("PodDisruptionBudget", "v1beta1")]
+    [KubeObject("PodDisruptionBudget", "policy/v1beta1")]
     public class PodDisruptionBudgetV1Beta1 : KubeResourceV1
     {
         /// <summary>
