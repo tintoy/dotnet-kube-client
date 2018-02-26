@@ -118,6 +118,11 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the target Pod.
         /// </param>
+        /// <param name="containerName">
+        ///     The name of the container.
+        /// 
+        ///     Not required if the pod only has a single container.
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
@@ -130,7 +135,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A string containing the logs.
         /// </returns>
-        public async Task<string> Logs(string name, string kubeNamespace = null, int? limitBytes = null, CancellationToken cancellationToken = default)
+        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -139,6 +144,7 @@ namespace KubeClient.ResourceClients
                 Requests.Logs.WithTemplateParameters(new
                 {
                     Name = name,
+                    ContainerName = containerName,
                     Namespace = kubeNamespace ?? Client.DefaultNamespace,
                     LimitBytes = limitBytes
                 }),
@@ -153,6 +159,43 @@ namespace KubeClient.ResourceClients
                     response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
                 );
             }
+        }
+
+        /// <summary>
+        ///     Stream the combined logs for the Pod with the specified name.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target Pod.
+        /// </param>
+        /// <param name="containerName">
+        ///     The name of the container.
+        /// 
+        ///     Not required if the pod only has a single container.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="limitBytes">
+        ///     Limit the number of bytes returned.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> sequence of lines from the log.
+        /// </returns>
+        public IObservable<string> StreamLogs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+            
+            return ObserveLines(
+                Requests.Logs.WithTemplateParameters(new
+                {
+                    Name = name,
+                    ContainerName = containerName,
+                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    LimitBytes = limitBytes,
+                    Follow = "true"
+                })
+            );
         }
 
         /// <summary>
@@ -231,7 +274,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}?follow={Follow?}");
+            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
         }
     }
 }

@@ -22,8 +22,8 @@ deploy:
     api_key:
       secure: FIA0E1YzvgpRKQTPH+ky8bh2wYBcyHiO/XINMQl8KoXpqpGLTX95bslkR1mspq/I
     on:
-      # Development branch, feature branch, release branch, or master branch.
-      branch: /(develop|development|feature|release|master)(\/)?.*/
+      # Development branch, release branch, or master branch.
+      branch: /(develop|development|release|master)(\/)?.*/
 
   # Public feed
   - provider: NuGet
