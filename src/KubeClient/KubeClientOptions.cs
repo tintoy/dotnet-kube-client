@@ -1,3 +1,4 @@
+using System;
 using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
@@ -20,7 +21,7 @@ namespace KubeClient
         /// <summary>
         ///     The access token used to authenticate to the Kubernetes API.
         /// </summary>
-        public string Token { get; set; }
+        public string AccessToken { get; set; }
 
         /// <summary>
         ///     The client certificate used to authenticate to the Kubernetes API.
@@ -31,5 +32,25 @@ namespace KubeClient
         ///     The expected CA certificate used by the Kubernetes API.
         /// </summary>
         public X509Certificate2 CertificationAuthorityCertificate { get; set; }
+
+        /// <summary>
+        ///     Ensure that the <see cref="KubeClientOptions"/> are valid.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="KubeClientOptions"/> (enables inline use).
+        /// </returns>
+        public KubeClientOptions EnsureValid()
+        {
+            if (!Uri.TryCreate(ApiEndPoint, UriKind.Absolute, out _))
+                throw new KubeClientException("Invalid KubeClientOptions: must specify a valid API end-point.");
+
+            if (ClientCertificate != null && !ClientCertificate.HasPrivateKey)
+                throw new KubeClientException("Invalid KubeClientOptions: the private key for the supplied client certificate is not available.");
+
+            if (String.IsNullOrWhiteSpace(KubeNamespace))
+                throw new KubeClientException("Invalid KubeClientOptions: must specify a valid default namespace.");
+
+            return this;
+        }
     }
 }

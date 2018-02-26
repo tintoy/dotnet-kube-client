@@ -231,7 +231,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}");
+            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}?follow={Follow?}");
         }
     }
 }

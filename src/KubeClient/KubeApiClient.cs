@@ -111,9 +111,57 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Create and configure a <see cref="KubeApiClient"/> using the specified options.
+        /// </summary>
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/> used to configure the client.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeApiClient"/>.
+        /// </returns>
+        public static KubeApiClient Create(KubeClientOptions options)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            options.EnsureValid();
+            
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            if (options.CertificationAuthorityCertificate != null)
+            {
+                clientHandler.ServerCertificateCustomValidationCallback = ServerCertificateValidator(
+                    expectCertificate: options.CertificationAuthorityCertificate
+                );
+            }
+
+            var httpClient = new HttpClient(clientHandler)
+            {
+                BaseAddress = new Uri(options.ApiEndPoint)
+            };
+
+            if (options.ClientCertificate != null)
+            {
+                clientHandler.ClientCertificates.Add(options.ClientCertificate);
+                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            }
+            else if (!String.IsNullOrWhiteSpace(options.AccessToken))
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                    scheme: "Bearer",
+                    parameter: options.AccessToken
+                );
+            }
+
+            return new KubeApiClient(httpClient)
+            {
+                DefaultNamespace = options.KubeNamespace
+            };
+        }
+
+        /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> using a bearer token for authentication.
         /// </summary>
-        /// <param name="endPointUri">
+        /// <param name="apiEndPoint">
         ///     The base address for the Kubernetes API end-point.
         /// </param>
         /// <param name="accessToken">
@@ -125,37 +173,20 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(Uri endPointUri, string accessToken, X509Certificate2 expectServerCertificate = null)
+        public static KubeApiClient Create(string apiEndPoint, string accessToken, X509Certificate2 expectServerCertificate = null)
         {
-            if (endPointUri == null)
-                throw new ArgumentNullException(nameof(endPointUri));
-            
-            if (String.IsNullOrWhiteSpace(accessToken))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'accessToken'.", nameof(accessToken));
-
-            HttpClientHandler clientHandler = new HttpClientHandler();
-            if (expectServerCertificate != null)
-                clientHandler.ServerCertificateCustomValidationCallback = ServerCertificateValidator(expectServerCertificate);
-
-            return new KubeApiClient(
-                new HttpClient(clientHandler)
-                {
-                    BaseAddress = endPointUri,
-                    DefaultRequestHeaders =
-                    {
-                        Authorization = new AuthenticationHeaderValue(
-                            scheme: "Bearer",
-                            parameter: accessToken
-                        )
-                    }
-                }
-            );
+            return Create(new KubeClientOptions
+            {
+                ApiEndPoint = apiEndPoint,
+                AccessToken = accessToken,
+                CertificationAuthorityCertificate = expectServerCertificate
+            });
         }
 
         /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> using an X.509 certificate for client authentication.
         /// </summary>
-        /// <param name="endPointUri">
+        /// <param name="apiEndPoint">
         ///     The base address for the Kubernetes API end-point.
         /// </param>
         /// <param name="clientCertificate">
@@ -167,28 +198,14 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(Uri endPointUri, X509Certificate2 clientCertificate, X509Certificate2 expectServerCertificate = null)
+        public static KubeApiClient Create(string apiEndPoint, X509Certificate2 clientCertificate, X509Certificate2 expectServerCertificate = null)
         {
-            if (endPointUri == null)
-                throw new ArgumentNullException(nameof(endPointUri));
-            
-            if (clientCertificate == null)
-                throw new ArgumentNullException(nameof(clientCertificate));
-
-            HttpClientHandler clientHandler = new HttpClientHandler
+            return Create(new KubeClientOptions
             {
-                ClientCertificates = { clientCertificate }
-            };
-
-            if (expectServerCertificate != null)
-                clientHandler.ServerCertificateCustomValidationCallback = ServerCertificateValidator(expectServerCertificate);
-
-            return new KubeApiClient(
-                new HttpClient(clientHandler)
-                {
-                    BaseAddress = endPointUri
-                }
-            );
+                ApiEndPoint = apiEndPoint,
+                ClientCertificate = clientCertificate,
+                CertificationAuthorityCertificate = expectServerCertificate
+            });
         }
 
         /// <summary>
@@ -206,13 +223,18 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(kubeServiceHost))
                 throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
 
-            var baseAddress = new Uri($"https://kubernetes/");            
-            string authToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
+            var baseAddress = $"https://kubernetes/";
+            string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
             var kubeCACertificate = new X509Certificate2(
                 File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
             );
 
-            return Create(baseAddress, authToken, expectServerCertificate: kubeCACertificate);
+            return Create(new KubeClientOptions
+            {
+                ApiEndPoint = baseAddress,
+                AccessToken = accessToken,
+                CertificationAuthorityCertificate = kubeCACertificate
+            });
         }
 
         /// <summary>

@@ -74,7 +74,7 @@ namespace KubeClient
                 
                 kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
                 kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                kubeClientOptions.Token = targetUser.Config.GetRawToken();
+                kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
             });
 
             return services;
