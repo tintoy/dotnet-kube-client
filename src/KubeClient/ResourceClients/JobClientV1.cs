@@ -59,6 +59,32 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Watch for events relating to a specific Job.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the job to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<JobV1>> Watch(string name, string kubeNamespace = null)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            return ObserveEvents<JobV1>(
+                Requests.WatchByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                })
+            );
+        }
+
+        /// <summary>
         ///     Watch for events relating to Jobs.
         /// </summary>
         /// <param name="labelSelector">
@@ -73,11 +99,10 @@ namespace KubeClient.ResourceClients
         public IObservable<ResourceEventV1<JobV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
         {
             return ObserveEvents<JobV1>(
-                Requests.Collection.WithTemplateParameters(new
+                Requests.WatchCollection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                    LabelSelector = labelSelector,
-                    Watch = true
+                    LabelSelector = labelSelector
                 })
             );
         }
@@ -188,12 +213,22 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}", SerializerSettings);
 
             /// <summary>
             ///     A get-by-name Job (v1) request.
             /// </summary>
             public static readonly HttpRequest ByName = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}", SerializerSettings);
+
+            /// <summary>
+            ///     A collection-level Job watch (v1) request.
+            /// </summary>
+            public static readonly HttpRequest WatchCollection = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs", SerializerSettings);
+
+            /// <summary>
+            ///     A watch-by-name Job (v1) request.
+            /// </summary>
+            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}?labelSelector={LabelSelector?}", SerializerSettings);
         }
     }
 }
