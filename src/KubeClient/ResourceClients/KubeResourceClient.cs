@@ -152,7 +152,12 @@ namespace KubeClient.ResourceClients
                     {
                         using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, cancellationToken))
                         {
-                            responseMessage.EnsureSuccessStatusCode();
+                            if (!responseMessage.IsSuccessStatusCode)
+                            {
+                                throw HttpRequestException<StatusV1>.Create(responseMessage.StatusCode,
+                                    await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                                );
+                            }
 
                             MediaTypeHeaderValue contentTypeHeader = responseMessage.Content.Headers.ContentType;
                             if (contentTypeHeader == null)
@@ -206,6 +211,8 @@ namespace KubeClient.ResourceClients
                                             }
                                         }
                                     }
+
+                                    bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                                 }
 
                                 // If stream doesn't end with a line-terminator sequence, publish trailing characters as the last line.
