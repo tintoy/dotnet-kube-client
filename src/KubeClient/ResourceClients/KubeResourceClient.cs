@@ -145,103 +145,100 @@ namespace KubeClient.ResourceClients
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
             
-            return
-                Observable.Create<string>(async (subscriber, cancellationToken) =>
+            return Observable.Create<string>(async (subscriber, cancellationToken) =>
+            {
+                try
                 {
-                    try
+                    using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, cancellationToken))
                     {
-                        using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, cancellationToken))
+                        if (!responseMessage.IsSuccessStatusCode)
                         {
-                            if (!responseMessage.IsSuccessStatusCode)
+                            throw HttpRequestException<StatusV1>.Create(responseMessage.StatusCode,
+                                await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                            );
+                        }
+
+                        MediaTypeHeaderValue contentTypeHeader = responseMessage.Content.Headers.ContentType;
+                        if (contentTypeHeader == null)
+                            throw new InvalidOperationException("Response is missing 'Content-Type' header."); // TODO: Consider custom exception type.
+
+                        Encoding encoding = Encoding.GetEncoding(contentTypeHeader.CharSet);
+                        Decoder decoder = encoding.GetDecoder();
+
+                        using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync())
+                        {
+                            StringBuilder lineBuilder = new StringBuilder();
+                            
+                            byte[] buffer = new byte[bufferSize];
+                            int bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                            while (bytesRead > 0)
                             {
-                                throw HttpRequestException<StatusV1>.Create(responseMessage.StatusCode,
-                                    await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
-                                );
-                            }
-
-                            MediaTypeHeaderValue contentTypeHeader = responseMessage.Content.Headers.ContentType;
-                            if (contentTypeHeader == null)
-                                throw new InvalidOperationException("Response is missing 'Content-Type' header."); // TODO: Consider custom exception type.
-
-                            Encoding encoding = Encoding.GetEncoding(contentTypeHeader.CharSet);
-                            Decoder decoder = encoding.GetDecoder();
-
-                            using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync())
-                            {
-                                StringBuilder lineBuilder = new StringBuilder();
-                                
-                                byte[] buffer = new byte[bufferSize];
-                                int bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                                while (bytesRead > 0)
+                                // AF: Slightly inefficient because we wind up scanning the buffer twice.
+                                char[] decodedCharacters = new char[decoder.GetCharCount(buffer, 0, bytesRead)];
+                                int charactersDecoded = decoder.GetChars(buffer, 0, bytesRead, decodedCharacters, 0);
+                                for (int charIndex = 0; charIndex < charactersDecoded; charIndex++)
                                 {
-                                    // AF: Slightly inefficient because we wind up scanning the buffer twice.
-                                    char[] decodedCharacters = new char[decoder.GetCharCount(buffer, 0, bytesRead)];
-                                    int charactersDecoded = decoder.GetChars(buffer, 0, bytesRead, decodedCharacters, 0);
-                                    for (int charIndex = 0; charIndex < charactersDecoded; charIndex++)
+                                    const char CR = '\r';
+                                    const char LF = '\n';
+
+                                    char decodedCharacter = decodedCharacters[charIndex];
+                                    switch (decodedCharacter)
                                     {
-                                        const char CR = '\r';
-                                        const char LF = '\n';
-
-                                        char decodedCharacter = decodedCharacters[charIndex];
-                                        switch (decodedCharacter)
+                                        case CR:
                                         {
-                                            case CR:
+                                            if (charIndex < charactersDecoded - 1 && decodedCharacters[charIndex + 1] == LF)
                                             {
-                                                if (charIndex < charactersDecoded - 1 && decodedCharacters[charIndex + 1] == LF)
-                                                {
-                                                    charIndex++;
+                                                charIndex++;
 
-                                                    goto case LF;
-                                                }
-
-                                                break;
+                                                goto case LF;
                                             }
-                                            case LF:
-                                            {
-                                                string line = lineBuilder.ToString();
-                                                lineBuilder.Clear();
 
-                                                subscriber.OnNext(line);
+                                            break;
+                                        }
+                                        case LF:
+                                        {
+                                            string line = lineBuilder.ToString();
+                                            lineBuilder.Clear();
 
-                                                break;
-                                            }
-                                            default:
-                                            {
-                                                lineBuilder.Append(decodedCharacter);
+                                            subscriber.OnNext(line);
 
-                                                break;
-                                            }
+                                            break;
+                                        }
+                                        default:
+                                        {
+                                            lineBuilder.Append(decodedCharacter);
+
+                                            break;
                                         }
                                     }
-
-                                    bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                                 }
 
-                                // If stream doesn't end with a line-terminator sequence, publish trailing characters as the last line.
-                                if (lineBuilder.Length > 0)
-                                {
-                                    subscriber.OnNext(
-                                        lineBuilder.ToString()
-                                    );
-                                }
+                                bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                            }
+
+                            // If stream doesn't end with a line-terminator sequence, publish trailing characters as the last line.
+                            if (lineBuilder.Length > 0)
+                            {
+                                subscriber.OnNext(
+                                    lineBuilder.ToString()
+                                );
                             }
                         }
                     }
-                    catch (OperationCanceledException operationCanceled) when (operationCanceled.CancellationToken != cancellationToken)
-                    {
-                        subscriber.OnError(operationCanceled);
-                    }
-                    catch (Exception exception)
-                    {
-                        subscriber.OnError(exception);
-                    }
-                    finally
-                    {
-                        subscriber.OnCompleted();
-                    }
-                })
-                .Publish() // All subscribers share the same connection
-                .RefCount(); // Connection is opened as the first client connects and closed as the last client disconnects.
+                }
+                catch (OperationCanceledException operationCanceled) when (operationCanceled.CancellationToken != cancellationToken)
+                {
+                    subscriber.OnError(operationCanceled);
+                }
+                catch (Exception exception)
+                {
+                    subscriber.OnError(exception);
+                }
+                finally
+                {
+                    subscriber.OnCompleted();
+                }
+            });
         }
     }
 }
