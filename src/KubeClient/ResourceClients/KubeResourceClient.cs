@@ -163,8 +163,8 @@ namespace KubeClient.ResourceClients
                             if (contentTypeHeader == null)
                                 throw new InvalidOperationException("Response is missing 'Content-Type' header."); // TODO: Consider custom exception type.
 
-                            // TODO: Automatically determine encoding type from contentTypeHeader.CharSet and use encoding.GetDecoder for stateful decoding (so we can handle characters that span more than a single buffer).
-                            Encoding encoding = Encoding.ASCII;
+                            Encoding encoding = Encoding.GetEncoding(contentTypeHeader.CharSet);
+                            Decoder decoder = encoding.GetDecoder();
 
                             using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync())
                             {
@@ -174,8 +174,10 @@ namespace KubeClient.ResourceClients
                                 int bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                                 while (bytesRead > 0)
                                 {
-                                    char[] decodedCharacters = encoding.GetChars(buffer, 0, bytesRead);
-                                    for (int charIndex = 0; charIndex < decodedCharacters.Length; charIndex++)
+                                    // AF: Slightly inefficient because we wind up scanning the buffer twice.
+                                    char[] decodedCharacters = new char[decoder.GetCharCount(buffer, 0, bytesRead)];
+                                    int charactersDecoded = decoder.GetChars(buffer, 0, bytesRead, decodedCharacters, 0);
+                                    for (int charIndex = 0; charIndex < charactersDecoded; charIndex++)
                                     {
                                         const char CR = '\r';
                                         const char LF = '\n';
@@ -185,7 +187,7 @@ namespace KubeClient.ResourceClients
                                         {
                                             case CR:
                                             {
-                                                if (charIndex < decodedCharacters.Length - 1 && decodedCharacters[charIndex + 1] == LF)
+                                                if (charIndex < charactersDecoded - 1 && decodedCharacters[charIndex + 1] == LF)
                                                 {
                                                     charIndex++;
 
