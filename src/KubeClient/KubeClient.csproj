@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease" Version="1.5.0" />
-      <PackageReference Include="HTTPlease.Diagnostics" Version="1.5.0" />
+      <PackageReference Include="HTTPlease" Version="1.6.0" />
+      <PackageReference Include="HTTPlease.Diagnostics" Version="1.6.0" />
       <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
       <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>

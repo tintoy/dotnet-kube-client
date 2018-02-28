@@ -154,9 +154,34 @@ namespace KubeClient
                 );
             }
 
+            return Create(httpClient, options.KubeNamespace);
+        }
+
+        /// <summary>
+        ///     Create a new <see cref="KubeApiClient"/>.
+        /// </summary>
+        /// <param name="httpClient">
+        ///     The <see cref="HttpClient"/> to communicate with the Kubernetes API.
+        /// </param>
+        /// <param name="defaultNamespace">
+        ///     The default Kubernetes namespace to use.
+        /// 
+        ///     Defaults to "default" if not specified.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeApiClient"/>.
+        /// </returns>
+        internal static KubeApiClient Create(HttpClient httpClient, string defaultNamespace = "default")
+        {
+            if (httpClient == null)
+                throw new ArgumentNullException(nameof(httpClient));
+            
+            if (httpClient.BaseAddress == null)
+                throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
+
             return new KubeApiClient(httpClient)
             {
-                DefaultNamespace = options.KubeNamespace
+                DefaultNamespace = defaultNamespace
             };
         }
 

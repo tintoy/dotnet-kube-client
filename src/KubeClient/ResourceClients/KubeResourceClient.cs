@@ -94,7 +94,7 @@ namespace KubeClient.ResourceClients
                 if (responseMessage.IsSuccessStatusCode)
                     return await responseMessage.ReadContentAsAsync<TResource>();
 
-                // Ensure that HttpStatusCode.NotFound actually refers to the ReplicationController.
+                // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
                 StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound);
                 if (status.Reason != "NotFound")
                     throw new HttpRequestException<StatusV1>(responseMessage.StatusCode, status);
