@@ -140,9 +140,19 @@ namespace KubeClient
             if (options.ClientCertificate != null)
                 clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
 
-            // TODO: Modify HTTPlease to support switches here for logging headers and / or payloads.
             if (logger != null)
-                clientBuilder = clientBuilder.WithLogging(logger);
+            {
+                LogMessageComponents logComponents = LogMessageComponents.Basic;
+                if (options.LogHeaders)
+                    logComponents |= LogMessageComponents.Headers;
+                if (options.LogPayloads)
+                    logComponents |= LogMessageComponents.Body;
+
+                clientBuilder = clientBuilder.WithLogging(logger,
+                    requestComponents: logComponents,
+                    responseComponents: logComponents
+                );
+            }
 
             HttpClient httpClient = clientBuilder.CreateClient(options.ApiEndPoint);
 
