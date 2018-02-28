@@ -34,6 +34,16 @@ namespace KubeClient
         public X509Certificate2 CertificationAuthorityCertificate { get; set; }
 
         /// <summary>
+        ///     Log request / response headers?
+        /// </summary>
+        public bool LogHeaders { get; set; }
+
+        /// <summary>
+        ///     Load request / response payloads (bodies)?
+        /// </summary>
+        public bool LogPayloads { get; set; }
+
+        /// <summary>
         ///     Ensure that the <see cref="KubeClientOptions"/> are valid.
         /// </summary>
         /// <returns>
