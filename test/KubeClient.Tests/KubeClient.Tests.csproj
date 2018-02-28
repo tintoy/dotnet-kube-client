@@ -2,12 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
       <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="HTTPlease" Version="1.6.0-unstable0004" />
+      <PackageReference Include="HTTPlease.Diagnostics" Version="1.6.0-unstable0004" />
+      <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.6.0-unstable0004" />
+      <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
