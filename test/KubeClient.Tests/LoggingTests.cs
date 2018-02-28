@@ -12,8 +12,6 @@ using Microsoft.Extensions.Logging;
 using Xunit;
 using Newtonsoft.Json;
 
-using EventIds = HTTPlease.Diagnostics.MessageHandlers.LoggerExtensions.LogEventIds;
-
 namespace KubeClient.Tests
 {
     using Logging;
@@ -66,7 +64,7 @@ namespace KubeClient.Tests
             Assert.Equal(2, logEntries.Count);
 
 			LogEntry logEntry1 = logEntries[0];
-			Assert.Equal(EventIds.BeginRequest, logEntry1.EventId.Id);
+			Assert.Equal(LogEventIds.BeginRequest, logEntry1.EventId);
 			Assert.Equal("Performing GET request to 'http://localhost:1234/api/v1/namespaces/default/pods/foo'.",
 				logEntry1.Message
 			);
@@ -78,7 +76,7 @@ namespace KubeClient.Tests
 			);
 
 			LogEntry logEntry2 = logEntries[1];
-			Assert.Equal(EventIds.EndRequest, logEntry2.EventId.Id);
+			Assert.Equal(LogEventIds.EndRequest, logEntry2.EventId);
 			Assert.Equal("Completed GET request to 'http://localhost:1234/api/v1/namespaces/default/pods/foo' (NotFound).",
 				logEntry2.Message
 			);
@@ -136,7 +134,7 @@ namespace KubeClient.Tests
 
 			LogEntry logEntry1 = logEntries[0];
             Assert.Equal(LogLevel.Debug, logEntry1.Level);
-			Assert.Equal(EventIds.BeginRequest, logEntry1.EventId.Id);
+			Assert.Equal(LogEventIds.BeginRequest, logEntry1.EventId);
 			Assert.Equal("Performing GET request to 'http://localhost:1234/api/v1/namespaces/default/pods/foo'.",
 				logEntry1.Message
 			);
@@ -149,7 +147,7 @@ namespace KubeClient.Tests
 
 			LogEntry logEntry2 = logEntries[1];
             Assert.Equal(LogLevel.Debug, logEntry2.Level);
-			Assert.Equal(EventIds.EndRequest, logEntry2.EventId.Id);
+			Assert.Equal(LogEventIds.EndRequest, logEntry2.EventId);
 			Assert.Equal("Completed GET request to 'http://localhost:1234/api/v1/namespaces/default/pods/foo' (OK).",
 				logEntry2.Message
 			);
