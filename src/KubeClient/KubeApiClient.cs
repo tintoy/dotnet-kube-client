@@ -1,3 +1,6 @@
+using HTTPlease;
+using HTTPlease.Diagnostics;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -116,35 +119,34 @@ namespace KubeClient
         /// <param name="options">
         ///     The <see cref="KubeClientOptions"/> used to configure the client.
         /// </param>
+        /// <param name="logger">
+        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(KubeClientOptions options)
+        public static KubeApiClient Create(KubeClientOptions options, ILogger logger = null)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
             options.EnsureValid();
             
-            HttpClientHandler clientHandler = new HttpClientHandler();
-            if (options.CertificationAuthorityCertificate != null)
-            {
-                clientHandler.ServerCertificateCustomValidationCallback = ServerCertificateValidator(
-                    expectCertificate: options.CertificationAuthorityCertificate
-                );
-            }
+            var clientBuilder = new ClientBuilder();
 
-            var httpClient = new HttpClient(clientHandler)
-            {
-                BaseAddress = new Uri(options.ApiEndPoint)
-            };
+            if (options.CertificationAuthorityCertificate != null)
+                clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
 
             if (options.ClientCertificate != null)
-            {
-                clientHandler.ClientCertificates.Add(options.ClientCertificate);
-                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            }
-            else if (!String.IsNullOrWhiteSpace(options.AccessToken))
+                clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
+
+            // TODO: Modify HTTPlease to support switches here for logging headers and / or payloads.
+            if (logger != null)
+                clientBuilder = clientBuilder.WithLogging(logger);
+
+            HttpClient httpClient = clientBuilder.CreateClient(options.ApiEndPoint);
+
+            if (!String.IsNullOrWhiteSpace(options.AccessToken))
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                     scheme: "Bearer",
@@ -170,17 +172,20 @@ namespace KubeClient
         /// <param name="expectServerCertificate">
         ///     An optional server certificate to expect.
         /// </param>
+        /// <param name="logger">
+        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(string apiEndPoint, string accessToken, X509Certificate2 expectServerCertificate = null)
+        public static KubeApiClient Create(string apiEndPoint, string accessToken, X509Certificate2 expectServerCertificate = null, ILogger logger = null)
         {
             return Create(new KubeClientOptions
             {
                 ApiEndPoint = apiEndPoint,
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = expectServerCertificate
-            });
+            }, logger);
         }
 
         /// <summary>
@@ -195,29 +200,35 @@ namespace KubeClient
         /// <param name="expectServerCertificate">
         ///     An optional server certificate to expect.
         /// </param>
+        /// <param name="logger">
+        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(string apiEndPoint, X509Certificate2 clientCertificate, X509Certificate2 expectServerCertificate = null)
+        public static KubeApiClient Create(string apiEndPoint, X509Certificate2 clientCertificate, X509Certificate2 expectServerCertificate = null, ILogger logger = null)
         {
             return Create(new KubeClientOptions
             {
                 ApiEndPoint = apiEndPoint,
                 ClientCertificate = clientCertificate,
                 CertificationAuthorityCertificate = expectServerCertificate
-            });
+            }, logger);
         }
 
         /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> using pod-level configuration.
         /// </summary>
+        /// <param name="logger">
+        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
         /// <remarks>
         ///     Only works from within a container running in a Kubernetes Pod.
         /// </remarks>
-        public static KubeApiClient CreateFromPodServiceAccount()
+        public static KubeApiClient CreateFromPodServiceAccount(ILogger logger = null)
         {
             string kubeServiceHost = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
             if (String.IsNullOrWhiteSpace(kubeServiceHost))
@@ -234,45 +245,7 @@ namespace KubeClient
                 ApiEndPoint = baseAddress,
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate
-            });
-        }
-
-        /// <summary>
-        ///     Create a certificate validation handler.
-        /// </summary>
-        /// <param name="expectCertificate">
-        ///     A specific certificate to expect.
-        /// </param>
-        /// <returns>
-        ///     The handler function.
-        /// </returns>
-        static Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool> ServerCertificateValidator(X509Certificate2 expectCertificate)
-        {
-            if (expectCertificate == null)
-                throw new ArgumentNullException(nameof(expectCertificate));
-            
-            return (request, certificate, chain, sslPolicyErrors) =>
-            {
-                if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors)
-                    return false;
-
-                try
-                {
-                    X509Chain kubeChain = new X509Chain();
-                    kubeChain.ChainPolicy.ExtraStore.Add(expectCertificate);
-                    kubeChain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
-                    kubeChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-                    
-                    return kubeChain.Build(certificate);
-                }
-                catch (Exception chainException)
-                {
-                    Debug.WriteLine(chainException);
-                    Console.WriteLine(chainException);
-
-                    return false;
-                }
-            };
+            }, logger);
         }
     }
 }
