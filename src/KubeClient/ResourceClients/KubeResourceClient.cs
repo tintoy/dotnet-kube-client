@@ -162,7 +162,11 @@ namespace KubeClient.ResourceClients
                         if (contentTypeHeader == null)
                             throw new InvalidOperationException("Response is missing 'Content-Type' header."); // TODO: Consider custom exception type.
 
-                        Encoding encoding = Encoding.GetEncoding(contentTypeHeader.CharSet);
+                        Encoding encoding =
+                            !String.IsNullOrWhiteSpace(contentTypeHeader.CharSet)
+                                ? Encoding.GetEncoding(contentTypeHeader.CharSet)
+                                : Encoding.UTF8;
+
                         Decoder decoder = encoding.GetDecoder();
 
                         using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync())
