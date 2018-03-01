@@ -29,7 +29,11 @@ namespace KubeClient
                 // When running inside Kubernetes, use pod-level service account (e.g. access token from mounted Secret).
                 services.AddScoped<KubeApiClient>(serviceProvider =>
                 {
-                    ILogger logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger(nameof(KubeApiClient));
+                    ILogger logger = serviceProvider
+                        .GetService<ILoggerFactory>()?
+                        .CreateLogger(
+                            typeof(KubeApiClient)
+                        );
 
                     return KubeApiClient.CreateFromPodServiceAccount(logger);
                 });
@@ -39,7 +43,11 @@ namespace KubeClient
                 services.AddScoped<KubeApiClient>(serviceProvider =>
                 {
                     KubeClientOptions options = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
-                    ILogger logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger(nameof(KubeApiClient));
+                    ILogger logger = serviceProvider
+                        .GetService<ILoggerFactory>()?
+                        .CreateLogger(
+                            typeof(KubeApiClient)
+                        );
 
                     return KubeApiClient.Create(options, logger);
                 });
@@ -67,7 +75,11 @@ namespace KubeClient
 
             services.AddScoped<KubeApiClient>(serviceProvider =>
             {
-                ILogger logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger(nameof(KubeApiClient));
+                ILogger logger = serviceProvider
+                    .GetService<ILoggerFactory>()?
+                    .CreateLogger(
+                        typeof(KubeApiClient)
+                    );
                 
                 return KubeApiClient.Create(options, logger);
             });

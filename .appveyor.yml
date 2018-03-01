@@ -32,4 +32,6 @@ deploy:
     api_key:
       secure: ljl/r7XeQm+KBzR7pm1OOW4+YcDUsYiWlr9jWFztMh/8/orG4V9ylTi+P1jGME7g
     on:
+      # Release branch or master branch.
+      branch: /(release|master)(\/)?.*/
       appveyor_repo_tag: true
