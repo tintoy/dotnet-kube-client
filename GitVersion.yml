@@ -14,22 +14,27 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
 
-  release:
-    regex: release?[/-]
-    mode: ContinuousDelivery
-    tag: beta
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: true
-  
   develop:
     mode: ContinuousDeployment
     tag: unstable
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+
+  development/v0.0:
+    mode: ContinuousDeployment
+    tag: unstable-v0-
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+
+  release/v0.0:
+    mode: ContinuousDelivery
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
 
   feature:
     mode: ContinuousDeployment
