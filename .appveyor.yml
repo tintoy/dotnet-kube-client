@@ -1,7 +1,10 @@
 image: Visual Studio 2017
 
 build_script:
-  - ps: .\build.ps1
+  - ps: .\build-ci.ps1
+
+test_script:
+  - ps: .\test-ci.ps1
 
 artifacts:
   - path: ./out/*.nupkg
