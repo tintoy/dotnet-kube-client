@@ -23,13 +23,15 @@ branches:
 
   development/v0.0:
     mode: ContinuousDeployment
-    tag: unstable-v0-
+    regex: development/v0.0
+    tag: v0-unstable
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
 
   release/v0.0:
     mode: ContinuousDelivery
+    regex: release/v0.0
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
