@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
 
     <Description>A Kubernetes API client for .NET</Description>
   </PropertyGroup>
@@ -11,10 +11,6 @@
       <PackageReference Include="HTTPlease.Diagnostics" Version="1.7.0" />
       <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
       <PackageReference Include="System.Reactive" Version="3.1.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-      <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
   <Import Project="..\Common.props" />
