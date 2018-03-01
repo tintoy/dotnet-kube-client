@@ -4,6 +4,13 @@ ignore:
   sha: []
 
 branches: 
+  develop:
+    mode: ContinuousDeployment
+    tag: unstable
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+
   master:
     regex: master
     mode: ContinuousDelivery
@@ -13,30 +20,6 @@ branches:
     track-merge-target: false
     tracks-release-branches: false
     is-release-branch: false
-
-  develop:
-    mode: ContinuousDeployment
-    tag: unstable
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-
-  development/v0.0:
-    mode: ContinuousDeployment
-    regex: development/v0.0
-    tag: v0-unstable
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-
-  release/v0.0:
-    mode: ContinuousDelivery
-    regex: release/v0.0
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: true
 
   feature:
     mode: ContinuousDeployment
@@ -56,4 +39,22 @@ branches:
     track-merge-target: false
     tracks-release-branches: false
     is-release-branch: false
+
+  # v0.x (legacy)
+  development/v0.x:
+    mode: ContinuousDeployment
+    regex: development/v0.0
+    tag: v0-unstable
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+  release/v0.x:
+    mode: ContinuousDelivery
+    regex: release/v0.0
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
+
   
