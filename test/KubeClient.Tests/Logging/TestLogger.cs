@@ -21,12 +21,12 @@ namespace KubeClient.Tests.Logging
 		/// <summary>
 		/// 	Create a new <see cref="TestLogger"/>.
 		/// </summary>
-		/// <param name="logLevel">
+		/// <param name="minLogLevel">
 		/// 	The logger's minimum log level.
 		/// </param>
-		public TestLogger(LogLevel logLevel)
+		public TestLogger(LogLevel minLogLevel)
 		{
-			LogLevel = logLevel;
+			MinLogLevel = minLogLevel;
 		}
 
 		/// <summary>
@@ -37,7 +37,7 @@ namespace KubeClient.Tests.Logging
 		/// <summary>
 		/// 	The logger's minimum log level.
 		/// </summary>
-		public LogLevel LogLevel { get; }
+		public LogLevel MinLogLevel { get; }
 
 		/// <summary>
 		///		An observable sequence of log entries emitted by the <see cref="TestLogger"/>.
@@ -91,7 +91,7 @@ namespace KubeClient.Tests.Logging
         /// <returns>
 		/// 	<c>true</c> if enabled; otherwise, <c>false</c>.
 		/// </returns>
-        public bool IsEnabled(LogLevel logLevel) => logLevel >= LogLevel;
+        public bool IsEnabled(LogLevel logLevel) => logLevel >= MinLogLevel;
 
         /// <summary>
         /// 	Begin a logical operation scope.
