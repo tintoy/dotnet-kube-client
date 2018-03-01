@@ -1,8 +1,12 @@
 $ErrorActionPreference = 'Stop'
 
-Write-Host 'GitVersion:'
 $rawVersionInfo = .\tools\GitVersion\GitVersion.exe
-Write-Host $rawVersionInfo
+If ($LASTEXITCODE) {
+    Write-Host 'GitVersion:'
+    Write-Host $rawVersionInfo
+
+    Exit 1
+}
 
 $versionInfo = $rawVersionInfo | ConvertFrom-Json
 
