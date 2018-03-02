@@ -34,6 +34,11 @@ namespace KubeClient
         public X509Certificate2 CertificationAuthorityCertificate { get; set; }
 
         /// <summary>
+        ///     Skip verification of the server's SSL certificate?
+        /// </summary>
+        public bool AllowInsecure { get; set; }
+
+        /// <summary>
         ///     Log request / response headers?
         /// </summary>
         public bool LogHeaders { get; set; }

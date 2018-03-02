@@ -134,7 +134,9 @@ namespace KubeClient
             
             var clientBuilder = new ClientBuilder();
 
-            if (options.CertificationAuthorityCertificate != null)
+            if (options.AllowInsecure)
+                clientBuilder = clientBuilder.AcceptAnyServerCertificate();
+            else if (options.CertificationAuthorityCertificate != null)
                 clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
 
             if (options.ClientCertificate != null)

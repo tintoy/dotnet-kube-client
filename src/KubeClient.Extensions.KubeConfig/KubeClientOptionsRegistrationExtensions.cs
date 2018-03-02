@@ -144,8 +144,8 @@ namespace KubeClient
 
                 kubeClientOptions.ApiEndPoint = targetCluster.Config.Server;
                 kubeClientOptions.KubeNamespace = defaultNamespace;
-                
                 kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
+                kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
                 kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
                 kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
             });
