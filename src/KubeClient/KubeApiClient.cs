@@ -45,7 +45,7 @@ namespace KubeClient
         /// <summary>
         ///     Dispose of resources being used by the <see cref="KubeApiClient"/>.
         /// </summary>
-        public void Dispose() => Http?.Dispose();
+        public void Dispose() => Http.Dispose();
 
         /// <summary>
         ///     The default Kubernetes namespace.
@@ -53,37 +53,14 @@ namespace KubeClient
         public string DefaultNamespace { get; set; } = "default";
 
         /// <summary>
-        ///     The underlying HTTP client.
+        ///     The base address of the Kubernetes API end-point targeted by the client.
         /// </summary>
-        public HttpClient Http { get; }
+        public Uri ApiEndPoint => Http.BaseAddress;
 
         /// <summary>
-        ///     Get or create a Kubernetes resource client of the specified type.
+        ///     The underlying HTTP client.
         /// </summary>
-        /// <typeparam name="TClient">
-        ///     The type of Kubernetes resource client to get or create.
-        /// </typeparam>
-        /// <param name="clientFactory">
-        ///     A delegate that creates the resource client.
-        /// </param>
-        /// <returns>
-        ///     The resource client.
-        /// </returns>
-        public TClient ResourceClient<TClient>(Func<TClient> clientFactory)
-            where TClient : KubeResourceClient
-        {
-            if (clientFactory == null)
-                throw new ArgumentNullException(nameof(clientFactory));
-
-            return (TClient)_clients.GetOrAdd(typeof(TClient), clientType =>
-            {
-                TClient resourceClient = clientFactory();
-                if (resourceClient == null)
-                    throw new InvalidOperationException($"Factory for Kubernetes resource client of type '{clientType.FullName}' returned null.");
-
-                return (KubeResourceClient)resourceClient;
-            });
-        }
+        internal HttpClient Http { get; }
 
         /// <summary>
         ///     Get or create a Kubernetes resource client of the specified type.

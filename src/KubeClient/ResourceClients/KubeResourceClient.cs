@@ -42,8 +42,6 @@ namespace KubeClient.ResourceClients
             }
         };
 
-        // TODO: Declare base request definitions (that include the serialiser settings).
-
         /// <summary>
         ///     Create a new <see cref="KubeResourceClient"/>.
         /// </summary>
