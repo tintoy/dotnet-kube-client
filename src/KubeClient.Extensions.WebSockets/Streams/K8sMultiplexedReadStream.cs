@@ -98,11 +98,11 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (buffer == null)
                 throw new ArgumentNullException(nameof(buffer));
 
-            PendingRead pendingRead = NextPendingRead(CancellationToken.None);
+            PendingRead pendingRead = NextPendingRead();
 
             int bytesRead = pendingRead.DrainTo(buffer, offset);
             if (pendingRead.IsEmpty)
-                ConsumeNextPendingRead(); // Source buffer has been consumed.
+                Consume(pendingRead); // Source buffer has been consumed.
 
             return bytesRead;
         }
@@ -136,7 +136,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
 
             int bytesRead = pendingRead.DrainTo(buffer, offset);
             if (pendingRead.IsEmpty)
-                ConsumeNextPendingRead(); // Source buffer has been consumed.
+                Consume(pendingRead); // Source buffer has been consumed.
 
             return bytesRead;
         }
@@ -198,7 +198,32 @@ namespace KubeClient.Extensions.WebSockets.Streams
         }
 
         /// <summary>
-        ///     Get the next available pending read.
+        ///     Get the next available pending read (does not support cancellation).
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="PendingRead"/>.
+        /// </returns>
+        /// <remarks>
+        ///     If no pending read is currently available, blocks until a pending read is available.
+        /// </remarks>
+        PendingRead NextPendingRead()
+        {
+            PendingRead pendingRead;
+            if (!_pendingReads.TryPeek(out pendingRead))
+            {
+                // Wait for data.
+                while (pendingRead == null)
+                {
+                    _dataAvailable.WaitOne();
+                    _pendingReads.TryPeek(out pendingRead);
+                }
+            }
+
+            return pendingRead;
+        }
+
+        /// <summary>
+        ///     Get the next available pending read (supports cancellation).
         /// </summary>
         /// <param name="cancellation">
         ///     A <see cref="CancellationToken"/> that can be used to abort the wait for a pending read.
@@ -218,12 +243,14 @@ namespace KubeClient.Extensions.WebSockets.Streams
                 if (!_pendingReads.TryPeek(out pendingRead))
                 {
                     // Wait for data.
-                    int handleIndex = WaitHandle.WaitAny(new[] { _dataAvailable, canceled });
-                    if (handleIndex == 1)
-                        throw new OperationCanceledException("Read operation was canceled.", cancellation);
+                    while (pendingRead == null)
+                    {
+                        int handleIndex = WaitHandle.WaitAny(new[] { _dataAvailable, canceled });
+                        if (handleIndex == 1)
+                            throw new OperationCanceledException("Read operation was canceled.", cancellation);
 
-                    _pendingReads.TryPeek(out pendingRead);
-                    Debug.Assert(pendingRead != null, "pendingRead != null");
+                        _pendingReads.TryPeek(out pendingRead);
+                    }
                 }
             }
 
@@ -231,12 +258,24 @@ namespace KubeClient.Extensions.WebSockets.Streams
         }
 
         /// <summary>
-        ///     Consume the currently-pending read, removing it from the queue.
+        ///     Consume the a pending read, removing it from the queue.
         /// </summary>
-        void ConsumeNextPendingRead()
+        /// <remarks>
+        ///     The <see cref="PendingRead"/> must be at the head of the <see cref="_pendingReads"/> queue.
+        /// </remarks>
+        void Consume(PendingRead pending)
         {
-            bool consumed = _pendingReads.TryDequeue(out _);
-            Debug.Assert(consumed, "Attempted to consume pending read when none was available.");
+            if (pending == null)
+                throw new ArgumentNullException(nameof(pending));
+
+            PendingRead consumed;
+            bool wasConsumed = _pendingReads.TryDequeue(out consumed);
+            Debug.Assert(wasConsumed, "Attempted to consume pending read when none was available.");
+
+            // AF: This should not happen; if it does, then I've fucked up somewhere and we have a race condition.
+            Debug.Assert(Object.ReferenceEquals(consumed, pending),
+                "Consumed a pending read that was not at the head of the queue."                
+            );
         }
 
         /// <summary>
