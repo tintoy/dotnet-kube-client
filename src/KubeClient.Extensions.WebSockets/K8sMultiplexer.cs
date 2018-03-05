@@ -64,27 +64,33 @@ namespace KubeClient.Extensions.WebSockets
         /// <param name="socket">
         ///     The target WebSocket.
         /// </param>
-        /// <param name="inputStreamCount">
-        ///     The number of of expected input streams.
+        /// <param name="inputStreamIndexes">
+        ///     An array of bytes containing the indexes of the expected input streams.
         /// </param>
-        /// <param name="outputStreamCount">
-        ///     The number of expected output streams.
+        /// <param name="outputStreamIndexes">
+        ///     An array of bytes containing the indexes of the expected output streams.
         /// </param>
-        public K8sMultiplexer(WebSocket socket, byte inputStreamCount, byte outputStreamCount)
+        public K8sMultiplexer(WebSocket socket, byte[] inputStreamIndexes, byte[] outputStreamIndexes)
         {
             if (socket == null)
                 throw new ArgumentNullException(nameof(socket));
 
-            if (inputStreamCount == 0 && outputStreamCount == 0)
-                throw new ArgumentException($"Must specify at least one of {nameof(inputStreamCount)} or {nameof(outputStreamCount)}.");
+            if (inputStreamIndexes == null)
+                throw new ArgumentNullException(nameof(inputStreamIndexes));
+            
+            if (outputStreamIndexes == null)
+                throw new ArgumentNullException(nameof(outputStreamIndexes));   
+
+            if (inputStreamIndexes.Length == 0 && outputStreamIndexes.Length == 0)
+                throw new ArgumentException($"Must specify at least one of {nameof(inputStreamIndexes)} or {nameof(outputStreamIndexes)}.");
             
             Socket = socket;
 
-            for (byte readStreamIndex = 0; readStreamIndex < inputStreamCount; readStreamIndex++)
-                _inputStreams[readStreamIndex] = new K8sMultiplexedReadStream(readStreamIndex);
+            foreach (byte inputStreamIndex in inputStreamIndexes)
+                _inputStreams[inputStreamIndex] = new K8sMultiplexedReadStream(inputStreamIndex);
 
-            for (byte writeStreamIndex = 0; writeStreamIndex < outputStreamCount; writeStreamIndex++)
-                _outputStreams[writeStreamIndex] = new K8sMultiplexedWriteStream(writeStreamIndex, EnqueueSend);
+            foreach (byte outputStreamIndex in outputStreamIndexes)
+                _outputStreams[outputStreamIndex] = new K8sMultiplexedWriteStream(outputStreamIndex, EnqueueSend);
         }
 
         /// <summary>
@@ -101,8 +107,15 @@ namespace KubeClient.Extensions.WebSockets
 
             if (_receivePump != null)
                 _receivePump.Wait();
+
             if (_sendPump != null)
                 _sendPump.Wait();
+
+            foreach (Stream inputStream in _inputStreams.Values)
+                inputStream.Dispose();
+
+            foreach (Stream outputStream in _outputStreams.Values)
+                outputStream.Dispose();
         }
 
         /// <summary>

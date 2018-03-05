@@ -1,0 +1,92 @@
+using HTTPlease;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace KubeClient
+{
+    using ResourceClients;
+    using Extensions.WebSockets;
+
+    /// <summary>
+    ///     WebSocket-related extension methods for Kubernetes resource clients.
+    /// </summary>
+    public static class ResourceClientWebSocketExtensions
+    {
+        /// <summary>
+        ///     Start a new process in a Pod's container and open a WebSocket connection to its STDIN / STDOUT / STDERR.
+        /// </summary>
+        /// <param name="podClient">
+        ///     The <see cref="PodClientV1"/>.
+        /// </param>
+        /// <param name="podName">
+        ///     The name of the target pod.
+        /// </param>
+        /// <param name="command">
+        ///     The command to execute (command-line arguments not supported yet).
+        /// </param>
+        /// <param name="stdin">
+        ///     Create an output stream connected to the target container's STDIN?
+        /// </param>
+        /// <param name="stdout">
+        ///     Create an output stream connected to the target container's STDOUT?
+        /// </param>
+        /// <param name="stderr">
+        ///     Create an output stream connected to the target container's STDERR?
+        /// </param>
+        /// <param name="tty">
+        ///     Attach a TTY to the process?
+        /// </param>
+        /// <param name="container">
+        ///     The name of the target container within the pod.
+        /// 
+        ///     Optional if the pod only has a single container.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The name of the target Kubernetes namespace that contains the pod.
+        /// 
+        ///     If not specified, the <see cref="KubeApiClient.DefaultNamespace"/> is used.
+        /// </param>
+        /// <param name="cancellation">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="K8sMultiplexer"/> that provides access to the input and output streams.
+        /// </returns>
+        public static async Task<K8sMultiplexer> ExecAndConnect(this PodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
+        {
+            if (podClient == null)
+                throw new ArgumentNullException(nameof(podClient));
+
+            byte[] inputStreamIndexes = stdin ? new byte[1] { 0 } : new byte[0];
+            byte[] outputStreamIndexes;
+            if (stdout && stderr)
+                outputStreamIndexes = new byte[2] { 1, 2 };
+            else if (stdout)
+                outputStreamIndexes = new byte[1] { 1 };
+            else if (stderr)
+                outputStreamIndexes = new byte[1] { 2 };
+            else if (!stdin)
+                throw new InvalidOperationException("Must specify at least one of STDIN, STDOUT, or STDERR.");
+            else
+                outputStreamIndexes = new byte[0];
+            
+            return await podClient.KubeClient
+                .ConnectWebSocket("api/v1/namespaces/{KubeNamespace}/pods/{PodName}/exec?stdin={StdIn?}&stdout={StdOut}&stderr={StdErr?}&tty={TTY?}&command={Command}&container={Container?}", new
+                {
+                    PodName = podName,
+                    Command = command,
+                    StdIn = stdin,
+                    StdOut = stdout,
+                    StdErr = stderr,
+                    TTY = tty,
+                    Container = container,
+                    KubeNamespace = kubeNamespace ?? podClient.KubeClient.DefaultNamespace
+                }, cancellation)
+                .Multiplexed(
+                    inputStreamIndexes,
+                    outputStreamIndexes
+                );
+        }
+    }
+}

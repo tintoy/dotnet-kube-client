@@ -48,7 +48,7 @@ namespace KubeClient.ResourceClients
                 await Http.GetAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                         LabelSelector = labelSelector
                     }),
                     cancellationToken: cancellationToken
@@ -75,7 +75,7 @@ namespace KubeClient.ResourceClients
             return ObserveEvents<PersistentVolumeV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
                 })
@@ -106,7 +106,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
             );
@@ -133,7 +133,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newPersistentVolume?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newPersistentVolume?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newPersistentVolume,
                     cancellationToken: cancellationToken
@@ -163,7 +163,7 @@ namespace KubeClient.ResourceClients
                     Requests.ByName.WithTemplateParameters(new
                     {
                         Name = name,
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                     }),
                     cancellationToken: cancellationToken
                 )

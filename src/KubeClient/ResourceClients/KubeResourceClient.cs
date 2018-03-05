@@ -53,18 +53,18 @@ namespace KubeClient.ResourceClients
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
             
-            Client = client;
+            KubeClient = client;
         }
 
         /// <summary>
         ///     The Kubernetes API client.
         /// </summary>
-        protected KubeApiClient Client { get; }
+        public KubeApiClient KubeClient { get; }
 
         /// <summary>
         ///     The underlying HTTP client.
         /// </summary>
-        protected HttpClient Http => Client.Http;
+        protected HttpClient Http => KubeClient.Http;
 
         /// <summary>
         ///     Get a single resource, returning <c>null</c> if it does not exist.

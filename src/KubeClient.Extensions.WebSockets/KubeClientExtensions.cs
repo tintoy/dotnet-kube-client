@@ -18,6 +18,66 @@ namespace KubeClient
         /// <summary>
         ///     Open a WebSocket connection.
         /// </summary>
+        /// <param name="client">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <param name="targetUri">
+        ///     The target URI.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional cancellation token that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="WebSocket"/>.
+        /// </returns>
+        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, string targetUri, CancellationToken cancellationToken = default)
+        {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+            
+            if (String.IsNullOrWhiteSpace(targetUri))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'targetUri'.", nameof(targetUri));
+            
+            return client.ConnectWebSocket(new Uri(client.ApiEndPoint, targetUri), cancellationToken);
+        }
+
+        /// <summary>
+        ///     Open a WebSocket connection.
+        /// </summary>
+        /// <param name="client">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <param name="targetUri">
+        ///     The target URI.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional cancellation token that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="WebSocket"/>.
+        /// </returns>
+        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
+        {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+            
+            if (targetUri == null)
+                throw new ArgumentNullException(nameof(targetUri));
+
+            if (!targetUri.IsAbsoluteUri)
+                targetUri = new Uri(client.ApiEndPoint, targetUri);
+
+            if (targetUri.Scheme != "ws" && targetUri.Scheme != "wss")
+                throw new ArgumentException($"Target URI has invalid scheme '{targetUri.Scheme} (expected 'ws' or 'wss').", nameof(targetUri));
+
+            K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
+
+            return K8sWebSocket.ConnectAsync(targetUri, webSocketOptions, cancellationToken);
+        }
+
+        /// <summary>
+        ///     Open a WebSocket connection.
+        /// </summary>
         /// <typeparam name="TParameters">
         ///     The type to use use as template parameters.
         /// </typeparam>
@@ -102,92 +162,32 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Open a WebSocket connection.
-        /// </summary>
-        /// <param name="client">
-        ///     The Kubernetes API client.
-        /// </param>
-        /// <param name="targetUri">
-        ///     The target URI.
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional cancellation token that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The configured <see cref="WebSocket"/>.
-        /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, string targetUri, CancellationToken cancellationToken = default)
-        {
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
-            
-            if (String.IsNullOrWhiteSpace(targetUri))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'targetUri'.", nameof(targetUri));
-            
-            return client.ConnectWebSocket(new Uri(client.ApiEndPoint, targetUri), cancellationToken);
-        }
-
-        /// <summary>
-        ///     Open a WebSocket connection.
-        /// </summary>
-        /// <param name="client">
-        ///     The Kubernetes API client.
-        /// </param>
-        /// <param name="targetUri">
-        ///     The target URI.
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional cancellation token that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The configured <see cref="WebSocket"/>.
-        /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
-        {
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
-            
-            if (targetUri == null)
-                throw new ArgumentNullException(nameof(targetUri));
-
-            if (!targetUri.IsAbsoluteUri)
-                targetUri = new Uri(client.ApiEndPoint, targetUri);
-
-            if (targetUri.Scheme != "ws" && targetUri.Scheme != "wss")
-                throw new ArgumentException($"Target URI has invalid scheme '{targetUri.Scheme} (expected 'ws' or 'wss').", nameof(targetUri));
-
-            K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
-
-            return K8sWebSocket.ConnectAsync(targetUri, webSocketOptions, cancellationToken);
-        }
-
-        /// <summary>
         ///     Create a Kubernetes-style multiplexed connection over the WebSocket.
         /// </summary>
         /// <param name="websocket">
         ///     The <see cref="WebSocket"/>.
         /// </param>
-        /// <param name="inputStreamCount">
-        ///     The expected number of input streams.
+        /// <param name="inputStreamIndexes">
+        ///     An array of bytes containing the indexes of the expected input streams.
         /// </param>
-        /// <param name="outputStreamCount">
-        ///     The expected number of output streams.
+        /// <param name="outputStreamIndexes">
+        ///     An array of bytes containing the indexes of the expected output streams.
         /// </param>
         /// <returns>
         ///     The configured <see cref="K8sMultiplexer"/>.
         /// </returns>
-        public static K8sMultiplexer Multiplexed(this WebSocket websocket, byte inputStreamCount = 0, byte outputStreamCount = 0)
+        public static K8sMultiplexer Multiplexed(this WebSocket websocket, byte[] inputStreamIndexes = null, byte[] outputStreamIndexes = null)
         {
             if (websocket == null)
                 throw new ArgumentNullException(nameof(websocket));
             
-            if (inputStreamCount == 0 && outputStreamCount == 0)
-                throw new ArgumentException($"Must specify at least one of {nameof(inputStreamCount)} or {nameof(outputStreamCount)}.");
+            if (!(inputStreamIndexes?.Length > 0 || outputStreamIndexes?.Length > 0))
+                throw new ArgumentException($"Must specify at least one of {nameof(inputStreamIndexes)} or {nameof(outputStreamIndexes)}.");
 
             K8sMultiplexer multiplexer = null;
             try
             {
-                multiplexer = new K8sMultiplexer(websocket, inputStreamCount, outputStreamCount);
+                multiplexer = new K8sMultiplexer(websocket, inputStreamIndexes, outputStreamIndexes);
                 multiplexer.Start();
 
                 return multiplexer;
@@ -195,6 +195,39 @@ namespace KubeClient
             catch (Exception)
             {
                 using (multiplexer)
+                    throw;
+            }
+        }
+
+        /// <summary>
+        ///     Create a Kubernetes-style multiplexed connection over the WebSocket.
+        /// </summary>
+        /// <param name="webSocketTask">
+        ///     The <see cref="WebSocket"/>.
+        /// </param>
+        /// <param name="inputStreamIndexes">
+        ///     An array of bytes containing the indexes of the expected input streams.
+        /// </param>
+        /// <param name="outputStreamIndexes">
+        ///     An array of bytes containing the indexes of the expected output streams.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="K8sMultiplexer"/>.
+        /// </returns>
+        public static async Task<K8sMultiplexer> Multiplexed(this Task<WebSocket> webSocketTask, byte[] inputStreamIndexes = null, byte[] outputStreamIndexes = null)
+        {
+            if (webSocketTask == null)
+                throw new ArgumentNullException(nameof(webSocketTask));
+            
+            WebSocket webSocket = await webSocketTask;
+
+            try
+            {
+                return webSocket.Multiplexed(inputStreamIndexes, outputStreamIndexes);
+            }
+            catch (Exception)
+            {
+                using (webSocket)
                     throw;
             }
         }

@@ -48,7 +48,7 @@ namespace KubeClient.ResourceClients
                 await Http.GetAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                         LabelSelector = labelSelector
                     }),
                     cancellationToken: cancellationToken
@@ -75,7 +75,7 @@ namespace KubeClient.ResourceClients
             return ObserveEvents<PodV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
                 })
@@ -106,7 +106,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
             );
@@ -145,7 +145,7 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     ContainerName = containerName,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes
                 }),
                 cancellationToken
@@ -191,7 +191,7 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     ContainerName = containerName,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes,
                     Follow = "true"
                 })
@@ -219,7 +219,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newPod?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newPod?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newPod,
                     cancellationToken: cancellationToken
@@ -249,7 +249,7 @@ namespace KubeClient.ResourceClients
                     Requests.ByName.WithTemplateParameters(new
                     {
                         Name = name,
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                     }),
                     cancellationToken: cancellationToken
                 )
