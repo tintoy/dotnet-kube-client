@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KubeClient.WebSockets
+namespace KubeClient.Extensions.WebSockets
 {
     /// <summary>
     ///     Connection factory for Kubernetes web sockets.

@@ -4,7 +4,7 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-namespace KubeClient.WebSockets
+namespace KubeClient.Extensions.WebSockets
 {
     /// <summary>
     ///     Options for connecting to Kubernetes web sockets.
@@ -56,7 +56,7 @@ namespace KubeClient.WebSockets
         /// <summary>
         ///     An <see cref="SslProtocols"/> value representing the SSL protocols that the client supports.
         /// </summary>
-        public SslProtocols EnabledSslProtocols { get; set; } = SslProtocols.Default;
+        public SslProtocols EnabledSslProtocols { get; set; } = SslProtocols.Tls;
         
         /// <summary>
         ///     The WebSocket keep-alive interval.
