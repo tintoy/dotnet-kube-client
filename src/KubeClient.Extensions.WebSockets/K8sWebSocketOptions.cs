@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -36,7 +37,7 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     Custom request headers (if any).
         /// </summary>
-        public Dictionary<string, string> RequestHeaders { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> RequestHeaders { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         ///     Requested sub-protocols (if any).
@@ -62,5 +63,63 @@ namespace KubeClient.Extensions.WebSockets
         ///     The WebSocket keep-alive interval.
         /// </summary>
         public TimeSpan KeepAliveInterval { get; set; } = TimeSpan.FromSeconds(5);
+
+        /// <summary>
+        ///     Create <see cref="K8sWebSocketOptions"/> using the client's authentication settings.
+        /// </summary>
+        /// <param name="client">
+        ///     The <see cref="KubeApiClient"/>.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="K8sWebSocketOptions"/>.
+        /// </returns>
+        public static K8sWebSocketOptions FromClientOptions(KubeApiClient client)
+        {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+            
+            var socketOptions = new K8sWebSocketOptions();
+
+            KubeClientOptions clientOptions = client.GetClientOptions();
+            
+            if (!String.IsNullOrWhiteSpace(clientOptions.AccessToken))
+                socketOptions.RequestHeaders["Authorization"] = $"Bearer {clientOptions.AccessToken}";
+
+            if (clientOptions.ClientCertificate != null)
+                socketOptions.ClientCertificates.Add(clientOptions.ClientCertificate);
+
+            if (clientOptions.CertificationAuthorityCertificate != null)
+            {
+                socketOptions.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+				{
+					if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors)
+						return false;
+
+					try
+					{
+						using (X509Chain certificateChain = new X509Chain())
+						{
+							certificateChain.ChainPolicy.ExtraStore.Add(clientOptions.CertificationAuthorityCertificate);
+							certificateChain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+							certificateChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+							
+							return certificateChain.Build(
+                                (X509Certificate2)certificate
+                            );
+						}
+					}
+					catch (Exception chainException)
+					{
+                        Debug.WriteLine(chainException);
+
+						return false;
+					}
+				};
+            }
+            else if (clientOptions.AllowInsecure)
+                socketOptions.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+
+            return socketOptions;
+        }
     }
 }

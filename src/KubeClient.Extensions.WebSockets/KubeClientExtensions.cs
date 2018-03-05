@@ -30,16 +30,13 @@ namespace KubeClient
         /// <param name="uriTemplateParameters">
         ///     The <typeparamref name="TParameters"/> whose properties will be used as template parameters.
         /// </param>
-        /// <param name="webSocketOptions">
-        ///     <see cref="K8sWebSocketOptions"/> used to configure the WebSocket connection.
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional cancellation token that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket<TParameters>(this KubeApiClient client, string targetUri, TParameters uriTemplateParameters, K8sWebSocketOptions webSocketOptions, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket<TParameters>(this KubeApiClient client, string targetUri, TParameters uriTemplateParameters, CancellationToken cancellationToken = default)
             where TParameters : class
         {
             if (client == null)
@@ -47,9 +44,6 @@ namespace KubeClient
             
             if (uriTemplateParameters == null)
                 throw new ArgumentNullException(nameof(uriTemplateParameters));
-
-            if (webSocketOptions == null)
-                throw new ArgumentNullException(nameof(webSocketOptions));
 
             var parameters = new Dictionary<string, string>();
             
@@ -69,7 +63,7 @@ namespace KubeClient
                 );
 			}
 
-            return client.ConnectWebSocket(new UriTemplate(targetUri), parameters, webSocketOptions, cancellationToken);
+            return client.ConnectWebSocket(new UriTemplate(targetUri), parameters, cancellationToken);
         }
 
         /// <summary>
@@ -84,16 +78,13 @@ namespace KubeClient
         /// <param name="templateParameters">
         ///     A <see cref="Dictionary{TKey, TValue}"/> containing the template parameters.
         /// </param>
-        /// <param name="webSocketOptions">
-        ///     <see cref="K8sWebSocketOptions"/> used to configure the WebSocket connection.
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional cancellation token that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, UriTemplate targetUri, Dictionary<string, string> templateParameters, K8sWebSocketOptions webSocketOptions, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, UriTemplate targetUri, Dictionary<string, string> templateParameters, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -106,7 +97,6 @@ namespace KubeClient
             
             return client.ConnectWebSocket(
                 targetUri.Populate(client.ApiEndPoint, templateParameters),
-                webSocketOptions,
                 cancellationToken
             );
         }
@@ -120,27 +110,21 @@ namespace KubeClient
         /// <param name="targetUri">
         ///     The target URI.
         /// </param>
-        /// <param name="webSocketOptions">
-        ///     <see cref="K8sWebSocketOptions"/> used to configure the WebSocket connection.
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional cancellation token that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, string targetUri, K8sWebSocketOptions webSocketOptions, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, string targetUri, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
             
             if (String.IsNullOrWhiteSpace(targetUri))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'targetUri'.", nameof(targetUri));
-
-            if (webSocketOptions == null)
-                throw new ArgumentNullException(nameof(webSocketOptions));
             
-            return client.ConnectWebSocket(new Uri(client.ApiEndPoint, targetUri), webSocketOptions, cancellationToken);
+            return client.ConnectWebSocket(new Uri(client.ApiEndPoint, targetUri), cancellationToken);
         }
 
         /// <summary>
@@ -152,16 +136,13 @@ namespace KubeClient
         /// <param name="targetUri">
         ///     The target URI.
         /// </param>
-        /// <param name="webSocketOptions">
-        ///     <see cref="K8sWebSocketOptions"/> used to configure the WebSocket connection.
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional cancellation token that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, Uri targetUri, K8sWebSocketOptions webSocketOptions, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -175,8 +156,7 @@ namespace KubeClient
             if (targetUri.Scheme != "ws" && targetUri.Scheme != "wss")
                 throw new ArgumentException($"Target URI has invalid scheme '{targetUri.Scheme} (expected 'ws' or 'wss').", nameof(targetUri));
 
-            if (webSocketOptions == null)
-                throw new ArgumentNullException(nameof(webSocketOptions));
+            K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
 
             return K8sWebSocket.ConnectAsync(targetUri, webSocketOptions, cancellationToken);
         }

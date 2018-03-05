@@ -69,7 +69,7 @@ namespace KubeClient
                 if (targetUser == null)
                     throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
 
-                kubeClientOptions.ApiEndPoint = targetCluster.Config.Server;
+                kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                 kubeClientOptions.KubeNamespace = defaultNamespace;
                 
                 kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
@@ -142,7 +142,7 @@ namespace KubeClient
                 if (targetUser == null)
                     throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
 
-                kubeClientOptions.ApiEndPoint = targetCluster.Config.Server;
+                kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                 kubeClientOptions.KubeNamespace = defaultNamespace;
                 kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
                 kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
@@ -199,7 +199,7 @@ namespace KubeClient
                     if (targetUser == null)
                         throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
 
-                    kubeClientOptions.ApiEndPoint = targetCluster.Config.Server;
+                    kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                     kubeClientOptions.KubeNamespace = defaultNamespace;
                     
                     kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();

@@ -9,6 +9,27 @@ namespace KubeClient
     public class KubeClientOptions
     {
         /// <summary>
+        ///     Create new <see cref="KubeClientOptions"/>.
+        /// </summary>
+        public KubeClientOptions()
+        {
+        }
+
+        /// <summary>
+        ///     Create new <see cref="KubeClientOptions"/>.
+        /// </summary>
+        /// <param name="apiEndPoint">
+        ///     The base address of the Kubernetes API end-point.
+        /// </param>
+        public KubeClientOptions(string apiEndPoint)
+        {
+            if (String.IsNullOrWhiteSpace(apiEndPoint))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiEndPoint'.", nameof(apiEndPoint));
+
+            ApiEndPoint = new Uri(apiEndPoint);
+        }
+
+        /// <summary>
         ///     The default Kubernetes namespace to use when no specific namespace is specified.
         /// </summary>
         public string KubeNamespace { get; set; } = "default";
@@ -16,7 +37,7 @@ namespace KubeClient
         /// <summary>
         ///     The base address of the Kubernetes API end-point.
         /// </summary>
-        public string ApiEndPoint { get; set; }
+        public Uri ApiEndPoint { get; set; }
 
         /// <summary>
         ///     The access token used to authenticate to the Kubernetes API.
@@ -56,7 +77,7 @@ namespace KubeClient
         /// </returns>
         public KubeClientOptions EnsureValid()
         {
-            if (!Uri.TryCreate(ApiEndPoint, UriKind.Absolute, out _))
+            if (ApiEndPoint == null || !ApiEndPoint.IsAbsoluteUri)
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid API end-point.");
 
             if (ClientCertificate != null && !ClientCertificate.HasPrivateKey)
@@ -66,6 +87,27 @@ namespace KubeClient
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid default namespace.");
 
             return this;
+        }
+
+        /// <summary>
+        ///     Create a copy of the <see cref="KubeClientOptions"/>.
+        /// </summary>
+        /// <returns>
+        ///     The new <see cref="KubeClientOptions"/>.
+        /// </returns>
+        public KubeClientOptions Clone()
+        {
+            return new KubeClientOptions
+            {
+                ApiEndPoint = ApiEndPoint,
+                AccessToken = AccessToken,
+                AllowInsecure = AllowInsecure,
+                CertificationAuthorityCertificate = CertificationAuthorityCertificate,
+                ClientCertificate = ClientCertificate,
+                KubeNamespace = KubeNamespace,
+                LogHeaders = LogHeaders,
+                LogPayloads = LogPayloads
+            };
         }
     }
 }

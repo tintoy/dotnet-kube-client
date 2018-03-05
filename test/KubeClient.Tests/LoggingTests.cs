@@ -55,7 +55,8 @@ namespace KubeClient.Tests
                 )
 			));
 
-            using (KubeApiClient kubeClient = KubeApiClient.Create(httpClient))
+            KubeClientOptions clientOptions = new KubeClientOptions("http://localhost:1234");
+            using (KubeApiClient kubeClient = KubeApiClient.Create(httpClient, clientOptions))
             {
                 PodV1 pod = await kubeClient.PodsV1().Get(name: "foo");
                 Assert.Null(pod);
@@ -121,7 +122,8 @@ namespace KubeClient.Tests
                 )
 			));
 
-            using (KubeApiClient kubeClient = KubeApiClient.Create(httpClient))
+            KubeClientOptions clientOptions = new KubeClientOptions("http://localhost:1234");
+            using (KubeApiClient kubeClient = KubeApiClient.Create(httpClient, clientOptions))
             {
                 PodV1 pod = await kubeClient.PodsV1().Get(name: "foo");
                 Assert.NotNull(pod);

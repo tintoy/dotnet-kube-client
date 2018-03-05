@@ -34,12 +34,16 @@ namespace KubeClient
         /// <param name="httpClient">
         ///     The underlying HTTP client.
         /// </param>
-        KubeApiClient(HttpClient httpClient)
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
+        /// </param>
+        KubeApiClient(HttpClient httpClient, KubeClientOptions options)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
 
             Http = httpClient;
+            Options = options.Clone();
         }
 
         /// <summary>
@@ -55,12 +59,25 @@ namespace KubeClient
         /// <summary>
         ///     The base address of the Kubernetes API end-point targeted by the client.
         /// </summary>
-        public Uri ApiEndPoint => Http.BaseAddress;
+        public Uri ApiEndPoint => Options.ApiEndPoint;
 
         /// <summary>
         ///     The underlying HTTP client.
         /// </summary>
         internal HttpClient Http { get; }
+
+        /// <summary>
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
+        /// </summary>
+        KubeClientOptions Options { get; }
+
+        /// <summary>
+        ///     Get a copy of the <see cref="KubeClientOptions"/> used to configure the client.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="KubeClientOptions"/>.
+        /// </returns>
+        public KubeClientOptions GetClientOptions() => Options.Clone();
 
         /// <summary>
         ///     Get or create a Kubernetes resource client of the specified type.
@@ -143,7 +160,7 @@ namespace KubeClient
                 );
             }
 
-            return Create(httpClient, options.KubeNamespace);
+            return Create(httpClient, options);
         }
 
         /// <summary>
@@ -152,25 +169,28 @@ namespace KubeClient
         /// <param name="httpClient">
         ///     The <see cref="HttpClient"/> to communicate with the Kubernetes API.
         /// </param>
-        /// <param name="defaultNamespace">
-        ///     The default Kubernetes namespace to use.
-        /// 
-        ///     Defaults to "default" if not specified.
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        internal static KubeApiClient Create(HttpClient httpClient, string defaultNamespace = "default")
+        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
+
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
             
             if (httpClient.BaseAddress == null)
                 throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
 
-            return new KubeApiClient(httpClient)
+            options.EnsureValid();
+
+            return new KubeApiClient(httpClient, options)
             {
-                DefaultNamespace = defaultNamespace
+                DefaultNamespace = options.KubeNamespace
             };
         }
 
@@ -196,7 +216,7 @@ namespace KubeClient
         {
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = apiEndPoint,
+                ApiEndPoint = new Uri(apiEndPoint),
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = expectServerCertificate
             }, logger);
@@ -224,7 +244,7 @@ namespace KubeClient
         {
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = apiEndPoint,
+                ApiEndPoint = new Uri(apiEndPoint),
                 ClientCertificate = clientCertificate,
                 CertificationAuthorityCertificate = expectServerCertificate
             }, logger);
@@ -248,7 +268,7 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(kubeServiceHost))
                 throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
 
-            var baseAddress = $"https://kubernetes/";
+            var apiEndPoint = $"https://kubernetes/";
             string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
             var kubeCACertificate = new X509Certificate2(
                 File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
@@ -256,7 +276,7 @@ namespace KubeClient
 
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = baseAddress,
+                ApiEndPoint = new Uri(apiEndPoint),
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate
             }, logger);
