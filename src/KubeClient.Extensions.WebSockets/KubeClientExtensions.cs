@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace KubeClient
 {
     using Extensions.WebSockets;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     ///     WebSockets extension methods for <see cref="KubeClient"/>.
@@ -205,10 +206,13 @@ namespace KubeClient
         /// <param name="outputStreamIndexes">
         ///     An array of bytes containing the indexes of the expected output streams.
         /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="K8sMultiplexer"/>.
         /// </returns>
-        public static K8sMultiplexer Multiplexed(this WebSocket websocket, byte[] inputStreamIndexes = null, byte[] outputStreamIndexes = null)
+        public static K8sMultiplexer Multiplexed(this WebSocket websocket, byte[] inputStreamIndexes = null, byte[] outputStreamIndexes = null, ILoggerFactory loggerFactory = null)
         {
             if (websocket == null)
                 throw new ArgumentNullException(nameof(websocket));
@@ -216,10 +220,13 @@ namespace KubeClient
             if (!(inputStreamIndexes?.Length > 0 || outputStreamIndexes?.Length > 0))
                 throw new ArgumentException($"Must specify at least one of {nameof(inputStreamIndexes)} or {nameof(outputStreamIndexes)}.");
 
+            if (loggerFactory == null)
+                loggerFactory = new LoggerFactory();
+
             K8sMultiplexer multiplexer = null;
             try
             {
-                multiplexer = new K8sMultiplexer(websocket, inputStreamIndexes, outputStreamIndexes);
+                multiplexer = new K8sMultiplexer(websocket, inputStreamIndexes, outputStreamIndexes, loggerFactory);
                 multiplexer.Start();
 
                 return multiplexer;
@@ -243,10 +250,13 @@ namespace KubeClient
         /// <param name="outputStreamIndexes">
         ///     An array of bytes containing the indexes of the expected output streams.
         /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="K8sMultiplexer"/>.
         /// </returns>
-        public static async Task<K8sMultiplexer> Multiplexed(this Task<WebSocket> webSocketTask, byte[] inputStreamIndexes = null, byte[] outputStreamIndexes = null)
+        public static async Task<K8sMultiplexer> Multiplexed(this Task<WebSocket> webSocketTask, byte[] inputStreamIndexes = null, byte[] outputStreamIndexes = null, ILoggerFactory loggerFactory = null)
         {
             if (webSocketTask == null)
                 throw new ArgumentNullException(nameof(webSocketTask));
@@ -255,7 +265,7 @@ namespace KubeClient
 
             try
             {
-                return webSocket.Multiplexed(inputStreamIndexes, outputStreamIndexes);
+                return webSocket.Multiplexed(inputStreamIndexes, outputStreamIndexes, loggerFactory);
             }
             catch (Exception)
             {

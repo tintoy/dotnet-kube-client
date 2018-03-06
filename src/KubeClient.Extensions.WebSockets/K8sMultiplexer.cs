@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Extensions.WebSockets
 {
+    using Microsoft.Extensions.Logging;
     using Streams;
 
     /// <summary>
@@ -69,7 +70,10 @@ namespace KubeClient.Extensions.WebSockets
         /// <param name="outputStreamIndexes">
         ///     An array of bytes containing the indexes of the expected output streams.
         /// </param>
-        public K8sMultiplexer(WebSocket socket, byte[] inputStreamIndexes, byte[] outputStreamIndexes)
+        /// <param name="loggerFactory">
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
+        public K8sMultiplexer(WebSocket socket, byte[] inputStreamIndexes, byte[] outputStreamIndexes, ILoggerFactory loggerFactory)
         {
             if (socket == null)
                 throw new ArgumentNullException(nameof(socket));
@@ -82,14 +86,18 @@ namespace KubeClient.Extensions.WebSockets
 
             if (inputStreamIndexes.Length == 0 && outputStreamIndexes.Length == 0)
                 throw new ArgumentException($"Must specify at least one of {nameof(inputStreamIndexes)} or {nameof(outputStreamIndexes)}.");
+
+            if (loggerFactory == null)
+                throw new ArgumentNullException(nameof(loggerFactory));
             
+            Log = loggerFactory.CreateLogger<K8sMultiplexer>();
             Socket = socket;
 
             foreach (byte inputStreamIndex in inputStreamIndexes)
-                _inputStreams[inputStreamIndex] = new K8sMultiplexedReadStream(inputStreamIndex);
+                _inputStreams[inputStreamIndex] = new K8sMultiplexedReadStream(inputStreamIndex, loggerFactory);
 
             foreach (byte outputStreamIndex in outputStreamIndexes)
-                _outputStreams[outputStreamIndex] = new K8sMultiplexedWriteStream(outputStreamIndex, EnqueueSend);
+                _outputStreams[outputStreamIndex] = new K8sMultiplexedWriteStream(outputStreamIndex, EnqueueSend, loggerFactory);
         }
 
         /// <summary>
@@ -127,6 +135,11 @@ namespace KubeClient.Extensions.WebSockets
         ///     The target WebSocket.
         /// </summary>
         WebSocket Socket { get; }
+        
+        /// <summary>
+        ///     The multiplexer's log facility.
+        /// </summary>
+        ILogger Log { get; }
 
         /// <summary>
         ///     The <see cref="CancellationToken"/> used to halt the multiplexer's operation.

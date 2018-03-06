@@ -83,9 +83,8 @@ namespace KubeClient
                     Container = container,
                     KubeNamespace = kubeNamespace ?? podClient.KubeClient.DefaultNamespace
                 }, cancellation)
-                .Multiplexed(
-                    inputStreamIndexes,
-                    outputStreamIndexes
+                .Multiplexed(inputStreamIndexes, outputStreamIndexes,
+                    loggerFactory: podClient.KubeClient.LoggerFactory()
                 );
         }
     }

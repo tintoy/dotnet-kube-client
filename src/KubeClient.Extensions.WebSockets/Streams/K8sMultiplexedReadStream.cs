@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -31,9 +32,13 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// <param name="streamIndex">
         ///     The Kubernetes stream index of the target input stream.
         /// </param>
-        public K8sMultiplexedReadStream(byte streamIndex)
+        /// <param name="loggerFactory">
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
+        public K8sMultiplexedReadStream(byte streamIndex, ILoggerFactory loggerFactory)
         {
             StreamIndex = streamIndex;
+            Log = loggerFactory.CreateLogger<K8sMultiplexedReadStream>();
         }
 
         /// <summary>
@@ -77,6 +82,11 @@ namespace KubeClient.Extensions.WebSockets.Streams
         ///     The stream position (not supported).
         /// </summary>
         public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        /// <summary>
+        ///     The stream's log facility.
+        /// </summary>
+        ILogger Log { get; }
 
         /// <summary>
         ///     Read data from the stream.

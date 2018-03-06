@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.IO;
@@ -23,13 +24,17 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// <param name="sendAsync">
         ///     A delegate used to asynchronously send outgoing data.
         /// </param>
-        public K8sMultiplexedWriteStream(byte streamIndex, Func<ArraySegment<byte>, CancellationToken, Task> sendAsync)
+        /// <param name="loggerFactory">
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
+        public K8sMultiplexedWriteStream(byte streamIndex, Func<ArraySegment<byte>, CancellationToken, Task> sendAsync, ILoggerFactory loggerFactory)
         {
             if (sendAsync == null)
                 throw new ArgumentNullException(nameof(sendAsync));
 
             StreamIndex = streamIndex;
             SendAsync = sendAsync;
+            Log = loggerFactory.CreateLogger<K8sMultiplexedReadStream>();
         }
 
         /// <summary>
@@ -66,6 +71,11 @@ namespace KubeClient.Extensions.WebSockets.Streams
         ///     The stream position (not supported).
         /// </summary>
         public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        /// <summary>
+        ///     The stream's log facility.
+        /// </summary>
+        ILogger Log { get; }
 
         /// <summary>
         ///     Flush pending data (a no-op for this implementation).

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Microsoft.Extensions.Logging;
     using Models;
 
     /// <summary>
@@ -65,6 +66,11 @@ namespace KubeClient.ResourceClients
         ///     The underlying HTTP client.
         /// </summary>
         protected HttpClient Http => KubeClient.Http;
+
+        /// <summary>
+        ///     An <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </summary>
+        protected ILoggerFactory LoggerFactory => KubeClient.LoggerFactory;
 
         /// <summary>
         ///     Get a single resource, returning <c>null</c> if it does not exist.
