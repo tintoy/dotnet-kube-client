@@ -434,9 +434,9 @@ namespace KubeClient.Extensions.WebSockets
                         try
                         {
                             dataWithPrefix[0] = pendingSend.StreamIndex;
-                            Array.Copy(pendingSend.Data.Array, 0, dataWithPrefix, 1, pendingSend.Data.Count);
+                            Array.Copy(pendingSend.Data.Array, pendingSend.Data.Offset, dataWithPrefix, 1, pendingSend.Data.Count);
 
-                            await Socket.SendAsync(dataWithPrefix,
+                            await Socket.SendAsync(new ArraySegment<byte>(dataWithPrefix, 0, pendingSend.Data.Count + 1),
                                 WebSocketMessageType.Binary,
                                 endOfMessage: true,
                                 cancellationToken: linkedCancellation.Token
