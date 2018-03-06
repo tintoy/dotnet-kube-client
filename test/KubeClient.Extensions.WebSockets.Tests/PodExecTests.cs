@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -29,9 +30,12 @@ namespace KubeClient.Extensions.WebSockets.Tests
             const string expectedPrompt = "/root # ";
             const string expectedCommand = "ls -l /root";
 
-            CancellationSource.CancelAfter(
-                TimeSpan.FromSeconds(5)
-            );
+            if (!Debugger.IsAttached)
+            {
+                CancellationSource.CancelAfter(
+                    TimeSpan.FromSeconds(5)
+                );
+            }
             await Host.StartAsync(Cancellation);
 
             using (KubeApiClient client = CreateTestClient())
@@ -84,7 +88,7 @@ namespace KubeClient.Extensions.WebSockets.Tests
                     WebSocketReceiveResult receiveResult = await serverSocket.ReceiveAsync(receiveBuffer, Cancellation);
                     Assert.Equal(0 /* STDIN */, receiveBuffer[0]);
 
-                    string command = Encoding.ASCII.GetString(receiveBuffer, 1, receiveResult.Count);
+                    string command = Encoding.ASCII.GetString(receiveBuffer, 1, receiveResult.Count - 1);
                     Assert.Equal(expectedCommand, command);
 
                     // Close enough; we're done.
