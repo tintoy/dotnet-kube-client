@@ -27,7 +27,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// <param name="loggerFactory">
         ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
-        public K8sMultiplexedWriteStream(byte streamIndex, Func<ArraySegment<byte>, CancellationToken, Task> sendAsync, ILoggerFactory loggerFactory)
+        public K8sMultiplexedWriteStream(byte streamIndex, Func<byte, ArraySegment<byte>, CancellationToken, Task> sendAsync, ILoggerFactory loggerFactory)
         {
             if (sendAsync == null)
                 throw new ArgumentNullException(nameof(sendAsync));
@@ -45,7 +45,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// <summary>
         ///     A delegate used to asynchronously send outgoing data.
         /// </summary>
-        public Func<ArraySegment<byte>, CancellationToken, Task> SendAsync { get; }
+        public Func<byte, ArraySegment<byte>, CancellationToken, Task> SendAsync { get; }
 
         /// <summary>
         ///     Does the stream support reading?
@@ -98,21 +98,9 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// </param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            byte[] dataWithPrefix = ArrayPool<byte>.Shared.Rent(count + 1);
-
-            try
-            {
-                dataWithPrefix[0] = StreamIndex;
-                Array.Copy(buffer, 0, dataWithPrefix, 1, buffer.Length);
-
-                SendAsync(dataWithPrefix, CancellationToken.None)
-                    .GetAwaiter()
-                    .GetResult();
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(dataWithPrefix, clearArray: true);
-            }
+            SendAsync(StreamIndex, new ArraySegment<byte>(buffer, offset, count), CancellationToken.None)
+                .GetAwaiter()
+                .GetResult();
         }
 
         /// <summary>
@@ -132,18 +120,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// </param>
         public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            byte[] dataWithPrefix = ArrayPool<byte>.Shared.Rent(count + 1);
-            try
-            {
-                dataWithPrefix[0] = StreamIndex;
-                Array.Copy(buffer, 0, dataWithPrefix, 1, buffer.Length);
-
-                await SendAsync(new ArraySegment<byte>(dataWithPrefix), cancellationToken);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(dataWithPrefix, clearArray: true);
-            }
+            await SendAsync(StreamIndex, new ArraySegment<byte>(buffer, offset, count), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

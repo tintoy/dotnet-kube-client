@@ -41,7 +41,7 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     Pending write requests from output streams that will be interleaved and written to the WebSocket.
         /// </summary>
-        readonly BlockingCollection<PendingSend> _pendingWrites = new BlockingCollection<PendingSend>(new ConcurrentQueue<PendingSend>());
+        readonly BlockingCollection<PendingSend> _pendingSends = new BlockingCollection<PendingSend>(new ConcurrentQueue<PendingSend>());
 
         /// <summary>
         ///     A source for cancellation tokens used to halt the multiplexer's operation.
@@ -234,9 +234,9 @@ namespace KubeClient.Extensions.WebSockets
             Log.LogTrace("Waiting for send / receive pumps to shut down...");
 
             Task timeout = Task.Delay(TimeSpan.FromMilliseconds(100), cancellation);
-            Task firstCompleted = await Task.WhenAny(Task.WhenAll(_sendPump, _receivePump), timeout);
+            Task firstCompleted = await Task.WhenAny(Task.WhenAll(_sendPump, _receivePump), timeout).ConfigureAwait(false);
             if (ReferenceEquals(firstCompleted, timeout))
-                await timeout; // Propagate exception from cancellation (if required), but not from stopping the send / receive pumps.
+                await timeout.ConfigureAwait(false); // Propagate exception from cancellation (if required), but not from stopping the send / receive pumps.
 
             _sendPump = null;
             _receivePump = null;
@@ -249,7 +249,7 @@ namespace KubeClient.Extensions.WebSockets
                      WebSocketCloseStatus.NormalClosure,
                     "Connection closed.",
                     CancellationToken.None
-                );
+                ).ConfigureAwait(false);
 
                 Log.LogTrace("WebSocket closed.");
             }
@@ -262,6 +262,9 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     Enqueue a send operation (asynchronously write data to the outgoing stream).
         /// </summary>
+        /// <param name="streamIndex">
+        ///     The index of the target stream.
+        /// </param>
         /// <param name="data">
         ///     The data to write.
         /// </param>
@@ -271,19 +274,19 @@ namespace KubeClient.Extensions.WebSockets
         /// <returns>
         ///     A <see cref="Task"/> representing the asynchronous operation.
         /// </returns>
-        Task EnqueueSend(ArraySegment<byte> data, CancellationToken cancellation)
+        Task EnqueueSend(byte streamIndex, ArraySegment<byte> data, CancellationToken cancellation)
         {
-            Log.LogTrace("Enqueuing {DataLength} bytes for send...", data.Count);
+            Log.LogTrace("Enqueuing {DataLength} bytes for sending on stream {StreamIndex}...", data.Count, streamIndex);
 
-            PendingSend pendingWrite = new PendingSend(data, cancellation);
+            PendingSend pendingSend = new PendingSend(streamIndex, data, cancellation);
             cancellation.Register(
-                () => pendingWrite.Completion.TrySetCanceled(cancellation)
+                () => pendingSend.Completion.TrySetCanceled(cancellation)
             );
-            _pendingWrites.Add(pendingWrite);
+            _pendingSends.Add(pendingSend);
 
-            Log.LogTrace("Enqueued {DataLength} bytes for send.", data.Count);
+            Log.LogTrace("Enqueued {DataLength} bytes for sending on stream {StreamIndex}.", data.Count, streamIndex);
 
-            return pendingWrite.Completion.Task;
+            return pendingSend.Completion.Task;
         }
 
         /// <summary>
@@ -297,7 +300,7 @@ namespace KubeClient.Extensions.WebSockets
             // Capture our cancellation token so it works even if the source is disposed.
             CancellationToken cancellation = Cancellation;
 
-            await Task.Yield();    
+            await Task.Yield();
 
             Log.LogTrace("Message-receive pump started.");
 
@@ -311,7 +314,7 @@ namespace KubeClient.Extensions.WebSockets
                         ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize)
                     );
 
-                    WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, cancellation);
+                    WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
                     if (readResult.Count <= 1 && readResult.EndOfMessage)
                     {
                         // Effectively an empty packet; ignore.
@@ -336,7 +339,7 @@ namespace KubeClient.Extensions.WebSockets
 
                         // Unknown stream; discard the rest of the message.
                         while (!readResult.EndOfMessage)
-                            readResult = await Socket.ReceiveAsync(buffer, cancellation);
+                            readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
 
                         ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
 
@@ -358,7 +361,7 @@ namespace KubeClient.Extensions.WebSockets
                         buffer = new ArraySegment<byte>(
                             ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize)
                         );
-                        readResult = await Socket.ReceiveAsync(buffer, cancellation);
+                        readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
                         if (readResult.Count == 0 || readResult.MessageType != WebSocketMessageType.Binary)
                         {
                             ArrayPool<byte>.Shared.Return(buffer.Array);
@@ -420,33 +423,38 @@ namespace KubeClient.Extensions.WebSockets
             {
                 while (!Cancellation.IsCancellationRequested)
                 {
-                    PendingSend pendingWrite;
-                    if (!_pendingWrites.TryTake(out pendingWrite, Timeout.Infinite, Cancellation))
+                    PendingSend pendingSend;
+                    if (!_pendingSends.TryTake(out pendingSend, Timeout.Infinite, Cancellation))
                         continue;
 
-                    using (CancellationTokenSource linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation, pendingWrite.Cancellation))
+                    using (CancellationTokenSource linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation, pendingSend.Cancellation))
                     {
+                        byte[] dataWithPrefix = ArrayPool<byte>.Shared.Rent(pendingSend.Data.Count + 1);
+
                         try
                         {
-                            await Socket.SendAsync(pendingWrite.Data,
+                            dataWithPrefix[0] = pendingSend.StreamIndex;
+                            Array.Copy(pendingSend.Data.Array, 0, dataWithPrefix, 1, pendingSend.Data.Count);
+
+                            await Socket.SendAsync(dataWithPrefix,
                                 WebSocketMessageType.Binary,
                                 endOfMessage: true,
                                 cancellationToken: linkedCancellation.Token
-                            );
+                            ).ConfigureAwait(false);
 
-                            pendingWrite.Completion.TrySetResult(null);
+                            pendingSend.Completion.TrySetResult(null);
                         }
                         catch (OperationCanceledException sendCancelled) when (sendCancelled.CancellationToken == linkedCancellation.Token)
                         {
-                            pendingWrite.Completion.TrySetCanceled(sendCancelled.CancellationToken);
+                            pendingSend.Completion.TrySetCanceled(sendCancelled.CancellationToken);
                         }
                         catch (Exception writeFailed)
                         {
-                            pendingWrite.Completion.TrySetException(writeFailed);
+                            pendingSend.Completion.TrySetException(writeFailed);
                         }
                         finally
                         {
-                            ArrayPool<byte>.Shared.Return(pendingWrite.Data.Array, clearArray: true);
+                            ArrayPool<byte>.Shared.Return(dataWithPrefix, clearArray: true);
                         }
                     }
                 }
@@ -474,20 +482,29 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     Create a new <see cref="PendingSend"/>.
         /// </summary>
+        /// <param name="streamIndex">
+        ///     The index of the target stream.
+        /// </param>
         /// <param name="data">
         ///     The data (including stream-index prefix) to be written to the web socket.
         /// </param>
         /// <param name="cancellation">
         ///     A cancellation token to that can be used to cancel the send operation.
         /// </param>
-        public PendingSend(ArraySegment<byte> data, CancellationToken cancellation)
+        public PendingSend(byte streamIndex, ArraySegment<byte> data, CancellationToken cancellation)
         {
             if (data.Array == null)
                 throw new ArgumentNullException(nameof(data));
 
+            StreamIndex = streamIndex;
             Data = data;
             Cancellation = cancellation;
         }
+
+        /// <summary>
+        ///     The index of the target stream.
+        /// </summary>
+        public byte StreamIndex { get; }
 
         /// <summary>
         ///     The data (including stream-index prefix) to be written to the web socket.
