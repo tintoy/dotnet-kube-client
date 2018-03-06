@@ -98,6 +98,13 @@ namespace KubeClient.Extensions.WebSockets
 
             foreach (byte outputStreamIndex in outputStreamIndexes)
                 _outputStreams[outputStreamIndex] = new K8sMultiplexedWriteStream(outputStreamIndex, EnqueueSend, loggerFactory);
+
+            Log.LogTrace("K8sMultiplexer created with {InputStreamCount} input streams (indexes: [{InputStreamIndexes}]) and {OutputStreamCount} output streams (indexes: [{OutputStreamIndexes}]).",
+                _inputStreams.Count,
+                String.Join(", ", _inputStreams.Keys),
+                _outputStreams.Count,
+                String.Join(", ", _outputStreams.Keys)
+            );
         }
 
         /// <summary>
@@ -105,6 +112,8 @@ namespace KubeClient.Extensions.WebSockets
         /// </summary>
         public void Dispose()
         {
+            Log.LogTrace("Disposing...");
+
             try
             {
                 if (_receivePump != null || _sendPump != null)
@@ -118,17 +127,21 @@ namespace KubeClient.Extensions.WebSockets
             {
                 stopFailed.Flatten().Handle(exception =>
                 {
-                    System.Diagnostics.Debug.WriteLine(stopFailed);
+                    Log.LogError(EventIds.K8sMultiplexer.DisposeStopError, stopFailed, "An unexpected error occurred during disposal of the K8sMultiplexer (failed to stop the send / receive loop).");
 
                     return true;
                 });
             }
+
+            Log.LogTrace("Disposing K8sMultiplexer input / output channel streams...");
 
             foreach (Stream inputStream in _inputStreams.Values)
                 inputStream.Dispose();
 
             foreach (Stream outputStream in _outputStreams.Values)
                 outputStream.Dispose();
+
+            Log.LogTrace("Disposal complete.");
         }
 
         /// <summary>
@@ -207,12 +220,18 @@ namespace KubeClient.Extensions.WebSockets
             if (_sendPump == null && _receivePump == null)
                 throw new InvalidOperationException("Send / receive pumps are not running.");
 
+            Log.LogTrace("Shutting down...");
+
             if (_cancellationSource != null)
             {
+                Log.LogTrace("Initiating cancellation of the send / receive pumps...");
+
                 _cancellationSource.Cancel();
                 _cancellationSource.Dispose();
                 _cancellationSource = null;
             }
+
+            Log.LogTrace("Waiting for send / receive pumps to shut down...");
 
             Task timeout = Task.Delay(TimeSpan.FromMilliseconds(100), cancellation);
             Task firstCompleted = await Task.WhenAny(Task.WhenAll(_sendPump, _receivePump), timeout);
@@ -224,12 +243,20 @@ namespace KubeClient.Extensions.WebSockets
 
             if (Socket.State == WebSocketState.Open)
             {
+                Log.LogTrace("Closing WebSocket...");
+
                 await Socket.CloseAsync(
                      WebSocketCloseStatus.NormalClosure,
                     "Connection closed.",
                     CancellationToken.None
                 );
+
+                Log.LogTrace("WebSocket closed.");
             }
+            else
+                Log.LogTrace("Not closing WebSocket (current state is {WebSocketState}).", Socket.State);
+
+            Log.LogTrace("Shutdown complete.");
         }
 
         /// <summary>
@@ -246,11 +273,15 @@ namespace KubeClient.Extensions.WebSockets
         /// </returns>
         Task EnqueueSend(ArraySegment<byte> data, CancellationToken cancellation)
         {
+            Log.LogTrace("Enqueuing {DataLength} bytes for send...", data.Count);
+
             PendingSend pendingWrite = new PendingSend(data, cancellation);
             cancellation.Register(
                 () => pendingWrite.Completion.TrySetCanceled(cancellation)
             );
             _pendingWrites.Add(pendingWrite);
+
+            Log.LogTrace("Enqueued {DataLength} bytes for send.", data.Count);
 
             return pendingWrite.Completion.Task;
         }
@@ -266,7 +297,9 @@ namespace KubeClient.Extensions.WebSockets
             // Capture our cancellation token so it works even if the source is disposed.
             CancellationToken cancellation = Cancellation;
 
-            await Task.Yield();            
+            await Task.Yield();    
+
+            Log.LogTrace("Message-receive pump started.");
 
             ArraySegment<byte> buffer;
 
@@ -289,15 +322,25 @@ namespace KubeClient.Extensions.WebSockets
 
                     // Extract stream index.
                     byte streamIndex = buffer[0];
+
+                    Log.LogTrace("Received {DataLength} bytes for stream {StreamIndex} (EndOfMessage = {EndOfMessage}).",
+                        readResult.Count - 1,
+                        streamIndex,
+                        readResult.EndOfMessage
+                    );
                     
                     K8sMultiplexedReadStream readStream;
                     if (!_inputStreams.TryGetValue(streamIndex, out readStream))
                     {
+                        Log.LogTrace("Stream {StreamIndex} is not registered; ignoring data...", streamIndex);
+
                         // Unknown stream; discard the rest of the message.
                         while (!readResult.EndOfMessage)
                             readResult = await Socket.ReceiveAsync(buffer, cancellation);
 
                         ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
+
+                        Log.LogTrace("Ignored remaining data for stream {StreamIndex}.", streamIndex);
 
                         continue;
                     }
@@ -323,6 +366,12 @@ namespace KubeClient.Extensions.WebSockets
                             break;
                         }
 
+                        Log.LogTrace("Received {DataLength} additional bytes for stream {StreamIndex} (EndOfMessage = {EndOfMessage}).",
+                            readResult.Count,
+                            streamIndex,
+                            readResult.EndOfMessage
+                        );
+
                         buffer = new ArraySegment<byte>(buffer.Array,
                             offset: buffer.Offset,
                             count: readResult.Count - 1
@@ -337,12 +386,18 @@ namespace KubeClient.Extensions.WebSockets
             }
             catch (WebSocketException websocketError) when (websocketError.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
             {
-                // Connection closed by remote host without completing the close handshake.
+                // Connection closed by remote host without completing the close handshake. Consider writing a Trace log entry noting this fact.
+            }
+            catch (Exception unexpectedError)
+            {
+                Log.LogError(EventIds.K8sMultiplexer.ReceivePumpError, unexpectedError, "The message-receive pump encountered an unexpected error.");
             }
             finally
             {
                 if (buffer.Array != null)
                     ArrayPool<byte>.Shared.Return(buffer.Array);
+
+                Log.LogTrace("Message-receive pump terminated.");
             }
         }
 
@@ -358,6 +413,8 @@ namespace KubeClient.Extensions.WebSockets
             CancellationToken cancellation = Cancellation;
 
             await Task.Yield();
+
+            Log.LogTrace("Message-receive pump started.");
 
             try
             {
@@ -397,6 +454,14 @@ namespace KubeClient.Extensions.WebSockets
             catch (OperationCanceledException)
             {
                 // Clean termination.
+            }
+            catch (Exception unexpectedError)
+            {
+                Log.LogError(EventIds.K8sMultiplexer.SendPumpError, unexpectedError, "The message-send pump encountered an unexpected error.");
+            }
+            finally
+            {
+                Log.LogTrace("Message-receive pump terminated.");
             }
         }
     }
