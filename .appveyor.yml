@@ -1,4 +1,8 @@
-image: Visual Studio 2017 Preview
+image: Visual Studio 2017
+
+branches:
+  except:
+    - feature/websockets # No support for .NET Core 2.1 yet.
 
 build_script:
   - ps: .\build-ci.ps1
