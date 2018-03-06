@@ -65,15 +65,44 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(targetUri));
 
             if (!targetUri.IsAbsoluteUri)
+            {
                 targetUri = new Uri(client.ApiEndPoint, targetUri);
 
-            if (targetUri.Scheme != "ws" && targetUri.Scheme != "wss")
-                throw new ArgumentException($"Target URI has invalid scheme '{targetUri.Scheme} (expected 'ws' or 'wss').", nameof(targetUri));
+                UriBuilder targetUriBuilder = new UriBuilder(targetUri);
+                switch (targetUriBuilder.Scheme)
+                {
+                    case "ws":
+                    case "wss":
+                    {
+                        break;
+                    }
+                    case "http":
+                    {
+                        targetUriBuilder.Scheme = "ws";
+
+                        break;
+                    }
+                    case "https":
+                    {
+                        targetUriBuilder.Scheme = "wss";
+                        
+                        break;
+                    }
+                    default:
+                    {
+                        throw new ArgumentException($"Target URI has invalid scheme '{targetUriBuilder.Scheme}' (expected one of 'http', 'https', 'ws', or 'wss').", nameof(targetUri));
+                    }
+                }
+
+                targetUri = targetUriBuilder.Uri;
+            }
 
             K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
             webSocketOptions.RequestedSubProtocols.Add(
                 K8sWebSocketSubprotocols.ChannelV1
             );
+            webSocketOptions.SendBufferSize = 2048;
+            webSocketOptions.ReceiveBufferSize = 2048;
 
             return K8sWebSocket.ConnectAsync(targetUri, webSocketOptions, cancellationToken);
         }

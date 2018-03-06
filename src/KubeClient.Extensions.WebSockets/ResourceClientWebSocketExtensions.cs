@@ -58,18 +58,18 @@ namespace KubeClient
             if (podClient == null)
                 throw new ArgumentNullException(nameof(podClient));
 
-            byte[] inputStreamIndexes = stdin ? new byte[1] { 0 } : new byte[0];
-            byte[] outputStreamIndexes;
+            byte[] outputStreamIndexes = stdin ? new byte[1] { 0 } : new byte[0];
+            byte[] inputStreamIndexes;
             if (stdout && stderr)
-                outputStreamIndexes = new byte[2] { 1, 2 };
+                inputStreamIndexes = new byte[2] { 1, 2 };
             else if (stdout)
-                outputStreamIndexes = new byte[1] { 1 };
+                inputStreamIndexes = new byte[1] { 1 };
             else if (stderr)
-                outputStreamIndexes = new byte[1] { 2 };
+                inputStreamIndexes = new byte[1] { 2 };
             else if (!stdin)
                 throw new InvalidOperationException("Must specify at least one of STDIN, STDOUT, or STDERR.");
             else
-                outputStreamIndexes = new byte[0];
+                inputStreamIndexes = new byte[0];
             
             return await podClient.KubeClient
                 .ConnectWebSocket("api/v1/namespaces/{KubeNamespace}/pods/{PodName}/exec?stdin={StdIn?}&stdout={StdOut}&stderr={StdErr?}&tty={TTY?}&command={Command}&container={Container?}", new

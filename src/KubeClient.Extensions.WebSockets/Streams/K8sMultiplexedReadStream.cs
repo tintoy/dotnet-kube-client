@@ -190,7 +190,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// </param>
         internal void AddPendingRead(ArraySegment<byte> data)
         {
-            if (data == null)
+            if (data.Array == null)
                 throw new ArgumentNullException(nameof(data));
 
             _pendingReads.Enqueue(new PendingRead(data));
@@ -273,7 +273,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
             Debug.Assert(wasConsumed, "Attempted to consume pending read when none was available.");
 
             // AF: This should not happen; if it does, then I've fucked up somewhere and we have a race condition.
-            Debug.Assert(Object.ReferenceEquals(consumed, pending),
+            Debug.Assert(ReferenceEquals(consumed, pending),
                 "Consumed a pending read that was not at the head of the queue."                
             );
         }
@@ -296,6 +296,9 @@ namespace KubeClient.Extensions.WebSockets.Streams
             /// </param>
             public PendingRead(ArraySegment<byte> data)
             {
+                if (data.Array == null)
+                    throw new ArgumentNullException(nameof(data));
+
                 _data = data;
             }
 

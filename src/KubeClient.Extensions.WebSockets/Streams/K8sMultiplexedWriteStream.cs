@@ -89,12 +89,13 @@ namespace KubeClient.Extensions.WebSockets.Streams
         public override void Write(byte[] buffer, int offset, int count)
         {
             byte[] dataWithPrefix = ArrayPool<byte>.Shared.Rent(count + 1);
+
             try
             {
                 dataWithPrefix[0] = StreamIndex;
                 Array.Copy(buffer, 0, dataWithPrefix, 1, buffer.Length);
 
-                SendAsync(new ArraySegment<byte>(dataWithPrefix), CancellationToken.None)
+                SendAsync(dataWithPrefix, CancellationToken.None)
                     .GetAwaiter()
                     .GetResult();
             }

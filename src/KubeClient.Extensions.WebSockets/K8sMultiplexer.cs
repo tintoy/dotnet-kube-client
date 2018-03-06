@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,17 +45,17 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     A source for cancellation tokens used to halt the multiplexer's operation.
         /// </summary>
-        CancellationTokenSource _cancellationSource = new CancellationTokenSource();        
+        CancellationTokenSource _cancellationSource;
         
-        /// <summary>
-        ///     A <see cref="Task"/> representing the WebSocket message-receive pump.
-        /// </summary>
-        Task _receivePump;
-
         /// <summary>
         ///     A <see cref="Task"/> representing the WebSocket message-send pump.
         /// </summary>
         Task _sendPump;
+
+        /// <summary>
+        ///     A <see cref="Task"/> representing the WebSocket message-receive pump.
+        /// </summary>
+        Task _receivePump;
 
         /// <summary>
         ///     Create a new <see cref="K8sMultiplexer"/>.
@@ -98,18 +97,24 @@ namespace KubeClient.Extensions.WebSockets
         /// </summary>
         public void Dispose()
         {
-            if (_cancellationSource != null)
+            try
             {
-                _cancellationSource.Cancel();
-                _cancellationSource.Dispose();
-                _cancellationSource = null;
+                if (_receivePump != null || _sendPump != null)
+                    Shutdown().GetAwaiter().GetResult();
             }
+            catch (OperationCanceledException)
+            {
+                // Close operation timed out; nothing useful we can do here.
+            }
+            catch (AggregateException stopFailed)
+            {
+                stopFailed.Flatten().Handle(exception =>
+                {
+                    System.Diagnostics.Debug.WriteLine(stopFailed);
 
-            if (_receivePump != null)
-                _receivePump.Wait();
-
-            if (_sendPump != null)
-                _sendPump.Wait();
+                    return true;
+                });
+            }
 
             foreach (Stream inputStream in _inputStreams.Values)
                 inputStream.Dispose();
@@ -126,7 +131,7 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     The <see cref="CancellationToken"/> used to halt the multiplexer's operation.
         /// </summary>
-        CancellationToken Cancellation => _cancellationSource.Token;
+        CancellationToken Cancellation => _cancellationSource?.Token ?? CancellationToken.None;
 
         /// <summary>
         ///     Get the input stream (if defined) with the specified stream index.
@@ -167,11 +172,51 @@ namespace KubeClient.Extensions.WebSockets
         /// </summary>
         public void Start()
         {
-            if (_receivePump != null || _sendPump != null)
-                throw new InvalidOperationException("Read / write pumps are already running.");
+            if (_sendPump != null && _receivePump != null)
+                throw new InvalidOperationException("Send / receive pumps are already running.");
 
-            _receivePump = ReceivePump();
+            _cancellationSource = new CancellationTokenSource();
             _sendPump = SendPump();
+            _receivePump = ReceivePump();
+        }
+
+        /// <summary>
+        ///     Stop processing stream data and close the underlying <see cref="WebSocket"/>.
+        /// </summary>
+        /// <param name="cancellation">
+        ///     An optional <see cref="CancellationToken"/> that can be used to abort the WebSocket's close operation.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="Task"/> representing the asynchronous operation.
+        /// </returns>
+        public async Task Shutdown(CancellationToken cancellation = default)
+        {
+            if (_sendPump == null && _receivePump == null)
+                throw new InvalidOperationException("Send / receive pumps are not running.");
+
+            if (_cancellationSource != null)
+            {
+                _cancellationSource.Cancel();
+                _cancellationSource.Dispose();
+                _cancellationSource = null;
+            }
+
+            Task timeout = Task.Delay(TimeSpan.FromMilliseconds(100), cancellation);
+            Task firstCompleted = await Task.WhenAny(Task.WhenAll(_sendPump, _receivePump), timeout);
+            if (ReferenceEquals(firstCompleted, timeout))
+                await timeout; // Propagate exception from cancellation (if required), but not from stopping the send / receive pumps.
+
+            _sendPump = null;
+            _receivePump = null;
+
+            if (Socket.State == WebSocketState.Open)
+            {
+                await Socket.CloseAsync(
+                     WebSocketCloseStatus.NormalClosure,
+                    "Connection closed.",
+                    CancellationToken.None
+                );
+            }
         }
 
         /// <summary>
@@ -205,9 +250,12 @@ namespace KubeClient.Extensions.WebSockets
         /// </returns>
         async Task ReceivePump()
         {
-            await Task.Yield();
+            // Capture our cancellation token so it works even if the source is disposed.
+            CancellationToken cancellation = Cancellation;
 
-            ArraySegment<byte> buffer = null;
+            await Task.Yield();            
+
+            ArraySegment<byte> buffer;
 
             try
             {
@@ -217,7 +265,7 @@ namespace KubeClient.Extensions.WebSockets
                         ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize)
                     );
 
-                    WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, Cancellation);
+                    WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, cancellation);
                     if (readResult.Count <= 1 && readResult.EndOfMessage)
                     {
                         // Effectively an empty packet; ignore.
@@ -234,7 +282,7 @@ namespace KubeClient.Extensions.WebSockets
                     {
                         // Unknown stream; discard the rest of the message.
                         while (!readResult.EndOfMessage)
-                            readResult = await Socket.ReceiveAsync(buffer, Cancellation);
+                            readResult = await Socket.ReceiveAsync(buffer, cancellation);
 
                         ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
 
@@ -254,7 +302,7 @@ namespace KubeClient.Extensions.WebSockets
                         buffer = new ArraySegment<byte>(
                             ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize)
                         );
-                        readResult = await Socket.ReceiveAsync(buffer, Cancellation);
+                        readResult = await Socket.ReceiveAsync(buffer, cancellation);
                         if (readResult.Count == 0 || readResult.MessageType != WebSocketMessageType.Binary)
                         {
                             ArrayPool<byte>.Shared.Return(buffer.Array);
@@ -273,15 +321,15 @@ namespace KubeClient.Extensions.WebSockets
             catch (OperationCanceledException)
             {
                 // Clean termination.
-                if (buffer != null)
-                    ArrayPool<byte>.Shared.Return(buffer.Array);
             }
-            catch (Exception)
+            catch (WebSocketException websocketError) when (websocketError.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
             {
-                if (buffer != null)
+                // Connection closed by remote host without completing the close handshake.
+            }
+            finally
+            {
+                if (buffer.Array != null)
                     ArrayPool<byte>.Shared.Return(buffer.Array);
-
-                throw;
             }
         }
 
@@ -293,6 +341,9 @@ namespace KubeClient.Extensions.WebSockets
         /// </returns>
         async Task SendPump()
         {
+            // Capture our cancellation token so it works even if the source is disposed.
+            CancellationToken cancellation = Cancellation;
+
             await Task.Yield();
 
             try
@@ -303,7 +354,7 @@ namespace KubeClient.Extensions.WebSockets
                     if (!_pendingWrites.TryTake(out pendingWrite, Timeout.Infinite, Cancellation))
                         continue;
 
-                    using (CancellationTokenSource linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(Cancellation, pendingWrite.Cancellation))
+                    using (CancellationTokenSource linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation, pendingWrite.Cancellation))
                     {
                         try
                         {
@@ -353,7 +404,7 @@ namespace KubeClient.Extensions.WebSockets
         /// </param>
         public PendingSend(ArraySegment<byte> data, CancellationToken cancellation)
         {
-            if (data == null)
+            if (data.Array == null)
                 throw new ArgumentNullException(nameof(data));
 
             Data = data;
