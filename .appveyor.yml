@@ -52,3 +52,11 @@ deploy:
       # Release branches or master branch (when tagged).
       branch: /(release|master)(\/)?.*/
       appveyor_repo_tag: true
+
+notifications:
+  - provider: Email
+    to:
+      - tintoy@tintoy.io
+    on_build_success: false
+    on_build_failure: true
+    on_build_status_changed: true
