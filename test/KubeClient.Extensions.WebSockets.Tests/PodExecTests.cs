@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace KubeClient.Extensions.WebSockets.Tests
 {
@@ -17,7 +18,11 @@ namespace KubeClient.Extensions.WebSockets.Tests
         /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> exec-in-pod test suite.
         /// </summary>
-        public PodExecTests()
+        /// <param name="testOutput">
+        ///     Output for the current test.
+        /// </param>
+        public PodExecTests(ITestOutputHelper testOutput)
+            : base(testOutput)
         {
         }
 

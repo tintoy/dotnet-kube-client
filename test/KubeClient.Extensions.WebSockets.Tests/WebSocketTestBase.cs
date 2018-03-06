@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
+using Xunit.Abstractions;
 
 namespace KubeClient.Extensions.WebSockets.Tests
 {
+    using Logging;
+    using Microsoft.Extensions.Logging;
     using Server;
 
     /// <summary>
     ///     The base class for Kubernetes WebSocket test suites.
     /// </summary>
     public abstract class WebSocketTestBase
-        : IDisposable
+        : TestBase
     {
         /// <summary>
         ///     The next server port to use.
@@ -22,7 +25,11 @@ namespace KubeClient.Extensions.WebSockets.Tests
         /// <summary>
         ///     Create a new <see cref="WebSocketTestBase"/>.
         /// </summary>
-        protected WebSocketTestBase()
+        /// <param name="testOutput">
+        ///     Output for the current test.
+        /// </param>
+        protected WebSocketTestBase(ITestOutputHelper testOutput)
+            : base(testOutput)
         {
             int port = Interlocked.Increment(ref NextPort);
 
@@ -32,37 +39,12 @@ namespace KubeClient.Extensions.WebSockets.Tests
             Host = WebHost.CreateDefaultBuilder()
                 .UseStartup<Startup>()
                 .ConfigureServices(ConfigureTestServerServices)
+                .ConfigureLogging(ConfigureTestServerLogging)
                 .UseUrls(BaseAddress.AbsoluteUri)
                 .Build();
-        }
 
-        /// <summary>
-        ///     Finaliser for <see cref="WebSocketTestBase"/>.
-        /// </summary>
-        ~WebSocketTestBase() => Dispose(false);
-
-        /// <summary>
-        ///     Dispose of resources being used by the <see cref="WebSocketTestBase"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Dispose of resources being used by the <see cref="WebSocketTestBase"/>.
-        /// </summary>
-        /// <param name="disposing">
-        ///     Explicit disposal?
-        /// </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                CancellationSource.Dispose();
-                Host.Dispose();
-            }
+            Disposal.Add(CancellationSource);
+            Disposal.Add(Host);
         }
 
         /// <summary>
@@ -110,7 +92,7 @@ namespace KubeClient.Extensions.WebSockets.Tests
                 KubeNamespace = "default"
 
                 // No authentication.
-            });
+            }, LoggerFactory);
         }
 
         /// <summary>
@@ -126,6 +108,20 @@ namespace KubeClient.Extensions.WebSockets.Tests
             
             // Inject WebSocketTestData.
             services.AddSingleton(WebSocketTestAdapter);
+        }
+
+        /// <summary>
+        ///     Configure logging for the test server.
+        /// </summary>
+        /// <param name="services">
+        ///     The logger factory to configure.
+        /// </param>
+        protected virtual void ConfigureTestServerLogging(ILoggingBuilder logging)
+        {
+            if (logging == null)
+                throw new ArgumentNullException(nameof(logging));
+            
+            logging.AddTestOutput(TestOutput, MinLogLevel);
         }
     }
 }
