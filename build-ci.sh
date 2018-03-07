@@ -6,6 +6,10 @@ set -euo pipefail
 # Build script for Travis CI
 ############################
 
+# Disable .NET Core first-time usage experience and telemetry.
+export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
 echo 'Computing build version...'
 
 mono $PWD/tools/GitVersion/GitVersion.exe | tee $PWD/version-info.json
