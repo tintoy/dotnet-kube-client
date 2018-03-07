@@ -2,9 +2,13 @@
 
 set -euo pipefail
 
-############################
-# Build script for Travis CI
-############################
+######################################
+# Package-publish script for Travis CI
+######################################
+
+# Feed URLs
+export MYGET_FEED_URL=https://www.myget.org/F/dotnet-kube-client/api/v2/package
+export MYGET_SYMBOL_FEED_URL=https://www.myget.org/F/dotnet-kube-client/symbols/api/v2/package
 
 # Disable .NET Core first-time usage experience and telemetry.
 export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
@@ -28,13 +32,10 @@ if [ ! -d $ARTIFACTS_DIRECTORY ]; then
     exit 1
 fi
 
-PACKAGES=$(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg')
-SYMBOL_PACKAGES=$(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg')
+for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg'); do
+    echo "Publishing package '$(basename $PACKAGE)'..."
+    dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --symbol-source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
+done
 
 echo ''
-echo 'Would publish packages:'
-echo "$PACKAGES" | xargs ls -l
-echo ''
-echo 'Would publish symbol packages:'
-echo "$SYMBOL_PACKAGES" | xargs ls -l
-echo ''
+echo 'Done.'
