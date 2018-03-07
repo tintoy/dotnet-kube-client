@@ -28,8 +28,13 @@ if [ ! -d $ARTIFACTS_DIRECTORY ]; then
     exit 1
 fi
 
-$PACKAGES = $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg')
-$SYMBOL_PACKAGES = $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg')
+PACKAGES=$(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg')
+SYMBOL_PACKAGES=$(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg')
 
+echo ''
 echo 'Would publish packages:'
 echo $PACKAGES
+echo ''
+echo 'Would publish symbol packages:'
+echo $SYMBOL_PACKAGES
+echo ''
