@@ -57,4 +57,4 @@ echo ''
 echo "Packing into '$ARTIFACTS_DIRECTORY'..."
 echo ''
 
-dotnet pack /p:VersionPrefix="$BUILD_BASEVERSION" /p:VersionSuffix="$BUILD_VERSION_SUFFIX" /p:AssemblyInformationalVersion="$BUILD_INFORMATIONAL_VERSION" -o $ARTIFACTS_DIRECTORY
+dotnet pack /p:VersionPrefix="$BUILD_BASEVERSION" /p:VersionSuffix="$BUILD_VERSION_SUFFIX" /p:AssemblyInformationalVersion="$BUILD_INFORMATIONAL_VERSION" -o $ARTIFACTS_DIRECTORY --include-symbols --no-restore --no-build

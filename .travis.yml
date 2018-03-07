@@ -23,6 +23,7 @@ before_install:
 
 script:
   - /bin/bash ./build-ci.sh
+  - /bin/bash ./publish-ci.sh
 
 env:
   global:
