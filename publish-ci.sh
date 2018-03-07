@@ -33,8 +33,8 @@ SYMBOL_PACKAGES=$(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg')
 
 echo ''
 echo 'Would publish packages:'
-echo $PACKAGES
+echo "$PACKAGES" | xargs ls -l
 echo ''
 echo 'Would publish symbol packages:'
-echo $SYMBOL_PACKAGES
+echo "$SYMBOL_PACKAGES" | xargs ls -l
 echo ''
