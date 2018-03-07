@@ -4,11 +4,6 @@ language: csharp
 mono: latest
 dotnet: 2.0.3
 
-addons:
-  apt:
-    packages:
-      - dotnet-sdk-2.1.300-preview1-008174
-
 # Needed by GitVersion
 git:
   depth: 9999999
@@ -20,6 +15,7 @@ branches:
 addons:
   apt:
     packages:
+    - dotnet-sdk-2.1.300-preview1-008174
     - jq
 
 script:
