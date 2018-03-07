@@ -35,42 +35,33 @@ if [ -d $ARTIFACTS_DIRECTORY ]; then
 	rm -rf $ARTIFACTS_DIRECTORY
 fi
 
-echo 'travis_fold:start:dotnet_restore'
-
 echo ''
 echo 'Restoring packages...'
 echo ''
+echo 'travis_fold:start:dotnet_restore'
 dotnet restore /p:VersionPrefix="$BUILD_BASEVERSION" /p:VersionSuffix="$BUILD_VERSION_SUFFIX" /p:AssemblyInformationalVersion="$BUILD_INFORMATIONAL_VERSION"
-
 echo 'travis_fold:end:dotnet_restore'
-
-echo 'travis_fold:start:dotnet_build'
 
 echo ''
 echo 'Building...'
 echo ''
+echo 'travis_fold:start:dotnet_build'
 dotnet build /p:VersionPrefix="$BUILD_BASEVERSION" /p:VersionSuffix="$BUILD_VERSION_SUFFIX" /p:AssemblyInformationalVersion="$BUILD_INFORMATIONAL_VERSION" --no-restore
-
 echo 'travis_fold:end:dotnet_build'
-
-echo 'travis_fold:start:dotnet_test'
 
 echo ''
 echo 'Testing...'
 echo ''
-
+echo 'travis_fold:start:dotnet_test'
 testProjects=$(find ./test -name 'KubeClient*.Tests.csproj')
 for testProject in $testProjects; do
 	dotnet test $testProject --no-build --no-restore
 done
-
 echo 'travis_fold:end:dotnet_test'
-
-echo 'travis_fold:start:dotnet_pack'
 
 echo ''
 echo "Packing into '$ARTIFACTS_DIRECTORY'..."
 echo ''
+echo 'travis_fold:start:dotnet_pack'
 dotnet pack /p:VersionPrefix="$BUILD_BASEVERSION" /p:VersionSuffix="$BUILD_VERSION_SUFFIX" /p:AssemblyInformationalVersion="$BUILD_INFORMATIONAL_VERSION" -o $ARTIFACTS_DIRECTORY --include-symbols --no-restore --no-build
-
 echo 'travis_fold:end:dotnet_pack'

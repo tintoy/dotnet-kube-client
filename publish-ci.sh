@@ -15,7 +15,6 @@ export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 echo ''
-echo 'travis_fold:start:publish_packages'
 echo 'Publishing packages...'
 echo ''
 
@@ -33,6 +32,7 @@ if [ ! -d $ARTIFACTS_DIRECTORY ]; then
     exit 1
 fi
 
+echo 'travis_fold:start:publish_packages'
 for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
     dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --api-key "$MYGET_API_KEY"
 done
@@ -40,8 +40,9 @@ done
 for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
     dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
 done
+echo 'travis_fold:end:publish_packages'
 
 echo ''
 echo 'Done.'
 echo ''
-echo 'travis_fold:end:publish_packages'
+
