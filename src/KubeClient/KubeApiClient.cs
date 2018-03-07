@@ -210,6 +210,43 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Create a new <see cref="KubeApiClient"/> without authentication.
+        /// </summary>
+        /// <param name="apiEndPoint">
+        ///     The base address for the Kubernetes API end-point.
+        /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeApiClient"/>.
+        /// </returns>
+        public static KubeApiClient Create(string apiEndPoint, ILoggerFactory loggerFactory = null)
+        {
+            return Create(new Uri(apiEndPoint), loggerFactory);
+        }
+
+        /// <summary>
+        ///     Create a new <see cref="KubeApiClient"/> without authentication.
+        /// </summary>
+        /// <param name="apiEndPoint">
+        ///     The base address for the Kubernetes API end-point.
+        /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeApiClient"/>.
+        /// </returns>
+        public static KubeApiClient Create(Uri apiEndPoint, ILoggerFactory loggerFactory = null)
+        {
+            return Create(new KubeClientOptions
+            {
+                ApiEndPoint = apiEndPoint
+            }, loggerFactory);
+        }
+
+        /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> using a bearer token for authentication.
         /// </summary>
         /// <param name="apiEndPoint">

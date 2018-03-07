@@ -69,5 +69,72 @@ namespace KubeClient.Extensions.KubeConfig.Models
                 return deserializer.Deserialize<Config>(configReader);
             }
         }
+
+        /// <summary>
+        ///     Create <see cref="KubeClientOptions"/> from the settings specified in the <see cref="Config"/>.
+        /// </summary>
+        /// <param name="kubeContextName">
+        ///     The name of the Kubernetes context to use.
+        /// 
+        ///     If not specified, then the current context (as configured) will be used.
+        /// </param>
+        /// <param name="defaultKubeNamespace">
+        ///     The default Kubernetes namespace to use.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeClientOptions"/>.
+        /// </returns>
+        public KubeClientOptions ToKubeClientOptions(string kubeContextName = null, string defaultKubeNamespace = null)
+        {
+            return ConfigureKubeClientOptions(new KubeClientOptions(), kubeContextName, defaultKubeNamespace);
+        }
+
+        /// <summary>
+        ///     Configure <see cref="KubeClientOptions"/> from the settings specified in the <see cref="Config"/>.
+        /// </summary>
+        /// <param name="kubeClientOptions">
+        ///     
+        /// </param>
+        /// <param name="kubeContextName">
+        ///     The name of the Kubernetes context to use.
+        /// 
+        ///     If not specified, then the current context (as configured) will be used.
+        /// </param>
+        /// <param name="defaultKubeNamespace">
+        ///     The default Kubernetes namespace to use.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeClientOptions"/>.
+        /// </returns>
+        public KubeClientOptions ConfigureKubeClientOptions(KubeClientOptions kubeClientOptions, string kubeContextName = null, string defaultKubeNamespace = null)
+        {
+            if (kubeClientOptions == null)
+                throw new ArgumentNullException(nameof(kubeClientOptions));
+            
+            string targetContextName = kubeContextName ?? CurrentContextName;
+            if (String.IsNullOrWhiteSpace(targetContextName))
+                throw new InvalidOperationException("The kubeContextName parameter was not specified, and the Kubernetes client configuration does not specify a current context.");
+
+            Context targetContext = Contexts.Find(context => context.Name == targetContextName);
+            if (targetContext == null)
+                throw new InvalidOperationException($"Cannot find a context in the Kubernetes client configuration named '{targetContextName}'.");
+
+            Cluster targetCluster = Clusters.Find(cluster => cluster.Name == targetContext.Config.ClusterName);
+            if (targetCluster == null)
+                throw new InvalidOperationException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
+
+            UserIdentity targetUser = UserIdentities.Find(user => user.Name == targetContext.Config.UserName);
+            if (targetUser == null)
+                throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
+
+            kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
+            kubeClientOptions.KubeNamespace = defaultKubeNamespace;
+            kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
+            kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
+            kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
+            kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+
+            return kubeClientOptions;
+        }
     }
 }
