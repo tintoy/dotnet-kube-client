@@ -29,13 +29,9 @@ namespace KubeClient
                 // When running inside Kubernetes, use pod-level service account (e.g. access token from mounted Secret).
                 services.AddScoped<KubeApiClient>(serviceProvider =>
                 {
-                    ILogger logger = serviceProvider
-                        .GetService<ILoggerFactory>()?
-                        .CreateLogger(
-                            typeof(KubeApiClient)
-                        );
-
-                    return KubeApiClient.CreateFromPodServiceAccount(logger);
+                    return KubeApiClient.CreateFromPodServiceAccount(
+                        loggerFactory: serviceProvider.GetService<ILoggerFactory>()
+                    );
                 });
             }
             else
@@ -43,13 +39,10 @@ namespace KubeClient
                 services.AddScoped<KubeApiClient>(serviceProvider =>
                 {
                     KubeClientOptions options = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
-                    ILogger logger = serviceProvider
-                        .GetService<ILoggerFactory>()?
-                        .CreateLogger(
-                            typeof(KubeApiClient)
-                        );
 
-                    return KubeApiClient.Create(options, logger);
+                    return KubeApiClient.Create(options,
+                        loggerFactory: serviceProvider.GetService<ILoggerFactory>()
+                    );
                 });
             }
         }
@@ -75,13 +68,9 @@ namespace KubeClient
 
             services.AddScoped<KubeApiClient>(serviceProvider =>
             {
-                ILogger logger = serviceProvider
-                    .GetService<ILoggerFactory>()?
-                    .CreateLogger(
-                        typeof(KubeApiClient)
-                    );
-                
-                return KubeApiClient.Create(options, logger);
+                return KubeApiClient.Create(options,
+                    loggerFactory: serviceProvider.GetService<ILoggerFactory>()
+                );
             });
         }
 
@@ -134,14 +123,10 @@ namespace KubeClient
                 var options = serviceProvider.GetRequiredService<IOptionsMonitor<KubeClientOptions>>().Get(name);
                 if (options == null)
                     throw new InvalidOperationException($"Cannot resolve a {nameof(KubeClientOptions)} instance named '{name}'.");
-
-                ILogger logger = serviceProvider
-                    .GetService<ILoggerFactory>()?
-                    .CreateLogger(
-                        typeof(KubeApiClient)
-                    );
                 
-                return KubeApiClient.Create(options, logger);
+                return KubeApiClient.Create(options,
+                    loggerFactory: serviceProvider.GetService<ILoggerFactory>()
+                );
             });
         }
 
