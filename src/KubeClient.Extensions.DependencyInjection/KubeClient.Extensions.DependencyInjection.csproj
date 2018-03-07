@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease" Version="1.7.0" />
+      <PackageReference Include="HTTPlease" Version="1.9.0-unstable0002" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

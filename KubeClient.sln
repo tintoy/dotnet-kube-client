@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 15.0.26124.0
@@ -15,6 +15,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.Extensions.KubeConfig.Tests", "test\KubeClient.Extensions.KubeConfig.Tests\KubeClient.Extensions.KubeConfig.Tests.csproj", "{BE51905A-ACB7-48CD-96DC-6C8CC426A95E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeClient.Tests", "test\KubeClient.Tests\KubeClient.Tests.csproj", "{4A6764AC-5DE6-4F86-8333-323C6F9FFA20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeClient.TestCommon", "test\KubeClient.TestCommon\KubeClient.TestCommon.csproj", "{4779D688-6868-45DB-8D27-76F490F53D25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,18 @@ Global
 		{4A6764AC-5DE6-4F86-8333-323C6F9FFA20}.Release|x64.Build.0 = Release|x64
 		{4A6764AC-5DE6-4F86-8333-323C6F9FFA20}.Release|x86.ActiveCfg = Release|x86
 		{4A6764AC-5DE6-4F86-8333-323C6F9FFA20}.Release|x86.Build.0 = Release|x86
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Debug|x64.Build.0 = Debug|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Debug|x86.Build.0 = Debug|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Release|x64.ActiveCfg = Release|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Release|x64.Build.0 = Release|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Release|x86.ActiveCfg = Release|Any CPU
+		{4779D688-6868-45DB-8D27-76F490F53D25}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +110,7 @@ Global
 		{7D9B22D4-1E8F-4F97-BF9F-DE83A8BA6776} = {1F77AA9A-2C82-4CC5-A896-EE6E0DDB7DB3}
 		{BE51905A-ACB7-48CD-96DC-6C8CC426A95E} = {0F92C90F-A489-4059-AE24-36361B883E81}
 		{4A6764AC-5DE6-4F86-8333-323C6F9FFA20} = {0F92C90F-A489-4059-AE24-36361B883E81}
+		{4779D688-6868-45DB-8D27-76F490F53D25} = {0F92C90F-A489-4059-AE24-36361B883E81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {191B89E7-F944-4315-9E98-F6F736D27296}

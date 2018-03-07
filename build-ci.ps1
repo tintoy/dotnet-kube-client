@@ -21,6 +21,18 @@ If ($versionSuffix) {
 }
 
 $dotnet = Get-Command dotnet
+
+Write-Host '====================='
+Write-Host 'Restoring packages...'
+Write-Host '====================='
 & $dotnet restore /p:VersionPrefix="$versionPrefix" /p:VersionSuffix="$versionSuffix" /p:AssemblyInformationalVersion="$informationalVersion"
+
+Write-Host '==========='
+Write-Host 'Building...'
+Write-Host '==========='
 & $dotnet build /p:VersionPrefix="$versionPrefix" /p:VersionSuffix="$versionSuffix" /p:AssemblyInformationalVersion="$informationalVersion" --no-restore
+
+Write-Host '=========='
+Write-Host 'Packing...'
+Write-Host '=========='
 & $dotnet pack /p:VersionPrefix="$versionPrefix" /p:VersionSuffix="$versionSuffix" /p:AssemblyInformationalVersion="$informationalVersion" --no-restore --include-symbols -o "$PWD\out"

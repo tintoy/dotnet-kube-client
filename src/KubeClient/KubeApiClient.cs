@@ -34,18 +34,26 @@ namespace KubeClient
         /// <param name="httpClient">
         ///     The underlying HTTP client.
         /// </param>
-        KubeApiClient(HttpClient httpClient)
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
+        /// </param>
+        /// <param name="loggerFactory">
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components, or null to use a no-op logger factory.
+        /// </param>
+        KubeApiClient(HttpClient httpClient, KubeClientOptions options, ILoggerFactory loggerFactory)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
 
             Http = httpClient;
+            Options = options.Clone();
+            LoggerFactory = loggerFactory ?? new LoggerFactory();
         }
 
         /// <summary>
         ///     Dispose of resources being used by the <see cref="KubeApiClient"/>.
         /// </summary>
-        public void Dispose() => Http?.Dispose();
+        public void Dispose() => Http.Dispose();
 
         /// <summary>
         ///     The default Kubernetes namespace.
@@ -53,37 +61,32 @@ namespace KubeClient
         public string DefaultNamespace { get; set; } = "default";
 
         /// <summary>
-        ///     The underlying HTTP client.
+        ///     The base address of the Kubernetes API end-point targeted by the client.
         /// </summary>
-        public HttpClient Http { get; }
+        public Uri ApiEndPoint => Options.ApiEndPoint;
 
         /// <summary>
-        ///     Get or create a Kubernetes resource client of the specified type.
+        ///     The underlying HTTP client.
         /// </summary>
-        /// <typeparam name="TClient">
-        ///     The type of Kubernetes resource client to get or create.
-        /// </typeparam>
-        /// <param name="clientFactory">
-        ///     A delegate that creates the resource client.
-        /// </param>
+        internal HttpClient Http { get; }
+
+        /// <summary>
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </summary>
+        internal ILoggerFactory LoggerFactory { get; }
+
+        /// <summary>
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
+        /// </summary>
+        KubeClientOptions Options { get; }
+
+        /// <summary>
+        ///     Get a copy of the <see cref="KubeClientOptions"/> used to configure the client.
+        /// </summary>
         /// <returns>
-        ///     The resource client.
+        ///     The <see cref="KubeClientOptions"/>.
         /// </returns>
-        public TClient ResourceClient<TClient>(Func<TClient> clientFactory)
-            where TClient : KubeResourceClient
-        {
-            if (clientFactory == null)
-                throw new ArgumentNullException(nameof(clientFactory));
-
-            return (TClient)_clients.GetOrAdd(typeof(TClient), clientType =>
-            {
-                TClient resourceClient = clientFactory();
-                if (resourceClient == null)
-                    throw new InvalidOperationException($"Factory for Kubernetes resource client of type '{clientType.FullName}' returned null.");
-
-                return (KubeResourceClient)resourceClient;
-            });
-        }
+        public KubeClientOptions GetClientOptions() => Options.Clone();
 
         /// <summary>
         ///     Get or create a Kubernetes resource client of the specified type.
@@ -119,13 +122,13 @@ namespace KubeClient
         /// <param name="options">
         ///     The <see cref="KubeClientOptions"/> used to configure the client.
         /// </param>
-        /// <param name="logger">
-        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(KubeClientOptions options, ILogger logger = null)
+        public static KubeApiClient Create(KubeClientOptions options, ILoggerFactory loggerFactory = null)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
@@ -134,13 +137,15 @@ namespace KubeClient
             
             var clientBuilder = new ClientBuilder();
 
-            if (options.CertificationAuthorityCertificate != null)
+            if (options.AllowInsecure)
+                clientBuilder = clientBuilder.AcceptAnyServerCertificate();
+            else if (options.CertificationAuthorityCertificate != null)
                 clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
 
             if (options.ClientCertificate != null)
                 clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
 
-            if (logger != null)
+            if (loggerFactory != null)
             {
                 LogMessageComponents logComponents = LogMessageComponents.Basic;
                 if (options.LogHeaders)
@@ -148,7 +153,10 @@ namespace KubeClient
                 if (options.LogPayloads)
                     logComponents |= LogMessageComponents.Body;
 
-                clientBuilder = clientBuilder.WithLogging(logger,
+                clientBuilder = clientBuilder.WithLogging(
+                    logger: loggerFactory.CreateLogger(
+                        typeof(KubeApiClient).FullName + ".Http"
+                    ),
                     requestComponents: logComponents,
                     responseComponents: logComponents
                 );
@@ -164,7 +172,7 @@ namespace KubeClient
                 );
             }
 
-            return Create(httpClient, options.KubeNamespace);
+            return Create(httpClient, options, loggerFactory);
         }
 
         /// <summary>
@@ -173,25 +181,31 @@ namespace KubeClient
         /// <param name="httpClient">
         ///     The <see cref="HttpClient"/> to communicate with the Kubernetes API.
         /// </param>
-        /// <param name="defaultNamespace">
-        ///     The default Kubernetes namespace to use.
-        /// 
-        ///     Defaults to "default" if not specified.
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
+        /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        internal static KubeApiClient Create(HttpClient httpClient, string defaultNamespace = "default")
+        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options, ILoggerFactory loggerFactory = null)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
+
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
             
             if (httpClient.BaseAddress == null)
                 throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
 
-            return new KubeApiClient(httpClient)
+            options.EnsureValid();
+
+            return new KubeApiClient(httpClient, options, loggerFactory)
             {
-                DefaultNamespace = defaultNamespace
+                DefaultNamespace = options.KubeNamespace
             };
         }
 
@@ -207,20 +221,20 @@ namespace KubeClient
         /// <param name="expectServerCertificate">
         ///     An optional server certificate to expect.
         /// </param>
-        /// <param name="logger">
-        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(string apiEndPoint, string accessToken, X509Certificate2 expectServerCertificate = null, ILogger logger = null)
+        public static KubeApiClient Create(string apiEndPoint, string accessToken, X509Certificate2 expectServerCertificate = null, ILoggerFactory loggerFactory = null)
         {
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = apiEndPoint,
+                ApiEndPoint = new Uri(apiEndPoint),
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = expectServerCertificate
-            }, logger);
+            }, loggerFactory);
         }
 
         /// <summary>
@@ -235,27 +249,27 @@ namespace KubeClient
         /// <param name="expectServerCertificate">
         ///     An optional server certificate to expect.
         /// </param>
-        /// <param name="logger">
-        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(string apiEndPoint, X509Certificate2 clientCertificate, X509Certificate2 expectServerCertificate = null, ILogger logger = null)
+        public static KubeApiClient Create(string apiEndPoint, X509Certificate2 clientCertificate, X509Certificate2 expectServerCertificate = null, ILoggerFactory loggerFactory = null)
         {
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = apiEndPoint,
+                ApiEndPoint = new Uri(apiEndPoint),
                 ClientCertificate = clientCertificate,
                 CertificationAuthorityCertificate = expectServerCertificate
-            }, logger);
+            }, loggerFactory);
         }
 
         /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> using pod-level configuration.
         /// </summary>
-        /// <param name="logger">
-        ///     An optional <see cref="ILogger"/> used to log requests and responses.
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
@@ -263,13 +277,13 @@ namespace KubeClient
         /// <remarks>
         ///     Only works from within a container running in a Kubernetes Pod.
         /// </remarks>
-        public static KubeApiClient CreateFromPodServiceAccount(ILogger logger = null)
+        public static KubeApiClient CreateFromPodServiceAccount(ILoggerFactory loggerFactory = null)
         {
             string kubeServiceHost = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
             if (String.IsNullOrWhiteSpace(kubeServiceHost))
                 throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
 
-            var baseAddress = $"https://kubernetes/";
+            var apiEndPoint = $"https://kubernetes/";
             string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
             var kubeCACertificate = new X509Certificate2(
                 File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
@@ -277,10 +291,10 @@ namespace KubeClient
 
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = baseAddress,
+                ApiEndPoint = new Uri(apiEndPoint),
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate
-            }, logger);
+            }, loggerFactory);
         }
     }
 }
