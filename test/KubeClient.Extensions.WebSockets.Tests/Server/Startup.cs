@@ -28,10 +28,7 @@ namespace KubeClient.Extensions.WebSockets.Tests.Server
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
             
-            services.AddLogging(loggers =>
-            {
-                loggers.AddConsole();
-            });
+            services.AddLogging();
             services.AddMvc();
         }
 
