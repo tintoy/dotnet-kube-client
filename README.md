@@ -1,4 +1,4 @@
-# dotnet-kube-client
+# KubeClient
 
 KubeClient is an extensible Kubernetes API client for .NET Core.
 
