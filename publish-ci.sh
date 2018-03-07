@@ -15,6 +15,7 @@ export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 echo ''
+echo 'travis_fold:start:publish_packages'
 echo 'Publishing packages...'
 echo ''
 
@@ -42,3 +43,5 @@ done
 
 echo ''
 echo 'Done.'
+echo ''
+echo 'travis_fold:end:publish_packages'
