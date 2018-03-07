@@ -32,9 +32,12 @@ if [ ! -d $ARTIFACTS_DIRECTORY ]; then
     exit 1
 fi
 
-for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg'); do
-    echo "Publishing package '$(basename $PACKAGE)'..."
-    dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --symbol-source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
+for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
+    dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --api-key "$MYGET_API_KEY"
+done
+
+for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
+    dotnet nuget push "$SYMBOL_PACKAGE" --symbol-source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
 done
 
 echo ''
