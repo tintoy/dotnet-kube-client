@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease" Version="1.9.0-unstable0002" />
-      <PackageReference Include="HTTPlease.Diagnostics" Version="1.9.0-unstable0002" />
-      <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.9.0-unstable0002" />
+      <PackageReference Include="HTTPlease" Version="1.8.1" />
+      <PackageReference Include="HTTPlease.Diagnostics" Version="1.8.1" />
+      <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.8.1" />
       <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>
 
