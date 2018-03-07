@@ -37,7 +37,7 @@ for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.n
 done
 
 for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
-    dotnet nuget push "$SYMBOL_PACKAGE" --symbol-source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
+    dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
 done
 
 echo ''
