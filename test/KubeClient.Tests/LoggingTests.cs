@@ -3,6 +3,7 @@ using HTTPlease.Diagnostics;
 using HTTPlease.Formatters;
 using HTTPlease.Testability;
 using HTTPlease.Testability.Mocks;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -10,22 +11,28 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Xunit;
-using Newtonsoft.Json;
+using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
     using Logging;
     using Models;
+    using TestCommon;
 
     /// <summary>
     ///     Tests for <see cref="KubeApiClient"/> logging.
     /// </summary>
     public class LoggingTests
+        : TestBase
     {
         /// <summary>
         ///     Create a new <see cref="KubeApiClient"/> logging test suite.
         /// </summary>
-        public LoggingTests()
+        /// <param name="testOutput">
+        ///     Output for the current test.
+        /// </param>
+        public LoggingTests(ITestOutputHelper testOutput)
+            : base(testOutput)
         {
         }
 

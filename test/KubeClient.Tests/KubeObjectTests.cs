@@ -4,12 +4,26 @@ using Xunit;
 namespace KubeClient.Tests
 {
     using Models;
+    using TestCommon;
+    using Xunit.Abstractions;
 
     /// <summary>
     ///     Tests for the <see cref="KubeObjectV1"/> base class.
     /// </summary>
     public class KubeObjectTests
+        : TestBase
     {
+        /// <summary>
+        ///     Create a new <see cref="KubeObjectV1"/> test suite.
+        /// </summary>
+        /// <param name="testOutput">
+        ///     Output for the current test.
+        /// </param>
+        public KubeObjectTests(ITestOutputHelper testOutput)
+            : base(testOutput)
+        {
+        }
+
         /// <summary>
         ///     Verify that KubeObjectV1 correctly populates Kind and ApiVersion when constructed.
         /// </summary>

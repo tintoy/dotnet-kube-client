@@ -1,15 +1,29 @@
 using System.IO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace KubeClient.Extensions.KubeConfig.Tests
 {
     using Models;
+    using TestCommon;
 
     /// <summary>
     ///     Tests for deserialisation of Kubernetes client configuration.
     /// </summary>
     public class DeserializationTests
+        : TestBase
     {
+        /// <summary>
+        ///     Create a new config-deserialisation test suite.
+        /// </summary>
+        /// <param name="testOutput">
+        ///     Output for the current test.
+        /// </param>
+        public DeserializationTests(ITestOutputHelper testOutput)
+            : base(testOutput)
+        {
+        }
+
         /// <summary>
         ///     Verify that the configuration loader can parse valid configuration from YAML. 
         /// </summary>

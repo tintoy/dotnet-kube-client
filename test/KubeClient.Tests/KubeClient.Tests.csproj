@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+      <ProjectReference Include="..\KubeClient.TestCommon\KubeClient.TestCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
       <PackageReference Include="HTTPlease" Version="1.9.0-unstable0002" />
       <PackageReference Include="HTTPlease.Diagnostics" Version="1.9.0-unstable0002" />
       <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.9.0-unstable0002" />
