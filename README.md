@@ -19,6 +19,8 @@ If you need WebSocket / `exec` you'll need the code from the `feature/websockets
   Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).  
   This package also extends resource clients to add support for those APIs.
 
+If you want to use the latest builds of KubeClient (including ones that are possibly unstable), add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
+
 ## Usage
 
 The client can be used directly or injected via `Microsoft.Extensions.DependencyInjection`.
@@ -86,8 +88,6 @@ void ConfigureServices(IServiceCollection services)
     });
 }
 ```
-
-Feel free to create an issue if you have any questions.
 
 ## Extensibility
 
@@ -209,3 +209,7 @@ using (StreamReader stdout = new StreamReader(connection.GetInputStream(1), Enco
 ```
 
 For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at the [HTTPlease](https://tintoy.github.io/HTTPlease/) documentation.
+
+## Questions / feedback
+
+Feel free to [get in touch](https://github.com/tintoy/dotnet-kube-client/issues/new) if you have questions, feedback, or would like to contribute.

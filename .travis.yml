@@ -11,6 +11,7 @@ branches:
   only:
     - feature/websockets
 
+# We need the .NET Core 2.1 (preview 1) SDK to build. Travis doesn't know how to install this yet.
 before_install:
   - echo 'Installing .NET Core...'
   - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
