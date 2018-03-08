@@ -72,7 +72,7 @@ namespace KubeClient
                 inputStreamIndexes = new byte[0];
             
             return await podClient.KubeClient
-                .ConnectWebSocket("api/v1/namespaces/{KubeNamespace}/pods/{PodName}/exec?stdin={StdIn?}&stdout={StdOut}&stderr={StdErr?}&tty={TTY?}&command={Command}&container={Container?}", new
+                .ConnectWebSocket("api/v1/namespaces/{KubeNamespace}/pods/{PodName}/exec?stdin={StdIn?}&stdout={StdOut?}&stderr={StdErr?}&tty={TTY?}&command={Command}&container={Container?}", new
                 {
                     PodName = podName,
                     Command = command,
