@@ -144,6 +144,9 @@ namespace KubeClient.Extensions.WebSockets.Streams
 
             PendingRead pendingRead = NextPendingRead(cancellationToken);
 
+            // Last chance to cancel non-destructively.
+            cancellationToken.ThrowIfCancellationRequested();
+
             int bytesRead = pendingRead.DrainTo(buffer, offset);
             if (pendingRead.IsEmpty)
                 Consume(pendingRead); // Source buffer has been consumed.
@@ -247,20 +250,15 @@ namespace KubeClient.Extensions.WebSockets.Streams
         PendingRead NextPendingRead(CancellationToken cancellation)
         {
             PendingRead pendingRead;
-            using (var canceled = new AutoResetEvent(initialState: false))
-            using (var waitCancellation = cancellation.Register(() => canceled.Set()))
+            if (!_pendingReads.TryPeek(out pendingRead))
             {
-                if (!_pendingReads.TryPeek(out pendingRead))
+                // Wait for data.
+                while (pendingRead == null)
                 {
-                    // Wait for data.
-                    while (pendingRead == null)
-                    {
-                        int handleIndex = WaitHandle.WaitAny(new[] { _dataAvailable, canceled });
-                        if (handleIndex == 1)
-                            throw new OperationCanceledException("Read operation was canceled.", cancellation);
+                    if (!_dataAvailable.WaitOne(cancellation))
+                        throw new OperationCanceledException("Read operation was canceled.", cancellation);
 
-                        _pendingReads.TryPeek(out pendingRead);
-                    }
+                    _pendingReads.TryPeek(out pendingRead);
                 }
             }
 
