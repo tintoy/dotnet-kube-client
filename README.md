@@ -1,5 +1,7 @@
 # KubeClient
 
+[![Build Status (Travis CI)](https://travis-ci.org/tintoy/dotnet-kube-client.svg?branch=develop)](https://travis-ci.org/tintoy/dotnet-kube-client)
+
 KubeClient is an extensible Kubernetes API client for .NET Core.
 
 ## Prerequisites
@@ -15,6 +17,13 @@ If you need WebSocket / `exec` you'll need the code from the `feature/websockets
   Dependency-injection support.
 * `KubeClient.Extensions.KubeConfig`  
   Support for loading and parsing configuration from `~/.kube/config`.
+* `KubeClient.Extensions.WebSockets`  
+  Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).  
+  This package also extends resource clients to add support for those APIs.
+  * Requires .NET Core 2.1 (preview1) or newer.  
+    Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` and therefore only works on .NET Core 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).
+
+If you want to use the latest (development) builds of KubeClient, add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
 
 ## Usage
 
@@ -84,8 +93,131 @@ void ConfigureServices(IServiceCollection services)
 }
 ```
 
-Feel free to create an issue if you have any questions.
-
 ## Extensibility
 
-TODO: Document client extensibility points.
+KubeClient is designed to be easily extensible. The `KubeApiClient` provides the top-level entry point for the Kubernetes API and extension methods are used to expose more specific resource clients.
+
+Simplified version of [PodClientV1.cs](src/KubeClient/ResourceClients/PodClientV1.cs):
+
+```csharp
+public class PodClientV1 : KubeResourceClient
+{
+    public PodClientV1(KubeApiClient client) : base(client)
+    {
+    }
+
+    public async Task<List<PodV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+    {
+        PodListV1 matchingPods =
+            await Http.GetAsync(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            )
+            .ReadContentAsAsync<PodListV1, StatusV1>();
+
+        return matchingPods.Items;
+    }
+
+    public static class Requests
+    {
+        public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+    }
+}
+```
+
+Simplified version of [ClientFactoryExtensions.cs](src/KubeClient/ClientFactoryExtensions.cs#L97):
+
+```csharp
+public static PodClientV1 PodsV1(this KubeApiClient kubeClient)
+{
+    return kubeClient.ResourceClient(
+        client => new PodClientV1(client)
+    );
+}
+```
+
+This enables the following usage of `KubeApiClient`:
+
+```csharp
+KubeApiClient client;
+PodListV1 pods = await client.PodsV1().List(kubeNamespace: "kube-system");
+```
+
+Through the use of extension methods, resource clients (or additional operations) can be declared in any assembly and used as if they are part of the `KubeApiClient`. For example, the `KubeClient.Extensions.WebSockets` package adds an `ExecAndConnect` method to `PodClientV1`.
+
+Simplified version of [ResourceClientWebSocketExtensions.cs](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56):
+
+```csharp
+public static async Task<K8sMultiplexer> ExecAndConnect(this PodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
+{
+    byte[] outputStreamIndexes = stdin ? new byte[1] { 0 } : new byte[0];
+    byte[] inputStreamIndexes;
+    if (stdout && stderr)
+        inputStreamIndexes = new byte[2] { 1, 2 };
+    else if (stdout)
+        inputStreamIndexes = new byte[1] { 1 };
+    else if (stderr)
+        inputStreamIndexes = new byte[1] { 2 };
+    else if (!stdin)
+        throw new InvalidOperationException("Must specify at least one of STDIN, STDOUT, or STDERR.");
+    else
+        inputStreamIndexes = new byte[0];
+    
+    return await podClient.KubeClient
+        .ConnectWebSocket("api/v1/namespaces/{KubeNamespace}/pods/{PodName}/exec?stdin={StdIn?}&stdout={StdOut?}&stderr={StdErr?}&tty={TTY?}&command={Command}&container={Container?}", new
+        {
+            PodName = podName,
+            Command = command,
+            StdIn = stdin,
+            StdOut = stdout,
+            StdErr = stderr,
+            TTY = tty,
+            Container = container,
+            KubeNamespace = kubeNamespace ?? podClient.KubeClient.DefaultNamespace
+        }, cancellation)
+        .Multiplexed(inputStreamIndexes, outputStreamIndexes,
+            loggerFactory: podClient.KubeClient.LoggerFactory()
+        );
+}
+```
+
+Example usage of `ExecAndConnect`:
+
+```csharp
+KubeApiClient client;
+K8sMultiplexer connection = await client.PodsV1().ExecAndConnect(
+    podName: "my-pod",
+    command: "/bin/bash",
+    stdin: true,
+    stdout: true,
+    tty: true
+);
+using (connection)
+using (StreamWriter stdin = new StreamWriter(connection.GetOutputStream(0), Encoding.UTF8))
+using (StreamReader stdout = new StreamReader(connection.GetInputStream(1), Encoding.UTF8))
+{
+    await stdin.WriteLineAsync("ls -l /");
+    await stdin.WriteLineAsync("exit");
+
+    // Read from STDOUT until process terminates.
+    string line;
+    while ((line = await stdout.ReadLineAsync()) != null)
+    {
+        Console.WriteLine(line);
+    }
+}
+```
+
+For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at the [HTTPlease](https://tintoy.github.io/HTTPlease/) documentation.
+
+### Building
+
+For now, you will need to use v2.1.300-preview1 of the .NET Core SDK to build KubeClient.
+
+## Questions / feedback
+
+Feel free to [get in touch](https://github.com/tintoy/dotnet-kube-client/issues/new) if you have questions, feedback, or would like to contribute.

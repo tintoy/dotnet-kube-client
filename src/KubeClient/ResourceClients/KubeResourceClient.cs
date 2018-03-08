@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Microsoft.Extensions.Logging;
     using Models;
 
     /// <summary>
@@ -42,8 +43,6 @@ namespace KubeClient.ResourceClients
             }
         };
 
-        // TODO: Declare base request definitions (that include the serialiser settings).
-
         /// <summary>
         ///     Create a new <see cref="KubeResourceClient"/>.
         /// </summary>
@@ -55,18 +54,23 @@ namespace KubeClient.ResourceClients
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
             
-            Client = client;
+            KubeClient = client;
         }
 
         /// <summary>
         ///     The Kubernetes API client.
         /// </summary>
-        protected KubeApiClient Client { get; }
+        public KubeApiClient KubeClient { get; }
 
         /// <summary>
         ///     The underlying HTTP client.
         /// </summary>
-        protected HttpClient Http => Client.Http;
+        protected HttpClient Http => KubeClient.Http;
+
+        /// <summary>
+        ///     An <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </summary>
+        protected ILoggerFactory LoggerFactory => KubeClient.LoggerFactory;
 
         /// <summary>
         ///     Get a single resource, returning <c>null</c> if it does not exist.

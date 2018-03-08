@@ -48,7 +48,7 @@ namespace KubeClient.ResourceClients
                 await Http.GetAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                         LabelSelector = labelSelector
                     }),
                     cancellationToken: cancellationToken
@@ -82,7 +82,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
             );
@@ -109,7 +109,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newPersistentVolumeClaim?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newPersistentVolumeClaim?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newPersistentVolumeClaim,
                     cancellationToken: cancellationToken
@@ -141,7 +141,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 deleteBody: new DeleteOptionsV1
                 {

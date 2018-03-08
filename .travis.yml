@@ -1,0 +1,32 @@
+dist: trusty
+language: csharp
+
+mono: latest
+
+# Needed by GitVersion
+git:
+  depth: 9999999
+
+branches:
+  only:
+    - develop
+    - master
+
+# We need the .NET Core 2.1 (preview 1) SDK to build. Travis doesn't know how to install this yet.
+before_install:
+  - echo 'Installing .NET Core...'
+  - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+  - export DOTNET_CLI_TELEMETRY_OPTOUT=1
+  - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+  - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+  - sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+  - sudo apt-get -qq update
+  - sudo apt-get install -y jq dotnet-sdk-2.1.300-preview1-008174
+
+script:
+  - /bin/bash ./build-ci.sh
+  - /bin/bash ./publish-ci.sh
+
+env:
+  global:
+    secure: h8VflQcXJ34XKlCrPhDdTNbEotG/AjXi/+JjMQ8Bo79p27kwofgIfxz8AUjbS60gO+2AqyNK8UJodHZ6Cw9QRq7xqNBwoQRIB8jbwOkVWv/GpQ9ehGC4AoNuvkl/2/vjNnFtCRSONVJNn/bVxDrASj038L/XNFzdyMvyIYvadkygcNL8v70JaoMd4b5J2vW69d0QTKfhDFBNmUww7rgT79RKEvNIOTazmNJccu2qLwPOAP0C0FtitJUqBCO9rAbmWLahL7eUgBS78g8GqJ/7t5t8kPTmcAPfspPJCosu2kL1rsg62NiwXTxDWH1FLH2p2m7kF+48ssXqEdiNze95vth1YwRQUX6hVa0lp7m04gNSEWd66FURC7c8sjYGdDvTX8ailRDWA5ft3rrw5eidayTIXbJRI5uKt39eTRmd/0Gf0PIwJShoVzRvjMRVtJ6OL17YNF4vUQTWc6SwD6UoDcMlnb6c8vyE8tsQv+OUOCt0LrNm9QV2Oe9JkyOSwuO/ie7drebtB82DuRKgbiFKO0CmtZPvSjvvo/TYxZF0lA7dcaNMfucoQKRdNNYQHh6iahYR2lD7vtHEI9UWcmBBMNz6JAwDRGB/UZtNIM7tDKBsSb3XxCJMYinph8KHfU9xS5q1BIj/AfVLVzfFGCRo/93l/OCWtf4wCIexOlcoJbQ=

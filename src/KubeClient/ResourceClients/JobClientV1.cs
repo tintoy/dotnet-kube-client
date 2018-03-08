@@ -48,7 +48,7 @@ namespace KubeClient.ResourceClients
                 await Http.GetAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                         LabelSelector = labelSelector
                     }),
                     cancellationToken: cancellationToken
@@ -79,7 +79,7 @@ namespace KubeClient.ResourceClients
                 Requests.WatchByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 })
             );
         }
@@ -101,7 +101,7 @@ namespace KubeClient.ResourceClients
             return ObserveEvents<JobV1>(
                 Requests.WatchCollection.WithTemplateParameters(new
                 {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector
                 })
             );
@@ -131,7 +131,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
             );
@@ -158,7 +158,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newJob?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newJob?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newJob,
                     cancellationToken: cancellationToken
@@ -190,7 +190,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 deleteBody: new DeleteOptionsV1
                 {
