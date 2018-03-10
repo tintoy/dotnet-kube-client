@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -9,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Extensions.WebSockets
 {
-    using Microsoft.Extensions.Logging;
     using Streams;
 
     /// <summary>
@@ -417,7 +417,7 @@ namespace KubeClient.Extensions.WebSockets
 
             await Task.Yield();
 
-            Log.LogTrace("Message-receive pump started.");
+            Log.LogTrace("Message-send pump started.");
 
             try
             {
