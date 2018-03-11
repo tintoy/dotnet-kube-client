@@ -93,6 +93,12 @@ void ConfigureServices(IServiceCollection services)
 }
 ```
 
+## Design philosophy
+
+Use of code generation is limited; generated clients tend to wind up being non-idiomatic and, for a Swagger spec as large as that of Kubernetes, wind up placing too many methods directly on the client class.
+
+KubeClient's approach is to generate model classes (see `src/swagger` for the Python script that does this) and hand-code the actual operation methods to provide an improved consumer experience (i.e. useful and consistent exception types).
+
 ## Extensibility
 
 KubeClient is designed to be easily extensible. The `KubeApiClient` provides the top-level entry point for the Kubernetes API and extension methods are used to expose more specific resource clients.
