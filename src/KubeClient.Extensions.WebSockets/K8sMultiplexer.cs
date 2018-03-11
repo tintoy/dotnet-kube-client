@@ -26,7 +26,12 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     The default buffer size used for Kubernetes WebSockets.
         /// </summary>
-        const int DefaultBufferSize = 1024;
+        public const int DefaultBufferSize = 1024;
+
+        /// <summary>
+        ///     The default maximum number of pending bytes that input streams can contain.
+        /// </summary>
+        public const int DefaultMaxInputStreamBytes = 4096;
 
         /// <summary>
         ///     Input (read) streams, keyed by stream index.
@@ -73,7 +78,10 @@ namespace KubeClient.Extensions.WebSockets
         /// <param name="loggerFactory">
         ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
-        public K8sMultiplexer(WebSocket socket, byte[] inputStreamIndexes, byte[] outputStreamIndexes, ILoggerFactory loggerFactory)
+        /// <param name="maxInputStreamBytes">
+        ///     The maximum number of pending bytes that input streams can contain.
+        /// </param>
+        public K8sMultiplexer(WebSocket socket, byte[] inputStreamIndexes, byte[] outputStreamIndexes, ILoggerFactory loggerFactory, int maxInputStreamBytes = DefaultMaxInputStreamBytes)
         {
             if (socket == null)
                 throw new ArgumentNullException(nameof(socket));
@@ -94,7 +102,7 @@ namespace KubeClient.Extensions.WebSockets
             Socket = socket;
 
             foreach (byte inputStreamIndex in inputStreamIndexes)
-                _inputStreams[inputStreamIndex] = new K8sMultiplexedReadStream(inputStreamIndex, loggerFactory);
+                _inputStreams[inputStreamIndex] = new K8sMultiplexedReadStream(inputStreamIndex, maxInputStreamBytes, loggerFactory);
 
             foreach (byte outputStreamIndex in outputStreamIndexes)
                 _outputStreams[outputStreamIndex] = new K8sMultiplexedWriteStream(outputStreamIndex, EnqueueSend, loggerFactory);
@@ -347,6 +355,21 @@ namespace KubeClient.Extensions.WebSockets
 
                         continue;
                     }
+                    
+                    if (readStream.IsCompleted)
+                    {
+                        Log.LogTrace("Stream {StreamIndex} is completed; ignoring data...", streamIndex);
+
+                        // Discard the rest of the message.
+                        while (!readResult.EndOfMessage)
+                            readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
+
+                        ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
+
+                        Log.LogTrace("Ignored remaining data for completed stream {StreamIndex}.", streamIndex);
+
+                        continue;
+                    }
 
                     // Skip over stream index.
                     buffer = new ArraySegment<byte>(buffer.Array,
@@ -375,6 +398,21 @@ namespace KubeClient.Extensions.WebSockets
                             readResult.EndOfMessage
                         );
 
+                        if (readStream.IsCompleted)
+                        {
+                            Log.LogTrace("Stream {StreamIndex} is completed; ignoring remaining data...", streamIndex);
+
+                            // Discard the rest of the message.
+                            while (!readResult.EndOfMessage)
+                                readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
+
+                            ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
+
+                            Log.LogTrace("Ignored remaining data for completed stream {StreamIndex}.", streamIndex);
+
+                            break;
+                        }
+
                         buffer = new ArraySegment<byte>(buffer.Array,
                             offset: buffer.Offset,
                             count: readResult.Count - 1
@@ -382,18 +420,30 @@ namespace KubeClient.Extensions.WebSockets
                         readStream.AddPendingRead(buffer);
                     }
                 }
+
+                foreach (K8sMultiplexedReadStream readStream in _inputStreams.Values)
+                    readStream.Complete();
             }
             catch (OperationCanceledException)
             {
                 // Clean termination.
+                
+                foreach (K8sMultiplexedReadStream readStream in _inputStreams.Values)
+                    readStream.Complete();
             }
             catch (WebSocketException websocketError) when (websocketError.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
             {
                 // Connection closed by remote host without completing the close handshake. Consider writing a Trace log entry noting this fact.
+
+                foreach (K8sMultiplexedReadStream readStream in _inputStreams.Values)
+                    readStream.Fault(websocketError);
             }
             catch (Exception unexpectedError)
             {
                 Log.LogError(EventIds.K8sMultiplexer.ReceivePumpError, unexpectedError, "The message-receive pump encountered an unexpected error.");
+
+                foreach (K8sMultiplexedReadStream readStream in _inputStreams.Values)
+                    readStream.Fault(unexpectedError);
             }
             finally
             {

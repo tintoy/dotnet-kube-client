@@ -27,17 +27,34 @@ namespace KubeClient.Extensions.WebSockets.Streams
         readonly AutoResetEvent _dataAvailable = new AutoResetEvent(initialState: false);
 
         /// <summary>
+        ///     The number of bytes currently pending in the stream.
+        /// </summary>
+        int _bytesPending;
+
+        /// <summary>
+        ///     If the stream is in the faulted completed or faulted state, this caches the task representing that state.
+        /// </summary>
+        Task<int> _completion;
+
+        /// <summary>
         ///     Create a new <see cref="K8sMultiplexedReadStream"/>.
         /// </summary>
         /// <param name="streamIndex">
         ///     The Kubernetes stream index of the target input stream.
         /// </param>
+        /// <param name="maxPendingBytes">
+        ///     The maximum number of pending bytes that the stream can hold.
+        /// </param>
         /// <param name="loggerFactory">
         ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </param>
-        public K8sMultiplexedReadStream(byte streamIndex, ILoggerFactory loggerFactory)
+        public K8sMultiplexedReadStream(byte streamIndex, int maxPendingBytes, ILoggerFactory loggerFactory)
         {
+            if (maxPendingBytes < 1)
+                throw new ArgumentOutOfRangeException(nameof(maxPendingBytes), maxPendingBytes, "Maximum number of pending bytes cannot be less than 1.");
+
             StreamIndex = streamIndex;
+            MaxPendingBytes = maxPendingBytes;
             Log = loggerFactory.CreateLogger<K8sMultiplexedReadStream>();
         }
 
@@ -49,14 +66,43 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// </param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && !IsDisposed)
+            {
+                IsDisposed = true;
+
                 _dataAvailable.Dispose();
+
+                // Ensure we don't leak memory.
+                foreach (PendingRead pendingRead in _pendingReads)
+                    pendingRead.Release();
+
+                _pendingReads.Clear();
+            }
+        }
+
+        /// <summary>
+        ///     Check if the stream has been disposed.
+        /// </summary>
+        void CheckDisposed()
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(GetType().FullName);
         }
 
         /// <summary>
         ///     The Kubernetes stream index of the target input stream.
         /// </summary>
         public byte StreamIndex { get; }
+
+        /// <summary>
+        ///     The maximum number of pending bytes that the stream can hold.
+        /// </summary>
+        public int MaxPendingBytes { get; }
+
+        /// <summary>
+        ///     Has the stream been disposed?
+        /// </summary>
+        public bool IsDisposed { get; private set; }
 
         /// <summary>
         ///     Does the stream support reading?
@@ -84,6 +130,11 @@ namespace KubeClient.Extensions.WebSockets.Streams
         public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
+        ///     Is the stream in the completed state?
+        /// </summary>
+        public bool IsCompleted => _completion != null || IsDisposed;
+
+        /// <summary>
         ///     The stream's log facility.
         /// </summary>
         ILogger Log { get; }
@@ -108,9 +159,16 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (buffer == null)
                 throw new ArgumentNullException(nameof(buffer));
 
+            CheckDisposed();
+
+            if (IsCompleted)
+                return _completion.GetAwaiter().GetResult();
+
             PendingRead pendingRead = NextPendingRead();
 
             int bytesRead = pendingRead.DrainTo(buffer, offset);
+            _bytesPending -= bytesRead;
+
             if (pendingRead.IsEmpty)
                 Consume(pendingRead); // Source buffer has been consumed.
 
@@ -140,6 +198,11 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (buffer == null)
                 throw new ArgumentNullException(nameof(buffer));
 
+            CheckDisposed();
+
+            if (IsCompleted)
+                return await _completion;
+
             await Task.Yield();
 
             PendingRead pendingRead = NextPendingRead(cancellationToken);
@@ -148,6 +211,8 @@ namespace KubeClient.Extensions.WebSockets.Streams
             cancellationToken.ThrowIfCancellationRequested();
 
             int bytesRead = pendingRead.DrainTo(buffer, offset);
+            _bytesPending -= bytesRead;
+
             if (pendingRead.IsEmpty)
                 Consume(pendingRead); // Source buffer has been consumed.
 
@@ -206,8 +271,61 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (data.Array == null)
                 throw new ArgumentNullException(nameof(data));
 
+            if (IsDisposed)
+            {
+                ArrayPool<byte>.Shared.Return(data.Array, clearArray: true);
+
+                return;
+            }
+
+            if (_bytesPending + data.Count > MaxPendingBytes)
+            {
+                Fault(new IOException(
+                    $"Capacity of read buffer for stream {StreamIndex} ({MaxPendingBytes} bytes) has been exceeded."
+                ));
+
+                ArrayPool<byte>.Shared.Return(data.Array, clearArray: true);
+
+                return;
+            }
+
             _pendingReads.Enqueue(new PendingRead(data));
+            _bytesPending += data.Count;
             _dataAvailable.Set();
+        }
+
+        /// <summary>
+        ///     Mark the stream as completed.
+        /// </summary>
+        internal void Complete()
+        {
+            if (IsDisposed)
+                return;
+
+            Task<int> completed = Task.FromResult(0);
+            Task<int> completion = Interlocked.CompareExchange(ref _completion, completed, null);
+            if (ReferenceEquals(completion, completed))
+                Log.LogTrace("Marked read stream {StreamIndex} as successfully completed.", StreamIndex);
+        }
+
+        /// <summary>
+        ///     Mark the stream as faulted.
+        /// </summary>
+        /// <param name="exception">
+        ///     An <see cref="Exception"/> representing the cause of the fault.
+        /// </param>
+        internal void Fault(Exception exception)
+        {
+            if (exception == null)
+                throw new ArgumentNullException(nameof(exception));
+
+            if (IsDisposed)
+                return;
+            
+            Task<int> faulted = Task.FromException<int>(exception);
+            Task<int> completion = Interlocked.CompareExchange(ref _completion, faulted, null);
+            if (ReferenceEquals(completion, faulted))
+                Log.LogTrace("Marked read stream {StreamIndex} as faulted ({ExceptionType}).", StreamIndex, exception.GetType().FullName);
         }
 
         /// <summary>
@@ -351,10 +469,21 @@ namespace KubeClient.Extensions.WebSockets.Streams
                 // This is the last of our data; copy it all.
                 Array.Copy(_data.Array, _data.Offset, buffer, offset, bytesAvailable);
 
-                ArrayPool<byte>.Shared.Return(_data.Array, clearArray: true);
-                _data = ArraySegment<byte>.Empty;
+                Release();
 
                 return bytesAvailable;
+            }
+
+            /// <summary>
+            ///     Release any the buffer (if any) held by the pending read.
+            /// </summary>
+            public void Release()
+            {
+                if (_data.Array != null)
+                {
+                    ArrayPool<byte>.Shared.Return(_data.Array, clearArray: true);
+                    _data = ArraySegment<byte>.Empty;
+                }
             }
         }
     }
