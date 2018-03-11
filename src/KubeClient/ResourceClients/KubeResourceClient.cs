@@ -236,15 +236,18 @@ namespace KubeClient.ResourceClients
                 }
                 catch (OperationCanceledException operationCanceled) when (operationCanceled.CancellationToken != cancellationToken)
                 {
-                    subscriber.OnError(operationCanceled);
+                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                        subscriber.OnError(operationCanceled);
                 }
                 catch (Exception exception)
                 {
-                    subscriber.OnError(exception);
+                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                        subscriber.OnError(exception);
                 }
                 finally
                 {
-                    subscriber.OnCompleted();
+                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                        subscriber.OnCompleted();
                 }
             });
         }
