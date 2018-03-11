@@ -88,7 +88,7 @@ namespace KubeClient.ResourceClients
         ///     A <typeparamref name="TResource"/> representing the current state for the resource, or <c>null</c> if no resource was found with the specified name and namespace.
         /// </returns>
         protected async Task<TResource> GetSingleResource<TResource>(HttpRequest request, CancellationToken cancellationToken = default)
-            where TResource : class
+            where TResource : KubeResourceV1
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
