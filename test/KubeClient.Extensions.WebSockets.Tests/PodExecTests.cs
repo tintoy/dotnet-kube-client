@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -50,6 +51,8 @@ namespace KubeClient.Extensions.WebSockets.Tests
                 var testComplete = new TaskCompletionSource<object>();
                 WebSocketTestAdapter.OnPodExec = webSocket =>
                 {
+                    Log.LogInformation("WebSocket accepted by server.");
+
                     serverSocketAccepted.SetResult(webSocket);
 
                     return testComplete.Task;
@@ -68,35 +71,41 @@ namespace KubeClient.Extensions.WebSockets.Tests
                     Stream stdin = multiplexer.GetOutputStream(0);
                     Stream stdout = multiplexer.GetInputStream(1);
 
+                    Log.LogInformation("Waiting for server-side WebSocket.");
+
                     WebSocket serverSocket = await serverSocketAccepted.Task;
 
-                    // Server sends prompt.
+                    Log.LogInformation("Server sends prompt.");
                     byte[] payload = Encoding.ASCII.GetBytes(expectedPrompt);
                     byte[] sendBuffer = new byte[payload.Length + 1];
                     sendBuffer[0] = 1; // STDOUT
                     Array.Copy(payload, 0, sendBuffer, 1, payload.Length);
                     await serverSocket.SendAsync(sendBuffer, WebSocketMessageType.Binary, true, Cancellation);
+                    Log.LogInformation("Server sent prompt.");
 
-                    // Client expects prompt.
+                    Log.LogInformation("Client expects prompt.");
                     byte[] receiveBuffer = new byte[2048];
                     int bytesReceived = await stdout.ReadAsync(receiveBuffer, 0, receiveBuffer.Length, Cancellation);
 
                     string prompt = Encoding.ASCII.GetString(receiveBuffer, 0, bytesReceived);
                     Assert.Equal(expectedPrompt, prompt);
+                    Log.LogInformation("Client got expected prompt.");
                     
-                    // Client sends command.
+                    Log.LogInformation("Client sends command.");
                     sendBuffer = Encoding.ASCII.GetBytes(expectedCommand); // No prefix needed, since this is a multiplexer stream.
                     await stdin.WriteAsync(sendBuffer, 0, sendBuffer.Length, Cancellation);
+                    Log.LogInformation("Client sent command.");
 
-                    // Server expects command.
+                    Log.LogInformation("Server expects command.");
                     receiveBuffer = new byte[2048];
                     WebSocketReceiveResult receiveResult = await serverSocket.ReceiveAsync(receiveBuffer, Cancellation);
                     Assert.Equal(0 /* STDIN */, receiveBuffer[0]);
 
                     string command = Encoding.ASCII.GetString(receiveBuffer, 1, receiveResult.Count - 1);
                     Assert.Equal(expectedCommand, command);
+                    Log.LogInformation("Server got expected command.");
 
-                    // Close enough; we're done.
+                    Log.LogInformation("Close enough; we're done.");
                     await multiplexer.Shutdown(Cancellation);
                     testComplete.SetResult(null);
                 }

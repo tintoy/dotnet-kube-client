@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Nito.AsyncEx;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -32,6 +33,16 @@ namespace KubeClient.Extensions.WebSockets
         ///     The default maximum number of pending bytes that input streams can contain.
         /// </summary>
         public const int DefaultMaxInputStreamBytes = 4096;
+
+        /// <summary>
+        ///     An asynchronous lock used to synchronise sending to the underlying WebSocket.
+        /// </summary>
+        readonly AsyncLock _sendMutex = new AsyncLock();
+
+        /// <summary>
+        ///     An asynchronous lock used to synchronise receiving from the underlying WebSocket.
+        /// </summary>
+        readonly AsyncLock _receiveMutex = new AsyncLock();
 
         /// <summary>
         ///     Input (read) streams, keyed by stream index.
@@ -318,106 +329,90 @@ namespace KubeClient.Extensions.WebSockets
             {
                 while (Socket.State == WebSocketState.Open)
                 {
-                    buffer = new ArraySegment<byte>(
-                        ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize)
-                    );
-
-                    WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
-                    if (readResult.Count <= 1 && readResult.EndOfMessage)
+                    using (await _receiveMutex.LockAsync(cancellation).ConfigureAwait(false))
                     {
-                        // Effectively an empty packet; ignore.
-                        ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
+                        buffer = CreateReadBuffer();
 
-                        continue;
-                    }
-
-                    // Extract stream index.
-                    byte streamIndex = buffer[0];
-
-                    Log.LogTrace("Received {DataLength} bytes for stream {StreamIndex} (EndOfMessage = {EndOfMessage}).",
-                        readResult.Count - 1,
-                        streamIndex,
-                        readResult.EndOfMessage
-                    );
-                    
-                    K8sMultiplexedReadStream readStream;
-                    if (!_inputStreams.TryGetValue(streamIndex, out readStream))
-                    {
-                        Log.LogTrace("Stream {StreamIndex} is not registered; ignoring data...", streamIndex);
-
-                        // Unknown stream; discard the rest of the message.
-                        while (!readResult.EndOfMessage)
-                            readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
-
-                        ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
-
-                        Log.LogTrace("Ignored remaining data for stream {StreamIndex}.", streamIndex);
-
-                        continue;
-                    }
-                    
-                    if (readStream.IsCompleted)
-                    {
-                        Log.LogTrace("Stream {StreamIndex} is completed; ignoring data...", streamIndex);
-
-                        // Discard the rest of the message.
-                        while (!readResult.EndOfMessage)
-                            readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
-
-                        ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
-
-                        Log.LogTrace("Ignored remaining data for completed stream {StreamIndex}.", streamIndex);
-
-                        continue;
-                    }
-
-                    // Skip over stream index.
-                    buffer = new ArraySegment<byte>(buffer.Array,
-                        offset: buffer.Offset + 1,
-                        count: readResult.Count - 1
-                    );
-
-                    readStream.AddPendingRead(buffer);
-
-                    while (!readResult.EndOfMessage)
-                    {
-                        buffer = new ArraySegment<byte>(
-                            ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize)
-                        );
-                        readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
-                        if (readResult.Count == 0 || readResult.MessageType != WebSocketMessageType.Binary)
+                        WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
+                        if (readResult.Count <= 1 && readResult.EndOfMessage)
                         {
-                            ArrayPool<byte>.Shared.Return(buffer.Array);
+                            // Effectively an empty packet; ignore.
+                            buffer = buffer.Release();
 
-                            break;
+                            continue;
                         }
 
-                        Log.LogTrace("Received {DataLength} additional bytes for stream {StreamIndex} (EndOfMessage = {EndOfMessage}).",
-                            readResult.Count,
+                        // Extract stream index.
+                        byte streamIndex = buffer[0];
+
+                        Log.LogTrace("Received {DataLength} bytes for stream {StreamIndex} (EndOfMessage = {EndOfMessage}).",
+                            readResult.Count - 1,
                             streamIndex,
                             readResult.EndOfMessage
                         );
+                        
+                        K8sMultiplexedReadStream readStream;
+                        if (!_inputStreams.TryGetValue(streamIndex, out readStream))
+                        {
+                            Log.LogTrace("Stream {StreamIndex} is not registered; discarding data...", streamIndex);
 
+                            await DiscardMessageRemainder(buffer, cancellation).ConfigureAwait(false);
+                            buffer = buffer.Release();
+
+                            Log.LogTrace("Ignored remaining data for stream {StreamIndex}.", streamIndex);
+
+                            continue;
+                        }
+                        
                         if (readStream.IsCompleted)
                         {
-                            Log.LogTrace("Stream {StreamIndex} is completed; ignoring remaining data...", streamIndex);
+                            Log.LogTrace("Stream {StreamIndex} is completed; discarding data...", streamIndex);
 
-                            // Discard the rest of the message.
-                            while (!readResult.EndOfMessage)
-                                readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
-
-                            ArrayPool<byte>.Shared.Return(buffer.Array, clearArray: true);
+                            await DiscardMessageRemainder(buffer, cancellation).ConfigureAwait(false);
+                            buffer = buffer.Release();
 
                             Log.LogTrace("Ignored remaining data for completed stream {StreamIndex}.", streamIndex);
 
-                            break;
+                            continue;
                         }
 
-                        buffer = new ArraySegment<byte>(buffer.Array,
-                            offset: buffer.Offset,
-                            count: readResult.Count - 1
-                        );
+                        // Skip over stream index.
+                        buffer = buffer.Slice(offset: 1, count: readResult.Count - 1);
+
                         readStream.AddPendingRead(buffer);
+
+                        while (!readResult.EndOfMessage)
+                        {
+                            buffer = CreateReadBuffer();
+                            readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
+                            if (readResult.Count == 0 || readResult.MessageType != WebSocketMessageType.Binary)
+                            {
+                                buffer = buffer.Release();
+
+                                break;
+                            }
+
+                            Log.LogTrace("Received {DataLength} additional bytes for stream {StreamIndex} (EndOfMessage = {EndOfMessage}).",
+                                readResult.Count,
+                                streamIndex,
+                                readResult.EndOfMessage
+                            );
+
+                            if (readStream.IsCompleted)
+                            {
+                                Log.LogTrace("Stream {StreamIndex} is completed; discarding remaining data...", streamIndex);
+
+                                await DiscardMessageRemainder(buffer, cancellation).ConfigureAwait(false);
+                                buffer = buffer.Release();
+
+                                Log.LogTrace("Ignored remaining data for completed stream {StreamIndex}.", streamIndex);
+
+                                break;
+                            }
+
+                            buffer = buffer.Slice(readResult.Count);
+                            readStream.AddPendingRead(buffer);
+                        }
                     }
                 }
 
@@ -471,45 +466,48 @@ namespace KubeClient.Extensions.WebSockets
 
             try
             {
-                while (!Cancellation.IsCancellationRequested)
+                while (!cancellation.IsCancellationRequested)
                 {
                     PendingSend pendingSend;
-                    if (!_pendingSends.TryTake(out pendingSend, Timeout.Infinite, Cancellation))
-                        continue;
-
-                    using (CancellationTokenSource linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation, pendingSend.Cancellation))
+                    if (_pendingSends.TryTake(out pendingSend, Timeout.Infinite, cancellation) )
                     {
-                        byte[] dataWithPrefix = ArrayPool<byte>.Shared.Rent(pendingSend.Data.Count + 1);
+                        using (CancellationTokenSource linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation, pendingSend.Cancellation))
+                        using (await _sendMutex.LockAsync(linkedCancellation.Token).ConfigureAwait(false))
+                        {
+                            byte[] dataWithPrefix = ArrayPool<byte>.Shared.Rent(pendingSend.Data.Count + 1);
 
-                        try
-                        {
-                            dataWithPrefix[0] = pendingSend.StreamIndex;
-                            Array.Copy(pendingSend.Data.Array, pendingSend.Data.Offset, dataWithPrefix, 1, pendingSend.Data.Count);
+                            try
+                            {
+                                dataWithPrefix[0] = pendingSend.StreamIndex;
+                                Array.Copy(pendingSend.Data.Array, pendingSend.Data.Offset, dataWithPrefix, 1, pendingSend.Data.Count);
+                                
+                                var sendBuffer = new ArraySegment<byte>(dataWithPrefix, 0, pendingSend.Data.Count + 1);
 
-                            await Socket.SendAsync(new ArraySegment<byte>(dataWithPrefix, 0, pendingSend.Data.Count + 1),
-                                WebSocketMessageType.Binary,
-                                endOfMessage: true,
-                                cancellationToken: linkedCancellation.Token
-                            ).ConfigureAwait(false);
+                                await Socket.SendAsync(sendBuffer,
+                                    messageType: WebSocketMessageType.Binary,
+                                    endOfMessage: true,
+                                    cancellationToken: linkedCancellation.Token
+                                ).ConfigureAwait(false);
 
-                            pendingSend.Completion.TrySetResult(null);
-                        }
-                        catch (OperationCanceledException sendCancelled) when (sendCancelled.CancellationToken == linkedCancellation.Token)
-                        {
-                            pendingSend.Completion.TrySetCanceled(sendCancelled.CancellationToken);
-                        }
-                        catch (Exception writeFailed)
-                        {
-                            pendingSend.Completion.TrySetException(writeFailed);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(dataWithPrefix, clearArray: true);
+                                pendingSend.Completion.TrySetResult(null);
+                            }
+                            catch (OperationCanceledException sendCancelled) when (sendCancelled.CancellationToken == linkedCancellation.Token)
+                            {
+                                pendingSend.Completion.TrySetCanceled(sendCancelled.CancellationToken);
+                            }
+                            catch (Exception writeFailed)
+                            {
+                                pendingSend.Completion.TrySetException(writeFailed);
+                            }
+                            finally
+                            {
+                                ArrayPool<byte>.Shared.Return(dataWithPrefix, clearArray: true);
+                            }
                         }
                     }
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException canceled) when (canceled.CancellationToken == cancellation)
             {
                 // Clean termination.
             }
@@ -521,6 +519,37 @@ namespace KubeClient.Extensions.WebSockets
             {
                 Log.LogTrace("Message-receive pump terminated.");
             }
+        }
+
+        /// <summary>
+        ///     Rent a buffer from the pool for reading from the transport.
+        /// </summary>
+        /// <returns>
+        ///     The buffer, as an <see cref="ArraySegment{T}"/>.
+        /// </returns>
+        ArraySegment<byte> CreateReadBuffer() => new ArraySegment<byte>(
+            ArrayPool<byte>.Shared.Rent(minimumLength: DefaultBufferSize),
+            offset: 0,
+            count: DefaultBufferSize
+        );
+
+        /// <summary>
+        ///     Asynchronously discard the remainder of an incoming message from the underlying WebSocket.
+        /// </summary>
+        /// <param name="buffer">
+        ///     The buffer used to receive data.
+        /// </param>
+        /// <param name="cancellation">
+        ///     A <see cref="CancellationToken"/> that can be used to cancel the operation.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="Task"/> representing the asynchronous operation.
+        /// </returns>
+        async Task DiscardMessageRemainder(ArraySegment<byte> buffer, CancellationToken cancellation)
+        {
+            WebSocketReceiveResult readResult = readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
+            while (!readResult.EndOfMessage)
+                readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
         }
     }
 
