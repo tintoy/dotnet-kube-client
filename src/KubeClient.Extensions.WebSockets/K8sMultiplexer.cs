@@ -381,6 +381,7 @@ namespace KubeClient.Extensions.WebSockets
 
                         readStream.AddPendingRead(buffer);
 
+                        // Capture any remaining data for this stream segment.
                         while (!readResult.EndOfMessage)
                         {
                             buffer = CreateReadBuffer();

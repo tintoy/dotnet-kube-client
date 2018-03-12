@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
+using Nito.AsyncEx;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -17,14 +19,19 @@ namespace KubeClient.Extensions.WebSockets.Streams
         : Stream
     {
         /// <summary>
-        ///     The stream's queue of pending read operations.
+        ///     A lock used to synchronise access to reader state.
         /// </summary>
-        readonly ConcurrentQueue<PendingRead> _pendingReads = new ConcurrentQueue<PendingRead>();
+        readonly AsyncLock _mutex;
 
         /// <summary>
-        ///     A wait handle representing the availability of data to read.
+        ///     A condition variable indicating availability of data to read or the stream's completion.
         /// </summary>
-        readonly AutoResetEvent _dataAvailable = new AutoResetEvent(initialState: false);
+        readonly AsyncConditionVariable _completedOrDataAvailable;
+
+        /// <summary>
+        ///     The stream's queue of pending read operations.
+        /// </summary>
+        readonly Queue<PendingRead> _pendingReads = new Queue<PendingRead>();
 
         /// <summary>
         ///     The number of bytes currently pending in the stream.
@@ -53,6 +60,9 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (maxPendingBytes < 1)
                 throw new ArgumentOutOfRangeException(nameof(maxPendingBytes), maxPendingBytes, "Maximum number of pending bytes cannot be less than 1.");
 
+            _mutex = new AsyncLock();
+            _completedOrDataAvailable = new AsyncConditionVariable(_mutex);
+
             StreamIndex = streamIndex;
             MaxPendingBytes = maxPendingBytes;
             Log = loggerFactory.CreateLogger<K8sMultiplexedReadStream>();
@@ -68,15 +78,18 @@ namespace KubeClient.Extensions.WebSockets.Streams
         {
             if (disposing && !IsDisposed)
             {
-                IsDisposed = true;
+                using (_mutex.Lock())
+                {
+                    IsDisposed = true;
 
-                _dataAvailable.Dispose();
+                    _completedOrDataAvailable.NotifyAll(); // Release any tasks that are waiting.
 
-                // Ensure we don't leak memory.
-                foreach (PendingRead pendingRead in _pendingReads)
-                    pendingRead.Release();
+                    // Ensure we don't leak memory.
+                    foreach (PendingRead pendingRead in _pendingReads)
+                        pendingRead.Release();
 
-                _pendingReads.Clear();
+                    _pendingReads.Clear();
+                }
             }
         }
 
@@ -164,15 +177,30 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (IsCompleted)
                 return _completion.GetAwaiter().GetResult();
 
-            PendingRead pendingRead = NextPendingRead();
+            using (_mutex.Lock())
+            {
+                PendingRead pendingRead;
+                if (!_pendingReads.TryPeek(out pendingRead))
+                {
+                    // Wait for data.
+                    _completedOrDataAvailable.Wait();
+                    if (!_pendingReads.TryPeek(out pendingRead))
+                    {
+                        // If we get here, then the stream was completed, so our read should be aborted.
+                        Debug.Assert(IsCompleted, "No pending read available, but stream is not completed.");
 
-            int bytesRead = pendingRead.DrainTo(buffer, offset);
-            _bytesPending -= bytesRead;
+                        return _completion.GetAwaiter().GetResult();
+                    }
+                }
 
-            if (pendingRead.IsEmpty)
-                Consume(pendingRead); // Source buffer has been consumed.
+                int bytesRead = pendingRead.DrainTo(buffer, offset);
+                _bytesPending -= bytesRead;
 
-            return bytesRead;
+                if (pendingRead.IsEmpty)
+                    Consume(pendingRead); // Source buffer has been consumed.
+
+                return bytesRead;
+            }
         }
 
         /// <summary>
@@ -201,22 +229,35 @@ namespace KubeClient.Extensions.WebSockets.Streams
             CheckDisposed();
 
             if (IsCompleted)
-                return await _completion;
+                return await _completion.ConfigureAwait(false);
 
-            await Task.Yield();
+            PendingRead pendingRead;
+            using (await _mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+            {
+                if (!_pendingReads.TryPeek(out pendingRead))
+                {
+                    // Wait for data.
+                    await _completedOrDataAvailable.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    if (!_pendingReads.TryPeek(out pendingRead))
+                    {
+                        // If we get here, then the stream was completed, so our read should be aborted.
+                        Debug.Assert(IsCompleted, "No pending read available, but stream is not completed.");
 
-            PendingRead pendingRead = NextPendingRead(cancellationToken);
+                        return await _completion.ConfigureAwait(false);
+                    }
+                }
 
-            // Last chance to cancel non-destructively.
-            cancellationToken.ThrowIfCancellationRequested();
+                // Last chance to cancel non-destructively.
+                cancellationToken.ThrowIfCancellationRequested();
 
-            int bytesRead = pendingRead.DrainTo(buffer, offset);
-            _bytesPending -= bytesRead;
+                int bytesRead = pendingRead.DrainTo(buffer, offset);
+                _bytesPending -= bytesRead;
 
-            if (pendingRead.IsEmpty)
-                Consume(pendingRead); // Source buffer has been consumed.
+                if (pendingRead.IsEmpty)
+                    Consume(pendingRead); // Source buffer has been consumed.
 
-            return bytesRead;
+                return bytesRead;
+            }
         }
 
         /// <summary>
@@ -271,27 +312,30 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (data.Array == null)
                 throw new ArgumentNullException(nameof(data));
 
-            if (IsDisposed)
+            using (_mutex.Lock())
             {
-                ArrayPool<byte>.Shared.Return(data.Array, clearArray: true);
+                if (IsDisposed)
+                {
+                    ArrayPool<byte>.Shared.Return(data.Array, clearArray: true);
 
-                return;
+                    return;
+                }
+
+                if (_bytesPending + data.Count > MaxPendingBytes)
+                {
+                    Fault(new IOException(
+                        $"Capacity of read buffer for stream {StreamIndex} ({MaxPendingBytes} bytes) has been exceeded."
+                    ));
+
+                    ArrayPool<byte>.Shared.Return(data.Array, clearArray: true);
+
+                    return;
+                }
+
+                _pendingReads.Enqueue(new PendingRead(data));
+                _bytesPending += data.Count;
+                _completedOrDataAvailable.Notify();
             }
-
-            if (_bytesPending + data.Count > MaxPendingBytes)
-            {
-                Fault(new IOException(
-                    $"Capacity of read buffer for stream {StreamIndex} ({MaxPendingBytes} bytes) has been exceeded."
-                ));
-
-                ArrayPool<byte>.Shared.Return(data.Array, clearArray: true);
-
-                return;
-            }
-
-            _pendingReads.Enqueue(new PendingRead(data));
-            _bytesPending += data.Count;
-            _dataAvailable.Set();
         }
 
         /// <summary>
@@ -299,13 +343,18 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// </summary>
         internal void Complete()
         {
-            if (IsDisposed)
-                return;
+            using (_mutex.Lock())
+            {
+                if (IsDisposed)
+                    return;
 
-            Task<int> completed = Task.FromResult(0);
-            Task<int> completion = Interlocked.CompareExchange(ref _completion, completed, null);
-            if (ReferenceEquals(completion, completed))
-                Log.LogTrace("Marked read stream {StreamIndex} as successfully completed.", StreamIndex);
+                if (_completion == null)
+                {
+                    _completion = Task.FromResult(0);
+                
+                    Log.LogTrace("Marked read stream {StreamIndex} as successfully completed.", StreamIndex);
+                }
+            }
         }
 
         /// <summary>
@@ -319,68 +368,18 @@ namespace KubeClient.Extensions.WebSockets.Streams
             if (exception == null)
                 throw new ArgumentNullException(nameof(exception));
 
-            if (IsDisposed)
-                return;
-            
-            Task<int> faulted = Task.FromException<int>(exception);
-            Task<int> completion = Interlocked.CompareExchange(ref _completion, faulted, null);
-            if (ReferenceEquals(completion, faulted))
-                Log.LogTrace("Marked read stream {StreamIndex} as faulted ({ExceptionType}).", StreamIndex, exception.GetType().FullName);
-        }
-
-        /// <summary>
-        ///     Get the next available pending read (does not support cancellation).
-        /// </summary>
-        /// <returns>
-        ///     The <see cref="PendingRead"/>.
-        /// </returns>
-        /// <remarks>
-        ///     If no pending read is currently available, blocks until a pending read is available.
-        /// </remarks>
-        PendingRead NextPendingRead()
-        {
-            PendingRead pendingRead;
-            if (!_pendingReads.TryPeek(out pendingRead))
+            using (_mutex.Lock())
             {
-                // Wait for data.
-                while (pendingRead == null)
+                if (IsDisposed)
+                    return;
+                
+                if (_completion == null)
                 {
-                    _dataAvailable.WaitOne();
-                    _pendingReads.TryPeek(out pendingRead);
-                }
+                    _completion = Task.FromException<int>(exception);
+
+                    Log.LogTrace("Marked read stream {StreamIndex} as faulted ({ExceptionType}).", StreamIndex, exception.GetType().FullName);
+                }    
             }
-
-            return pendingRead;
-        }
-
-        /// <summary>
-        ///     Get the next available pending read (supports cancellation).
-        /// </summary>
-        /// <param name="cancellation">
-        ///     A <see cref="CancellationToken"/> that can be used to abort the wait for a pending read.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="PendingRead"/>.
-        /// </returns>
-        /// <remarks>
-        ///     If no pending read is currently available, blocks until a pending read is available or the cancellation token is cancelled.
-        /// </remarks>
-        PendingRead NextPendingRead(CancellationToken cancellation)
-        {
-            PendingRead pendingRead;
-            if (!_pendingReads.TryPeek(out pendingRead))
-            {
-                // Wait for data.
-                while (pendingRead == null)
-                {
-                    if (!_dataAvailable.WaitOne(cancellation))
-                        throw new OperationCanceledException("Read operation was canceled.", cancellation);
-
-                    _pendingReads.TryPeek(out pendingRead);
-                }
-            }
-
-            return pendingRead;
         }
 
         /// <summary>
