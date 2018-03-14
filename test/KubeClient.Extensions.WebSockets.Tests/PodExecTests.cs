@@ -38,26 +38,14 @@ namespace KubeClient.Extensions.WebSockets.Tests
 
             if (!Debugger.IsAttached)
             {
-                CancellationSource.CancelAfter(
+                TestCancellationSource.CancelAfter(
                     TimeSpan.FromSeconds(5)
                 );
             }
-            await Host.StartAsync(Cancellation);
+            await Host.StartAsync(TestCancellation);
 
             using (KubeApiClient client = CreateTestClient())
             {
-                // A small amount of jiggery-pokery to get our test server to keep the connection open for the lifetime of the test.
-                var serverSocketAccepted = new TaskCompletionSource<WebSocket>();
-                var testComplete = new TaskCompletionSource<object>();
-                WebSocketTestAdapter.OnPodExec = webSocket =>
-                {
-                    Log.LogInformation("WebSocket accepted by server.");
-
-                    serverSocketAccepted.SetResult(webSocket);
-
-                    return testComplete.Task;
-                };
-
                 K8sMultiplexer multiplexer = await client.PodsV1().ExecAndConnect(
                     podName: "pod1",
                     command: "/bin/bash",
@@ -73,19 +61,19 @@ namespace KubeClient.Extensions.WebSockets.Tests
 
                     Log.LogInformation("Waiting for server-side WebSocket.");
 
-                    WebSocket serverSocket = await serverSocketAccepted.Task;
+                    WebSocket serverSocket = await WebSocketTestAdapter.AcceptedPodExecV1Connection;
 
                     Log.LogInformation("Server sends prompt.");
                     byte[] payload = Encoding.ASCII.GetBytes(expectedPrompt);
                     byte[] sendBuffer = new byte[payload.Length + 1];
                     sendBuffer[0] = 1; // STDOUT
                     Array.Copy(payload, 0, sendBuffer, 1, payload.Length);
-                    await serverSocket.SendAsync(sendBuffer, WebSocketMessageType.Binary, true, Cancellation);
+                    await serverSocket.SendAsync(sendBuffer, WebSocketMessageType.Binary, true, TestCancellation);
                     Log.LogInformation("Server sent prompt.");
 
                     Log.LogInformation("Client expects prompt.");
                     byte[] receiveBuffer = new byte[2048];
-                    int bytesReceived = await stdout.ReadAsync(receiveBuffer, 0, receiveBuffer.Length, Cancellation);
+                    int bytesReceived = await stdout.ReadAsync(receiveBuffer, 0, receiveBuffer.Length, TestCancellation);
 
                     string prompt = Encoding.ASCII.GetString(receiveBuffer, 0, bytesReceived);
                     Assert.Equal(expectedPrompt, prompt);
@@ -93,12 +81,12 @@ namespace KubeClient.Extensions.WebSockets.Tests
                     
                     Log.LogInformation("Client sends command.");
                     sendBuffer = Encoding.ASCII.GetBytes(expectedCommand); // No prefix needed, since this is a multiplexer stream.
-                    await stdin.WriteAsync(sendBuffer, 0, sendBuffer.Length, Cancellation);
+                    await stdin.WriteAsync(sendBuffer, 0, sendBuffer.Length, TestCancellation);
                     Log.LogInformation("Client sent command.");
 
                     Log.LogInformation("Server expects command.");
                     receiveBuffer = new byte[2048];
-                    WebSocketReceiveResult receiveResult = await serverSocket.ReceiveAsync(receiveBuffer, Cancellation);
+                    WebSocketReceiveResult receiveResult = await serverSocket.ReceiveAsync(receiveBuffer, TestCancellation);
                     Assert.Equal(0 /* STDIN */, receiveBuffer[0]);
 
                     string command = Encoding.ASCII.GetString(receiveBuffer, 1, receiveResult.Count - 1);
@@ -106,8 +94,9 @@ namespace KubeClient.Extensions.WebSockets.Tests
                     Log.LogInformation("Server got expected command.");
 
                     Log.LogInformation("Close enough; we're done.");
-                    await multiplexer.Shutdown(Cancellation);
-                    testComplete.SetResult(null);
+                    await multiplexer.Shutdown(TestCancellation);
+                    
+                    WebSocketTestAdapter.Done();
                 }
             }
         }

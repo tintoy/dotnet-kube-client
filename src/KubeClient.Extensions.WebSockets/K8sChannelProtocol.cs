@@ -3,7 +3,7 @@ namespace KubeClient.Extensions.WebSockets
     /// <summary>
     ///     Well-known WebSocket sub-protocols used by the Kubernetes API.
     /// </summary>
-    public static class K8sWebSocketSubprotocols
+    public static class K8sChannelProtocol
     {
         /// <summary>
         ///     Version 1 of the Kubernetes channel WebSocket protocol.
@@ -22,7 +22,7 @@ namespace KubeClient.Extensions.WebSockets
         ///        READ  []byte{1, 10}                # receive "\n" on channel 1 (STDOUT)
         ///        CLOSE
         /// </remarks>
-        public static readonly string ChannelV1 = "channel.k8s.io";
+        public static readonly string V1 = "channel.k8s.io";
 
         /// <summary>
         ///     Version 1 of the Kubernetes Base64-encoded channel WebSocket protocol.
@@ -41,6 +41,6 @@ namespace KubeClient.Extensions.WebSockets
         ///        READ  []byte{49, 67, 103, 61, 61} # receive "\n" (base64: "Cg==") on channel '1' (STDOUT)
         ///        CLOSE
         /// </remarks>
-        public static readonly string ChannelBase64V1 = "base64.channel.k8s.io";
+        public static readonly string Base64V1 = "base64.channel.k8s.io";
     }
 }

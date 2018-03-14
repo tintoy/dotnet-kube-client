@@ -17,7 +17,7 @@ namespace KubeClient
     public static class KubeClientExtensions
     {
         /// <summary>
-        ///     Open a WebSocket connection using the <see cref="K8sWebSocketSubprotocols.ChannelV1"/> sub-protocol.
+        ///     Open a WebSocket connection using the <see cref="K8sChannelProtocol.V1"/> sub-protocol.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
@@ -43,7 +43,7 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Open a WebSocket connection using the <see cref="K8sWebSocketSubprotocols.ChannelV1"/> sub-protocol.
+        ///     Open a WebSocket connection using the <see cref="K8sChannelProtocol.V1"/> sub-protocol.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
@@ -100,7 +100,7 @@ namespace KubeClient
 
             K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
             webSocketOptions.RequestedSubProtocols.Add(
-                K8sWebSocketSubprotocols.ChannelV1
+                K8sChannelProtocol.V1
             );
             webSocketOptions.SendBufferSize = 2048;
             webSocketOptions.ReceiveBufferSize = 2048;
@@ -109,7 +109,7 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Open a WebSocket connection using the <see cref="K8sWebSocketSubprotocols.ChannelV1"/> sub-protocol.
+        ///     Open a WebSocket connection using the <see cref="K8sChannelProtocol.V1"/> sub-protocol.
         /// </summary>
         /// <typeparam name="TParameters">
         ///     The type to use use as template parameters.
@@ -160,7 +160,7 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Open a WebSocket connection using the <see cref="K8sWebSocketSubprotocols.ChannelV1"/> sub-protocol.
+        ///     Open a WebSocket connection using the <see cref="K8sChannelProtocol.V1"/> sub-protocol.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
