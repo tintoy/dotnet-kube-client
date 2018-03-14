@@ -43,4 +43,35 @@ namespace KubeClient.Extensions.WebSockets
         /// </remarks>
         public static readonly string Base64V1 = "base64.channel.k8s.io";
     }
+
+    /// <summary>
+    ///     Well-known Kubernetes channel (stream) indexes.
+    /// </summary>
+    public static class K8sChannel
+    {
+        /// <summary>
+        ///     The Kubernetes channel index representing process STDIN.
+        /// </summary>
+        public static readonly byte StdIn = 0;
+
+        /// <summary>
+        ///     The Kubernetes channel index representing process STDOUT.
+        /// </summary>
+        public static readonly byte StdOut = 1;
+
+        /// <summary>
+        ///     The Kubernetes channel index representing process STDERR.
+        /// </summary>
+        public static readonly byte StdErr = 2;
+
+        /// <summary>
+        ///     The Kubernetes channel index representing the data stream for port-forwarding.
+        /// </summary>
+        public static readonly byte PortForwardData = 0;
+
+        /// <summary>
+        ///     The Kubernetes channel index representing the error stream for port-forwarding.
+        /// </summary>
+        public static readonly byte PortForwardError = 1;
+    }
 }

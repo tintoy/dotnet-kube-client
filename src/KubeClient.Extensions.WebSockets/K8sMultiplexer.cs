@@ -552,53 +552,53 @@ namespace KubeClient.Extensions.WebSockets
             while (!readResult.EndOfMessage)
                 readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
         }
-    }
 
-    /// <summary>
-    ///     Represents a pending send operation.
-    /// </summary>
-    class PendingSend // TODO: Include stream index here and let the multiplexer prepend it instead of doing it in the write-stream.
-    {
         /// <summary>
-        ///     Create a new <see cref="PendingSend"/>.
+        ///     Represents a pending send operation.
         /// </summary>
-        /// <param name="streamIndex">
-        ///     The index of the target stream.
-        /// </param>
-        /// <param name="data">
-        ///     The data (including stream-index prefix) to be written to the web socket.
-        /// </param>
-        /// <param name="cancellation">
-        ///     A cancellation token to that can be used to cancel the send operation.
-        /// </param>
-        public PendingSend(byte streamIndex, ArraySegment<byte> data, CancellationToken cancellation)
+        class PendingSend // TODO: Include stream index here and let the multiplexer prepend it instead of doing it in the write-stream.
         {
-            if (data.Array == null)
-                throw new ArgumentNullException(nameof(data));
+            /// <summary>
+            ///     Create a new <see cref="PendingSend"/>.
+            /// </summary>
+            /// <param name="streamIndex">
+            ///     The index of the target stream.
+            /// </param>
+            /// <param name="data">
+            ///     The data (including stream-index prefix) to be written to the web socket.
+            /// </param>
+            /// <param name="cancellation">
+            ///     A cancellation token to that can be used to cancel the send operation.
+            /// </param>
+            public PendingSend(byte streamIndex, ArraySegment<byte> data, CancellationToken cancellation)
+            {
+                if (data.Array == null)
+                    throw new ArgumentNullException(nameof(data));
 
-            StreamIndex = streamIndex;
-            Data = data;
-            Cancellation = cancellation;
+                StreamIndex = streamIndex;
+                Data = data;
+                Cancellation = cancellation;
+            }
+
+            /// <summary>
+            ///     The index of the target stream.
+            /// </summary>
+            public byte StreamIndex { get; }
+
+            /// <summary>
+            ///     The data (including stream-index prefix) to be written to the web socket.
+            /// </summary>
+            public ArraySegment<byte> Data { get; }
+
+            /// <summary>
+            ///     A cancellation token to that can be used to cancel the send operation.
+            /// </summary>
+            public CancellationToken Cancellation { get; }
+
+            /// <summary>
+            ///     A <see cref="TaskCompletionSource{TResult}"/> used to represent the asynchronous send operation.
+            /// </summary>
+            public TaskCompletionSource<object> Completion { get; } = new TaskCompletionSource<object>();
         }
-
-        /// <summary>
-        ///     The index of the target stream.
-        /// </summary>
-        public byte StreamIndex { get; }
-
-        /// <summary>
-        ///     The data (including stream-index prefix) to be written to the web socket.
-        /// </summary>
-        public ArraySegment<byte> Data { get; }
-
-        /// <summary>
-        ///     A cancellation token to that can be used to cancel the send operation.
-        /// </summary>
-        public CancellationToken Cancellation { get; }
-
-        /// <summary>
-        ///     A <see cref="TaskCompletionSource{TResult}"/> used to represent the asynchronous send operation.
-        /// </summary>
-        public TaskCompletionSource<object> Completion { get; } = new TaskCompletionSource<object>();
     }
 }

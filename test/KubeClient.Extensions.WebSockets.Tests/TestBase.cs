@@ -1,6 +1,7 @@
 namespace KubeClient.Extensions.WebSockets.Tests
 {
     using System;
+    using System.Diagnostics;
     using System.Reactive.Disposables;
     using System.Reflection;
     using System.Threading;
@@ -33,6 +34,8 @@ namespace KubeClient.Extensions.WebSockets.Tests
                     new SynchronizationContext()
                 );
             }
+
+            Disposal.Add(TestCancellationSource);
 
             TestOutput = testOutput;
             LoggerFactory = new LoggerFactory().AddTestOutput(TestOutput, MinLogLevel);
@@ -96,6 +99,17 @@ namespace KubeClient.Extensions.WebSockets.Tests
         protected CompositeDisposable Disposal { get; } = new CompositeDisposable();
 
         /// <summary>
+        ///     The source for cancellation tokens used by the test.
+        /// </summary>
+        protected CancellationTokenSource TestCancellationSource { get; } = new CancellationTokenSource();
+
+        /// <summary>
+        ///     A <see cref="CancellationToken"/> that can be used to cancel asynchronous operations.
+        /// </summary>
+        /// <seealso cref="TestCancellationSource"/>
+        protected CancellationToken TestCancellation => TestCancellationSource.Token;
+
+        /// <summary>
         ///     Output for the current test.
         /// </summary>
         protected ITestOutputHelper TestOutput { get; }
@@ -119,5 +133,25 @@ namespace KubeClient.Extensions.WebSockets.Tests
         ///     The logging level for the current test.
         /// </summary>
         protected virtual LogLevel MinLogLevel => LogLevel.Information;
+
+        /// <summary>
+        ///     Cancel the test cancellation token.
+        /// </summary>
+        protected void CancelTest() => TestCancellationSource.Cancel();
+
+        /// <summary>
+        ///     Cancel the test after the specified timeout.
+        /// </summary>
+        /// <param name="timeout">
+        ///     A <see cref="TimeSpan"/> representing the timeout period.
+        /// </param>
+        /// <param name="whenDebugging">
+        ///     Schedule cancellation, even if a debugger is attached?
+        /// </param>
+        protected void TestTimeout(TimeSpan timeout, bool whenDebugging = false)
+        {
+            if (whenDebugging || !Debugger.IsAttached)
+                TestCancellationSource.CancelAfter(timeout);
+        }
     }
 }
