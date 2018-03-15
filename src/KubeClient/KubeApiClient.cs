@@ -14,6 +14,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
 {
+    using MessageHandlers;
     using Models;
     using ResourceClients;
 
@@ -48,6 +49,8 @@ namespace KubeClient
             Http = httpClient;
             Options = options.Clone();
             LoggerFactory = loggerFactory ?? new LoggerFactory();
+
+            DefaultNamespace = options.KubeNamespace;
         }
 
         /// <summary>
@@ -137,6 +140,13 @@ namespace KubeClient
             
             var clientBuilder = new ClientBuilder();
 
+            if (!String.IsNullOrWhiteSpace(options.AccessToken))
+            {
+                clientBuilder = clientBuilder.AddHandler(
+                    () => new BearerTokenHandler(options.AccessToken)
+                );
+            }
+
             if (options.AllowInsecure)
                 clientBuilder = clientBuilder.AcceptAnyServerCertificate();
             else if (options.CertificationAuthorityCertificate != null)
@@ -164,49 +174,7 @@ namespace KubeClient
 
             HttpClient httpClient = clientBuilder.CreateClient(options.ApiEndPoint);
 
-            if (!String.IsNullOrWhiteSpace(options.AccessToken))
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                    scheme: "Bearer",
-                    parameter: options.AccessToken
-                );
-            }
-
-            return Create(httpClient, options, loggerFactory);
-        }
-
-        /// <summary>
-        ///     Create a new <see cref="KubeApiClient"/>.
-        /// </summary>
-        /// <param name="httpClient">
-        ///     The <see cref="HttpClient"/> to communicate with the Kubernetes API.
-        /// </param>
-        /// <param name="options">
-        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
-        /// </param>
-        /// <param name="loggerFactory">
-        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
-        /// </param>
-        /// <returns>
-        ///     The configured <see cref="KubeApiClient"/>.
-        /// </returns>
-        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options, ILoggerFactory loggerFactory = null)
-        {
-            if (httpClient == null)
-                throw new ArgumentNullException(nameof(httpClient));
-
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
-            
-            if (httpClient.BaseAddress == null)
-                throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
-
-            options.EnsureValid();
-
-            return new KubeApiClient(httpClient, options, loggerFactory)
-            {
-                DefaultNamespace = options.KubeNamespace
-            };
+            return new KubeApiClient(httpClient, options, loggerFactory);
         }
 
         /// <summary>
@@ -332,6 +300,37 @@ namespace KubeClient
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate
             }, loggerFactory);
+        }
+
+        /// <summary>
+        ///     Create a new <see cref="KubeApiClient"/> (for testing purposes only).
+        /// </summary>
+        /// <param name="httpClient">
+        ///     The <see cref="HttpClient"/> used to communicate with the Kubernetes API.
+        /// </param>
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
+        /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeApiClient"/>.
+        /// </returns>
+        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options, ILoggerFactory loggerFactory = null)
+        {
+            if (httpClient == null)
+                throw new ArgumentNullException(nameof(httpClient));
+
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            
+            if (httpClient.BaseAddress == null)
+                throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
+
+            options.EnsureValid();
+
+            return new KubeApiClient(httpClient, options, loggerFactory);
         }
     }
 }
