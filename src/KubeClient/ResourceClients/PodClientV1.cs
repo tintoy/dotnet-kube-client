@@ -40,22 +40,18 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     The Pods, as a list of <see cref="PodV1"/>s.
+        ///     A <see cref="PodListV1"/> containing the Pods.
         /// </returns>
-        public async Task<List<PodV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<PodListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            PodListV1 matchingPods =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<PodListV1, StatusV1>();
-
-            return matchingPods.Items;
+            return await GetResourceList<PodListV1, PodV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
         }
 
         /// <summary>

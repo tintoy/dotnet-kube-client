@@ -40,22 +40,18 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     The Deployments, as a list of <see cref="DeploymentV1Beta1"/>s.
+        ///     A <see cref="DeploymentListV1Beta1"/> containing the Deployments.
         /// </returns>
-        public async Task<List<DeploymentV1Beta1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<DeploymentListV1Beta1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            DeploymentListV1Beta1 matchingDeployments =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<DeploymentListV1Beta1, StatusV1>();
-
-            return matchingDeployments.Items;
+            return await GetResourceList<DeploymentListV1Beta1, DeploymentV1Beta1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
         }
 
         /// <summary>

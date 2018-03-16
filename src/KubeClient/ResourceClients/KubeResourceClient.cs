@@ -100,10 +100,51 @@ namespace KubeClient.ResourceClients
 
                 // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
                 StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound);
-                if (status.Reason != "NotFound")
-                    throw new HttpRequestException<StatusV1>(responseMessage.StatusCode, status);
+                if (status.Reason == "NotFound")
+                    return null;
 
-                return null;
+                throw new KubeClientException($"Failed to retrieve {typeof(TResource).Name} resource.",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
+                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                    )
+                );
+            }
+        }
+
+        /// <summary>
+        ///     Get a list of resources.
+        /// </summary>
+        /// <typeparam name="TResourceList">
+        ///     The type of resource list to retrieve.
+        /// </typeparam>
+        /// <typeparam name="TResource">
+        ///     The type of resource contained in the list.
+        /// </typeparam>
+        /// <param name="request">
+        ///     An <see cref="HttpRequest"/> representing the resource to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResourceList"/> containing the resources.
+        /// </returns>
+        protected async Task<TResourceList> GetResourceList<TResourceList, TResource>(HttpRequest request, CancellationToken cancellationToken = default)
+            where TResourceList : KubeResourceListV1<TResource>
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            
+            using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                    return await responseMessage.ReadContentAsAsync<TResourceList>();
+
+                throw new KubeClientException($"Failed to list {typeof(TResource).Name} resources.",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
+                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                    )
+                );
             }
         }
 

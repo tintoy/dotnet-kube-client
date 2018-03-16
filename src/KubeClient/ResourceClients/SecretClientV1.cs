@@ -40,22 +40,18 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     The Secrets, as a list of <see cref="SecretV1"/>s.
+        ///     A <see cref="SecretListV1"/> containing the secrets.
         /// </returns>
-        public async Task<List<SecretV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<SecretListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            SecretListV1 matchingSecrets =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<SecretListV1, StatusV1>();
-
-            return matchingSecrets.Items;
+            return await GetResourceList<SecretListV1, SecretV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
         }
 
         /// <summary>

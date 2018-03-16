@@ -40,22 +40,18 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     The PersistentVolumeClaims, as a list of <see cref="PersistentVolumeClaimV1"/>s.
+        ///     A <see cref="PersistentVolumeClaimListV1"/> containing the PersistentVolumeClaims.
         /// </returns>
-        public async Task<List<PersistentVolumeClaimV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<PersistentVolumeClaimListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            PersistentVolumeClaimListV1 matchingPersistentVolumeClaims =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<PersistentVolumeClaimListV1, StatusV1>();
-
-            return matchingPersistentVolumeClaims.Items;
+            return await GetResourceList<PersistentVolumeClaimListV1, PersistentVolumeClaimV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
         }
 
         /// <summary>

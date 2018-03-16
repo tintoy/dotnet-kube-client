@@ -41,6 +41,24 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("apiVersion")]
         public string ApiVersion { get; set; }
+
+        /// <summary>
+        ///     Get Kubernetes Kind / ApiVersion metadata for the specified object type.
+        /// </summary>
+        /// <typeparam name="TObject">
+        ///     The target object type.
+        /// </typeparam>
+        /// <returns>
+        ///     A tuple containing the object's Kind and ApiVersion metadata (or <c>null</c> and <c>null</c>, if no metadata is available for <typeparamref name="TObject"/>).
+        /// </returns>
+        public static (string kind, string apiVersion) GetKubeKind<TObject>()
+            where TObject : KubeObjectV1
+        {
+            (string kind, string apiVersion) kubeKind;
+            ModelMetadata.TryGetValue(typeof(TObject), out kubeKind);
+
+            return kubeKind;
+        }
     }
 
     /// <summary>
