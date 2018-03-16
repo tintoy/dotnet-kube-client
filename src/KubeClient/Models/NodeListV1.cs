@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     NodeList is the whole list of all Nodes which have been registered with master.
     /// </summary>
     [KubeObject("NodeList", "v1")]
-    public class NodeListV1 : KubeResourceListV1
+    public class NodeListV1 : KubeResourceListV1<NodeV1>
     {
         /// <summary>
         ///     List of nodes
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NodeV1> Items { get; set; } = new List<NodeV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<NodeV1> Items { get; } = new List<NodeV1>();
     }
 }

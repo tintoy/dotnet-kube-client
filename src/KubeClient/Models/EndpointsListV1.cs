@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     EndpointsList is a list of endpoints.
     /// </summary>
     [KubeObject("EndpointsList", "v1")]
-    public class EndpointsListV1 : KubeResourceListV1
+    public class EndpointsListV1 : KubeResourceListV1<EndpointsV1>
     {
         /// <summary>
         ///     List of endpoints.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointsV1> Items { get; set; } = new List<EndpointsV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<EndpointsV1> Items { get; } = new List<EndpointsV1>();
     }
 }

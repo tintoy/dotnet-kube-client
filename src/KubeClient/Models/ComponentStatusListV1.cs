@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     Status of all the conditions for the component as a list of ComponentStatus objects.
     /// </summary>
     [KubeObject("ComponentStatusList", "v1")]
-    public class ComponentStatusListV1 : KubeResourceListV1
+    public class ComponentStatusListV1 : KubeResourceListV1<ComponentStatusV1>
     {
         /// <summary>
         ///     List of ComponentStatus objects.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ComponentStatusV1> Items { get; set; } = new List<ComponentStatusV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ComponentStatusV1> Items { get; } = new List<ComponentStatusV1>();
     }
 }

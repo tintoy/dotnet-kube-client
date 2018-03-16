@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     ClusterRoleList is a collection of ClusterRoles
     /// </summary>
     [KubeObject("ClusterRoleList", "rbac.authorization.k8s.io/v1alpha1")]
-    public class ClusterRoleListV1Alpha1 : KubeResourceListV1
+    public class ClusterRoleListV1Alpha1 : KubeResourceListV1<ClusterRoleV1Alpha1>
     {
         /// <summary>
         ///     Items is a list of ClusterRoles
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ClusterRoleV1Alpha1> Items { get; set; } = new List<ClusterRoleV1Alpha1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ClusterRoleV1Alpha1> Items { get; } = new List<ClusterRoleV1Alpha1>();
     }
 }

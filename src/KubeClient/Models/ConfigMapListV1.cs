@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     ConfigMapList is a resource containing a list of ConfigMap objects.
     /// </summary>
     [KubeObject("ConfigMapList", "v1")]
-    public class ConfigMapListV1 : KubeResourceListV1
+    public class ConfigMapListV1 : KubeResourceListV1<ConfigMapV1>
     {
         /// <summary>
         ///     Items is the list of ConfigMaps.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ConfigMapV1> Items { get; set; } = new List<ConfigMapV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ConfigMapV1> Items { get; } = new List<ConfigMapV1>();
     }
 }

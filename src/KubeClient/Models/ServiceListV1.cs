@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     ServiceList holds a list of services.
     /// </summary>
     [KubeObject("ServiceList", "v1")]
-    public class ServiceListV1 : KubeResourceListV1
+    public class ServiceListV1 : KubeResourceListV1<ServiceV1>
     {
         /// <summary>
         ///     List of services
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ServiceV1> Items { get; set; } = new List<ServiceV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ServiceV1> Items { get; } = new List<ServiceV1>();
     }
 }

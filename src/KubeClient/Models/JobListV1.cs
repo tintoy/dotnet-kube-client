@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     JobList is a collection of jobs.
     /// </summary>
     [KubeObject("JobList", "batch/v1")]
-    public class JobListV1 : KubeResourceListV1
+    public class JobListV1 : KubeResourceListV1<JobV1>
     {
         /// <summary>
         ///     items is the list of Jobs.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<JobV1> Items { get; set; } = new List<JobV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<JobV1> Items { get; } = new List<JobV1>();
     }
 }
