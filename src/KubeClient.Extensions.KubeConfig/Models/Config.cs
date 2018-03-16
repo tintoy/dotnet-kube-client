@@ -14,13 +14,13 @@ namespace KubeClient.Extensions.KubeConfig.Models
         ///     The client configuration API version (should be "v1").
         /// </summary>
         [YamlMember(Alias = "apiVersion")]
-        public string ApiVersion { get; set ;}
+        public string ApiVersion { get; set ;} = "v1";
 
         /// <summary>
         ///     The client configuration kind (should be "Configuration").
         /// </summary>
         [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        public string Kind { get; set; } = "Configuration";
 
         /// <summary>
         ///     The currently-selected Kubernetes context.
@@ -45,6 +45,34 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// </summary>
         [YamlMember(Alias = "users")]
         public List<UserIdentity> UserIdentities { get; set; } = new List<UserIdentity>();
+
+        /// <summary>
+        ///     Load and parse configuration from ~/.kube/config.
+        /// </summary>
+        /// <returns>
+        ///     The parsed configuration.
+        /// </returns>
+        public static Config Load()
+        {
+            string configFile = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                ".kube",
+                "config"
+            );
+
+            return Load(configFile);
+        }
+
+        /// <summary>
+        ///     Load and parse configuration from the specified file (usually ~/.kube/config).
+        /// </summary>
+        /// <param name="configFile">
+        ///     The path of the configuration file.
+        /// </param>
+        /// <returns>
+        ///     The parsed configuration.
+        /// </returns>
+        public static Config Load(string configFile) => Load(new FileInfo(configFile));
 
         /// <summary>
         ///     Load and parse configuration from the specified file (usually ~/.kube/config).
