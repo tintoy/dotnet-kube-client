@@ -8,8 +8,7 @@ Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET
 
 ## Prerequisites
 
-The KubeClient packages target `netstandard2.0`; if you need `netstandard1.3` support then install v0.x of the packages.
-If you need WebSocket / `exec` you'll need the code from the `feature/websockets` branch (targets `netcoreapp2.1`, which is required for cross-platform WebSockets support).
+**Note:** If you need WebSocket / `exec` you'll need to target `netstandard2.1`.
 
 ## Packages
 
