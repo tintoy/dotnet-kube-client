@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     ThirdPartyResourceList is a list of ThirdPartyResources.
     /// </summary>
     [KubeObject("ThirdPartyResourceList", "extensions/v1beta1")]
-    public class ThirdPartyResourceListV1Beta1 : KubeResourceListV1
+    public class ThirdPartyResourceListV1Beta1 : KubeResourceListV1<ThirdPartyResourceV1Beta1>
     {
         /// <summary>
         ///     Items is the list of ThirdPartyResources.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ThirdPartyResourceV1Beta1> Items { get; set; } = new List<ThirdPartyResourceV1Beta1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ThirdPartyResourceV1Beta1> Items { get; } = new List<ThirdPartyResourceV1Beta1>();
     }
 }

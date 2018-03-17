@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Status is a return value for calls that don't return other objects.
     /// </summary>
     [KubeObject("Status", "v1")]
-    public class StatusV1 : KubeResourceListV1
+    public class StatusV1 : KubeObjectV1
     {
         /// <summary>
         ///     Suggested HTTP return code for this status, 0 if not set.

@@ -44,7 +44,7 @@ namespace KubeClient.ResourceClients
         /// </returns>
         public async Task<PodListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            return await GetResourceList<PodListV1, PodV1>(
+            return await GetResourceList<PodListV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,

@@ -44,7 +44,7 @@ namespace KubeClient.ResourceClients
         /// </returns>
         public async Task<DeploymentListV1Beta1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            return await GetResourceList<DeploymentListV1Beta1, DeploymentV1Beta1>(
+            return await GetResourceList<DeploymentListV1Beta1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,

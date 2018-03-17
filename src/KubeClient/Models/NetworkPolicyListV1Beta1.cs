@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     Network Policy List is a list of NetworkPolicy objects.
     /// </summary>
     [KubeObject("NetworkPolicyList", "extensions/v1beta1")]
-    public class NetworkPolicyListV1Beta1 : KubeResourceListV1
+    public class NetworkPolicyListV1Beta1 : KubeResourceListV1<NetworkPolicyV1Beta1>
     {
         /// <summary>
         ///     Items is a list of schema objects.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NetworkPolicyV1Beta1> Items { get; set; } = new List<NetworkPolicyV1Beta1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<NetworkPolicyV1Beta1> Items { get; } = new List<NetworkPolicyV1Beta1>();
     }
 }

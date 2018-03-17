@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -15,6 +16,12 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("metadata")]
         public ListMetaV1 Metadata { get; set; }
+
+        /// <summary>
+        ///     The CLR type corresponding to the resources contained in the list.
+        /// </summary>
+        [JsonIgnore]
+        public abstract Type ResourceType { get; }
     }
 
     /// <summary>
@@ -26,6 +33,12 @@ namespace KubeClient.Models
     public abstract class KubeResourceListV1<TResource>
         : KubeResourceListV1, IEnumerable<TResource>
     {
+        /// <summary>
+        ///     The CLR type corresponding to the resources contained in the list.
+        /// </summary>
+        [JsonIgnore]
+        public override Type ResourceType => typeof(TResource);
+
         /// <summary>
         ///     The list's resources.
         /// </summary>

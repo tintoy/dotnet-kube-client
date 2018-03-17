@@ -117,9 +117,6 @@ namespace KubeClient.ResourceClients
         /// <typeparam name="TResourceList">
         ///     The type of resource list to retrieve.
         /// </typeparam>
-        /// <typeparam name="TResource">
-        ///     The type of resource contained in the list.
-        /// </typeparam>
         /// <param name="request">
         ///     An <see cref="HttpRequest"/> representing the resource to retrieve.
         /// </param>
@@ -129,8 +126,8 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <typeparamref name="TResourceList"/> containing the resources.
         /// </returns>
-        protected async Task<TResourceList> GetResourceList<TResourceList, TResource>(HttpRequest request, CancellationToken cancellationToken = default)
-            where TResourceList : KubeResourceListV1<TResource>
+        protected async Task<TResourceList> GetResourceList<TResourceList>(HttpRequest request, CancellationToken cancellationToken = default)
+            where TResourceList : KubeResourceListV1
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -140,7 +137,7 @@ namespace KubeClient.ResourceClients
                 if (responseMessage.IsSuccessStatusCode)
                     return await responseMessage.ReadContentAsAsync<TResourceList>();
 
-                throw new KubeClientException($"Failed to list {typeof(TResource).Name} resources.",
+                throw new KubeClientException($"Failed to list resources.",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
                     )
