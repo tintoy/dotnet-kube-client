@@ -28,33 +28,6 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all PersistentVolumeClaims in the specified namespace, optionally matching a label selector.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the PersistentVolumeClaims.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="PersistentVolumeClaimListV1"/> containing the PersistentVolumeClaims.
-        /// </returns>
-        public async Task<PersistentVolumeClaimListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            return await GetResourceList<PersistentVolumeClaimListV1>(
-                Requests.Collection.WithTemplateParameters(new
-                {
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                    LabelSelector = labelSelector
-                }),
-                cancellationToken: cancellationToken
-            );
-        }
-
-        /// <summary>
         ///     Get the PersistentVolumeClaim with the specified name.
         /// </summary>
         /// <param name="name">
@@ -79,6 +52,33 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Get all PersistentVolumeClaims in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the PersistentVolumeClaims.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="PersistentVolumeClaimListV1"/> containing the PersistentVolumeClaims.
+        /// </returns>
+        public async Task<PersistentVolumeClaimListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            return await GetResourceList<PersistentVolumeClaimListV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
                 }),
                 cancellationToken: cancellationToken
             );

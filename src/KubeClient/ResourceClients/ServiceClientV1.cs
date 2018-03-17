@@ -28,6 +28,36 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Get the Service with the specified name.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Service to retrieve.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ServiceV1"/> representing the current state for the Service, or <c>null</c> if no Service was found with the specified name and namespace.
+        /// </returns>
+        public async Task<ServiceV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+            
+            return await GetSingleResource<ServiceV1>(
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
         ///     Get all Services in the specified namespace, optionally matching a label selector.
         /// </summary>
         /// <param name="labelSelector">
@@ -75,36 +105,6 @@ namespace KubeClient.ResourceClients
                     LabelSelector = labelSelector,
                     Watch = true
                 })
-            );
-        }
-
-        /// <summary>
-        ///     Get the Service with the specified name.
-        /// </summary>
-        /// <param name="name">
-        ///     The name of the Service to retrieve.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="ServiceV1"/> representing the current state for the Service, or <c>null</c> if no Service was found with the specified name and namespace.
-        /// </returns>
-        public async Task<ServiceV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            if (String.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
-            return await GetSingleResource<ServiceV1>(
-                Requests.ByName.WithTemplateParameters(new
-                {
-                    Name = name,
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                }),
-                cancellationToken: cancellationToken
             );
         }
 
