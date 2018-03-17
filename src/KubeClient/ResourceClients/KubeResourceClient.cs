@@ -103,7 +103,14 @@ namespace KubeClient.ResourceClients
                 if (status.Reason == "NotFound")
                     return null;
 
-                throw new KubeClientException($"Failed to retrieve {typeof(TResource).Name} resource.",
+                // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+                (string itemKind, string itemApiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+                string resourceTypeDescription =
+                    !String.IsNullOrWhiteSpace(itemKind)
+                        ? $"{itemKind} ({itemApiVersion}) resource"
+                        : typeof(TResource).Name;
+
+                throw new KubeClientException($"Failed to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
                     )
@@ -137,7 +144,14 @@ namespace KubeClient.ResourceClients
                 if (responseMessage.IsSuccessStatusCode)
                     return await responseMessage.ReadContentAsAsync<TResourceList>();
 
-                throw new KubeClientException($"Failed to list resources.",
+                // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+                (string itemKind, string itemApiVersion) = KubeResourceListV1.GetListItemKubeKind<TResourceList>();
+                string resourceTypeDescription =
+                    !String.IsNullOrWhiteSpace(itemKind)
+                        ? $"{itemKind} ({itemApiVersion}) resources"
+                        : typeof(TResourceList).Name;
+
+                throw new KubeClientException($"Failed to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
                     )

@@ -7,6 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SecretList is a list of Secret.
     /// </summary>
+    [KubeListItem("Secret", "v1")]
     [KubeObject("SecretList", "v1")]
     public class SecretListV1 : KubeResourceListV1<SecretV1>
     {

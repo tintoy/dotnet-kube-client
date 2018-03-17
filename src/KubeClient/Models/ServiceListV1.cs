@@ -7,6 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServiceList holds a list of services.
     /// </summary>
+    [KubeListItem("Service", "v1")]
     [KubeObject("ServiceList", "v1")]
     public class ServiceListV1 : KubeResourceListV1<ServiceV1>
     {

@@ -7,6 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodDisruptionBudgetList is a collection of PodDisruptionBudgets.
     /// </summary>
+    [KubeListItem("PodDisruptionBudget", "policy/v1beta1")]
     [KubeObject("PodDisruptionBudgetList", "policy/v1beta1")]
     public class PodDisruptionBudgetListV1Beta1 : KubeResourceListV1<PodDisruptionBudgetV1Beta1>
     {

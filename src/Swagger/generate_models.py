@@ -410,6 +410,15 @@ def main():
                 class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
             class_file.write('    /// </summary>' + LINE_ENDING)
 
+            if model.has_list_items():
+                list_item_model = model.list_item_data_type().model
+
+                class_file.write('    [KubeListItem("{0}", "{1}")]{2}'.format(
+                    list_item_model.name,
+                    list_item_model.api_version,
+                    LINE_ENDING
+                ))
+
             class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
                 model.name,
                 model.api_version,

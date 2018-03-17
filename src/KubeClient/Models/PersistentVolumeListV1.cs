@@ -7,6 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeList is a list of PersistentVolume items.
     /// </summary>
+    [KubeListItem("PersistentVolume", "v1")]
     [KubeObject("PersistentVolumeList", "v1")]
     public class PersistentVolumeListV1 : KubeResourceListV1<PersistentVolumeV1>
     {

@@ -7,6 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     EventList is a list of events.
     /// </summary>
+    [KubeListItem("Event", "v1")]
     [KubeObject("EventList", "v1")]
     public class EventListV1 : KubeResourceListV1<EventV1>
     {
