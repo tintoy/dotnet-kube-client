@@ -11,6 +11,8 @@ namespace KubeClient.Extensions.KubeConfig.Models
     /// </summary>
     public class Config
     {
+        // TODO: Rename to KubeClientConfig and move to KubeClient namespace.
+
         /// <summary>
         ///     The client configuration API version (should be "v1").
         /// </summary>

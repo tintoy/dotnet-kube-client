@@ -1,4 +1,5 @@
 using HTTPlease;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
@@ -9,7 +10,6 @@ using System.Threading.Tasks;
 namespace KubeClient
 {
     using Extensions.WebSockets;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     ///     WebSockets extension methods for <see cref="KubeClient"/>.
