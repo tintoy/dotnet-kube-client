@@ -57,7 +57,7 @@ namespace KubeClient.Extensions.WebSockets
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
             
-            if (uri.Scheme != "wss" && uri.Scheme != "wss")
+            if (uri.Scheme != "ws" && uri.Scheme != "wss")
                 throw new ArgumentException($"Cannot connect WebSocket (unsupported URI scheme '{uri.Scheme}').", nameof(uri));
 
             try
