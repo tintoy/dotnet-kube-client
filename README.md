@@ -2,7 +2,7 @@
 
 [![Build Status (Travis CI)](https://travis-ci.org/tintoy/dotnet-kube-client.svg?branch=develop)](https://travis-ci.org/tintoy/dotnet-kube-client)
 
-KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard2.0`).
+KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard1.4`).
 
 Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (currently a work-in-progress). KubeClient functionality is being contributed to the official client but for now this client should be good enough for most use-cases :)
 
@@ -12,17 +12,17 @@ Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET
 
 ## Packages
 
-* `KubeClient`  
+* `KubeClient` (`netstandard1.4` or newer)  
   The main client and models.
-* `KubeClient.Extensions.DependencyInjection`  
-  Dependency-injection support.
-* `KubeClient.Extensions.KubeConfig`  
+* `KubeClient.Extensions.KubeConfig` (`netstandard1.4` or newer)  
   Support for loading and parsing configuration from `~/.kube/config`.
-* `KubeClient.Extensions.WebSockets`  
-  Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).  
-  This package also extends resource clients to add support for those APIs.
-  * Requires .NET Core 2.1 (preview1) or newer.  
-    Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` and therefore only works on .NET Core 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).
+* `KubeClient.Extensions.DependencyInjection` (`netstandard2.0` or newer)  
+  Dependency-injection support.
+* `KubeClient.Extensions.WebSockets` (`netstandard2.1` or newer)  
+  Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).   
+  This package also extends resource clients to add support for those APIs.  
+    
+  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300-preview1` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).
 
 If you want to use the latest (development) builds of KubeClient, add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
 
@@ -93,6 +93,45 @@ void ConfigureServices(IServiceCollection services)
     });
 }
 ```
+
+To add a named instance of the client:
+
+```csharp
+void ConfigureServices(IServiceCollection services)
+{
+    services.AddNamedKubeClients();
+    services.AddKubeClientOptions("my-cluster", clientOptions =>
+    {
+        clientOptions.ApiEndPoint = new Uri("http://localhost:8001");
+        clientOptions.AccessToken = "my-access-token";
+        clientOptions.AllowInsecure = true; // Don't validate server certificate
+    });
+    
+    // OR:
+
+    services.AddKubeClient("my-cluster", clientOptions =>
+    {
+        clientOptions.ApiEndPoint = new Uri("http://localhost:8001");
+        clientOptions.AccessToken = "my-access-token";
+        clientOptions.AllowInsecure = true; // Don't validate server certificate
+    });
+}
+
+// To use named instances of KubeApiClient, inject INamedKubeClients.
+
+class MyClass
+{
+    public MyClass(INamedKubeClients namedKubeClients)
+    {
+        KubeClient1 = namedKubeClients.Get("my-cluster");
+        KubeClient2 = namedKubeClients.Get("another-cluster");
+    }
+
+    KubeApiClient KubeClient1 { get; }
+    KubeApiClient KubeClient2 { get; }
+}
+```
+
 
 ## Design philosophy
 

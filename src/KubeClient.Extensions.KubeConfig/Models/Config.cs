@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using YamlDotNet.Serialization;
 
 namespace KubeClient.Extensions.KubeConfig.Models
@@ -54,13 +55,14 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// </returns>
         public static Config Load()
         {
-            string configFile = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".kube",
-                "config"
-            );
+            string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "Home";
+            string homeDirectory = Environment.GetEnvironmentVariable(homeDirectoryVariableName);
+            if (String.IsNullOrWhiteSpace(homeDirectory))
+                throw new KubeClientException($"Cannot determine home directory for the current user (environment variable '{homeDirectoryVariableName}' is empty or not defined).");
 
-            return Load(configFile);
+            return Load(
+                configFile: Path.Combine(homeDirectory, ".kube", "config")
+            );
         }
 
         /// <summary>
