@@ -66,37 +66,35 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(targetUri));
 
             if (!targetUri.IsAbsoluteUri)
-            {
                 targetUri = new Uri(client.ApiEndPoint, targetUri);
-
-                UriBuilder targetUriBuilder = new UriBuilder(targetUri);
-                switch (targetUriBuilder.Scheme)
+            
+            UriBuilder targetUriBuilder = new UriBuilder(targetUri);
+            switch (targetUriBuilder.Scheme)
+            {
+                case "ws":
+                case "wss":
                 {
-                    case "ws":
-                    case "wss":
-                    {
-                        break;
-                    }
-                    case "http":
-                    {
-                        targetUriBuilder.Scheme = "ws";
-
-                        break;
-                    }
-                    case "https":
-                    {
-                        targetUriBuilder.Scheme = "wss";
-                        
-                        break;
-                    }
-                    default:
-                    {
-                        throw new ArgumentException($"Target URI has invalid scheme '{targetUriBuilder.Scheme}' (expected one of 'http', 'https', 'ws', or 'wss').", nameof(targetUri));
-                    }
+                    break;
                 }
+                case "http":
+                {
+                    targetUriBuilder.Scheme = "ws";
 
-                targetUri = targetUriBuilder.Uri;
+                    break;
+                }
+                case "https":
+                {
+                    targetUriBuilder.Scheme = "wss";
+                    
+                    break;
+                }
+                default:
+                {
+                    throw new ArgumentException($"Target URI has invalid scheme '{targetUriBuilder.Scheme}' (expected one of 'http', 'https', 'ws', or 'wss').", nameof(targetUri));
+                }
             }
+
+            targetUri = targetUriBuilder.Uri;
 
             K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
             webSocketOptions.RequestedSubProtocols.Add(

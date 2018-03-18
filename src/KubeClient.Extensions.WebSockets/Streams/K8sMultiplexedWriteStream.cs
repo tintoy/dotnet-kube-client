@@ -50,7 +50,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// <summary>
         ///     Does the stream support reading?
         /// </summary>
-        public override bool CanRead => true;
+        public override bool CanRead => false;
 
         /// <summary>
         ///     Does the stream support seeking?
@@ -60,7 +60,7 @@ namespace KubeClient.Extensions.WebSockets.Streams
         /// <summary>
         ///     Does the stream support writing?
         /// </summary>
-        public override bool CanWrite => false;
+        public override bool CanWrite => true;
 
         /// <summary>
         ///     The stream length (not supported).

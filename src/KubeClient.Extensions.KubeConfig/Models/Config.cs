@@ -57,7 +57,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// </returns>
         public static Config Load()
         {
-            string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "Home";
+            string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "HOME";
             string homeDirectory = Environment.GetEnvironmentVariable(homeDirectoryVariableName);
             if (String.IsNullOrWhiteSpace(homeDirectory))
                 throw new KubeClientException($"Cannot determine home directory for the current user (environment variable '{homeDirectoryVariableName}' is empty or not defined).");

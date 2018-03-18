@@ -27,12 +27,6 @@ namespace KubeClient.Samples.NoobExec
         /// </remarks>
         [Option("container", Default = null, HelpText = "The name of the target container within the target pod. Optional, if the pod only has a single container.")]
         public string ContainerName { get; set; }
-
-        /// <summary>
-        ///     Attach a TTY to the process?
-        /// </summary>
-        [Option('t', "tty", Default = false, HelpText = "Attach a TTY to the process.")]
-        public bool TTY { get; set; }
         
         /// <summary>
         ///     The Kubernetes namespace where the target pod is located.

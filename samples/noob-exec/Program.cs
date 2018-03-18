@@ -45,11 +45,14 @@ namespace KubeClient.Samples.NoobExec
             try
             {
                 KubeClientOptions clientOptions = Config.Load().ToKubeClientOptions(
-                    kubeContextName: options.KubeContext
+                    kubeContextName: options.KubeContext,
+                    defaultKubeNamespace: options.KubeNamespace
                 );
 
                 using (KubeApiClient client = KubeApiClient.Create(clientOptions, loggers))
                 {
+                    Log.LogInformation("Finding target pod...");
+
                     PodV1 targetPod = await client.PodsV1().Get(options.PodName,
                         kubeNamespace: options.KubeNamespace
                     );
@@ -92,6 +95,8 @@ namespace KubeClient.Samples.NoobExec
                         return ExitCodes.InvalidArguments;
                     }
 
+                    Log.LogDebug("Connecting...");
+
                     K8sMultiplexer multiplexer = await client.PodsV1().ExecAndConnect(
                         podName: options.PodName,
                         container: options.ContainerName,
@@ -100,13 +105,15 @@ namespace KubeClient.Samples.NoobExec
                         stdin: true,
                         stdout: true,
                         stderr: true,
-                        tty: options.TTY
+                        tty: true // Required for interactivity
                     );
 
-                    Log.LogInformation("Connected; if you're running a shell, you may need to press Enter to see a prompt.");
+                    Log.LogInformation("Connected.");
+
+                    Task stdInPump, stdOutPump, stdErrPump;
 
                     using (multiplexer)
-                    using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
+                    using (CancellationTokenSource pumpCancellation = new CancellationTokenSource())
                     using (Stream localStdIn = Console.OpenStandardInput())
                     using (Stream remoteStdIn = multiplexer.GetStdIn())
                     using (Stream localStdOut = Console.OpenStandardOutput())
@@ -114,25 +121,25 @@ namespace KubeClient.Samples.NoobExec
                     using (Stream localStdErr = Console.OpenStandardError())
                     using (Stream remoteStdErr = multiplexer.GetStdErr())
                     {
-                        Task copyStdIn = localStdIn.CopyToAsync(remoteStdIn, cancellationSource.Token);
-                        Task copyStdOut = remoteStdOut.CopyToAsync(localStdOut, cancellationSource.Token);
-                        Task copyStdErr = remoteStdErr.CopyToAsync(localStdErr, cancellationSource.Token);
+                        stdInPump = localStdIn.CopyToAsync(remoteStdIn, pumpCancellation.Token);
+                        stdOutPump = remoteStdOut.CopyToAsync(localStdOut, pumpCancellation.Token);
+                        stdErrPump = remoteStdErr.CopyToAsync(localStdErr, pumpCancellation.Token);
                         
-                        try
-                        {
-                            await Task.WhenAll(copyStdIn, copyStdOut, copyStdErr);
-                        }
-                        catch (OperationCanceledException cancelled) when (cancelled.CancellationToken == cancellationSource.Token)
-                        {
-                            // Clean termination.
-                        }
+                        await multiplexer.WhenConnectionClosed;
+                        
+                        // Terminate stream pumps.
+                        pumpCancellation.Cancel();
                     }
+
+                    Log.LogInformation("Connection closed.");
+                    Log.LogInformation("Done.");
                 }
 
                 return ExitCodes.Success;
             }
             catch (Exception unexpectedError)
             {
+                Log.LogError(unexpectedError.ToString());
                 Log.LogError(unexpectedError, "Unexpected error.");
 
                 return ExitCodes.UnexpectedError;

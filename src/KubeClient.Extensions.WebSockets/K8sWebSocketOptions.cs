@@ -57,7 +57,7 @@ namespace KubeClient.Extensions.WebSockets
         /// <summary>
         ///     An <see cref="SslProtocols"/> value representing the SSL protocols that the client supports.
         /// </summary>
-        public SslProtocols EnabledSslProtocols { get; set; } = SslProtocols.Tls;
+        public SslProtocols EnabledSslProtocols { get; set; } = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
         
         /// <summary>
         ///     The WebSocket keep-alive interval.

@@ -54,6 +54,12 @@ namespace KubeClient.Extensions.WebSockets
         /// </returns>
         public static async Task<WebSocket> ConnectAsync(Uri uri, K8sWebSocketOptions options, CancellationToken cancellationToken = default)
         {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+            
+            if (uri.Scheme != "wss" && uri.Scheme != "wss")
+                throw new ArgumentException($"Cannot connect WebSocket (unsupported URI scheme '{uri.Scheme}').", nameof(uri));
+
             try
             {
                 // Connect to the remote server
@@ -247,7 +253,7 @@ namespace KubeClient.Extensions.WebSockets
             // If the status line doesn't begin with "HTTP/1.1" or isn't long enough to contain a status code, fail.
             if (!statusLine.StartsWith(ExpectedStatusStart, StringComparison.Ordinal) || statusLine.Length < ExpectedStatusStatWithCode.Length)
             {
-                throw new WebSocketException(WebSocketError.HeaderError);
+                throw new WebSocketException(WebSocketError.HeaderError, $"Connection failure (status line = '{statusLine}').");
             }
 
             // If the status line doesn't contain a status code 101, or if it's long enough to have a status description

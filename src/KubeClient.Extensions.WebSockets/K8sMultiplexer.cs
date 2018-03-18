@@ -60,6 +60,11 @@ namespace KubeClient.Extensions.WebSockets
         readonly BlockingCollection<PendingSend> _pendingSends = new BlockingCollection<PendingSend>(new ConcurrentQueue<PendingSend>());
 
         /// <summary>
+        ///     Task completion source for <see cref="WhenConnectionClosed"/>.
+        /// </summary>
+        TaskCompletionSource<object> _closeCompletion = new TaskCompletionSource<object>();
+
+        /// <summary>
         ///     A source for cancellation tokens used to halt the multiplexer's operation.
         /// </summary>
         CancellationTokenSource _cancellationSource;
@@ -137,6 +142,8 @@ namespace KubeClient.Extensions.WebSockets
             {
                 if (_receivePump != null || _sendPump != null)
                     Shutdown().GetAwaiter().GetResult();
+                else
+                    _closeCompletion.TrySetResult(null);
             }
             catch (OperationCanceledException)
             {
@@ -144,6 +151,8 @@ namespace KubeClient.Extensions.WebSockets
             }
             catch (AggregateException stopFailed)
             {
+                _closeCompletion?.TrySetException(stopFailed);
+
                 stopFailed.Flatten().Handle(exception =>
                 {
                     Log.LogError(EventIds.K8sMultiplexer.DisposeStopError, stopFailed, "An unexpected error occurred during disposal of the K8sMultiplexer (failed to stop the send / receive loop).");
@@ -162,6 +171,11 @@ namespace KubeClient.Extensions.WebSockets
 
             Log.LogTrace("Disposal complete.");
         }
+
+        /// <summary>
+        ///     A <see cref="Task"/> that completes when the underlying WebSocket connection is closed.
+        /// </summary>
+        public Task WhenConnectionClosed => _closeCompletion.Task;
 
         /// <summary>
         ///     The target WebSocket.
@@ -221,6 +235,7 @@ namespace KubeClient.Extensions.WebSockets
                 throw new InvalidOperationException("Send / receive pumps are already running.");
 
             _cancellationSource = new CancellationTokenSource();
+            _closeCompletion = new TaskCompletionSource<object>();
             _sendPump = SendPump();
             _receivePump = ReceivePump();
         }
@@ -274,6 +289,9 @@ namespace KubeClient.Extensions.WebSockets
             }
             else
                 Log.LogTrace("Not closing WebSocket (current state is {WebSocketState}).", Socket.State);
+
+            _closeCompletion.TrySetResult(null);
+            _closeCompletion = new TaskCompletionSource<object>();
 
             Log.LogTrace("Shutdown complete.");
         }
@@ -334,6 +352,22 @@ namespace KubeClient.Extensions.WebSockets
                         buffer = CreateReadBuffer();
 
                         WebSocketReceiveResult readResult = await Socket.ReceiveAsync(buffer, cancellation).ConfigureAwait(false);
+                        if (readResult.MessageType == WebSocketMessageType.Close)
+                        {
+                            Log.LogDebug("Received first half of connection-close handshake (Status = {CloseStatus}, Description = {CloseStatusDescription}).",
+                                readResult.CloseStatus.Value,
+                                readResult.CloseStatusDescription
+                            );
+
+                            Log.LogDebug("Sending second half of connection-close handshake...");
+                            await Socket.CloseAsync(readResult.CloseStatus.Value, readResult.CloseStatusDescription, cancellation);
+                            Log.LogDebug("Sent second half of connection-close handshake.");
+
+                            _closeCompletion.TrySetResult(null);
+
+                            return;
+                        }
+
                         if (readResult.Count <= 1 && readResult.EndOfMessage)
                         {
                             // Effectively an empty packet; ignore.
@@ -467,7 +501,7 @@ namespace KubeClient.Extensions.WebSockets
 
             try
             {
-                while (!cancellation.IsCancellationRequested)
+                while (!cancellation.IsCancellationRequested && Socket.State == WebSocketState.Open)
                 {
                     PendingSend pendingSend;
                     if (_pendingSends.TryTake(out pendingSend, Timeout.Infinite, cancellation) )
