@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace KubeClient.Models
 {
@@ -15,10 +14,10 @@ namespace KubeClient.Models
         where TResource : KubeResourceV1
     {
         /// <summary>
-        ///     The even type.
+        ///     The event type.
         /// </summary>
         [JsonProperty("type")]
-        public string EventType { get; set; }
+        public ResourceEventType EventType { get; set; }
 
         /// <summary>
         ///     The resource to which the event relates.

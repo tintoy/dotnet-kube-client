@@ -156,6 +156,11 @@ namespace KubeClient.ResourceClients
             ///     A get-by-name Secret (v1) request.
             /// </summary>
             public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/secrets/{Name}", SerializerSettings);
+
+            /// <summary>
+            ///     A watch-by-name Secret (v1) request.
+            /// </summary>
+            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("api/v1/watch/namespaces/{Namespace}/secrets/{Name}", SerializerSettings);
         }
     }
 }

@@ -85,6 +85,32 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Watch for events relating to a specific ConfigMap.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the ConfigMap to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<ConfigMapV1>> Watch(string name, string kubeNamespace = null)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            return ObserveEvents<ConfigMapV1>(
+                Requests.WatchByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                })
+            );
+        }
+
+        /// <summary>
         ///     Request creation of a <see cref="ConfigMapV1"/>.
         /// </summary>
         /// <param name="newConfigMap">
@@ -156,6 +182,11 @@ namespace KubeClient.ResourceClients
             ///     A get-by-name ConfigMap (v1) request.
             /// </summary>
             public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/configmaps/{Name}", SerializerSettings);
+
+            /// <summary>
+            ///     A watch-by-name ConfigMap (v1) request.
+            /// </summary>
+            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("api/v1/watch/namespaces/{Namespace}/configmaps/{Name}", SerializerSettings);
         }
     }
 }

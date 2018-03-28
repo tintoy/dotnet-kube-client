@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
@@ -107,6 +108,35 @@ namespace KubeClient
                 KubeNamespace = KubeNamespace,
                 LogHeaders = LogHeaders,
                 LogPayloads = LogPayloads
+            };
+        }
+
+        /// <summary>
+        ///     Create new <see cref="KubeClientOptions"/> using pod-level configuration.
+        /// </summary>
+        /// <returns>
+        ///     The configured <see cref="KubeClientOptions"/>.
+        /// </returns>
+        /// <remarks>
+        ///     Only works from within a container running in a Kubernetes Pod.
+        /// </remarks>
+        public static KubeClientOptions FromPodServiceAccount()
+        {
+            string kubeServiceHost = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
+            if (String.IsNullOrWhiteSpace(kubeServiceHost))
+                throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
+
+            var apiEndPoint = $"https://kubernetes/";
+            string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
+            var kubeCACertificate = new X509Certificate2(
+                File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+            );
+
+            return new KubeClientOptions
+            {
+                ApiEndPoint = new Uri(apiEndPoint),
+                AccessToken = accessToken,
+                CertificationAuthorityCertificate = kubeCACertificate
             };
         }
     }

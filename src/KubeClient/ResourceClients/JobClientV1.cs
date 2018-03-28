@@ -219,12 +219,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Job watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs", SerializerSettings);
+            public static readonly HttpRequest WatchCollection = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}", SerializerSettings);
 
             /// <summary>
             ///     A watch-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}", SerializerSettings);
         }
     }
 }

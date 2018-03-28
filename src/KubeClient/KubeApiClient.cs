@@ -284,22 +284,10 @@ namespace KubeClient
         /// </remarks>
         public static KubeApiClient CreateFromPodServiceAccount(ILoggerFactory loggerFactory = null)
         {
-            string kubeServiceHost = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
-            if (String.IsNullOrWhiteSpace(kubeServiceHost))
-                throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
-
-            var apiEndPoint = $"https://kubernetes/";
-            string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
-            var kubeCACertificate = new X509Certificate2(
-                File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+            return Create(
+                KubeClientOptions.FromPodServiceAccount(),
+                loggerFactory
             );
-
-            return Create(new KubeClientOptions
-            {
-                ApiEndPoint = new Uri(apiEndPoint),
-                AccessToken = accessToken,
-                CertificationAuthorityCertificate = kubeCACertificate
-            }, loggerFactory);
         }
 
         /// <summary>

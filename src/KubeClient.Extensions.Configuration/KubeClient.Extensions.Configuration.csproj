@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <Description>Microsoft.Extensions.Configuration support for KubeClient</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="HTTPlease" Version="1.8.2" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+      <PackageReference Include="System.Reactive" Version="3.1.1" />
+  </ItemGroup>
+
+  <Import Project="..\Common.props" />
+</Project>
