@@ -85,6 +85,32 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Watch for events relating to a specific Secret.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Secret to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<SecretV1>> Watch(string name, string kubeNamespace = null)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            return ObserveEvents<SecretV1>(
+                Requests.WatchByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                })
+            );
+        }
+
+        /// <summary>
         ///     Request creation of a <see cref="SecretV1"/>.
         /// </summary>
         /// <param name="newSecret">

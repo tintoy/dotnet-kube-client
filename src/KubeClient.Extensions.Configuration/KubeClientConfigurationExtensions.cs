@@ -74,5 +74,72 @@ namespace KubeClient.Extensions.Configuration
                 new ConfigMapConfigurationSource()
             );
         }
+
+        /// <summary>
+        ///     Add the specified Kubernetes Secret as a configuration source.
+        /// </summary>
+        /// <param name="configurationBuilder">
+        ///     The <see cref="IConfigurationBuilder"/> to configure.
+        /// </param>
+        /// <param name="clientOptions">
+        ///     <see cref="KubeClientOptions"/> for the <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
+        /// </param>
+        /// <param name="secretName">
+        ///     The name of the target Secret.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The Kubernetes namespace that contains the target Secret.
+        /// </param>
+        /// <param name="reloadOnChange">
+        ///     Reload the configuration if the Secret changes?
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="IConfigurationBuilder"/>.
+        /// </returns>
+        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string secretName, string kubeNamespace = null, bool reloadOnChange = false)
+        {
+            if (configurationBuilder == null)
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            
+            KubeApiClient client = KubeApiClient.Create(clientOptions);
+
+            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, reloadOnChange);
+        }
+
+        /// <summary>
+        ///     Add the specified Kubernetes Secret as a configuration source.
+        /// </summary>
+        /// <param name="configurationBuilder">
+        ///     The <see cref="IConfigurationBuilder"/> to configure.
+        /// </param>
+        /// <param name="client">
+        ///     The <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
+        /// </param>
+        /// <param name="secretName">
+        ///     The name of the target Secret.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The Kubernetes namespace that contains the target Secret.
+        /// </param>
+        /// <param name="reloadOnChange">
+        ///     Reload the configuration if the Secret changes?
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="IConfigurationBuilder"/>.
+        /// </returns>
+        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string secretName, string kubeNamespace = null, bool reloadOnChange = false)
+        {
+            if (configurationBuilder == null)
+                throw new ArgumentNullException(nameof(configurationBuilder));
+
+            configurationBuilder.Properties["KubeClient_Secret_Client"] = client;
+            configurationBuilder.Properties["KubeClient_Secret_Name"] = secretName;
+            configurationBuilder.Properties["KubeClient_Secret_Namespace"] = kubeNamespace;
+            configurationBuilder.Properties["KubeClient_Secret_Watch"] = reloadOnChange;
+
+            return configurationBuilder.Add(
+                new SecretConfigurationSource()
+            );
+        }
     }
 }
