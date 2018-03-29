@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 
 namespace KubeClient.Extensions.Configuration
@@ -89,7 +90,12 @@ namespace KubeClient.Extensions.Configuration
         {
             ConfigMapV1 configMap = _client.ConfigMapsV1().Get(_configMapName, _kubeNamespace).GetAwaiter().GetResult();
             if (configMap != null)
-                Data = new Dictionary<string, string>(configMap.Data);
+            {
+                Data = configMap.Data.ToDictionary(
+                    entry => entry.Key.Replace('.', ':'),
+                    entry => entry.Value
+                );
+            }
             else
                 Data = new Dictionary<string, string>();
 

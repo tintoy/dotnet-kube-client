@@ -93,10 +93,22 @@ namespace KubeClient.Extensions.Configuration
             if (secret != null)
             {
                 Data = secret.Data.ToDictionary(
-                    entry => entry.Key,
-                    entry => Encoding.UTF8.GetString(
-                        Convert.FromBase64String(entry.Value) // Will choke on binary data that doesn't represent valid UTF8 text
-                    )
+                    entry => entry.Key.Replace('.', ':'),
+                    entry =>
+                    {
+                        try
+                        {
+                            return Encoding.UTF8.GetString(
+                                Convert.FromBase64String(entry.Value) // Will choke on binary data that doesn't represent valid UTF8 text
+                            );
+                        }
+                        catch (FormatException)
+                        {
+                            // Not valid Base64 -> UTF8; use raw value.
+
+                            return entry.Value;
+                        }
+                    }
                 );
             }
             else
