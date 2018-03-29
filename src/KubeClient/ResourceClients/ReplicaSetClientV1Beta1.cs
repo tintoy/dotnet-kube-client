@@ -1,4 +1,5 @@
 using HTTPlease;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -138,33 +139,39 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request modification of a <see cref="ReplicaSetV1Beta1"/>.
+        ///     Request update (PATCH) of a <see cref="ReplicaSetV1Beta1"/>.
         /// </summary>
-        /// <param name="updatedReplicaSet">
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the ReplicaSet to create.
+        /// <param name="name">
+        ///     The name of the target ReplicaSet.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the newly-created ReplicaSet.
+        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the updated ReplicaSet.
         /// </returns>
-        public async Task<ReplicaSetV1Beta1> Update(ReplicaSetV1Beta1 updatedReplicaSet, CancellationToken cancellationToken = default)
+        public async Task<ReplicaSetV1Beta1> Update(string name, Action<JsonPatchDocument<ReplicaSetV1Beta1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            if (updatedReplicaSet == null)
-                throw new ArgumentNullException(nameof(updatedReplicaSet));
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
             
-            return await Http
-                .PatchAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = updatedReplicaSet?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
-                    }),
-                    patchBody: updatedReplicaSet,
-                    mediaType: MergePatchMediaType,
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<ReplicaSetV1Beta1, StatusV1>();
+            return await PatchResource(patchAction,
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -214,12 +221,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ReplicaSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = RequestFactory.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection   = KubeRequest.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name ReplicaSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = RequestFactory.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets/{Name}");
+            public static readonly HttpRequest ByName       = KubeRequest.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets/{Name}");
         }
     }
 }

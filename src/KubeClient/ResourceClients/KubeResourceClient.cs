@@ -54,7 +54,7 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     The factory for Kubernetes API requests.
         /// </summary>
-        protected static HttpRequestFactory RequestFactory { get; } = new HttpRequestFactory(
+        protected static HttpRequestFactory KubeRequest { get; } = new HttpRequestFactory(
             HttpRequest.Empty.ExpectJson().WithFormatter(new JsonFormatter
             {
                 SerializerSettings = SerializerSettings,

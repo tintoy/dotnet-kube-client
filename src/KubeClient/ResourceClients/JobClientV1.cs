@@ -209,22 +209,22 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName           = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}");
 
             /// <summary>
             ///     A collection-level Job watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A watch-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}", SerializerSettings);
+            public static readonly HttpRequest WatchByName      = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}");
         }
     }
 }

@@ -213,17 +213,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = RequestFactory.Create("api/v1/namespaces/{Namespace}/configmaps?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = RequestFactory.Create("api/v1/namespaces/{Namespace}/configmaps/{Name}");
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps/{Name}");
 
             /// <summary>
             ///     A watch-by-name ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName = RequestFactory.Create("api/v1/watch/namespaces/{Namespace}/configmaps/{Name}");
+            public static readonly HttpRequest WatchByName  = KubeRequest.Create("api/v1/watch/namespaces/{Namespace}/configmaps/{Name}");
         }
     }
 }

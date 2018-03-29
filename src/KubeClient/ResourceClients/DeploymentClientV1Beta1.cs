@@ -221,12 +221,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Deployment (v1beta2) request.
             /// </summary>
-            public static readonly HttpRequest Collection = RequestFactory.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection   = KubeRequest.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Deployment (v1beta2) request.
             /// </summary>
-            public static readonly HttpRequest ByName = RequestFactory.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments/{Name}");
+            public static readonly HttpRequest ByName       = KubeRequest.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments/{Name}");
         }
     }
 }

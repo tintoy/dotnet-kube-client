@@ -170,7 +170,7 @@ public class PodClientV1 : KubeResourceClient
 
     public static class Requests
     {
-        public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+        public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}");
     }
 }
 ```

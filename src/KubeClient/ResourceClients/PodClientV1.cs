@@ -260,17 +260,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/pods/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods/{Name}");
 
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
+            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
         }
     }
 }

@@ -1,4 +1,5 @@
 using HTTPlease;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -140,6 +141,42 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Request update (PATCH) of a <see cref="SecretV1"/>.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target Secret.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SecretV1"/> representing the current state for the updated Secret.
+        /// </returns>
+        public async Task<SecretV1> Update(string name, Action<JsonPatchDocument<SecretV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+            
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+
+            return await PatchResource(patchAction,
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken
+            );
+        }
+
+        /// <summary>
         ///     Request deletion of the specified Secret.
         /// </summary>
         /// <param name="name">
@@ -176,17 +213,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Secret (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/secrets?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/secrets?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name Secret (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/secrets/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/secrets/{Name}");
 
             /// <summary>
             ///     A watch-by-name Secret (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("api/v1/watch/namespaces/{Namespace}/secrets/{Name}", SerializerSettings);
+            public static readonly HttpRequest WatchByName  = KubeRequest.Create("api/v1/watch/namespaces/{Namespace}/secrets/{Name}");
         }
     }
 }
