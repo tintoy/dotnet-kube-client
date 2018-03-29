@@ -161,7 +161,7 @@ namespace KubeClient.ResourceClients
                         Namespace = updatedReplicaSet?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     patchBody: updatedReplicaSet,
-                    mediaType: PatchMediaType,
+                    mediaType: MergePatchMediaType,
                     cancellationToken: cancellationToken
                 )
                 .ReadContentAsAsync<ReplicaSetV1Beta1, StatusV1>();
@@ -214,12 +214,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ReplicaSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = HttpRequest.Factory.Json("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = RequestFactory.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name ReplicaSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = HttpRequest.Factory.Json("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = RequestFactory.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets/{Name}");
         }
     }
 }

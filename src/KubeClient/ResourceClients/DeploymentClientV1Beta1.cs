@@ -1,4 +1,5 @@
 using HTTPlease;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -140,38 +141,37 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     Request update (PATCH) of a <see cref="DeploymentV1Beta1"/>.
         /// </summary>
-        /// <param name="deployment">
-        ///     A <see cref="DeploymentV1Beta1"/> representing the Deployment to update.
+        /// <param name="name">
+        ///     The name of the target Deployment.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="DeploymentV1Beta1"/> representing the current state for the newly-created Deployment.
+        ///     A <see cref="DeploymentV1Beta1"/> representing the current state for the updated Deployment.
         /// </returns>
-        public async Task<DeploymentV1Beta1> Update(DeploymentV1Beta1 deployment, CancellationToken cancellationToken = default)
+        public async Task<DeploymentV1Beta1> Update(string name, Action<JsonPatchDocument<DeploymentV1Beta1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            if (deployment == null)
-                throw new ArgumentNullException(nameof(deployment));
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            if (String.IsNullOrWhiteSpace(deployment.Metadata?.Name))
-                throw new ArgumentException("Cannot update Deployment without a value for its Metadata.Name property.", nameof(deployment));
-
-            if (String.IsNullOrWhiteSpace(deployment.Metadata?.Namespace))
-                throw new ArgumentException("Cannot update Deployment without a value for its Metadata.Namespace property.", nameof(deployment));
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
             
-            return await Http
-                .PatchAsync(
-                    Requests.ByName.WithTemplateParameters(new
-                    {
-                        Name = deployment.Metadata.Name,
-                        Namespace = deployment.Metadata.Namespace
-                    }),
-                    patchBody: deployment,
-                    mediaType: PatchMediaType,
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<DeploymentV1Beta1, StatusV1>();
+            return await PatchResource(patchAction,
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -221,12 +221,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Deployment (v1beta2) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("apis/apps/v1beta1/namespaces/{Namespace}/deployments?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection = RequestFactory.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Deployment (v1beta2) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("apis/apps/v1beta1/namespaces/{Namespace}/deployments/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName = RequestFactory.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments/{Name}");
         }
     }
 }

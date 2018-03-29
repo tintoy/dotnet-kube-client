@@ -1,4 +1,8 @@
 using HTTPlease;
+using HTTPlease.Formatters;
+using HTTPlease.Formatters.Json;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -14,7 +18,6 @@ using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
-    using Microsoft.Extensions.Logging;
     using Models;
 
     /// <summary>
@@ -30,7 +33,12 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     The media type used to indicate that request is a Kubernetes PATCH request.
         /// </summary>
-        protected static readonly string PatchMediaType = "application/merge-patch+json";
+        protected static readonly string PatchMediaType = "application/json-patch+json";
+
+        /// <summary>
+        ///     The media type used to indicate that request is a Kubernetes merge-style PATCH request.
+        /// </summary>
+        protected static readonly string MergePatchMediaType = "application/merge-patch+json";
 
         /// <summary>
         ///     JSON serialisation settings.
@@ -42,6 +50,21 @@ namespace KubeClient.ResourceClients
                 new StringEnumConverter()
             }
         };
+
+        /// <summary>
+        ///     The factory for Kubernetes API requests.
+        /// </summary>
+        protected static HttpRequestFactory RequestFactory { get; } = new HttpRequestFactory(
+            HttpRequest.Empty.ExpectJson().WithFormatter(new JsonFormatter
+            {
+                SerializerSettings = SerializerSettings,
+                SupportedMediaTypes =
+                {
+                    PatchMediaType,
+                    MergePatchMediaType
+                }
+            })
+        );
 
         /// <summary>
         ///     Create a new <see cref="KubeResourceClient"/>.
@@ -157,6 +180,84 @@ namespace KubeClient.ResourceClients
                     )
                 );
             }
+        }
+
+        /// <summary>
+        ///     Perform a JSON patch operation on a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The target resource type.
+        /// </typeparam>
+        /// <param name="patchAction">
+        ///     A delegate that performs customisation of the patch operation.
+        /// </param>
+        /// <param name="request">
+        ///     An <see cref="HttpRequest"/> representing the patch request.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        protected Task<TResource> PatchResource<TResource>(Action<JsonPatchDocument<TResource>> patchAction, HttpRequest request, CancellationToken cancellationToken)
+            where TResource : KubeResourceV1
+        {
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+            
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            
+            var patch = new JsonPatchDocument<TResource>();
+            patchAction(patch);
+
+            return Http
+                .PatchAsync(request,
+                    patchBody: patch,
+                    mediaType: PatchMediaType,
+                    cancellationToken: cancellationToken
+                )
+                .ReadContentAsAsync<TResource, StatusV1>();
+        }
+
+        /// <summary>
+        ///     Perform a JSON patch operation on a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The target resource type.
+        /// </typeparam>
+        /// <param name="patchAction">
+        ///     A delegate that performs customisation of the patch operation.
+        /// </param>
+        /// <param name="request">
+        ///     An <see cref="HttpRequest"/> representing the patch request.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        protected Task<TResource> PatchResourceRaw<TResource>(Action<JsonPatchDocument> patchAction, HttpRequest request, CancellationToken cancellationToken)
+            where TResource : KubeResourceV1
+        {
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+            
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            
+            var patch = new JsonPatchDocument();
+            patchAction(patch);
+
+            return Http
+                .PatchAsync(request,
+                    patchBody: patch,
+                    mediaType: PatchMediaType,
+                    cancellationToken: cancellationToken
+                )
+                .ReadContentAsAsync<TResource, StatusV1>();
         }
 
         /// <summary>

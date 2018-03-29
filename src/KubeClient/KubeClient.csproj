@@ -8,6 +8,7 @@
   <ItemGroup>
       <PackageReference Include="HTTPlease" Version="1.8.2" />
       <PackageReference Include="HTTPlease.Diagnostics" Version="1.8.2" />
+      <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="1.1.2" />
       <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
       <PackageReference Include="System.Reactive" Version="3.1.1" />
       <PackageReference Include="System.ValueTuple" Version="4.4.0" />
