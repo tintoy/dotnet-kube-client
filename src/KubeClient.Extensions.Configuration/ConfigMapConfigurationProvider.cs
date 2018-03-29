@@ -31,6 +31,11 @@ namespace KubeClient.Extensions.Configuration
         readonly string _kubeNamespace;
 
         /// <summary>
+        ///     The name of the target configuration section (if any).
+        /// </summary>
+        readonly string _sectionName;
+
+        /// <summary>
         ///     Watch the ConfigMap for changes?
         /// </summary>
         readonly bool _watch;
@@ -52,10 +57,13 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="kubeNamespace">
         ///     The Kubernetes namespace that contains the target ConfigMap.
         /// </param>
+        /// <param name="sectionName">
+        ///     The name of the target configuration section (if any).
+        /// </param>
         /// <param name="watch">
         ///     Watch the ConfigMap for changes?
         /// </param>
-        public ConfigMapConfigurationProvider(KubeApiClient client, string configMapName, string kubeNamespace, bool watch)
+        public ConfigMapConfigurationProvider(KubeApiClient client, string configMapName, string kubeNamespace, string sectionName, bool watch)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -66,6 +74,7 @@ namespace KubeClient.Extensions.Configuration
             _client = client;
             _configMapName = configMapName;
             _kubeNamespace = kubeNamespace;
+            _sectionName = sectionName;
             _watch = watch;
         }
 
@@ -91,8 +100,10 @@ namespace KubeClient.Extensions.Configuration
             ConfigMapV1 configMap = _client.ConfigMapsV1().Get(_configMapName, _kubeNamespace).GetAwaiter().GetResult();
             if (configMap != null)
             {
+                string sectionNamePrefix = !String.IsNullOrWhiteSpace(_sectionName) ? _sectionName + ":" : String.Empty;
+                
                 Data = configMap.Data.ToDictionary(
-                    entry => entry.Key.Replace('.', ':'),
+                    entry => sectionNamePrefix + entry.Key.Replace('.', ':'),
                     entry => entry.Value
                 );
             }

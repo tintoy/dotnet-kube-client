@@ -30,6 +30,7 @@ namespace KubeClient.Extensions.Configuration
                 client: (KubeApiClient)configurationBuilder.Properties["KubeClient_ConfigMap_Client"],
                 configMapName: (string)configurationBuilder.Properties["KubeClient_ConfigMap_Name"],
                 kubeNamespace: (string)configurationBuilder.Properties["KubeClient_ConfigMap_Namespace"],
+                sectionName: (string)configurationBuilder.Properties["KubeClient_ConfigMap_SectionName"],
                 watch: (bool)configurationBuilder.Properties["KubeClient_ConfigMap_Watch"]                
             );
         }

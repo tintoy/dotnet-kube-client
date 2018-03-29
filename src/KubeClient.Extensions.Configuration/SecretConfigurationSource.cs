@@ -30,6 +30,7 @@ namespace KubeClient.Extensions.Configuration
                 client: (KubeApiClient)configurationBuilder.Properties["KubeClient_Secret_Client"],
                 secretName: (string)configurationBuilder.Properties["KubeClient_Secret_Name"],
                 kubeNamespace: (string)configurationBuilder.Properties["KubeClient_Secret_Namespace"],
+                sectionName: (string)configurationBuilder.Properties["KubeClient_Secret_SectionName"],
                 watch: (bool)configurationBuilder.Properties["KubeClient_Secret_Watch"]                
             );
         }

@@ -23,20 +23,23 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="kubeNamespace">
         ///     The Kubernetes namespace that contains the target ConfigMap.
         /// </param>
+        /// <param name="sectionName">
+        ///     The name of the target configuration section (if any).
+        /// </param>
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the ConfigMap changes?
         /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string configMapName, string kubeNamespace = null, bool reloadOnChange = false)
+        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string configMapName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
             
             KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return configurationBuilder.AddKubeConfigMap(client, configMapName, kubeNamespace, reloadOnChange);
+            return configurationBuilder.AddKubeConfigMap(client, configMapName, kubeNamespace, sectionName, reloadOnChange);
         }
 
         /// <summary>
@@ -54,13 +57,16 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="kubeNamespace">
         ///     The Kubernetes namespace that contains the target ConfigMap.
         /// </param>
+        /// <param name="sectionName">
+        ///     The name of the target configuration section (if any).
+        /// </param>
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the ConfigMap changes?
         /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string configMapName, string kubeNamespace = null, bool reloadOnChange = false)
+        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string configMapName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
@@ -68,6 +74,7 @@ namespace KubeClient.Extensions.Configuration
             configurationBuilder.Properties["KubeClient_ConfigMap_Client"] = client;
             configurationBuilder.Properties["KubeClient_ConfigMap_Name"] = configMapName;
             configurationBuilder.Properties["KubeClient_ConfigMap_Namespace"] = kubeNamespace;
+            configurationBuilder.Properties["KubeClient_ConfigMap_SectionName"] = sectionName;
             configurationBuilder.Properties["KubeClient_ConfigMap_Watch"] = reloadOnChange;
 
             return configurationBuilder.Add(
@@ -90,20 +97,23 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="kubeNamespace">
         ///     The Kubernetes namespace that contains the target Secret.
         /// </param>
+        /// <param name="sectionName">
+        ///     The name of the target configuration section (if any).
+        /// </param>
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the Secret changes?
         /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string secretName, string kubeNamespace = null, bool reloadOnChange = false)
+        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string secretName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
             
             KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, reloadOnChange);
+            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, sectionName, reloadOnChange);
         }
 
         /// <summary>
@@ -121,13 +131,16 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="kubeNamespace">
         ///     The Kubernetes namespace that contains the target Secret.
         /// </param>
+        /// <param name="sectionName">
+        ///     The name of the target configuration section (if any).
+        /// </param>
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the Secret changes?
         /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string secretName, string kubeNamespace = null, bool reloadOnChange = false)
+        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string secretName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
@@ -135,6 +148,7 @@ namespace KubeClient.Extensions.Configuration
             configurationBuilder.Properties["KubeClient_Secret_Client"] = client;
             configurationBuilder.Properties["KubeClient_Secret_Name"] = secretName;
             configurationBuilder.Properties["KubeClient_Secret_Namespace"] = kubeNamespace;
+            configurationBuilder.Properties["KubeClient_Secret_SectionName"] = sectionName;
             configurationBuilder.Properties["KubeClient_Secret_Watch"] = reloadOnChange;
 
             return configurationBuilder.Add(
