@@ -4,7 +4,7 @@
 
 KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard1.4`).
 
-Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (currently a work-in-progress). KubeClient functionality is being contributed to the official client but for now this client should be good enough for most use-cases :)
+Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (currently a work-in-progress). KubeClient functionality is also being contributed to the official client but for now this client should be good enough for most use-cases :)
 
 ## Prerequisites
 
@@ -12,17 +12,24 @@ Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET
 
 ## Packages
 
-* `KubeClient` (`netstandard1.4` or newer)  
-  The main client and models.
-* `KubeClient.Extensions.KubeConfig` (`netstandard1.4` or newer)  
-  Support for loading and parsing configuration from `~/.kube/config`.
+* `KubeClient` (`netstandard1.4` or newer)    
+  The main client and models.  
+  [![KubeClient](https://img.shields.io/nuget/v/KubeClient.svg)](https://www.nuget.org/packages/KubeClient)
+* `KubeClient.Extensions.Configuration` (`netstandard2.0` or newer)  
+  Support for sourcing `Microsoft.Extensions.Configuration` data from Kubernetes Secrets and ConfigMaps.  
+  [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.Configuration.svg)](https://www.nuget.org/packages/KubeClient.Extensions.Configuration)
 * `KubeClient.Extensions.DependencyInjection` (`netstandard2.0` or newer)  
-  Dependency-injection support.
+  Dependency-injection support.  
+  [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.DependencyInjection.svg)](https://www.nuget.org/packages/KubeClient.Extensions.DependencyInjection)  
+* `KubeClient.Extensions.KubeConfig` (`netstandard1.4` or newer)  
+  Support for loading and parsing configuration from `~/.kube/config`.  
+  [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.KubeConfig.svg)](https://www.nuget.org/packages/KubeClient.Extensions.KubeConfig)
 * `KubeClient.Extensions.WebSockets` (`netstandard2.1` or newer)  
   Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).   
   This package also extends resource clients to add support for those APIs.  
-    
-  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300-preview1` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).
+  
+  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300-preview1` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).  
+  [![KubeClient.Extensions.WebSockets](https://img.shields.io/nuget/v/KubeClient.Extensions.WebSockets.svg)](https://www.nuget.org/packages/KubeClient.Extensions.WebSockets)
 
 If you want to use the latest (development) builds of KubeClient, add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
 
