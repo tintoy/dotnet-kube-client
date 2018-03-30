@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJobList is a collection of cron jobs.
     /// </summary>
+    [KubeListItem("CronJob", "batch/v2alpha1")]
     [KubeObject("CronJobList", "batch/v2alpha1")]
-    public class CronJobListV2Alpha1 : KubeResourceListV1
+    public class CronJobListV2Alpha1 : KubeResourceListV1<CronJobV2Alpha1>
     {
         /// <summary>
         ///     items is the list of CronJobs.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<CronJobV2Alpha1> Items { get; set; } = new List<CronJobV2Alpha1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<CronJobV2Alpha1> Items { get; } = new List<CronJobV2Alpha1>();
     }
 }

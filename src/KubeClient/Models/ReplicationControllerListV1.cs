@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationControllerList is a collection of replication controllers.
     /// </summary>
+    [KubeListItem("ReplicationController", "v1")]
     [KubeObject("ReplicationControllerList", "v1")]
-    public class ReplicationControllerListV1 : KubeResourceListV1
+    public class ReplicationControllerListV1 : KubeResourceListV1<ReplicationControllerV1>
     {
         /// <summary>
         ///     List of replication controllers. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ReplicationControllerV1> Items { get; set; } = new List<ReplicationControllerV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ReplicationControllerV1> Items { get; } = new List<ReplicationControllerV1>();
     }
 }

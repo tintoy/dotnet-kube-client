@@ -28,61 +28,6 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all ReplicationControllers in the specified namespace, optionally matching a label selector.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the ReplicationControllers.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The ReplicationControllers, as a list of <see cref="ReplicationControllerV1"/>s.
-        /// </returns>
-        public async Task<List<ReplicationControllerV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            ReplicationControllerListV1 matchingControllers =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<ReplicationControllerListV1, StatusV1>();
-
-            return matchingControllers.Items;
-        }
-
-        /// <summary>
-        ///     Watch for events relating to ReplicationControllers.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the ReplicationControllers.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <returns>
-        ///     An <see cref="IObservable{T}"/> representing the event stream.
-        /// </returns>
-        public IObservable<ResourceEventV1<ReplicationControllerV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
-        {
-            return ObserveEvents<ReplicationControllerV1>(
-                Requests.Collection.WithTemplateParameters(new
-                {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                    LabelSelector = labelSelector,
-                    Watch = true
-                })
-            );
-        }
-
-        /// <summary>
         ///     Get the ReplicationController with the specified name.
         /// </summary>
         /// <param name="name">
@@ -106,9 +51,60 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Get all ReplicationControllers in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ReplicationControllers.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ReplicationControllerListV1"/> containing the ReplicationControllers.
+        /// </returns>
+        public async Task<ReplicationControllerListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            return await GetResourceList<ReplicationControllerListV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Watch for events relating to ReplicationControllers.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ReplicationControllers.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<ReplicationControllerV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        {
+            return ObserveEvents<ReplicationControllerV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector,
+                    Watch = true
+                })
             );
         }
 
@@ -133,7 +129,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newController?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newController?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newController,
                     cancellationToken: cancellationToken
@@ -165,7 +161,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 deleteBody: new DeleteOptionsV1
                 {
@@ -188,12 +184,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ReplicationController (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/replicationcontrollers?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/replicationcontrollers?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name ReplicationController (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/replicationcontrollers/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/replicationcontrollers/{Name}");
         }
     }
 }

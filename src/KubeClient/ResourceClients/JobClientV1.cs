@@ -28,86 +28,6 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all Jobs in the specified namespace, optionally matching a label selector.
-        /// </summary>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Jobs.
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The Jobs, as a list of <see cref="JobV1"/>s.
-        /// </returns>
-        public async Task<List<JobV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            JobListV1 matchingJobs =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<JobListV1, StatusV1>();
-
-            return matchingJobs.Items;
-        }
-
-        /// <summary>
-        ///     Watch for events relating to a specific Job.
-        /// </summary>
-        /// <param name="name">
-        ///     The name of the job to watch.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <returns>
-        ///     An <see cref="IObservable{T}"/> representing the event stream.
-        /// </returns>
-        public IObservable<ResourceEventV1<JobV1>> Watch(string name, string kubeNamespace = null)
-        {
-            if (String.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-
-            return ObserveEvents<JobV1>(
-                Requests.WatchByName.WithTemplateParameters(new
-                {
-                    Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
-                })
-            );
-        }
-
-        /// <summary>
-        ///     Watch for events relating to Jobs.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Jobs.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <returns>
-        ///     An <see cref="IObservable{T}"/> representing the event stream.
-        /// </returns>
-        public IObservable<ResourceEventV1<JobV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
-        {
-            return ObserveEvents<JobV1>(
-                Requests.WatchCollection.WithTemplateParameters(new
-                {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                    LabelSelector = labelSelector
-                })
-            );
-        }
-
-        /// <summary>
         ///     Get the Job with the specified name.
         /// </summary>
         /// <param name="name">
@@ -131,9 +51,85 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Get all Jobs in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Jobs.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="JobListV1"/> containing the jobs.
+        /// </returns>
+        public async Task<JobListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            return await GetResourceList<JobListV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Watch for events relating to a specific Job.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the job to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<JobV1>> Watch(string name, string kubeNamespace = null)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            return ObserveEvents<JobV1>(
+                Requests.WatchByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                })
+            );
+        }
+
+        /// <summary>
+        ///     Watch for events relating to Jobs.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Jobs.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<JobV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        {
+            return ObserveEvents<JobV1>(
+                Requests.WatchCollection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                })
             );
         }
 
@@ -158,7 +154,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newJob?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newJob?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newJob,
                     cancellationToken: cancellationToken
@@ -190,7 +186,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 deleteBody: new DeleteOptionsV1
                 {
@@ -213,22 +209,22 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName           = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}");
 
             /// <summary>
             ///     A collection-level Job watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs", SerializerSettings);
+            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A watch-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName = HttpRequest.Factory.Json("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest WatchByName      = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}");
         }
     }
 }

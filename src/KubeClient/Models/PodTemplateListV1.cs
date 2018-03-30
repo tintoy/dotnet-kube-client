@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodTemplateList is a list of PodTemplates.
     /// </summary>
+    [KubeListItem("PodTemplate", "v1")]
     [KubeObject("PodTemplateList", "v1")]
-    public class PodTemplateListV1 : KubeResourceListV1
+    public class PodTemplateListV1 : KubeResourceListV1<PodTemplateV1>
     {
         /// <summary>
         ///     List of pod templates
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PodTemplateV1> Items { get; set; } = new List<PodTemplateV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<PodTemplateV1> Items { get; } = new List<PodTemplateV1>();
     }
 }

@@ -7,6 +7,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DownwardAPIVolumeSource represents a volume containing downward API info. Downward API volumes support ownership management and SELinux relabeling.
     /// </summary>
+    [KubeListItem("DownwardAPIVolumeFile", "v1")]
     [KubeObject("DownwardAPIVolumeSource", "v1")]
     public class DownwardAPIVolumeSourceV1
     {

@@ -1,4 +1,8 @@
 using HTTPlease;
+using HTTPlease.Formatters;
+using HTTPlease.Formatters.Json;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -29,7 +33,12 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     The media type used to indicate that request is a Kubernetes PATCH request.
         /// </summary>
-        protected static readonly string PatchMediaType = "application/merge-patch+json";
+        protected static readonly string PatchMediaType = "application/json-patch+json";
+
+        /// <summary>
+        ///     The media type used to indicate that request is a Kubernetes merge-style PATCH request.
+        /// </summary>
+        protected static readonly string MergePatchMediaType = "application/merge-patch+json";
 
         /// <summary>
         ///     JSON serialisation settings.
@@ -42,7 +51,20 @@ namespace KubeClient.ResourceClients
             }
         };
 
-        // TODO: Declare base request definitions (that include the serialiser settings).
+        /// <summary>
+        ///     The factory for Kubernetes API requests.
+        /// </summary>
+        protected static HttpRequestFactory KubeRequest { get; } = new HttpRequestFactory(
+            HttpRequest.Empty.ExpectJson().WithFormatter(new JsonFormatter
+            {
+                SerializerSettings = SerializerSettings,
+                SupportedMediaTypes =
+                {
+                    PatchMediaType,
+                    MergePatchMediaType
+                }
+            })
+        );
 
         /// <summary>
         ///     Create a new <see cref="KubeResourceClient"/>.
@@ -55,18 +77,23 @@ namespace KubeClient.ResourceClients
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
             
-            Client = client;
+            KubeClient = client;
         }
 
         /// <summary>
         ///     The Kubernetes API client.
         /// </summary>
-        protected KubeApiClient Client { get; }
+        public KubeApiClient KubeClient { get; }
 
         /// <summary>
         ///     The underlying HTTP client.
         /// </summary>
-        protected HttpClient Http => Client.Http;
+        protected HttpClient Http => KubeClient.Http;
+
+        /// <summary>
+        ///     An <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </summary>
+        protected ILoggerFactory LoggerFactory => KubeClient.LoggerFactory;
 
         /// <summary>
         ///     Get a single resource, returning <c>null</c> if it does not exist.
@@ -84,7 +111,7 @@ namespace KubeClient.ResourceClients
         ///     A <typeparamref name="TResource"/> representing the current state for the resource, or <c>null</c> if no resource was found with the specified name and namespace.
         /// </returns>
         protected async Task<TResource> GetSingleResource<TResource>(HttpRequest request, CancellationToken cancellationToken = default)
-            where TResource : class
+            where TResource : KubeResourceV1
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -96,11 +123,141 @@ namespace KubeClient.ResourceClients
 
                 // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
                 StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound);
-                if (status.Reason != "NotFound")
-                    throw new HttpRequestException<StatusV1>(responseMessage.StatusCode, status);
+                if (status.Reason == "NotFound")
+                    return null;
 
-                return null;
+                // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+                (string itemKind, string itemApiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+                string resourceTypeDescription =
+                    !String.IsNullOrWhiteSpace(itemKind)
+                        ? $"{itemKind} ({itemApiVersion}) resource"
+                        : typeof(TResource).Name;
+
+                throw new KubeClientException($"Failed to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
+                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                    )
+                );
             }
+        }
+
+        /// <summary>
+        ///     Get a list of resources.
+        /// </summary>
+        /// <typeparam name="TResourceList">
+        ///     The type of resource list to retrieve.
+        /// </typeparam>
+        /// <param name="request">
+        ///     An <see cref="HttpRequest"/> representing the resource to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResourceList"/> containing the resources.
+        /// </returns>
+        protected async Task<TResourceList> GetResourceList<TResourceList>(HttpRequest request, CancellationToken cancellationToken = default)
+            where TResourceList : KubeResourceListV1
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            
+            using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                    return await responseMessage.ReadContentAsAsync<TResourceList>();
+
+                // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+                (string itemKind, string itemApiVersion) = KubeResourceListV1.GetListItemKubeKind<TResourceList>();
+                string resourceTypeDescription =
+                    !String.IsNullOrWhiteSpace(itemKind)
+                        ? $"{itemKind} ({itemApiVersion}) resources"
+                        : typeof(TResourceList).Name;
+
+                throw new KubeClientException($"Failed to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
+                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                    )
+                );
+            }
+        }
+
+        /// <summary>
+        ///     Perform a JSON patch operation on a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The target resource type.
+        /// </typeparam>
+        /// <param name="patchAction">
+        ///     A delegate that performs customisation of the patch operation.
+        /// </param>
+        /// <param name="request">
+        ///     An <see cref="HttpRequest"/> representing the patch request.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        protected Task<TResource> PatchResource<TResource>(Action<JsonPatchDocument<TResource>> patchAction, HttpRequest request, CancellationToken cancellationToken)
+            where TResource : KubeResourceV1
+        {
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+            
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            
+            var patch = new JsonPatchDocument<TResource>();
+            patchAction(patch);
+
+            return Http
+                .PatchAsync(request,
+                    patchBody: patch,
+                    mediaType: PatchMediaType,
+                    cancellationToken: cancellationToken
+                )
+                .ReadContentAsAsync<TResource, StatusV1>();
+        }
+
+        /// <summary>
+        ///     Perform a JSON patch operation on a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The target resource type.
+        /// </typeparam>
+        /// <param name="patchAction">
+        ///     A delegate that performs customisation of the patch operation.
+        /// </param>
+        /// <param name="request">
+        ///     An <see cref="HttpRequest"/> representing the patch request.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        protected Task<TResource> PatchResourceRaw<TResource>(Action<JsonPatchDocument> patchAction, HttpRequest request, CancellationToken cancellationToken)
+            where TResource : KubeResourceV1
+        {
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+            
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            
+            var patch = new JsonPatchDocument();
+            patchAction(patch);
+
+            return Http
+                .PatchAsync(request,
+                    patchBody: patch,
+                    mediaType: PatchMediaType,
+                    cancellationToken: cancellationToken
+                )
+                .ReadContentAsAsync<TResource, StatusV1>();
         }
 
         /// <summary>
@@ -232,15 +389,18 @@ namespace KubeClient.ResourceClients
                 }
                 catch (OperationCanceledException operationCanceled) when (operationCanceled.CancellationToken != cancellationToken)
                 {
-                    subscriber.OnError(operationCanceled);
+                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                        subscriber.OnError(operationCanceled);
                 }
                 catch (Exception exception)
                 {
-                    subscriber.OnError(exception);
+                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                        subscriber.OnError(exception);
                 }
                 finally
                 {
-                    subscriber.OnCompleted();
+                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                        subscriber.OnCompleted();
                 }
             });
         }

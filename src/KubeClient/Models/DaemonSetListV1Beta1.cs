@@ -8,12 +8,12 @@ namespace KubeClient.Models
     ///     DaemonSetList is a collection of daemon sets.
     /// </summary>
     [KubeObject("DaemonSetList", "extensions/v1beta1")]
-    public class DaemonSetListV1Beta1 : KubeResourceListV1
+    public class DaemonSetListV1Beta1 : KubeResourceListV1<DaemonSetV1Beta1>
     {
         /// <summary>
         ///     A list of daemon sets.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DaemonSetV1Beta1> Items { get; set; } = new List<DaemonSetV1Beta1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<DaemonSetV1Beta1> Items { get; } = new List<DaemonSetV1Beta1>();
     }
 }

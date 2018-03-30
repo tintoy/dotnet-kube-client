@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <Description>WebSockets support for KubeClient</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="HTTPlease" Version="1.8.2" />
+      <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0-pre-05" />
+  </ItemGroup>
+
+  <Import Project="..\Common.props" />
+</Project>

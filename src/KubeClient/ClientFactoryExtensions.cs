@@ -143,6 +143,25 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes ReplicaSets (v1beta1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static ReplicaSetClientV1Beta1 ReplicaSetsV1Beta1(this KubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+            
+            return kubeClient.ResourceClient(
+                client => new ReplicaSetClientV1Beta1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes Jobs (v1) resource client.
         /// </summary>
         /// <param name="kubeClient">

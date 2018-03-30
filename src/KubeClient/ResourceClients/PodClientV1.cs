@@ -28,61 +28,6 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all Pods in the specified namespace, optionally matching a label selector.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Pods.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The Pods, as a list of <see cref="PodV1"/>s.
-        /// </returns>
-        public async Task<List<PodV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            PodListV1 matchingPods =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<PodListV1, StatusV1>();
-
-            return matchingPods.Items;
-        }
-
-        /// <summary>
-        ///     Watch for events relating to Pods.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Pods.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <returns>
-        ///     An <see cref="IObservable{T}"/> representing the event stream.
-        /// </returns>
-        public IObservable<ResourceEventV1<PodV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
-        {
-            return ObserveEvents<PodV1>(
-                Requests.Collection.WithTemplateParameters(new
-                {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                    LabelSelector = labelSelector,
-                    Watch = true
-                })
-            );
-        }
-
-        /// <summary>
         ///     Get the Pod with the specified name.
         /// </summary>
         /// <param name="name">
@@ -106,9 +51,60 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Get all Pods in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Pods.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="PodListV1"/> containing the Pods.
+        /// </returns>
+        public async Task<PodListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            return await GetResourceList<PodListV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Watch for events relating to Pods.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Pods.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<PodV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        {
+            return ObserveEvents<PodV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector,
+                    Watch = true
+                })
             );
         }
 
@@ -145,7 +141,7 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     ContainerName = containerName,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes
                 }),
                 cancellationToken
@@ -191,7 +187,7 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     ContainerName = containerName,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes,
                     Follow = "true"
                 })
@@ -219,7 +215,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newPod?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newPod?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newPod,
                     cancellationToken: cancellationToken
@@ -249,7 +245,7 @@ namespace KubeClient.ResourceClients
                     Requests.ByName.WithTemplateParameters(new
                     {
                         Name = name,
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                     }),
                     cancellationToken: cancellationToken
                 )
@@ -264,17 +260,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/pods/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods/{Name}");
 
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
+            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
         }
     }
 }

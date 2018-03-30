@@ -1,4 +1,5 @@
 using HTTPlease;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,61 +29,6 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all Deployments in the specified namespace, optionally matching a label selector.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Deployments.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The Deployments, as a list of <see cref="DeploymentV1Beta1"/>s.
-        /// </returns>
-        public async Task<List<DeploymentV1Beta1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            DeploymentListV1Beta1 matchingDeployments =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<DeploymentListV1Beta1, StatusV1>();
-
-            return matchingDeployments.Items;
-        }
-
-        /// <summary>
-        ///     Watch for events relating to Deployments.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Deployments.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <returns>
-        ///     An <see cref="IObservable{T}"/> representing the event stream.
-        /// </returns>
-        public IObservable<ResourceEventV1<DeploymentV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
-        {
-            return ObserveEvents<DeploymentV1Beta1>(
-                Requests.Collection.WithTemplateParameters(new
-                {
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                    LabelSelector = labelSelector,
-                    Watch = true
-                })
-            );
-        }
-
-        /// <summary>
         ///     Get the Deployment with the specified name.
         /// </summary>
         /// <param name="name">
@@ -106,9 +52,60 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Get all Deployments in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Deployments.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="DeploymentListV1Beta1"/> containing the Deployments.
+        /// </returns>
+        public async Task<DeploymentListV1Beta1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            return await GetResourceList<DeploymentListV1Beta1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Watch for events relating to Deployments.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Deployments.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<DeploymentV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        {
+            return ObserveEvents<DeploymentV1Beta1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector,
+                    Watch = true
+                })
             );
         }
 
@@ -133,7 +130,7 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newDeployment?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newDeployment?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newDeployment,
                     cancellationToken: cancellationToken
@@ -144,38 +141,37 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     Request update (PATCH) of a <see cref="DeploymentV1Beta1"/>.
         /// </summary>
-        /// <param name="deployment">
-        ///     A <see cref="DeploymentV1Beta1"/> representing the Deployment to update.
+        /// <param name="name">
+        ///     The name of the target Deployment.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="DeploymentV1Beta1"/> representing the current state for the newly-created Deployment.
+        ///     A <see cref="DeploymentV1Beta1"/> representing the current state for the updated Deployment.
         /// </returns>
-        public async Task<DeploymentV1Beta1> Update(DeploymentV1Beta1 deployment, CancellationToken cancellationToken = default)
+        public async Task<DeploymentV1Beta1> Update(string name, Action<JsonPatchDocument<DeploymentV1Beta1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            if (deployment == null)
-                throw new ArgumentNullException(nameof(deployment));
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            if (String.IsNullOrWhiteSpace(deployment.Metadata?.Name))
-                throw new ArgumentException("Cannot update Deployment without a value for its Metadata.Name property.", nameof(deployment));
-
-            if (String.IsNullOrWhiteSpace(deployment.Metadata?.Namespace))
-                throw new ArgumentException("Cannot update Deployment without a value for its Metadata.Namespace property.", nameof(deployment));
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
             
-            return await Http
-                .PatchAsync(
-                    Requests.ByName.WithTemplateParameters(new
-                    {
-                        Name = deployment.Metadata.Name,
-                        Namespace = deployment.Metadata.Namespace
-                    }),
-                    patchBody: deployment,
-                    mediaType: PatchMediaType,
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<DeploymentV1Beta1, StatusV1>();
+            return await PatchResource(patchAction,
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -202,7 +198,7 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 deleteBody: new DeleteOptionsV1
                 {
@@ -225,12 +221,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Deployment (v1beta2) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("apis/apps/v1beta1/namespaces/{Namespace}/deployments?labelSelector={LabelSelector?}&watch={Watch?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = KubeRequest.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Deployment (v1beta2) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("apis/apps/v1beta1/namespaces/{Namespace}/deployments/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = KubeRequest.Create("apis/apps/v1beta1/namespaces/{Namespace}/deployments/{Name}");
         }
     }
 }

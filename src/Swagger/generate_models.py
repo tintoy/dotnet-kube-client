@@ -87,6 +87,19 @@ class KubeModel(object):
 
         return True
 
+    def has_list_items(self):
+        items_property = self.properties.get('items')
+        if not items_property:
+            return False
+
+        return items_property.data_type.is_collection()
+
+    def list_item_data_type(self):
+        if not self.has_list_items():
+            return None
+
+        return self.properties['items'].data_type.element_type
+
     @classmethod
     def from_definition(cls, definition_name, definition):
         (name, api_version, pretty_api_version) = KubeModel.get_model_info(definition_name)
@@ -162,9 +175,9 @@ class KubeModelProperty(object):
         self.is_optional = is_optional
 
     def __repr__(self):
-        return 'Property(name="{}",type="{}")'.format(
+        return 'KubeModelProperty(name="{}",type={})'.format(
             self.name,
-            self.data_type.to_clr_type_name()
+            repr(self.data_type)
         )
 
     @classmethod
@@ -189,6 +202,9 @@ class KubeDataType(object):
 
     def to_clr_type_name(self, is_nullable=False):
         return get_cts_type_name(self.name)
+
+    def __repr__(self):
+        return "KubeDataType(name='{0}')".format(self.name)
 
     @classmethod
     def from_definition(cls, definition, data_types):
@@ -231,6 +247,9 @@ class KubeIntrinsicDataType(KubeDataType):
     def is_intrinsic(self):
         return True
 
+    def __repr__(self):
+        return "KubeIntrinsicDataType(name='{0}')".format(self.name)
+
     def to_clr_type_name(self, is_nullable=False):
         clr_type_name = super().to_clr_type_name(is_nullable)
 
@@ -248,6 +267,11 @@ class KubeArrayDataType(KubeDataType):
     def is_collection(self):
         return True
 
+    def __repr__(self):
+        return "KubeArrayDataType(element_type={0})".format(
+            repr(self.element_type)
+        )
+
     def to_clr_type_name(self, is_nullable=False):
         return 'List<{}>'.format(
             get_cts_type_name(self.element_type.to_clr_type_name(is_nullable)).replace('?', '') # List<DateTime?> would be odious to deal with.
@@ -262,6 +286,11 @@ class KubeDictionaryDataType(KubeDataType):
     def is_collection(self):
         return True
 
+    def __repr__(self):
+        return "KubeDictionaryDataType(element_type={0})".format(
+            repr(self.element_type)
+        )
+
     def to_clr_type_name(self, is_nullable=False):
         return 'Dictionary<string, {}>'.format( # AFAICT, Kubernetes models only use strings as dictionary keys
             get_cts_type_name(self.element_type.to_clr_type_name(is_nullable)).replace('?', '') # Dictionary<string, DateTime?> would be odious to deal with.
@@ -272,6 +301,13 @@ class KubeModelDataType(KubeDataType):
         super().__init__(model.name, model.summary)
         self.model = model
         self.clr_name = self.model.name + self.model.api_version
+
+    def __repr__(self):
+        return "KubeModelDataType(kind='{0}', api_version='{1}', clr_type_name='{2}')".format(
+            self.model.name,
+            self.model.pretty_api_version,
+            self.to_clr_type_name()
+        )
 
     def to_clr_type_name(self, is_nullable=False):
         return self.model.clr_name
@@ -310,12 +346,15 @@ def get_data_types(models):
         )
         for model_name in models.keys()
     }
-    data_types.update({ # Well-known intrinsic data-types
+
+    # Well-known intrinsic data-types
+    data_types.update({
         'integer': KubeIntrinsicDataType('int'),
         'string': KubeIntrinsicDataType('string'),
         'io.k8s.apimachinery.pkg.apis.meta.v1.Time': KubeIntrinsicDataType('DateTime'),
         'io.k8s.apimachinery.pkg.util.intstr.IntOrString': KubeIntrinsicDataType('string'),
-        'io.k8s.apimachinery.pkg.api.resource.Quantity': KubeIntrinsicDataType('string')
+        'io.k8s.apimachinery.pkg.api.resource.Quantity': KubeIntrinsicDataType('string'),
+        'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions': KubeIntrinsicDataType('DeleteOptionsV1')  # This model is hand-crafted
     })
 
     return data_types
@@ -323,6 +362,9 @@ def get_data_types(models):
 def parse_properties(models, data_types, definitions):
     for definition_name in definitions.keys():
         definition = definitions[definition_name]
+        if definition_name not in models:
+            continue
+
         properties = definition.get('properties')
         if not properties:
             continue
@@ -368,6 +410,15 @@ def main():
                 class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
             class_file.write('    /// </summary>' + LINE_ENDING)
 
+            if model.has_list_items():
+                list_item_model = model.list_item_data_type().model
+
+                class_file.write('    [KubeListItem("{0}", "{1}")]{2}'.format(
+                    list_item_model.name,
+                    list_item_model.api_version,
+                    LINE_ENDING
+                ))
+
             class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
                 model.name,
                 model.api_version,
@@ -378,7 +429,12 @@ def main():
             if model.is_resource():
                 class_file.write(' : KubeResourceV1')
             elif model.is_resource_list():
-                class_file.write(' : KubeResourceListV1')
+                if model.has_list_items():
+                    class_file.write(' : KubeResourceListV1<{0}>'.format(
+                        model.list_item_data_type().to_clr_type_name()
+                    ))
+                else:
+                    class_file.write(' : KubeResourceListV1')
             class_file.write(LINE_ENDING)
 
             class_file.write('    {' + LINE_ENDING)
@@ -392,6 +448,9 @@ def main():
 
                 if model.has_metadata() or model.has_list_metadata():
                     property_names.remove('metadata')
+
+                if model.is_resource_list() and model.has_list_items():
+                    property_names.remove('items')
 
             for property_index in range(0, len(property_names)):
                 property_name = property_names[property_index]
@@ -420,6 +479,23 @@ def main():
 
                 if property_index + 1 < len(property_names):
                     class_file.write(LINE_ENDING)
+
+            # Special case for Items property (we override the base class's property, adding the JsonProperty attribute).
+            if model.is_resource_list() and model.has_list_items():
+                model_property = model.properties['items']
+
+                class_file.write('        /// <summary>' + LINE_ENDING)
+                for property_summary_line in model_property.summary.split('\n'):
+                    class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
+                class_file.write('        /// </summary>' + LINE_ENDING)
+
+                class_file.write('        [JsonProperty("%s", ObjectCreationHandling = ObjectCreationHandling.Reuse)]%s' % (model_property.json_name, LINE_ENDING))
+                class_file.write('        public override %s %s { get; } = new %s();%s' % (
+                    model_property.data_type.to_clr_type_name(),
+                    model_property.name,
+                    model_property.data_type.to_clr_type_name(),
+                    LINE_ENDING
+                ))
 
             class_file.write('    }' + LINE_ENDING) # Class
 

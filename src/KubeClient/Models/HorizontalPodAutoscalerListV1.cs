@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     list of horizontal pod autoscaler objects.
     /// </summary>
+    [KubeListItem("HorizontalPodAutoscaler", "autoscaling/v1")]
     [KubeObject("HorizontalPodAutoscalerList", "autoscaling/v1")]
-    public class HorizontalPodAutoscalerListV1 : KubeResourceListV1
+    public class HorizontalPodAutoscalerListV1 : KubeResourceListV1<HorizontalPodAutoscalerV1>
     {
         /// <summary>
         ///     list of horizontal pod autoscaler objects.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<HorizontalPodAutoscalerV1> Items { get; set; } = new List<HorizontalPodAutoscalerV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<HorizontalPodAutoscalerV1> Items { get; } = new List<HorizontalPodAutoscalerV1>();
     }
 }

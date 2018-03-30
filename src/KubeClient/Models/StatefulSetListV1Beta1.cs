@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     StatefulSetList is a collection of StatefulSets.
     /// </summary>
+    [KubeListItem("StatefulSet", "apps/v1beta1")]
     [KubeObject("StatefulSetList", "apps/v1beta1")]
-    public class StatefulSetListV1Beta1 : KubeResourceListV1
+    public class StatefulSetListV1Beta1 : KubeResourceListV1<StatefulSetV1Beta1>
     {
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<StatefulSetV1Beta1> Items { get; set; } = new List<StatefulSetV1Beta1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<StatefulSetV1Beta1> Items { get; } = new List<StatefulSetV1Beta1>();
     }
 }

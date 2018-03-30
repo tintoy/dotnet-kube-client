@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 
 namespace KubeClient
 {
@@ -98,36 +99,7 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(configure));
             
             services.AddKubeClientOptions(name, configure);
-            services.AddKubeClient(name);
-        }
-
-        /// <summary>
-        ///     Add a named <see cref="KubeApiClient"/> to the service collection.
-        /// </summary>
-        /// <param name="services">
-        ///     The service collection to configure.
-        /// </param>
-        /// <param name="name">
-        ///     A name used to resolve the Kubernetes client.
-        /// </param>
-        public static void AddKubeClient(this IServiceCollection services, string name)
-        {
-            if (services == null)
-                throw new ArgumentNullException(nameof(services));
-
-            if (String.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-
-            services.AddScoped<KubeApiClient>(serviceProvider =>
-            {
-                var options = serviceProvider.GetRequiredService<IOptionsMonitor<KubeClientOptions>>().Get(name);
-                if (options == null)
-                    throw new InvalidOperationException($"Cannot resolve a {nameof(KubeClientOptions)} instance named '{name}'.");
-                
-                return KubeApiClient.Create(options,
-                    loggerFactory: serviceProvider.GetService<ILoggerFactory>()
-                );
-            });
+            services.AddNamedKubeClients();
         }
 
         /// <summary>
@@ -158,6 +130,26 @@ namespace KubeClient
                 configure(options);
                 options.EnsureValid();
             });
+        }
+
+        /// <summary>
+        ///     Add support for named Kubernetes client instances.
+        /// </summary>
+        /// <param name="services">
+        ///     The service collection to configure.
+        /// </param>
+        /// <returns>
+        ///     The configured service collection.
+        /// </returns>
+        public static IServiceCollection AddNamedKubeClients(this IServiceCollection services)
+        {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+            
+            if (!services.Any(service => service.ServiceType == typeof(NamedKubeClients)))
+                services.AddScoped<INamedKubeClients, NamedKubeClients>();
+
+            return services;
         }
     }
 }

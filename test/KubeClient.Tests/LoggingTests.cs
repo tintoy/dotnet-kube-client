@@ -45,15 +45,16 @@ namespace KubeClient.Tests
 			ClientBuilder clientBuilder = new ClientBuilder()
 				.WithLogging(logger);
 
-			HttpClient httpClient = clientBuilder.CreateClient("http://localhost:1234", new MockMessageHandler(
-				request => request.CreateResponse(HttpStatusCode.NotFound,
+			HttpClient httpClient = clientBuilder.CreateClient("http://localhost:1234", TestHandlers.RespondWith(request =>
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound,
                     responseBody: JsonConvert.SerializeObject(new StatusV1
                     {
                         Reason = "NotFound"
                     }),
                     WellKnownMediaTypes.Json
-                )
-			));
+                );
+            }));
 
             KubeClientOptions clientOptions = new KubeClientOptions("http://localhost:1234");
             using (KubeApiClient kubeClient = KubeApiClient.Create(httpClient, clientOptions))
@@ -108,8 +109,9 @@ namespace KubeClient.Tests
 			ClientBuilder clientBuilder = new ClientBuilder()
 				.WithLogging(logger);
 
-			HttpClient httpClient = clientBuilder.CreateClient("http://localhost:1234", new MockMessageHandler(
-				request => request.CreateResponse(HttpStatusCode.OK,
+            HttpClient httpClient = clientBuilder.CreateClient("http://localhost:1234", TestHandlers.RespondWith(request =>
+            {
+                return request.CreateResponse(HttpStatusCode.OK,
                     responseBody: JsonConvert.SerializeObject(new PodV1
                     {
                         Metadata = new ObjectMetaV1
@@ -119,8 +121,8 @@ namespace KubeClient.Tests
                         }
                     }),
                     WellKnownMediaTypes.Json
-                )
-			));
+                );
+            }));
 
             KubeClientOptions clientOptions = new KubeClientOptions("http://localhost:1234");
             using (KubeApiClient kubeClient = KubeApiClient.Create(httpClient, clientOptions))

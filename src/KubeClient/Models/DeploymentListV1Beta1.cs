@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentList is a list of Deployments.
     /// </summary>
+    [KubeListItem("Deployment", "apps/v1beta1")]
     [KubeObject("DeploymentList", "apps/v1beta1")]
-    public class DeploymentListV1Beta1 : KubeResourceListV1
+    public class DeploymentListV1Beta1 : KubeResourceListV1<DeploymentV1Beta1>
     {
         /// <summary>
         ///     Items is the list of Deployments.
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DeploymentV1Beta1> Items { get; set; } = new List<DeploymentV1Beta1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<DeploymentV1Beta1> Items { get; } = new List<DeploymentV1Beta1>();
     }
 }

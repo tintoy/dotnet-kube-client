@@ -1,0 +1,62 @@
+image: Visual Studio 2017
+
+branches:
+  except:
+    - feature/websockets # No support for .NET Core 2.1 yet.
+
+build_script:
+  - ps: .\build-ci.ps1
+
+test_script:
+  - ps: .\test-ci.ps1
+
+artifacts:
+  - path: ./out/*.nupkg
+
+nuget:
+  project_feed: true
+
+deploy:
+  # MyGet feed (unstable)
+  - provider: NuGet
+    artifact: /.*\.nupkg$/    
+    server: https://www.myget.org/F/dotnet-kube-client/api/v2/package
+    symbol_server: https://www.myget.org/F/dotnet-kube-client/symbols/api/v2/package
+    skip_symbols: false
+    api_key:
+      secure: FIA0E1YzvgpRKQTPH+ky8bh2wYBcyHiO/XINMQl8KoXpqpGLTX95bslkR1mspq/I
+    on:
+      # Development branches only.
+      branch: /(develop|development)(\/)?.*/
+
+  # MyGet feed
+  - provider: NuGet
+    artifact: /.*\.nupkg$/    
+    server: https://www.myget.org/F/dotnet-kube-client/api/v2/package
+    symbol_server: https://www.myget.org/F/dotnet-kube-client/symbols/api/v2/package
+    skip_symbols: false
+    api_key:
+      secure: FIA0E1YzvgpRKQTPH+ky8bh2wYBcyHiO/XINMQl8KoXpqpGLTX95bslkR1mspq/I
+    on:
+      # Release branches or master branch (when tagged).
+      branch: /(release|master)(\/)?.*/
+      appveyor_repo_tag: true
+
+  # Public feed
+  - provider: NuGet
+    artifact: /.*\.nupkg$/
+    skip_symbols: false
+    api_key:
+      secure: ljl/r7XeQm+KBzR7pm1OOW4+YcDUsYiWlr9jWFztMh/8/orG4V9ylTi+P1jGME7g
+    on:
+      # Release branches or master branch (when tagged).
+      branch: /(release|master)(\/)?.*/
+      appveyor_repo_tag: true
+
+notifications:
+  - provider: Email
+    to:
+      - tintoy@tintoy.io
+    on_build_success: false
+    on_build_failure: true
+    on_build_status_changed: true

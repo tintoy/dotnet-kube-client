@@ -1,4 +1,5 @@
 using HTTPlease;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,37 +29,6 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all ConfigMaps in the specified namespace, optionally matching a label selector.
-        /// </summary>
-        /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the ConfigMaps.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
-        /// </param>
-        /// <returns>
-        ///     The ConfigMaps, as a list of <see cref="ConfigMapV1"/>s.
-        /// </returns>
-        public async Task<List<ConfigMapV1>> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
-        {
-            ConfigMapListV1 matchingConfigMaps =
-                await Http.GetAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace,
-                        LabelSelector = labelSelector
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsAsync<ConfigMapListV1, StatusV1>();
-
-            return matchingConfigMaps.Items;
-        }
-
-        /// <summary>
         ///     Get the ConfigMap with the specified name.
         /// </summary>
         /// <param name="name">
@@ -82,9 +52,62 @@ namespace KubeClient.ResourceClients
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
-                    Namespace = kubeNamespace ?? Client.DefaultNamespace
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
                 cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Get all ConfigMaps in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ConfigMaps.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ConfigMapListV1"/> containing the ConfigMaps.
+        /// </returns>
+        public async Task<ConfigMapListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            return await GetResourceList<ConfigMapListV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector
+                }),
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        ///     Watch for events relating to a specific ConfigMap.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the ConfigMap to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<ResourceEventV1<ConfigMapV1>> Watch(string name, string kubeNamespace = null)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            return ObserveEvents<ConfigMapV1>(
+                Requests.WatchByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                })
             );
         }
 
@@ -109,12 +132,48 @@ namespace KubeClient.ResourceClients
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newConfigMap?.Metadata?.Namespace ?? Client.DefaultNamespace
+                        Namespace = newConfigMap?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
                     postBody: newConfigMap,
                     cancellationToken: cancellationToken
                 )
                 .ReadContentAsAsync<ConfigMapV1, StatusV1>();
+        }
+
+        /// <summary>
+        ///     Request update (PATCH) of a <see cref="ConfigMapV1"/>.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target ConfigMap.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ConfigMapV1"/> representing the current state for the updated ConfigMap.
+        /// </returns>
+        public async Task<ConfigMapV1> Update(string name, Action<JsonPatchDocument<ConfigMapV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+            
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+
+            return await PatchResource(patchAction,
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -139,7 +198,7 @@ namespace KubeClient.ResourceClients
                     Requests.ByName.WithTemplateParameters(new
                     {
                         Name = name,
-                        Namespace = kubeNamespace ?? Client.DefaultNamespace
+                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                     }),
                     cancellationToken: cancellationToken
                 )
@@ -154,12 +213,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/configmaps?labelSelector={LabelSelector?}", SerializerSettings);
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = HttpRequest.Factory.Json("api/v1/namespaces/{Namespace}/configmaps/{Name}", SerializerSettings);
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps/{Name}");
+
+            /// <summary>
+            ///     A watch-by-name ConfigMap (v1) request.
+            /// </summary>
+            public static readonly HttpRequest WatchByName  = KubeRequest.Create("api/v1/watch/namespaces/{Namespace}/configmaps/{Name}");
         }
     }
 }

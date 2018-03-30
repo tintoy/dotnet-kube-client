@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     ControllerRevisionList is a resource containing a list of ControllerRevision objects.
     /// </summary>
+    [KubeListItem("ControllerRevision", "apps/v1beta1")]
     [KubeObject("ControllerRevisionList", "apps/v1beta1")]
-    public class ControllerRevisionListV1Beta1 : KubeResourceListV1
+    public class ControllerRevisionListV1Beta1 : KubeResourceListV1<ControllerRevisionV1Beta1>
     {
         /// <summary>
         ///     Items is the list of ControllerRevisions
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ControllerRevisionV1Beta1> Items { get; set; } = new List<ControllerRevisionV1Beta1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<ControllerRevisionV1Beta1> Items { get; } = new List<ControllerRevisionV1Beta1>();
     }
 }

@@ -7,13 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     EventList is a list of events.
     /// </summary>
+    [KubeListItem("Event", "v1")]
     [KubeObject("EventList", "v1")]
-    public class EventListV1 : KubeResourceListV1
+    public class EventListV1 : KubeResourceListV1<EventV1>
     {
         /// <summary>
         ///     List of events
         /// </summary>
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EventV1> Items { get; set; } = new List<EventV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public override List<EventV1> Items { get; } = new List<EventV1>();
     }
 }
