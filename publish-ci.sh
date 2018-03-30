@@ -56,7 +56,6 @@ if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TAG" != "" ]]; then
     for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
         dotnet nuget push "$SYMBOL_PACKAGE" --source "$NUGET_SYMBOL_FEED_URL" --api-key "$NUGET_API_KEY"
     done
-
 fi
 
 echo 'travis_fold:end:publish_packages'
