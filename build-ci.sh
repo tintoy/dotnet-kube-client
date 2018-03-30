@@ -10,9 +10,16 @@ set -euo pipefail
 export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-echo 'travis_fold:start:compute_build_version'
+echo 'travis_fold:start:fetch_tags'
 
+echo ''
+echo 'Fetching tags...'
 git fetch origin --tags
+echo ''
+
+echo 'travis_fold:end:fetch_tags'
+
+echo 'travis_fold:start:compute_build_version'
 
 echo 'Computing build version...'
 mono $PWD/tools/GitVersion/GitVersion.exe | tee $PWD/version-info.json
