@@ -15,4 +15,6 @@
       <RepositoryType>git</RepositoryType>
       <RepositoryUrl>https://github.com/tintoy/dotnet-kube-client</RepositoryUrl>
   </PropertyGroup>
+
+  <Import Project="..\DependencyVersions.props" />
 </Project>
