@@ -12,6 +12,8 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 echo 'travis_fold:start:compute_build_version'
 
+git fetch origin --tags
+
 echo 'Computing build version...'
 mono $PWD/tools/GitVersion/GitVersion.exe | tee $PWD/version-info.json
 
