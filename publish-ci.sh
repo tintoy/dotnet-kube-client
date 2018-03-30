@@ -40,8 +40,8 @@ for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
     dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
 done
 
-if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TAG" != "" ]]; then
-    echo "Publishing packages for tag '$TRAVIS_TAG' to NuGet package feed..."
+if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+    echo "Publishing packages for branch '$TRAVIS_BRANCH' to NuGet package feed..."
 
     for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
         dotnet nuget push "$PACKAGE" --source "$NUGET_FEED_URL" --api-key "$NUGET_API_KEY"
@@ -50,8 +50,6 @@ if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TAG" != "" ]]; then
     for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
         dotnet nuget push "$SYMBOL_PACKAGE" --source "$NUGET_SYMBOL_FEED_URL" --api-key "$NUGET_API_KEY"
     done
-else
-    echo "Not publishing to NuGet from branch '$TRAVIS_BRANCH' (tag '$TRAVIS_TAG')."
 fi
 
 echo 'travis_fold:end:publish_packages'
