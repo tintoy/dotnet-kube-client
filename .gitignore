@@ -2,6 +2,10 @@
 
 .DS_Store
 
+## GitVersion
+
+version-info.json
+
 # VS Code
 
 .vscode/*
@@ -330,4 +334,3 @@ ASALocalRun/
 
 # MSBuild Binary and Structured Log
 *.binlog
-
