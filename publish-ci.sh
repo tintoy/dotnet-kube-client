@@ -37,7 +37,7 @@ fi
 
 echo 'travis_fold:start:publish_packages'
 
-echo "Publishing packages for tag '$TRAVIS_TAG' to MyGet package feed..."
+echo "Publishing packages to MyGet package feed..."
 for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
     dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --api-key "$MYGET_API_KEY"
 done
