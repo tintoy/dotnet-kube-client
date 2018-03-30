@@ -29,7 +29,7 @@ if [ ! -d $ARTIFACTS_DIRECTORY ]; then
     exit 1
 fi
 
-echo 'travis_fold:start:publish_packages'
+echo 'travis_fold:start:publish_packages_myget'
 
 echo "Publishing packages to MyGet package feed..."
 for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
@@ -39,6 +39,10 @@ done
 for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
     dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
 done
+
+echo 'travis_fold:end:publish_packages_myget'
+
+echo 'travis_fold:start:publish_packages_nuget'
 
 if [[ "$TRAVIS_BRANCH" == "master" ]]; then
     echo "Publishing packages for branch '$TRAVIS_BRANCH' to NuGet package feed..."
@@ -50,9 +54,11 @@ if [[ "$TRAVIS_BRANCH" == "master" ]]; then
     for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
         dotnet nuget push "$SYMBOL_PACKAGE" --source "$NUGET_SYMBOL_FEED_URL" --api-key "$NUGET_API_KEY"
     done
+else
+    echo "Not publishing packages for branch '$TRAVIS_BRANCH' to NuGet package feed."
 fi
 
-echo 'travis_fold:end:publish_packages'
+echo 'travis_fold:end:publish_packages_nuget'
 
 echo ''
 echo 'Done.'
