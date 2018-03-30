@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+      <PackageVersion_HTTPlease>1.8.2</PackageVersion_HTTPlease>
+  </PropertyGroup>
+</Project>
