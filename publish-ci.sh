@@ -21,12 +21,6 @@ echo ''
 echo 'Publishing packages...'
 echo ''
 
-if [[ "$TRAVIS_BRANCH" == "master" ]]; then
-    echo 'Skipping publishing of packages for untagged build in the master branch.'
-
-    exit 0
-fi
-
 # Build outputs go here.
 ARTIFACTS_DIRECTORY="$PWD/artifacts"
 if [ ! -d $ARTIFACTS_DIRECTORY ]; then
@@ -46,8 +40,8 @@ for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
     dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
 done
 
-if [[ "$TRAVIS_TAG" != "" ]]; then
-    echo "Publishing packages for tag '$TRAVIS_TAG' to NuGet package feed..."
+if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+    echo "Publishing packages from branch 'master' to NuGet package feed..."
 
     for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
         dotnet nuget push "$PACKAGE" --source "$NUGET_FEED_URL" --api-key "$NUGET_API_KEY"
@@ -63,4 +57,3 @@ echo 'travis_fold:end:publish_packages'
 echo ''
 echo 'Done.'
 echo ''
-

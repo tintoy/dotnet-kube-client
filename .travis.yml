@@ -11,7 +11,6 @@ branches:
   only:
     - develop
     - master
-    - /^v\d\.\d\..*$/
 
 # We need the .NET Core 2.1 (preview 1) SDK to build. Travis doesn't know how to install this yet.
 before_install:
