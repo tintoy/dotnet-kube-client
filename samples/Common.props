@@ -1,0 +1,9 @@
+<Project>
+  <!-- Common settings for projects -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- Don't pack sample projects -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+</Project>
