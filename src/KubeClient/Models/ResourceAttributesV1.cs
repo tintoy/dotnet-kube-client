@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ResourceAttributes includes the authorization attributes available for resource requests to the Authorizer interface
     /// </summary>
     [KubeObject("ResourceAttributes", "v1")]
-    public class ResourceAttributesV1
+    public partial class ResourceAttributesV1
     {
         /// <summary>
         ///     Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.

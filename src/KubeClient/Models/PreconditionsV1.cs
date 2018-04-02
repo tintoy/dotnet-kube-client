@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.
     /// </summary>
     [KubeObject("Preconditions", "v1")]
-    public class PreconditionsV1
+    public partial class PreconditionsV1
     {
         /// <summary>
         ///     Specifies the target UID.

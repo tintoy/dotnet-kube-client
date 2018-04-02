@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Handler defines a specific action that should be taken
     /// </summary>
     [KubeObject("Handler", "v1")]
-    public class HandlerV1
+    public partial class HandlerV1
     {
         /// <summary>
         ///     One and only one of the following should be specified. Exec specifies the action to take.

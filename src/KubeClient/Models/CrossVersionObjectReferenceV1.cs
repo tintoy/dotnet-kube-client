@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     CrossVersionObjectReference contains enough information to let you identify the referred resource.
     /// </summary>
     [KubeObject("CrossVersionObjectReference", "v1")]
-    public class CrossVersionObjectReferenceV1
+    public partial class CrossVersionObjectReferenceV1
     {
         /// <summary>
         ///     Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds"

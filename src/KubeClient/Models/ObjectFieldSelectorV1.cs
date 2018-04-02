@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ObjectFieldSelector selects an APIVersioned field of an object.
     /// </summary>
     [KubeObject("ObjectFieldSelector", "v1")]
-    public class ObjectFieldSelectorV1
+    public partial class ObjectFieldSelectorV1
     {
         /// <summary>
         ///     Path of the field to select in the specified API version.

@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     The node this Taint is attached to has the effect "effect" on any pod that that does not tolerate the Taint.
+    ///     The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
     /// </summary>
     [KubeObject("Taint", "v1")]
-    public class TaintV1
+    public partial class TaintV1
     {
         /// <summary>
         ///     TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.

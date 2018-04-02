@@ -8,13 +8,19 @@ namespace KubeClient.Models
     ///     SubjectAccessReviewSpec is a description of the access request.  Exactly one of ResourceAuthorizationAttributes and NonResourceAuthorizationAttributes must be set
     /// </summary>
     [KubeObject("SubjectAccessReviewSpec", "v1beta1")]
-    public class SubjectAccessReviewSpecV1Beta1
+    public partial class SubjectAccessReviewSpecV1Beta1
     {
         /// <summary>
         ///     Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
         /// </summary>
         [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        ///     UID information about the requesting user.
+        /// </summary>
+        [JsonProperty("uid")]
+        public string Uid { get; set; }
 
         /// <summary>
         ///     Groups is the groups you're testing for.

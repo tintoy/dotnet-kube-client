@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     VolumeMount describes a mounting of a Volume within a container.
     /// </summary>
     [KubeObject("VolumeMount", "v1")]
-    public class VolumeMountV1
+    public partial class VolumeMountV1
     {
         /// <summary>
         ///     This must match the Name of a Volume.
@@ -27,6 +27,12 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("subPath")]
         public string SubPath { get; set; }
+
+        /// <summary>
+        ///     mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationHostToContainer is used. This field is alpha in 1.8 and can be reworked or removed in a future release.
+        /// </summary>
+        [JsonProperty("mountPropagation")]
+        public string MountPropagation { get; set; }
 
         /// <summary>
         ///     Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.

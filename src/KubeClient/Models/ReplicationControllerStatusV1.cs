@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ReplicationControllerStatus represents the current status of a replication controller.
     /// </summary>
     [KubeObject("ReplicationControllerStatus", "v1")]
-    public class ReplicationControllerStatusV1
+    public partial class ReplicationControllerStatusV1
     {
         /// <summary>
         ///     ObservedGeneration reflects the generation of the most recently observed replication controller.

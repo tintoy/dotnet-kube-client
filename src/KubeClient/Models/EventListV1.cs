@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("Event", "v1")]
     [KubeObject("EventList", "v1")]
-    public class EventListV1 : KubeResourceListV1<EventV1>
+    public partial class EventListV1 : KubeResourceListV1<EventV1>
     {
         /// <summary>
         ///     List of events

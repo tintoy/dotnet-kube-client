@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ResourceQuota", "v1")]
     [KubeObject("ResourceQuotaList", "v1")]
-    public class ResourceQuotaListV1 : KubeResourceListV1<ResourceQuotaV1>
+    public partial class ResourceQuotaListV1 : KubeResourceListV1<ResourceQuotaV1>
     {
         /// <summary>
         ///     Items is a list of ResourceQuota objects. More info: https://git.k8s.io/community/contributors/design-proposals/admission_control_resource_quota.md

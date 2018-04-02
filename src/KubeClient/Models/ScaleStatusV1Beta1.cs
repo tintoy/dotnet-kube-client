@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     represents the current status of a scale subresource.
     /// </summary>
     [KubeObject("ScaleStatus", "v1beta1")]
-    public class ScaleStatusV1Beta1
+    public partial class ScaleStatusV1Beta1
     {
         /// <summary>
         ///     label query over pods that should match the replicas count. More info: http://kubernetes.io/docs/user-guide/labels#label-selectors

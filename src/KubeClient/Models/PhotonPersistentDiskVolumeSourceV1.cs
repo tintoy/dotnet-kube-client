@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a Photon Controller persistent disk resource.
     /// </summary>
     [KubeObject("PhotonPersistentDiskVolumeSource", "v1")]
-    public class PhotonPersistentDiskVolumeSourceV1
+    public partial class PhotonPersistentDiskVolumeSourceV1
     {
         /// <summary>
         ///     ID that identifies Photon Controller persistent disk

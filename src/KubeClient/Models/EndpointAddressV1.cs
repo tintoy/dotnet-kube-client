@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     EndpointAddress is a tuple that describes single IP address.
     /// </summary>
     [KubeObject("EndpointAddress", "v1")]
-    public class EndpointAddressV1
+    public partial class EndpointAddressV1
     {
         /// <summary>
         ///     The Hostname of this endpoint

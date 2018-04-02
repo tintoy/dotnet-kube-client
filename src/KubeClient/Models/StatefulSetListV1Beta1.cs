@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("StatefulSet", "apps/v1beta1")]
     [KubeObject("StatefulSetList", "apps/v1beta1")]
-    public class StatefulSetListV1Beta1 : KubeResourceListV1<StatefulSetV1Beta1>
+    public partial class StatefulSetListV1Beta1 : KubeResourceListV1<StatefulSetV1Beta1>
     {
         /// <summary>
         ///     Description not provided.

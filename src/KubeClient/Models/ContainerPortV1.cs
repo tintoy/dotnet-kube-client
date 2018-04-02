@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ContainerPort represents a network port in a single container.
     /// </summary>
     [KubeObject("ContainerPort", "v1")]
-    public class ContainerPortV1
+    public partial class ContainerPortV1
     {
         /// <summary>
         ///     What host IP to bind the external port to.

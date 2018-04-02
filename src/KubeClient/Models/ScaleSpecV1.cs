@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ScaleSpec describes the attributes of a scale subresource.
     /// </summary>
     [KubeObject("ScaleSpec", "v1")]
-    public class ScaleSpecV1
+    public partial class ScaleSpecV1
     {
         /// <summary>
         ///     desired number of instances for the scaled object.

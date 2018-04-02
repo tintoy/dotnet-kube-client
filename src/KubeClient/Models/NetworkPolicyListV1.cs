@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("NetworkPolicy", "networking.k8s.io/v1")]
     [KubeObject("NetworkPolicyList", "networking.k8s.io/v1")]
-    public class NetworkPolicyListV1 : KubeResourceListV1<NetworkPolicyV1>
+    public partial class NetworkPolicyListV1 : KubeResourceListV1<NetworkPolicyV1>
     {
         /// <summary>
         ///     Items is a list of schema objects.

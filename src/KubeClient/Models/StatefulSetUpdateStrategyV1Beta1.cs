@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     StatefulSetUpdateStrategy indicates the strategy that the StatefulSet controller will use to perform updates. It includes any additional parameters necessary to perform the update for the indicated strategy.
     /// </summary>
     [KubeObject("StatefulSetUpdateStrategy", "v1beta1")]
-    public class StatefulSetUpdateStrategyV1Beta1
+    public partial class StatefulSetUpdateStrategyV1Beta1
     {
         /// <summary>
         ///     RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.

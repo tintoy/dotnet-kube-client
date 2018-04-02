@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ClusterRoleBinding", "rbac.authorization.k8s.io/v1beta1")]
     [KubeObject("ClusterRoleBindingList", "rbac.authorization.k8s.io/v1beta1")]
-    public class ClusterRoleBindingListV1Beta1 : KubeResourceListV1<ClusterRoleBindingV1Beta1>
+    public partial class ClusterRoleBindingListV1Beta1 : KubeResourceListV1<ClusterRoleBindingV1Beta1>
     {
         /// <summary>
         ///     Items is a list of ClusterRoleBindings

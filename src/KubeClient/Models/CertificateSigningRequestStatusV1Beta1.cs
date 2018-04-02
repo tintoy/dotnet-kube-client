@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     No description provided.
     /// </summary>
     [KubeObject("CertificateSigningRequestStatus", "v1beta1")]
-    public class CertificateSigningRequestStatusV1Beta1
+    public partial class CertificateSigningRequestStatusV1Beta1
     {
         /// <summary>
         ///     If request was approved, the controller will place the issued certificate here.

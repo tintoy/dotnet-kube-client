@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NodeDaemonEndpoints lists ports opened by daemons running on the Node.
     /// </summary>
     [KubeObject("NodeDaemonEndpoints", "v1")]
-    public class NodeDaemonEndpointsV1
+    public partial class NodeDaemonEndpointsV1
     {
         /// <summary>
         ///     Endpoint on which Kubelet is listening.

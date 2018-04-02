@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     JobSpec describes how the job execution will look like.
     /// </summary>
     [KubeObject("JobSpec", "v1")]
-    public class JobSpecV1
+    public partial class JobSpecV1
     {
         /// <summary>
         ///     Describes the pod that will be created when executing a job. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
@@ -35,15 +35,21 @@ namespace KubeClient.Models
         public LabelSelectorV1 Selector { get; set; }
 
         /// <summary>
-        ///     Optional duration in seconds relative to the startTime that the job may be active before the system tries to terminate it; value must be positive integer
+        ///     Specifies the duration in seconds relative to the startTime that the job may be active before the system tries to terminate it; value must be positive integer
         /// </summary>
         [JsonProperty("activeDeadlineSeconds")]
-        public int? ActiveDeadlineSeconds { get; set; }
+        public int ActiveDeadlineSeconds { get; set; }
 
         /// <summary>
         ///     Specifies the desired number of successfully finished pods the job should be run with.  Setting to nil means that the success of any pod signals the success of all pods, and allows parallelism to have any positive value.  Setting to 1 means that parallelism is limited to 1 and the success of that pod signals the success of the job. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
         /// </summary>
         [JsonProperty("completions")]
         public int Completions { get; set; }
+
+        /// <summary>
+        ///     Specifies the number of retries before marking this job failed. Defaults to 6
+        /// </summary>
+        [JsonProperty("backoffLimit")]
+        public int BackoffLimit { get; set; }
     }
 }

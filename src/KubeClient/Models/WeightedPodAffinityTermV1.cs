@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
     /// </summary>
     [KubeObject("WeightedPodAffinityTerm", "v1")]
-    public class WeightedPodAffinityTermV1
+    public partial class WeightedPodAffinityTermV1
     {
         /// <summary>
         ///     Required. A pod affinity term, associated with the corresponding weight.

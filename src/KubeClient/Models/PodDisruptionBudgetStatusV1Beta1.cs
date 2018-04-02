@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodDisruptionBudgetStatus represents information about the status of a PodDisruptionBudget. Status may trail the actual state of a system.
     /// </summary>
     [KubeObject("PodDisruptionBudgetStatus", "v1beta1")]
-    public class PodDisruptionBudgetStatusV1Beta1
+    public partial class PodDisruptionBudgetStatusV1Beta1
     {
         /// <summary>
         ///     Number of pod disruptions that are currently allowed.

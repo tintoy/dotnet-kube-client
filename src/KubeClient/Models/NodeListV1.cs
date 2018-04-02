@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("Node", "v1")]
     [KubeObject("NodeList", "v1")]
-    public class NodeListV1 : KubeResourceListV1<NodeV1>
+    public partial class NodeListV1 : KubeResourceListV1<NodeV1>
     {
         /// <summary>
         ///     List of nodes

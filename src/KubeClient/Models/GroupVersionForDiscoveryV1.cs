@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     GroupVersion contains the "group/version" and "version" string of a version. It is made a struct to keep extensibility.
     /// </summary>
     [KubeObject("GroupVersionForDiscovery", "v1")]
-    public class GroupVersionForDiscoveryV1
+    public partial class GroupVersionForDiscoveryV1
     {
         /// <summary>
         ///     groupVersion specifies the API group and version in the form "group/version"

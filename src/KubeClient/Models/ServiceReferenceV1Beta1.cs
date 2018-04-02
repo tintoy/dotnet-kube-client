@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ServiceReference holds a reference to Service.legacy.k8s.io
     /// </summary>
     [KubeObject("ServiceReference", "v1beta1")]
-    public class ServiceReferenceV1Beta1
+    public partial class ServiceReferenceV1Beta1
     {
         /// <summary>
         ///     Name is the name of the service

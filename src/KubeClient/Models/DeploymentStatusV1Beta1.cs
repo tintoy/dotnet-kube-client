@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     DeploymentStatus is the most recently observed status of the Deployment.
     /// </summary>
     [KubeObject("DeploymentStatus", "v1beta1")]
-    public class DeploymentStatusV1Beta1
+    public partial class DeploymentStatusV1Beta1
     {
         /// <summary>
         ///     The generation observed by the deployment controller.
@@ -41,7 +41,7 @@ namespace KubeClient.Models
         public int Replicas { get; set; }
 
         /// <summary>
-        ///     Total number of unavailable pods targeted by this deployment.
+        ///     Total number of unavailable pods targeted by this deployment. This is the total number of pods that are still required for the deployment to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created.
         /// </summary>
         [JsonProperty("unavailableReplicas")]
         public int UnavailableReplicas { get; set; }

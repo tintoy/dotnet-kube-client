@@ -11,7 +11,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("KeyToPath", "v1")]
     [KubeObject("SecretProjection", "v1")]
-    public class SecretProjectionV1
+    public partial class SecretProjectionV1
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

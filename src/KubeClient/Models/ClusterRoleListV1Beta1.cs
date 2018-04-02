@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ClusterRole", "rbac.authorization.k8s.io/v1beta1")]
     [KubeObject("ClusterRoleList", "rbac.authorization.k8s.io/v1beta1")]
-    public class ClusterRoleListV1Beta1 : KubeResourceListV1<ClusterRoleV1Beta1>
+    public partial class ClusterRoleListV1Beta1 : KubeResourceListV1<ClusterRoleV1Beta1>
     {
         /// <summary>
         ///     Items is a list of ClusterRoles

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ServiceAccount binds together: * a name, understood by users, and perhaps by peripheral systems, for an identity * a principal that can be authenticated and authorized * a set of secrets
     /// </summary>
     [KubeObject("ServiceAccount", "v1")]
-    public class ServiceAccountV1 : KubeResourceV1
+    public partial class ServiceAccountV1 : KubeResourceV1
     {
         /// <summary>
         ///     AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted. Can be overridden at the pod level.

@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     DeploymentRollback stores the information required to rollback a deployment.
+    ///     DEPRECATED. DeploymentRollback stores the information required to rollback a deployment.
     /// </summary>
     [KubeObject("DeploymentRollback", "apps/v1beta1")]
-    public class DeploymentRollbackV1Beta1
+    public partial class DeploymentRollbackV1Beta1
     {
         /// <summary>
         ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

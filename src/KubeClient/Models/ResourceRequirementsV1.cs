@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ResourceRequirements describes the compute resource requirements.
     /// </summary>
     [KubeObject("ResourceRequirements", "v1")]
-    public class ResourceRequirementsV1
+    public partial class ResourceRequirementsV1
     {
         /// <summary>
         ///     Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     A StatefulSetSpec is the specification of a StatefulSet.
     /// </summary>
     [KubeObject("StatefulSetSpec", "v1beta1")]
-    public class StatefulSetSpecV1Beta1
+    public partial class StatefulSetSpecV1Beta1
     {
         /// <summary>
         ///     serviceName is the name of the service that governs this StatefulSet. This service must exist before the StatefulSet, and is responsible for the network identity of the set. Pods get DNS/hostnames that follow the pattern: pod-specific-string.serviceName.default.svc.cluster.local where "pod-specific-string" is managed by the StatefulSet controller.

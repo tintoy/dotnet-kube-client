@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("Secret", "v1")]
     [KubeObject("SecretList", "v1")]
-    public class SecretListV1 : KubeResourceListV1<SecretV1>
+    public partial class SecretListV1 : KubeResourceListV1<SecretV1>
     {
         /// <summary>
         ///     Items is a list of secret objects. More info: https://kubernetes.io/docs/concepts/configuration/secret

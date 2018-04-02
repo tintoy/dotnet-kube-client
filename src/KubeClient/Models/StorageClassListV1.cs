@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("StorageClass", "storage.k8s.io/v1")]
     [KubeObject("StorageClassList", "storage.k8s.io/v1")]
-    public class StorageClassListV1 : KubeResourceListV1<StorageClassV1>
+    public partial class StorageClassListV1 : KubeResourceListV1<StorageClassV1>
     {
         /// <summary>
         ///     Items is the list of StorageClasses

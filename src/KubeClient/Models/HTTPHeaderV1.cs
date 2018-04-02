@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     HTTPHeader describes a custom header to be used in HTTP probes
     /// </summary>
     [KubeObject("HTTPHeader", "v1")]
-    public class HTTPHeaderV1
+    public partial class HTTPHeaderV1
     {
         /// <summary>
         ///     The header field name

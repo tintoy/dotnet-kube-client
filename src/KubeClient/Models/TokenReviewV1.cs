@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     TokenReview attempts to authenticate a token to a known user. Note: TokenReview requests may be cached by the webhook token authenticator plugin in the kube-apiserver.
     /// </summary>
     [KubeObject("TokenReview", "authentication.k8s.io/v1")]
-    public class TokenReviewV1 : KubeResourceV1
+    public partial class TokenReviewV1 : KubeResourceV1
     {
         /// <summary>
         ///     Spec holds information about the request being evaluated

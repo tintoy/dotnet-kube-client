@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     OwnerReference contains enough information to let you identify an owning object. Currently, an owning object must be in the same namespace, so there is no namespace field.
     /// </summary>
     [KubeObject("OwnerReference", "v1")]
-    public class OwnerReferenceV1
+    public partial class OwnerReferenceV1
     {
         /// <summary>
         ///     Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     JobStatus represents the current state of a Job.
     /// </summary>
     [KubeObject("JobStatus", "v1")]
-    public class JobStatusV1
+    public partial class JobStatusV1
     {
         /// <summary>
         ///     The number of pods which reached phase Failed.

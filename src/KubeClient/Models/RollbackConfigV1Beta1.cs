@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     No description provided.
+    ///     DEPRECATED.
     /// </summary>
     [KubeObject("RollbackConfig", "v1beta1")]
-    public class RollbackConfigV1Beta1
+    public partial class RollbackConfigV1Beta1
     {
         /// <summary>
         ///     The revision to rollback to. If set to 0, rollback to the last revision.

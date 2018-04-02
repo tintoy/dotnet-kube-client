@@ -10,7 +10,7 @@ namespace KubeClient.Models
     ///     The contents of the target Secret's Data field will represent the key-value pairs as environment variables.
     /// </summary>
     [KubeObject("SecretEnvSource", "v1")]
-    public class SecretEnvSourceV1
+    public partial class SecretEnvSourceV1
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

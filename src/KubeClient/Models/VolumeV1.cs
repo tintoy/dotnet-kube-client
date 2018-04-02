@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Volume represents a named volume in a pod that may be accessed by any container in the pod.
     /// </summary>
     [KubeObject("Volume", "v1")]
-    public class VolumeV1
+    public partial class VolumeV1
     {
         /// <summary>
         ///     DownwardAPI represents downward API about the pod that should populate this volume

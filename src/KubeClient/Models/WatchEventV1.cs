@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Event represents a single event to a watched resource.
     /// </summary>
     [KubeObject("WatchEvent", "v1")]
-    public class WatchEventV1
+    public partial class WatchEventV1
     {
         /// <summary>
         ///     Description not provided.

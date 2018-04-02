@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a cinder volume resource in Openstack. A Cinder volume must exist before mounting to a container. The volume must also be in the same region as the kubelet. Cinder volumes support ownership management and SELinux relabeling.
     /// </summary>
     [KubeObject("CinderVolumeSource", "v1")]
-    public class CinderVolumeSourceV1
+    public partial class CinderVolumeSourceV1
     {
         /// <summary>
         ///     volume id used to identify the volume in cinder More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     EnvVar represents an environment variable present in a Container.
     /// </summary>
     [KubeObject("EnvVar", "v1")]
-    public class EnvVarV1
+    public partial class EnvVarV1
     {
         /// <summary>
         ///     Name of the environment variable. Must be a C_IDENTIFIER.

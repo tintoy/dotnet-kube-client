@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a volume that is populated with the contents of a git repository. Git repo volumes do not support ownership management. Git repo volumes support SELinux relabeling.
     /// </summary>
     [KubeObject("GitRepoVolumeSource", "v1")]
-    public class GitRepoVolumeSourceV1
+    public partial class GitRepoVolumeSourceV1
     {
         /// <summary>
         ///     Commit hash for the specified revision.

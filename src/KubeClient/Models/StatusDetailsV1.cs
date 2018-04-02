@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     StatusDetails is a set of additional properties that MAY be set by the server to provide additional information about a response. The Reason field of a Status object defines what attributes will be set. Clients must ignore fields that do not match the defined type of each attribute, and should assume that any attribute may be empty, invalid, or under defined.
     /// </summary>
     [KubeObject("StatusDetails", "v1")]
-    public class StatusDetailsV1
+    public partial class StatusDetailsV1
     {
         /// <summary>
         ///     The kind attribute of the resource associated with the status StatusReason. On some operations may differ from the requested resource Kind. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
@@ -41,7 +41,7 @@ namespace KubeClient.Models
         public List<StatusCauseV1> Causes { get; set; } = new List<StatusCauseV1>();
 
         /// <summary>
-        ///     If specified, the time in seconds before the operation should be retried.
+        ///     If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
         /// </summary>
         [JsonProperty("retryAfterSeconds")]
         public int RetryAfterSeconds { get; set; }

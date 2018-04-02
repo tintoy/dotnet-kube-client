@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     JobTemplateSpec describes the data a Job should have when created from a template
     /// </summary>
     [KubeObject("JobTemplateSpec", "v2alpha1")]
-    public class JobTemplateSpecV2Alpha1
+    public partial class JobTemplateSpecV2Alpha1
     {
         /// <summary>
         ///     Standard object's metadata of the jobs created from this template. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata

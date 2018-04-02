@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Affinity is a group of affinity scheduling rules.
     /// </summary>
     [KubeObject("Affinity", "v1")]
-    public class AffinityV1
+    public partial class AffinityV1
     {
         /// <summary>
         ///     Describes node affinity scheduling rules for the pod.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SelfSubjectAccessReview checks whether or the current user can perform an action.  Not filling in a spec.namespace means "in all namespaces".  Self is a special case, because users should always be able to check whether they can perform an action
     /// </summary>
     [KubeObject("SelfSubjectAccessReview", "authorization.k8s.io/v1beta1")]
-    public class SelfSubjectAccessReviewV1Beta1 : KubeResourceV1
+    public partial class SelfSubjectAccessReviewV1Beta1 : KubeResourceV1
     {
         /// <summary>
         ///     Spec holds information about the request being evaluated.  user and groups must be empty

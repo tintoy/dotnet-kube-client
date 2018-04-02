@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     No description provided.
     /// </summary>
     [KubeObject("APIServiceCondition", "v1beta1")]
-    public class APIServiceConditionV1Beta1
+    public partial class APIServiceConditionV1Beta1
     {
         /// <summary>
         ///     Last time the condition transitioned from one status to another.

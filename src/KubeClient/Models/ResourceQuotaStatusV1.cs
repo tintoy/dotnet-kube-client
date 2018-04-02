@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ResourceQuotaStatus defines the enforced hard limits and observed use.
     /// </summary>
     [KubeObject("ResourceQuotaStatus", "v1")]
-    public class ResourceQuotaStatusV1
+    public partial class ResourceQuotaStatusV1
     {
         /// <summary>
         ///     Hard is the set of enforced hard limits for each named resource. More info: https://git.k8s.io/community/contributors/design-proposals/admission_control_resource_quota.md

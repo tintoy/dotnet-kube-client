@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SecurityContext holds security configuration that will be applied to a container. Some fields are present in both SecurityContext and PodSecurityContext.  When both are set, the values in SecurityContext take precedence.
     /// </summary>
     [KubeObject("SecurityContext", "v1")]
-    public class SecurityContextV1
+    public partial class SecurityContextV1
     {
         /// <summary>
         ///     Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false.
@@ -21,6 +21,12 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("readOnlyRootFilesystem")]
         public bool ReadOnlyRootFilesystem { get; set; }
+
+        /// <summary>
+        ///     AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN
+        /// </summary>
+        [JsonProperty("allowPrivilegeEscalation")]
+        public bool AllowPrivilegeEscalation { get; set; }
 
         /// <summary>
         ///     The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.

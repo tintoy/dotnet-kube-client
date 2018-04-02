@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Describe a container image
     /// </summary>
     [KubeObject("ContainerImage", "v1")]
-    public class ContainerImageV1
+    public partial class ContainerImageV1
     {
         /// <summary>
         ///     Names by which this image is known. e.g. ["gcr.io/google_containers/hyperkube:v1.0.7", "dockerhub.io/google_containers/hyperkube:v1.0.7"]

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SELinuxOptions are the labels to be applied to the container
     /// </summary>
     [KubeObject("SELinuxOptions", "v1")]
-    public class SELinuxOptionsV1
+    public partial class SELinuxOptionsV1
     {
         /// <summary>
         ///     Role is a SELinux role label that applies to the container.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Run A sUser Strategy Options defines the strategy type and any options used to create the strategy.
     /// </summary>
     [KubeObject("RunAsUserStrategyOptions", "v1beta1")]
-    public class RunAsUserStrategyOptionsV1Beta1
+    public partial class RunAsUserStrategyOptionsV1Beta1
     {
         /// <summary>
         ///     Rule is the strategy that will dictate the allowable RunAsUser values that may be set.

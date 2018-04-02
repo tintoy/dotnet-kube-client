@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     The pod this Toleration is attached to tolerates any taint that matches the triple &lt;key,value,effect&gt; using the matching operator &lt;operator&gt;.
     /// </summary>
     [KubeObject("Toleration", "v1")]
-    public class TolerationV1
+    public partial class TolerationV1
     {
         /// <summary>
         ///     Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.

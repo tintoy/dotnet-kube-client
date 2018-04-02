@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ReplicaSetCondition describes the state of a replica set at a certain point.
     /// </summary>
     [KubeObject("ReplicaSetCondition", "v1beta1")]
-    public class ReplicaSetConditionV1Beta1
+    public partial class ReplicaSetConditionV1Beta1
     {
         /// <summary>
         ///     The last time the condition transitioned from one status to another.

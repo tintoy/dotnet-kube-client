@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Pod Security Policy Spec defines the policy enforced.
     /// </summary>
     [KubeObject("PodSecurityPolicySpec", "v1beta1")]
-    public class PodSecurityPolicySpecV1Beta1
+    public partial class PodSecurityPolicySpecV1Beta1
     {
         /// <summary>
         ///     hostIPC determines if the policy allows the use of HostIPC in the pod spec.
@@ -41,6 +41,18 @@ namespace KubeClient.Models
         public bool ReadOnlyRootFilesystem { get; set; }
 
         /// <summary>
+        ///     AllowPrivilegeEscalation determines if a pod can request to allow privilege escalation. If unspecified, defaults to true.
+        /// </summary>
+        [JsonProperty("allowPrivilegeEscalation")]
+        public bool AllowPrivilegeEscalation { get; set; }
+
+        /// <summary>
+        ///     DefaultAllowPrivilegeEscalation controls the default setting for whether a process can gain more privileges than its parent process.
+        /// </summary>
+        [JsonProperty("defaultAllowPrivilegeEscalation")]
+        public bool DefaultAllowPrivilegeEscalation { get; set; }
+
+        /// <summary>
         ///     FSGroup is the strategy that will dictate what fs group is used by the SecurityContext.
         /// </summary>
         [JsonProperty("fsGroup")]
@@ -57,6 +69,12 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("allowedCapabilities", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> AllowedCapabilities { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     is a white list of allowed host paths. Empty indicates that all host paths may be used.
+        /// </summary>
+        [JsonProperty("allowedHostPaths", NullValueHandling = NullValueHandling.Ignore)]
+        public List<AllowedHostPathV1Beta1> AllowedHostPaths { get; set; } = new List<AllowedHostPathV1Beta1>();
 
         /// <summary>
         ///     DefaultAddCapabilities is the default set of capabilities that will be added to the container unless the pod spec specifically drops the capability.  You may not list a capabiility in both DefaultAddCapabilities and RequiredDropCapabilities.

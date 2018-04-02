@@ -10,7 +10,7 @@ namespace KubeClient.Models
     ///     The contents of the target ConfigMap's Data field will represent the key-value pairs as environment variables.
     /// </summary>
     [KubeObject("ConfigMapEnvSource", "v1")]
-    public class ConfigMapEnvSourceV1
+    public partial class ConfigMapEnvSourceV1
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

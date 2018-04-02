@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SecretKeySelector selects a key of a Secret.
     /// </summary>
     [KubeObject("SecretKeySelector", "v1")]
-    public class SecretKeySelectorV1
+    public partial class SecretKeySelectorV1
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

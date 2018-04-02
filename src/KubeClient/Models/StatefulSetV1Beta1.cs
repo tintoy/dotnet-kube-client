@@ -5,13 +5,13 @@ using System.Collections.Generic;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     StatefulSet represents a set of pods with consistent identities. Identities are defined as:
+    ///     DEPRECATED - This group version of StatefulSet is deprecated by apps/v1beta2/StatefulSet. See the release notes for more information. StatefulSet represents a set of pods with consistent identities. Identities are defined as:
     ///      - Network: A single stable DNS and hostname.
     ///      - Storage: As many VolumeClaims as requested.
     ///     The StatefulSet guarantees that a given network identity will always map to the same storage identity.
     /// </summary>
     [KubeObject("StatefulSet", "apps/v1beta1")]
-    public class StatefulSetV1Beta1 : KubeResourceV1
+    public partial class StatefulSetV1Beta1 : KubeResourceV1
     {
         /// <summary>
         ///     Spec defines the desired identities of pods in this set.

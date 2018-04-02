@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodTemplateSpec describes the data a pod should have when created from a template
     /// </summary>
     [KubeObject("PodTemplateSpec", "v1")]
-    public class PodTemplateSpecV1
+    public partial class PodTemplateSpecV1
     {
         /// <summary>
         ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     This information is immutable after the request is created. Only the Request and Usages fields can be set on creation, other fields are derived by Kubernetes and cannot be modified by users.
     /// </summary>
     [KubeObject("CertificateSigningRequestSpec", "v1beta1")]
-    public class CertificateSigningRequestSpecV1Beta1
+    public partial class CertificateSigningRequestSpecV1Beta1
     {
         /// <summary>
         ///     Extra information about the requesting user. See user.Info interface for details.

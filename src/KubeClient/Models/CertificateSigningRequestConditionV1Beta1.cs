@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     No description provided.
     /// </summary>
     [KubeObject("CertificateSigningRequestCondition", "v1beta1")]
-    public class CertificateSigningRequestConditionV1Beta1
+    public partial class CertificateSigningRequestConditionV1Beta1
     {
         /// <summary>
         ///     timestamp for the last update to this condition

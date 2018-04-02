@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ContainerStatus contains details for the current status of this container.
     /// </summary>
     [KubeObject("ContainerStatus", "v1")]
-    public class ContainerStatusV1
+    public partial class ContainerStatusV1
     {
         /// <summary>
         ///     Container's ID in the format 'docker://&lt;container_id&gt;'.

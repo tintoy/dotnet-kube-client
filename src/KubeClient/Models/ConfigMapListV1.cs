@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ConfigMap", "v1")]
     [KubeObject("ConfigMapList", "v1")]
-    public class ConfigMapListV1 : KubeResourceListV1<ConfigMapV1>
+    public partial class ConfigMapListV1 : KubeResourceListV1<ConfigMapV1>
     {
         /// <summary>
         ///     Items is the list of ConfigMaps.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     A null or empty node selector term matches no objects.
     /// </summary>
     [KubeObject("NodeSelectorTerm", "v1")]
-    public class NodeSelectorTermV1
+    public partial class NodeSelectorTermV1
     {
         /// <summary>
         ///     Required. A list of node selector requirements. The requirements are ANDed.

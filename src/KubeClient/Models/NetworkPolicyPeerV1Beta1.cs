@@ -8,8 +8,14 @@ namespace KubeClient.Models
     ///     No description provided.
     /// </summary>
     [KubeObject("NetworkPolicyPeer", "v1beta1")]
-    public class NetworkPolicyPeerV1Beta1
+    public partial class NetworkPolicyPeerV1Beta1
     {
+        /// <summary>
+        ///     IPBlock defines policy on a particular IPBlock
+        /// </summary>
+        [JsonProperty("ipBlock")]
+        public IPBlockV1Beta1 IpBlock { get; set; }
+
         /// <summary>
         ///     Selects Namespaces using cluster scoped-labels.  This matches all pods in all namespaces selected by this label selector. This field follows standard label selector semantics. If present but empty, this selector selects all namespaces.
         /// </summary>

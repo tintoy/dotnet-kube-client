@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a StorageOS persistent volume resource.
     /// </summary>
     [KubeObject("StorageOSVolumeSource", "v1")]
-    public class StorageOSVolumeSourceV1
+    public partial class StorageOSVolumeSourceV1
     {
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.

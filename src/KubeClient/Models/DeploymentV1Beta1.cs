@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     Deployment enables declarative updates for Pods and ReplicaSets.
+    ///     DEPRECATED - This group version of Deployment is deprecated by apps/v1beta2/Deployment. See the release notes for more information. Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
     [KubeObject("Deployment", "apps/v1beta1")]
-    public class DeploymentV1Beta1 : KubeResourceV1
+    public partial class DeploymentV1Beta1 : KubeResourceV1
     {
         /// <summary>
         ///     Specification of the desired behavior of the Deployment.

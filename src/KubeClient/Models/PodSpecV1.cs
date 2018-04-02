@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodSpec is a description of a pod.
     /// </summary>
     [KubeObject("PodSpec", "v1")]
-    public class PodSpecV1
+    public partial class PodSpecV1
     {
         /// <summary>
         ///     Use the host's ipc namespace. Optional: Default to false.
@@ -33,6 +33,12 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("nodeName")]
         public string NodeName { get; set; }
+
+        /// <summary>
+        ///     If specified, indicates the pod's priority. "SYSTEM" is a special keyword which indicates the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default.
+        /// </summary>
+        [JsonProperty("priorityClassName")]
+        public string PriorityClassName { get; set; }
 
         /// <summary>
         ///     If specified, the pod will be dispatched by specified scheduler. If not specified, the pod will be dispatched by default scheduler.
@@ -141,6 +147,12 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("dnsPolicy")]
         public string DnsPolicy { get; set; }
+
+        /// <summary>
+        ///     The priority value. Various system components use this field to find the priority of the pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority.
+        /// </summary>
+        [JsonProperty("priority")]
+        public int Priority { get; set; }
 
         /// <summary>
         ///     Restart policy for all containers within the pod. One of Always, OnFailure, Never. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     DaemonSetSpec is the specification of a daemon set.
     /// </summary>
     [KubeObject("DaemonSetSpec", "v1beta1")]
-    public class DaemonSetSpecV1Beta1
+    public partial class DaemonSetSpecV1Beta1
     {
         /// <summary>
         ///     An object that describes the pod that will be created. The DaemonSet will create exactly one copy of this pod on every node that matches the template's node selector (or on every node if no node selector is specified). More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template

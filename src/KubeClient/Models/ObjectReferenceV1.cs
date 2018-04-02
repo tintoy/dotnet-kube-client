@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ObjectReference contains enough information to let you inspect or modify the referred object.
     /// </summary>
     [KubeObject("ObjectReference", "v1")]
-    public class ObjectReferenceV1
+    public partial class ObjectReferenceV1
     {
         /// <summary>
         ///     Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ServerAddressByClientCIDR helps the client to determine the server address that they should use, depending on the clientCIDR that they match.
     /// </summary>
     [KubeObject("ServerAddressByClientCIDR", "v1")]
-    public class ServerAddressByClientCIDRV1
+    public partial class ServerAddressByClientCIDRV1
     {
         /// <summary>
         ///     The CIDR with which clients can match their IP to figure out the server address that they should use.

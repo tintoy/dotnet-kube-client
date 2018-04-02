@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ReplicationController", "v1")]
     [KubeObject("ReplicationControllerList", "v1")]
-    public class ReplicationControllerListV1 : KubeResourceListV1<ReplicationControllerV1>
+    public partial class ReplicationControllerListV1 : KubeResourceListV1<ReplicationControllerV1>
     {
         /// <summary>
         ///     List of replication controllers. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller

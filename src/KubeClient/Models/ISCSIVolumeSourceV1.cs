@@ -8,13 +8,19 @@ namespace KubeClient.Models
     ///     Represents an ISCSI disk. ISCSI volumes can only be mounted as read/write once. ISCSI volumes support ownership management and SELinux relabeling.
     /// </summary>
     [KubeObject("ISCSIVolumeSource", "v1")]
-    public class ISCSIVolumeSourceV1
+    public partial class ISCSIVolumeSourceV1
     {
         /// <summary>
         ///     Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
         /// </summary>
         [JsonProperty("fsType")]
         public string FsType { get; set; }
+
+        /// <summary>
+        ///     Custom iSCSI initiator name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface &lt;target portal&gt;:&lt;volume name&gt; will be created for the connection.
+        /// </summary>
+        [JsonProperty("initiatorName")]
+        public string InitiatorName { get; set; }
 
         /// <summary>
         ///     Optional: Defaults to 'default' (tcp). iSCSI interface name that uses an iSCSI transport.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PersistentVolumeSpec is the specification of a persistent volume.
     /// </summary>
     [KubeObject("PersistentVolumeSpec", "v1")]
-    public class PersistentVolumeSpecV1
+    public partial class PersistentVolumeSpecV1
     {
         /// <summary>
         ///     ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -38,7 +38,7 @@ namespace KubeClient.Models
         ///     AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
         /// </summary>
         [JsonProperty("azureFile")]
-        public AzureFileVolumeSourceV1 AzureFile { get; set; }
+        public AzureFilePersistentVolumeSourceV1 AzureFile { get; set; }
 
         /// <summary>
         ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. This is an alpha feature and may change in future.
@@ -134,13 +134,19 @@ namespace KubeClient.Models
         ///     CephFS represents a Ceph FS mount on the host that shares a pod's lifetime
         /// </summary>
         [JsonProperty("cephfs")]
-        public CephFSVolumeSourceV1 Cephfs { get; set; }
+        public CephFSPersistentVolumeSourceV1 Cephfs { get; set; }
 
         /// <summary>
         ///     Glusterfs represents a Glusterfs volume that is attached to a host and exposed to the pod. Provisioned by an admin. More info: https://releases.k8s.io/HEAD/examples/volumes/glusterfs/README.md
         /// </summary>
         [JsonProperty("glusterfs")]
         public GlusterfsVolumeSourceV1 Glusterfs { get; set; }
+
+        /// <summary>
+        ///     A list of mount options, e.g. ["ro", "soft"]. Not validated - mount will simply fail if one is invalid. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#mount-options
+        /// </summary>
+        [JsonProperty("mountOptions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> MountOptions { get; set; } = new List<string>();
 
         /// <summary>
         ///     NFS represents an NFS mount on the host. Provisioned by an admin. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs

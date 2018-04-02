@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SubjectAccessReviewStatus
     /// </summary>
     [KubeObject("SubjectAccessReviewStatus", "v1beta1")]
-    public class SubjectAccessReviewStatusV1Beta1
+    public partial class SubjectAccessReviewStatusV1Beta1
     {
         /// <summary>
         ///     Allowed is required.  True if the action would be allowed, false otherwise.

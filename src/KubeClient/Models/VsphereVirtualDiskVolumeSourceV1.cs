@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a vSphere volume resource.
     /// </summary>
     [KubeObject("VsphereVirtualDiskVolumeSource", "v1")]
-    public class VsphereVirtualDiskVolumeSourceV1
+    public partial class VsphereVirtualDiskVolumeSourceV1
     {
         /// <summary>
         ///     Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.

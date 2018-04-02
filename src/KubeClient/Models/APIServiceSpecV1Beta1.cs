@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     APIServiceSpec contains information for locating and communicating with a server. Only https is supported, though you are able to disable certificate verification.
     /// </summary>
     [KubeObject("APIServiceSpec", "v1beta1")]
-    public class APIServiceSpecV1Beta1
+    public partial class APIServiceSpecV1Beta1
     {
         /// <summary>
         ///     CABundle is a PEM encoded CA bundle which will be used to validate an API server's serving certificate.

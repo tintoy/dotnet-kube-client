@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     JobCondition describes current state of a job.
     /// </summary>
     [KubeObject("JobCondition", "v1")]
-    public class JobConditionV1
+    public partial class JobConditionV1
     {
         /// <summary>
         ///     Last time the condition was checked.

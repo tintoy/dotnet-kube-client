@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodStatus represents information about the status of a pod. Status may trail the actual state of a system.
     /// </summary>
     [KubeObject("PodStatus", "v1")]
-    public class PodStatusV1
+    public partial class PodStatusV1
     {
         /// <summary>
         ///     IP address of the host to which the pod is assigned. Empty if not yet scheduled.
@@ -41,7 +41,7 @@ namespace KubeClient.Models
         public DateTime? StartTime { get; set; }
 
         /// <summary>
-        ///     A brief CamelCase message indicating details about why the pod is in this state. e.g. 'OutOfDisk'
+        ///     A brief CamelCase message indicating details about why the pod is in this state. e.g. 'Evicted'
         /// </summary>
         [JsonProperty("reason")]
         public string Reason { get; set; }

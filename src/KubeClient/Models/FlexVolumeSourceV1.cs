@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. This is an alpha feature and may change in future.
     /// </summary>
     [KubeObject("FlexVolumeSource", "v1")]
-    public class FlexVolumeSourceV1
+    public partial class FlexVolumeSourceV1
     {
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.

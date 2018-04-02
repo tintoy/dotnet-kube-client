@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     APIResource specifies the name of a resource and whether it is namespaced.
     /// </summary>
     [KubeObject("APIResource", "v1")]
-    public class APIResourceV1
+    public partial class APIResourceV1
     {
         /// <summary>
         ///     kind is the kind for the resource (e.g. 'Foo' is the kind for a resource 'foo')
@@ -33,6 +33,18 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("singularName")]
         public string SingularName { get; set; }
+
+        /// <summary>
+        ///     version is the preferred version of the resource.  Empty implies the version of the containing resource list For subresources, this may have a different value, for example: v1 (while inside a v1beta1 version of the core resource's group)".
+        /// </summary>
+        [JsonProperty("version")]
+        public string Version { get; set; }
+
+        /// <summary>
+        ///     group is the preferred group of the resource.  Empty implies the group of the containing resource list. For subresources, this may have a different value, for example: Scale".
+        /// </summary>
+        [JsonProperty("group")]
+        public string Group { get; set; }
 
         /// <summary>
         ///     categories is a list of the grouped resources this resource belongs to (e.g. 'all')
