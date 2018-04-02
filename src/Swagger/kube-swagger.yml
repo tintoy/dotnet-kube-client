@@ -33287,6 +33287,701 @@ paths:
       - https
       tags:
       - version
+  /apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions:
+    delete:
+      consumes:
+      - '*/*'
+      description: delete collection of CustomResourceDefinition
+      operationId: deleteApiextensionsV1beta1CollectionCustomResourceDefinition
+      parameters:
+      - description: The continue option should be set when retrieving more results
+          from the server. Since this value is server defined, clients may only use
+          the continue value from a previous query result with identical query parameters
+          (except for the value of continue) and the server may reject a continue
+          value it does not recognize. If the specified continue value is no longer
+          valid whether due to expiration (generally five to fifteen minutes) or a
+          configuration change on the server the server will respond with a 410 ResourceExpired
+          error indicating the client must restart their list without the continue
+          field. This field is not supported when watch is true. Clients may start
+          a watch from the last resourceVersion value returned by the server and not
+          miss any modifications.
+        in: query
+        name: continue
+        type: string
+        uniqueItems: true
+      - description: A selector to restrict the list of returned objects by their
+          fields. Defaults to everything.
+        in: query
+        name: fieldSelector
+        type: string
+        uniqueItems: true
+      - description: If true, partially initialized resources are included in the
+          response.
+        in: query
+        name: includeUninitialized
+        type: boolean
+        uniqueItems: true
+      - description: A selector to restrict the list of returned objects by their
+          labels. Defaults to everything.
+        in: query
+        name: labelSelector
+        type: string
+        uniqueItems: true
+      - description: 'limit is a maximum number of responses to return for a list
+          call. If more items exist, the server will set the `continue` field on the
+          list metadata to a value that can be used with the same initial query to
+          retrieve the next set of results. Setting a limit may return fewer than
+          the requested amount of items (up to zero items) in the event all requested
+          objects are filtered out and clients should only use the presence of the
+          continue field to determine whether more results are available. Servers
+          may choose not to support the limit argument and will return all of the
+          available results. If limit is specified and the continue field is empty,
+          clients may assume that no more results are available. This field is not
+          supported if watch is true.
+
+
+          The server guarantees that the objects returned when using continue will
+          be identical to issuing a single list call without a limit - that is, no
+          objects created, modified, or deleted after the first request is issued
+          will be included in any subsequent continued requests. This is sometimes
+          referred to as a consistent snapshot, and ensures that a client that is
+          using limit to receive smaller chunks of a very large result can ensure
+          they see all possible objects. If objects are updated during a chunked list
+          the version of the object that was present at the time the first list result
+          was calculated is returned.'
+        in: query
+        name: limit
+        type: integer
+        uniqueItems: true
+      - description: 'When specified with a watch call, shows changes that occur after
+          that particular version of a resource. Defaults to changes from the beginning
+          of history. When specified for list: - if unset, then the result is returned
+          from remote storage based on quorum-read flag; - if it''s 0, then we simply
+          return what we currently have in cache, no guarantee; - if set to non zero,
+          then the result is at least as fresh as given rv.'
+        in: query
+        name: resourceVersion
+        type: string
+        uniqueItems: true
+      - description: Timeout for the list/watch call.
+        in: query
+        name: timeoutSeconds
+        type: integer
+        uniqueItems: true
+      - description: Watch for changes to the described resources and return them
+          as a stream of add, update, and remove notifications. Specify resourceVersion.
+        in: query
+        name: watch
+        type: boolean
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Status'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: deletecollection
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    get:
+      consumes:
+      - '*/*'
+      description: list or watch objects of kind CustomResourceDefinition
+      operationId: listApiextensionsV1beta1CustomResourceDefinition
+      parameters:
+      - description: The continue option should be set when retrieving more results
+          from the server. Since this value is server defined, clients may only use
+          the continue value from a previous query result with identical query parameters
+          (except for the value of continue) and the server may reject a continue
+          value it does not recognize. If the specified continue value is no longer
+          valid whether due to expiration (generally five to fifteen minutes) or a
+          configuration change on the server the server will respond with a 410 ResourceExpired
+          error indicating the client must restart their list without the continue
+          field. This field is not supported when watch is true. Clients may start
+          a watch from the last resourceVersion value returned by the server and not
+          miss any modifications.
+        in: query
+        name: continue
+        type: string
+        uniqueItems: true
+      - description: A selector to restrict the list of returned objects by their
+          fields. Defaults to everything.
+        in: query
+        name: fieldSelector
+        type: string
+        uniqueItems: true
+      - description: If true, partially initialized resources are included in the
+          response.
+        in: query
+        name: includeUninitialized
+        type: boolean
+        uniqueItems: true
+      - description: A selector to restrict the list of returned objects by their
+          labels. Defaults to everything.
+        in: query
+        name: labelSelector
+        type: string
+        uniqueItems: true
+      - description: 'limit is a maximum number of responses to return for a list
+          call. If more items exist, the server will set the `continue` field on the
+          list metadata to a value that can be used with the same initial query to
+          retrieve the next set of results. Setting a limit may return fewer than
+          the requested amount of items (up to zero items) in the event all requested
+          objects are filtered out and clients should only use the presence of the
+          continue field to determine whether more results are available. Servers
+          may choose not to support the limit argument and will return all of the
+          available results. If limit is specified and the continue field is empty,
+          clients may assume that no more results are available. This field is not
+          supported if watch is true.
+
+
+          The server guarantees that the objects returned when using continue will
+          be identical to issuing a single list call without a limit - that is, no
+          objects created, modified, or deleted after the first request is issued
+          will be included in any subsequent continued requests. This is sometimes
+          referred to as a consistent snapshot, and ensures that a client that is
+          using limit to receive smaller chunks of a very large result can ensure
+          they see all possible objects. If objects are updated during a chunked list
+          the version of the object that was present at the time the first list result
+          was calculated is returned.'
+        in: query
+        name: limit
+        type: integer
+        uniqueItems: true
+      - description: 'When specified with a watch call, shows changes that occur after
+          that particular version of a resource. Defaults to changes from the beginning
+          of history. When specified for list: - if unset, then the result is returned
+          from remote storage based on quorum-read flag; - if it''s 0, then we simply
+          return what we currently have in cache, no guarantee; - if set to non zero,
+          then the result is at least as fresh as given rv.'
+        in: query
+        name: resourceVersion
+        type: string
+        uniqueItems: true
+      - description: Timeout for the list/watch call.
+        in: query
+        name: timeoutSeconds
+        type: integer
+        uniqueItems: true
+      - description: Watch for changes to the described resources and return them
+          as a stream of add, update, and remove notifications. Specify resourceVersion.
+        in: query
+        name: watch
+        type: boolean
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      - application/json;stream=watch
+      - application/vnd.kubernetes.protobuf;stream=watch
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionList'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: list
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    parameters:
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    post:
+      consumes:
+      - '*/*'
+      description: create a CustomResourceDefinition
+      operationId: createApiextensionsV1beta1CustomResourceDefinition
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: post
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+  /apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}:
+    delete:
+      consumes:
+      - '*/*'
+      description: delete a CustomResourceDefinition
+      operationId: deleteApiextensionsV1beta1CustomResourceDefinition
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions'
+      - description: The duration in seconds before the object should be deleted.
+          Value must be non-negative integer. The value zero indicates delete immediately.
+          If this value is nil, the default grace period for the specified type will
+          be used. Defaults to a per object value if not specified. zero means delete
+          immediately.
+        in: query
+        name: gracePeriodSeconds
+        type: integer
+        uniqueItems: true
+      - description: 'Deprecated: please use the PropagationPolicy, this field will
+          be deprecated in 1.7. Should the dependent objects be orphaned. If true/false,
+          the "orphan" finalizer will be added to/removed from the object''s finalizers
+          list. Either this field or PropagationPolicy may be set, but not both.'
+        in: query
+        name: orphanDependents
+        type: boolean
+        uniqueItems: true
+      - description: Whether and how garbage collection will be performed. Either
+          this field or OrphanDependents may be set, but not both. The default policy
+          is decided by the existing finalizer set in the metadata.finalizers and
+          the resource-specific default policy.
+        in: query
+        name: propagationPolicy
+        type: string
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Status'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: delete
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    get:
+      consumes:
+      - '*/*'
+      description: read the specified CustomResourceDefinition
+      operationId: readApiextensionsV1beta1CustomResourceDefinition
+      parameters:
+      - description: Should the export be exact.  Exact export maintains cluster-specific
+          fields like 'Namespace'.
+        in: query
+        name: exact
+        type: boolean
+        uniqueItems: true
+      - description: Should this value be exported.  Export strips fields that a user
+          can not specify.
+        in: query
+        name: export
+        type: boolean
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: get
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    parameters:
+    - description: name of the CustomResourceDefinition
+      in: path
+      name: name
+      required: true
+      type: string
+      uniqueItems: true
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    patch:
+      consumes:
+      - application/json-patch+json
+      - application/merge-patch+json
+      - application/strategic-merge-patch+json
+      description: partially update the specified CustomResourceDefinition
+      operationId: patchApiextensionsV1beta1CustomResourceDefinition
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Patch'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: patch
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    put:
+      consumes:
+      - '*/*'
+      description: replace the specified CustomResourceDefinition
+      operationId: replaceApiextensionsV1beta1CustomResourceDefinition
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: put
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+  /apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}/status:
+    parameters:
+    - description: name of the CustomResourceDefinition
+      in: path
+      name: name
+      required: true
+      type: string
+      uniqueItems: true
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    put:
+      consumes:
+      - '*/*'
+      description: replace status of the specified CustomResourceDefinition
+      operationId: replaceApiextensionsV1beta1CustomResourceDefinitionStatus
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: put
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+  /apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions:
+    get:
+      consumes:
+      - '*/*'
+      description: watch individual changes to a list of CustomResourceDefinition
+      operationId: watchApiextensionsV1beta1CustomResourceDefinitionList
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      - application/json;stream=watch
+      - application/vnd.kubernetes.protobuf;stream=watch
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.WatchEvent'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: watchlist
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    parameters:
+    - description: The continue option should be set when retrieving more results
+        from the server. Since this value is server defined, clients may only use
+        the continue value from a previous query result with identical query parameters
+        (except for the value of continue) and the server may reject a continue value
+        it does not recognize. If the specified continue value is no longer valid
+        whether due to expiration (generally five to fifteen minutes) or a configuration
+        change on the server the server will respond with a 410 ResourceExpired error
+        indicating the client must restart their list without the continue field.
+        This field is not supported when watch is true. Clients may start a watch
+        from the last resourceVersion value returned by the server and not miss any
+        modifications.
+      in: query
+      name: continue
+      type: string
+      uniqueItems: true
+    - description: A selector to restrict the list of returned objects by their fields.
+        Defaults to everything.
+      in: query
+      name: fieldSelector
+      type: string
+      uniqueItems: true
+    - description: If true, partially initialized resources are included in the response.
+      in: query
+      name: includeUninitialized
+      type: boolean
+      uniqueItems: true
+    - description: A selector to restrict the list of returned objects by their labels.
+        Defaults to everything.
+      in: query
+      name: labelSelector
+      type: string
+      uniqueItems: true
+    - description: 'limit is a maximum number of responses to return for a list call.
+        If more items exist, the server will set the `continue` field on the list
+        metadata to a value that can be used with the same initial query to retrieve
+        the next set of results. Setting a limit may return fewer than the requested
+        amount of items (up to zero items) in the event all requested objects are
+        filtered out and clients should only use the presence of the continue field
+        to determine whether more results are available. Servers may choose not to
+        support the limit argument and will return all of the available results. If
+        limit is specified and the continue field is empty, clients may assume that
+        no more results are available. This field is not supported if watch is true.
+
+
+        The server guarantees that the objects returned when using continue will be
+        identical to issuing a single list call without a limit - that is, no objects
+        created, modified, or deleted after the first request is issued will be included
+        in any subsequent continued requests. This is sometimes referred to as a consistent
+        snapshot, and ensures that a client that is using limit to receive smaller
+        chunks of a very large result can ensure they see all possible objects. If
+        objects are updated during a chunked list the version of the object that was
+        present at the time the first list result was calculated is returned.'
+      in: query
+      name: limit
+      type: integer
+      uniqueItems: true
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    - description: 'When specified with a watch call, shows changes that occur after
+        that particular version of a resource. Defaults to changes from the beginning
+        of history. When specified for list: - if unset, then the result is returned
+        from remote storage based on quorum-read flag; - if it''s 0, then we simply
+        return what we currently have in cache, no guarantee; - if set to non zero,
+        then the result is at least as fresh as given rv.'
+      in: query
+      name: resourceVersion
+      type: string
+      uniqueItems: true
+    - description: Timeout for the list/watch call.
+      in: query
+      name: timeoutSeconds
+      type: integer
+      uniqueItems: true
+    - description: Watch for changes to the described resources and return them as
+        a stream of add, update, and remove notifications. Specify resourceVersion.
+      in: query
+      name: watch
+      type: boolean
+      uniqueItems: true
+  /apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions/{name}:
+    get:
+      consumes:
+      - '*/*'
+      description: watch changes to an object of kind CustomResourceDefinition
+      operationId: watchApiextensionsV1beta1CustomResourceDefinition
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      - application/json;stream=watch
+      - application/vnd.kubernetes.protobuf;stream=watch
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.WatchEvent'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - apiextensions_v1beta1
+      x-kubernetes-action: watch
+      x-kubernetes-group-version-kind:
+        group: apiextensions.k8s.io
+        kind: CustomResourceDefinition
+        version: v1beta1
+    parameters:
+    - description: The continue option should be set when retrieving more results
+        from the server. Since this value is server defined, clients may only use
+        the continue value from a previous query result with identical query parameters
+        (except for the value of continue) and the server may reject a continue value
+        it does not recognize. If the specified continue value is no longer valid
+        whether due to expiration (generally five to fifteen minutes) or a configuration
+        change on the server the server will respond with a 410 ResourceExpired error
+        indicating the client must restart their list without the continue field.
+        This field is not supported when watch is true. Clients may start a watch
+        from the last resourceVersion value returned by the server and not miss any
+        modifications.
+      in: query
+      name: continue
+      type: string
+      uniqueItems: true
+    - description: A selector to restrict the list of returned objects by their fields.
+        Defaults to everything.
+      in: query
+      name: fieldSelector
+      type: string
+      uniqueItems: true
+    - description: If true, partially initialized resources are included in the response.
+      in: query
+      name: includeUninitialized
+      type: boolean
+      uniqueItems: true
+    - description: A selector to restrict the list of returned objects by their labels.
+        Defaults to everything.
+      in: query
+      name: labelSelector
+      type: string
+      uniqueItems: true
+    - description: 'limit is a maximum number of responses to return for a list call.
+        If more items exist, the server will set the `continue` field on the list
+        metadata to a value that can be used with the same initial query to retrieve
+        the next set of results. Setting a limit may return fewer than the requested
+        amount of items (up to zero items) in the event all requested objects are
+        filtered out and clients should only use the presence of the continue field
+        to determine whether more results are available. Servers may choose not to
+        support the limit argument and will return all of the available results. If
+        limit is specified and the continue field is empty, clients may assume that
+        no more results are available. This field is not supported if watch is true.
+
+
+        The server guarantees that the objects returned when using continue will be
+        identical to issuing a single list call without a limit - that is, no objects
+        created, modified, or deleted after the first request is issued will be included
+        in any subsequent continued requests. This is sometimes referred to as a consistent
+        snapshot, and ensures that a client that is using limit to receive smaller
+        chunks of a very large result can ensure they see all possible objects. If
+        objects are updated during a chunked list the version of the object that was
+        present at the time the first list result was calculated is returned.'
+      in: query
+      name: limit
+      type: integer
+      uniqueItems: true
+    - description: name of the CustomResourceDefinition
+      in: path
+      name: name
+      required: true
+      type: string
+      uniqueItems: true
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    - description: 'When specified with a watch call, shows changes that occur after
+        that particular version of a resource. Defaults to changes from the beginning
+        of history. When specified for list: - if unset, then the result is returned
+        from remote storage based on quorum-read flag; - if it''s 0, then we simply
+        return what we currently have in cache, no guarantee; - if set to non zero,
+        then the result is at least as fresh as given rv.'
+      in: query
+      name: resourceVersion
+      type: string
+      uniqueItems: true
+    - description: Timeout for the list/watch call.
+      in: query
+      name: timeoutSeconds
+      type: integer
+      uniqueItems: true
+    - description: Watch for changes to the described resources and return them as
+        a stream of add, update, and remove notifications. Specify resourceVersion.
+      in: query
+      name: watch
+      type: boolean
+      uniqueItems: true
 security:
 - BearerToken: []
 securityDefinitions:
@@ -42085,3 +42780,304 @@ definitions:
     - group: storage.k8s.io
       kind: StorageClassList
       version: v1beta1
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition:
+    description: CustomResourceDefinition represents a resource that should be exposed
+      on the API server.  Its name MUST be in the format <.spec.name>.<.spec.group>.
+    properties:
+      apiVersion:
+        description: 'APIVersion defines the versioned schema of this representation
+          of an object. Servers should convert recognized schemas to the latest internal
+          value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+        type: string
+      kind:
+        description: 'Kind is a string value representing the REST resource this object
+          represents. Servers may infer this from the endpoint the client submits
+          requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+        type: string
+      metadata:
+        $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta'
+      spec:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionSpec'
+        description: Spec describes how the user wants the resources to appear
+      status:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionStatus'
+        description: Status indicates the actual state of the CustomResourceDefinition
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionCondition:
+    description: CustomResourceDefinitionCondition contains details for the current
+      condition of this pod.
+    properties:
+      lastTransitionTime:
+        $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time'
+        description: Last time the condition transitioned from one status to another.
+      message:
+        description: Human-readable message indicating details about last transition.
+        type: string
+      reason:
+        description: Unique, one-word, CamelCase reason for the condition's last transition.
+        type: string
+      status:
+        description: Status is the status of the condition. Can be True, False, Unknown.
+        type: string
+      type:
+        description: Type is the type of the condition.
+        type: string
+    required:
+    - type
+    - status
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionList:
+    description: CustomResourceDefinitionList is a list of CustomResourceDefinition
+      objects.
+    properties:
+      apiVersion:
+        description: 'APIVersion defines the versioned schema of this representation
+          of an object. Servers should convert recognized schemas to the latest internal
+          value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+        type: string
+      items:
+        description: Items individual CustomResourceDefinitions
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinition'
+        type: array
+      kind:
+        description: 'Kind is a string value representing the REST resource this object
+          represents. Servers may infer this from the endpoint the client submits
+          requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+        type: string
+      metadata:
+        $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta'
+    required:
+    - items
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionNames:
+    description: CustomResourceDefinitionNames indicates the names to serve this CustomResourceDefinition
+    properties:
+      kind:
+        description: Kind is the serialized kind of the resource.  It is normally
+          CamelCase and singular.
+        type: string
+      listKind:
+        description: ListKind is the serialized kind of the list for this resource.  Defaults
+          to <kind>List.
+        type: string
+      plural:
+        description: 'Plural is the plural name of the resource to serve.  It must
+          match the name of the CustomResourceDefinition-registration too: plural.group
+          and it must be all lowercase.'
+        type: string
+      shortNames:
+        description: ShortNames are short names for the resource.  It must be all
+          lowercase.
+        items:
+          type: string
+        type: array
+      singular:
+        description: Singular is the singular name of the resource.  It must be all
+          lowercase  Defaults to lowercased <kind>
+        type: string
+    required:
+    - plural
+    - kind
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionSpec:
+    description: CustomResourceDefinitionSpec describes how a user wants their resource
+      to appear
+    properties:
+      group:
+        description: Group is the group this resource belongs in
+        type: string
+      names:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionNames'
+        description: Names are the names used to describe this custom resource
+      scope:
+        description: Scope indicates whether this resource is cluster or namespace
+          scoped.  Default is namespaced
+        type: string
+      validation:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceValidation'
+        description: Validation describes the validation methods for CustomResources
+          This field is alpha-level and should only be sent to servers that enable
+          the CustomResourceValidation feature.
+      version:
+        description: Version is the version this resource belongs in
+        type: string
+    required:
+    - group
+    - version
+    - names
+    - scope
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionStatus:
+    description: CustomResourceDefinitionStatus indicates the state of the CustomResourceDefinition
+    properties:
+      acceptedNames:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionNames'
+        description: AcceptedNames are the names that are actually being used to serve
+          discovery They may be different than the names in spec.
+      conditions:
+        description: Conditions indicate state for particular aspects of a CustomResourceDefinition
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceDefinitionCondition'
+        type: array
+    required:
+    - conditions
+    - acceptedNames
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.CustomResourceValidation:
+    description: CustomResourceValidation is a list of validation methods for CustomResources.
+    properties:
+      openAPIV3Schema:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        description: OpenAPIV3Schema is the OpenAPI v3 schema to be validated against.
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.ExternalDocumentation:
+    description: ExternalDocumentation allows referencing an external resource for
+      extended documentation.
+    properties:
+      description:
+        type: string
+      url:
+        type: string
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSON:
+    description: 'JSON represents any valid JSON value. These types are supported:
+      bool, int64, float64, string, []interface{}, map[string]interface{} and nil.'
+    properties:
+      Raw:
+        format: byte
+        type: string
+    required:
+    - Raw
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps:
+    description: JSONSchemaProps is a JSON-Schema following Specification Draft 4
+      (http://json-schema.org/).
+    properties:
+      $ref:
+        type: string
+      $schema:
+        type: string
+      additionalItems:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrBool'
+      additionalProperties:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrBool'
+      allOf:
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: array
+      anyOf:
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: array
+      default:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSON'
+      definitions:
+        additionalProperties:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: object
+      dependencies:
+        additionalProperties:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrStringArray'
+        type: object
+      description:
+        type: string
+      enum:
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSON'
+        type: array
+      example:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSON'
+      exclusiveMaximum:
+        type: boolean
+      exclusiveMinimum:
+        type: boolean
+      externalDocs:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.ExternalDocumentation'
+      format:
+        type: string
+      id:
+        type: string
+      items:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrArray'
+      maxItems:
+        format: int64
+        type: integer
+      maxLength:
+        format: int64
+        type: integer
+      maxProperties:
+        format: int64
+        type: integer
+      maximum:
+        format: double
+        type: number
+      minItems:
+        format: int64
+        type: integer
+      minLength:
+        format: int64
+        type: integer
+      minProperties:
+        format: int64
+        type: integer
+      minimum:
+        format: double
+        type: number
+      multipleOf:
+        format: double
+        type: number
+      not:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+      oneOf:
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: array
+      pattern:
+        type: string
+      patternProperties:
+        additionalProperties:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: object
+      properties:
+        additionalProperties:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: object
+      required:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: string
+      uniqueItems:
+        type: boolean
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrArray:
+    description: JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps
+      or an array of JSONSchemaProps. Mainly here for serialization purposes.
+    properties:
+      JSONSchemas:
+        items:
+          $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+        type: array
+      Schema:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+    required:
+    - Schema
+    - JSONSchemas
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrBool:
+    description: JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value.
+      Defaults to true for the boolean property.
+    properties:
+      Allows:
+        type: boolean
+      Schema:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+    required:
+    - Allows
+    - Schema
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrStringArray:
+    description: JSONSchemaPropsOrStringArray represents a JSONSchemaProps or a string
+      array.
+    properties:
+      Property:
+        items:
+          type: string
+        type: array
+      Schema:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+    required:
+    - Schema
+    - Property
