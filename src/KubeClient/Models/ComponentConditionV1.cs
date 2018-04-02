@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Information about the condition of a component.
     /// </summary>
     [KubeObject("ComponentCondition", "v1")]
-    public class ComponentConditionV1
+    public partial class ComponentConditionV1
     {
         /// <summary>
         ///     Message about the condition for a component. For example, information about a health check.

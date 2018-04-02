@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     DaemonEndpoint contains information about a single Daemon endpoint.
     /// </summary>
     [KubeObject("DaemonEndpoint", "v1")]
-    public class DaemonEndpointV1
+    public partial class DaemonEndpointV1
     {
         /// <summary>
         ///     Port number of the given endpoint.

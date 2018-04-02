@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ServiceAccount", "v1")]
     [KubeObject("ServiceAccountList", "v1")]
-    public class ServiceAccountListV1 : KubeResourceListV1<ServiceAccountV1>
+    public partial class ServiceAccountListV1 : KubeResourceListV1<ServiceAccountV1>
     {
         /// <summary>
         ///     List of ServiceAccounts. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/

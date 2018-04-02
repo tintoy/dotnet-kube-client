@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     No description provided.
     /// </summary>
     [KubeObject("NetworkPolicyPort", "v1beta1")]
-    public class NetworkPolicyPortV1Beta1
+    public partial class NetworkPolicyPortV1Beta1
     {
         /// <summary>
         ///     Optional.  The protocol (TCP or UDP) which traffic must match. If not specified, this field defaults to TCP.

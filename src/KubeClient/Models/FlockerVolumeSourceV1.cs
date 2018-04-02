@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a Flocker volume mounted by the Flocker agent. One and only one of datasetName and datasetUUID should be set. Flocker volumes do not support ownership management or SELinux relabeling.
     /// </summary>
     [KubeObject("FlockerVolumeSource", "v1")]
-    public class FlockerVolumeSourceV1
+    public partial class FlockerVolumeSourceV1
     {
         /// <summary>
         ///     UUID of the dataset. This is unique identifier of a Flocker dataset

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SubjectAccessReviewSpec is a description of the access request.  Exactly one of ResourceAuthorizationAttributes and NonResourceAuthorizationAttributes must be set
     /// </summary>
     [KubeObject("SubjectAccessReviewSpec", "v1beta1")]
-    public class SubjectAccessReviewSpecV1Beta1
+    public partial class SubjectAccessReviewSpecV1Beta1
     {
         /// <summary>
         ///     Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.

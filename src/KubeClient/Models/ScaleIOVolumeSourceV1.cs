@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ScaleIOVolumeSource represents a persistent ScaleIO volume
     /// </summary>
     [KubeObject("ScaleIOVolumeSource", "v1")]
-    public class ScaleIOVolumeSourceV1
+    public partial class ScaleIOVolumeSourceV1
     {
         /// <summary>
         ///     Flag to enable/disable SSL communication with Gateway, default false

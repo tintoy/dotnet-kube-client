@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodPresetSpec is a description of a pod preset.
     /// </summary>
     [KubeObject("PodPresetSpec", "v1alpha1")]
-    public class PodPresetSpecV1Alpha1
+    public partial class PodPresetSpecV1Alpha1
     {
         /// <summary>
         ///     EnvFrom defines the collection of EnvFromSource to inject into containers.

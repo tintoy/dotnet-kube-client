@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("PodPreset", "settings.k8s.io/v1alpha1")]
     [KubeObject("PodPresetList", "settings.k8s.io/v1alpha1")]
-    public class PodPresetListV1Alpha1 : KubeResourceListV1<PodPresetV1Alpha1>
+    public partial class PodPresetListV1Alpha1 : KubeResourceListV1<PodPresetV1Alpha1>
     {
         /// <summary>
         ///     Items is a list of schema objects.

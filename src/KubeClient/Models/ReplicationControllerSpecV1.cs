@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ReplicationControllerSpec is the specification of a replication controller.
     /// </summary>
     [KubeObject("ReplicationControllerSpec", "v1")]
-    public class ReplicationControllerSpecV1
+    public partial class ReplicationControllerSpecV1
     {
         /// <summary>
         ///     Template is the object that describes the pod that will be created if insufficient replicas are detected. This takes precedence over a TemplateRef. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template

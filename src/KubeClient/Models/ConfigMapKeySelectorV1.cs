@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Selects a key from a ConfigMap.
     /// </summary>
     [KubeObject("ConfigMapKeySelector", "v1")]
-    public class ConfigMapKeySelectorV1
+    public partial class ConfigMapKeySelectorV1
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Job represents the configuration of a single job.
     /// </summary>
     [KubeObject("Job", "batch/v1")]
-    public class JobV1 : KubeResourceV1
+    public partial class JobV1 : KubeResourceV1
     {
         /// <summary>
         ///     Specification of the desired behavior of a job. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

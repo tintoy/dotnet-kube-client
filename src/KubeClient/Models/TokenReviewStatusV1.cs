@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     TokenReviewStatus is the result of the token authentication request.
     /// </summary>
     [KubeObject("TokenReviewStatus", "v1")]
-    public class TokenReviewStatusV1
+    public partial class TokenReviewStatusV1
     {
         /// <summary>
         ///     Authenticated indicates that the token was associated with a known user.

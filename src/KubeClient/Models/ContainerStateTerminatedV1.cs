@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ContainerStateTerminated is a terminated state of a container.
     /// </summary>
     [KubeObject("ContainerStateTerminated", "v1")]
-    public class ContainerStateTerminatedV1
+    public partial class ContainerStateTerminatedV1
     {
         /// <summary>
         ///     Container's ID in the format 'docker://&lt;container_id&gt;'

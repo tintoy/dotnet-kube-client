@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     FSGroupStrategyOptions defines the strategy type and options used to create the strategy.
     /// </summary>
     [KubeObject("FSGroupStrategyOptions", "v1beta1")]
-    public class FSGroupStrategyOptionsV1Beta1
+    public partial class FSGroupStrategyOptionsV1Beta1
     {
         /// <summary>
         ///     Rule is the strategy that will dictate what FSGroup is used in the SecurityContext.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodStatus represents information about the status of a pod. Status may trail the actual state of a system.
     /// </summary>
     [KubeObject("PodStatus", "v1")]
-    public class PodStatusV1
+    public partial class PodStatusV1
     {
         /// <summary>
         ///     IP address of the host to which the pod is assigned. Empty if not yet scheduled.

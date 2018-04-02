@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     StatefulSetStatus represents the current state of a StatefulSet.
     /// </summary>
     [KubeObject("StatefulSetStatus", "v1beta1")]
-    public class StatefulSetStatusV1Beta1
+    public partial class StatefulSetStatusV1Beta1
     {
         /// <summary>
         ///     currentRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).

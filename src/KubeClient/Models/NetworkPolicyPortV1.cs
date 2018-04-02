@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NetworkPolicyPort describes a port to allow traffic on
     /// </summary>
     [KubeObject("NetworkPolicyPort", "v1")]
-    public class NetworkPolicyPortV1
+    public partial class NetworkPolicyPortV1
     {
         /// <summary>
         ///     The protocol (TCP or UDP) which traffic must match. If not specified, this field defaults to TCP.

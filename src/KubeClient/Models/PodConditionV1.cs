@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodCondition contains details for the current condition of this pod.
     /// </summary>
     [KubeObject("PodCondition", "v1")]
-    public class PodConditionV1
+    public partial class PodConditionV1
     {
         /// <summary>
         ///     Last time we probed the condition.

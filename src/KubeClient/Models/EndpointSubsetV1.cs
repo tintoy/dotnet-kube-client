@@ -15,7 +15,7 @@ namespace KubeClient.Models
     ///         b: [ 10.10.1.1:309, 10.10.2.2:309 ]
     /// </summary>
     [KubeObject("EndpointSubset", "v1")]
-    public class EndpointSubsetV1
+    public partial class EndpointSubsetV1
     {
         /// <summary>
         ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.

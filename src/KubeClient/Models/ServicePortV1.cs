@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ServicePort contains information on service's port.
     /// </summary>
     [KubeObject("ServicePort", "v1")]
-    public class ServicePortV1
+    public partial class ServicePortV1
     {
         /// <summary>
         ///     The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. This maps to the 'Name' field in EndpointPort objects. Optional if only one ServicePort is defined on this service.

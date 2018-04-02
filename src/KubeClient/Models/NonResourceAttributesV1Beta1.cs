@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NonResourceAttributes includes the authorization attributes available for non-resource requests to the Authorizer interface
     /// </summary>
     [KubeObject("NonResourceAttributes", "v1beta1")]
-    public class NonResourceAttributesV1Beta1
+    public partial class NonResourceAttributesV1Beta1
     {
         /// <summary>
         ///     Verb is the standard HTTP verb

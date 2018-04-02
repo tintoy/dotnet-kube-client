@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     EnvVarSource represents a source for the value of an EnvVar.
     /// </summary>
     [KubeObject("EnvVarSource", "v1")]
-    public class EnvVarSourceV1
+    public partial class EnvVarSourceV1
     {
         /// <summary>
         ///     Selects a key of a ConfigMap.

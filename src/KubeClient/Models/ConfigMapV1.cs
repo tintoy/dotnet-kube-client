@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ConfigMap holds configuration data for pods to consume.
     /// </summary>
     [KubeObject("ConfigMap", "v1")]
-    public class ConfigMapV1 : KubeResourceV1
+    public partial class ConfigMapV1 : KubeResourceV1
     {
         /// <summary>
         ///     Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'.

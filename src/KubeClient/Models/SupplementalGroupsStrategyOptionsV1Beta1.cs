@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     SupplementalGroupsStrategyOptions defines the strategy type and options used to create the strategy.
     /// </summary>
     [KubeObject("SupplementalGroupsStrategyOptions", "v1beta1")]
-    public class SupplementalGroupsStrategyOptionsV1Beta1
+    public partial class SupplementalGroupsStrategyOptionsV1Beta1
     {
         /// <summary>
         ///     Rule is the strategy that will dictate what supplemental groups is used in the SecurityContext.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     An APIVersion represents a single concrete version of an object model.
     /// </summary>
     [KubeObject("APIVersion", "v1beta1")]
-    public class APIVersionV1Beta1
+    public partial class APIVersionV1Beta1
     {
         /// <summary>
         ///     Name of this version (e.g. 'v1').

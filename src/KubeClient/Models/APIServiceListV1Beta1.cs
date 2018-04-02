@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("APIService", "v1beta1")]
     [KubeObject("APIServiceList", "v1beta1")]
-    public class APIServiceListV1Beta1 : KubeResourceListV1<APIServiceV1Beta1>
+    public partial class APIServiceListV1Beta1 : KubeResourceListV1<APIServiceV1Beta1>
     {
         /// <summary>
         ///     Description not provided.

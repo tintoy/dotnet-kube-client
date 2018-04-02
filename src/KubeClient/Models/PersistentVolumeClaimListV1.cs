@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("PersistentVolumeClaim", "v1")]
     [KubeObject("PersistentVolumeClaimList", "v1")]
-    public class PersistentVolumeClaimListV1 : KubeResourceListV1<PersistentVolumeClaimV1>
+    public partial class PersistentVolumeClaimListV1 : KubeResourceListV1<PersistentVolumeClaimV1>
     {
         /// <summary>
         ///     A list of persistent volume claims. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NodeSpec describes the attributes that a node is created with.
     /// </summary>
     [KubeObject("NodeSpec", "v1")]
-    public class NodeSpecV1
+    public partial class NodeSpecV1
     {
         /// <summary>
         ///     External ID of the node assigned by some machine database (e.g. a cloud provider). Deprecated.

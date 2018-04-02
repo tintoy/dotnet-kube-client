@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Maps a string key to a path within a volume.
     /// </summary>
     [KubeObject("KeyToPath", "v1")]
-    public class KeyToPathV1
+    public partial class KeyToPathV1
     {
         /// <summary>
         ///     Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.

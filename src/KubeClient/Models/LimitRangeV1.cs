@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     LimitRange sets resource usage limits for each kind of resource in a Namespace.
     /// </summary>
     [KubeObject("LimitRange", "v1")]
-    public class LimitRangeV1 : KubeResourceV1
+    public partial class LimitRangeV1 : KubeResourceV1
     {
         /// <summary>
         ///     Spec defines the limits enforced. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

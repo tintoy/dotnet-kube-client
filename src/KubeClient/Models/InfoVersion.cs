@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Info contains versioning information. how we'll want to distribute that information.
     /// </summary>
     [KubeObject("Info", "version")]
-    public class InfoVersion
+    public partial class InfoVersion
     {
         /// <summary>
         ///     Description not provided.

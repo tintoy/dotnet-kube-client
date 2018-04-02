@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ServiceStatus represents the current status of a service.
     /// </summary>
     [KubeObject("ServiceStatus", "v1")]
-    public class ServiceStatusV1
+    public partial class ServiceStatusV1
     {
         /// <summary>
         ///     LoadBalancer contains the current status of the load-balancer, if one is present.

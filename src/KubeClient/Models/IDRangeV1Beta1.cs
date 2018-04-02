@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ID Range provides a min/max of an allowed range of IDs.
     /// </summary>
     [KubeObject("IDRange", "v1beta1")]
-    public class IDRangeV1Beta1
+    public partial class IDRangeV1Beta1
     {
         /// <summary>
         ///     Min is the start of the range, inclusive.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     HTTPGetAction describes an action based on HTTP Get requests.
     /// </summary>
     [KubeObject("HTTPGetAction", "v1")]
-    public class HTTPGetActionV1
+    public partial class HTTPGetActionV1
     {
         /// <summary>
         ///     Scheme to use for connecting to the host. Defaults to HTTP.

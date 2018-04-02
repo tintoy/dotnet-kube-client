@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
     /// </summary>
     [KubeObject("Probe", "v1")]
-    public class ProbeV1
+    public partial class ProbeV1
     {
         /// <summary>
         ///     One and only one of the following should be specified. Exec specifies the action to take.

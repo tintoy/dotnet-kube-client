@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting.
     /// </summary>
     [KubeObject("ContainerState", "v1")]
-    public class ContainerStateV1
+    public partial class ContainerStateV1
     {
         /// <summary>
         ///     Details about a terminated container

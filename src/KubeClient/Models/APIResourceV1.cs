@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     APIResource specifies the name of a resource and whether it is namespaced.
     /// </summary>
     [KubeObject("APIResource", "v1")]
-    public class APIResourceV1
+    public partial class APIResourceV1
     {
         /// <summary>
         ///     kind is the kind for the resource (e.g. 'Foo' is the kind for a resource 'foo')

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PersistentVolumeClaimStatus is the current status of a persistent volume claim.
     /// </summary>
     [KubeObject("PersistentVolumeClaimStatus", "v1")]
-    public class PersistentVolumeClaimStatusV1
+    public partial class PersistentVolumeClaimStatusV1
     {
         /// <summary>
         ///     Phase represents the current phase of PersistentVolumeClaim.

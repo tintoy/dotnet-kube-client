@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NodeCondition contains condition information for a node.
     /// </summary>
     [KubeObject("NodeCondition", "v1")]
-    public class NodeConditionV1
+    public partial class NodeConditionV1
     {
         /// <summary>
         ///     Last time we got an update on a given condition.

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
     /// </summary>
     [KubeObject("LabelSelectorRequirement", "v1")]
-    public class LabelSelectorRequirementV1
+    public partial class LabelSelectorRequirementV1
     {
         /// <summary>
         ///     operator represents a key's relationship to a set of values. Valid operators ard In, NotIn, Exists and DoesNotExist.

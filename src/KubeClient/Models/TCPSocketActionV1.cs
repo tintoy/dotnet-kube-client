@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     TCPSocketAction describes an action based on opening a socket
     /// </summary>
     [KubeObject("TCPSocketAction", "v1")]
-    public class TCPSocketActionV1
+    public partial class TCPSocketActionV1
     {
         /// <summary>
         ///     Optional: Host name to connect to, defaults to the pod IP.

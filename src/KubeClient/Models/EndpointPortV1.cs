@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     EndpointPort is a tuple that describes a single port.
     /// </summary>
     [KubeObject("EndpointPort", "v1")]
-    public class EndpointPortV1
+    public partial class EndpointPortV1
     {
         /// <summary>
         ///     The name of this port (corresponds to ServicePort.Name). Must be a DNS_LABEL. Optional only if one port is defined.

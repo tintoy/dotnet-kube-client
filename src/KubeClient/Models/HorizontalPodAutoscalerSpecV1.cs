@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     specification of a horizontal pod autoscaler.
     /// </summary>
     [KubeObject("HorizontalPodAutoscalerSpec", "v1")]
-    public class HorizontalPodAutoscalerSpecV1
+    public partial class HorizontalPodAutoscalerSpecV1
     {
         /// <summary>
         ///     target average CPU utilization (represented as a percentage of requested CPU) over all the pods; if not specified the default autoscaling policy will be used.

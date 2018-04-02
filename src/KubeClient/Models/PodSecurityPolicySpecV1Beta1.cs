@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Pod Security Policy Spec defines the policy enforced.
     /// </summary>
     [KubeObject("PodSecurityPolicySpec", "v1beta1")]
-    public class PodSecurityPolicySpecV1Beta1
+    public partial class PodSecurityPolicySpecV1Beta1
     {
         /// <summary>
         ///     hostIPC determines if the policy allows the use of HostIPC in the pod spec.

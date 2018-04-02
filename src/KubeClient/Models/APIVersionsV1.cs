@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     APIVersions lists the versions that are available, to allow clients to discover the API at /api, which is the root path of the legacy v1 API.
     /// </summary>
     [KubeObject("APIVersions", "v1")]
-    public class APIVersionsV1
+    public partial class APIVersionsV1
     {
         /// <summary>
         ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

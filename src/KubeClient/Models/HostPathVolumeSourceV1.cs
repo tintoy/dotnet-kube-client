@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Represents a host path mapped into a pod. Host path volumes do not support ownership management or SELinux relabeling.
     /// </summary>
     [KubeObject("HostPathVolumeSource", "v1")]
-    public class HostPathVolumeSourceV1
+    public partial class HostPathVolumeSourceV1
     {
         /// <summary>
         ///     The volume type. Can be one of ["File", "Directory", "FileOrCreate", "DirectoryOrCreate", "Socket", "CharDevice", "BlockDevice"].

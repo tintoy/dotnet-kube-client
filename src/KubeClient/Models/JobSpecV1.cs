@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     JobSpec describes how the job execution will look like.
     /// </summary>
     [KubeObject("JobSpec", "v1")]
-    public class JobSpecV1
+    public partial class JobSpecV1
     {
         /// <summary>
         ///     Describes the pod that will be created when executing a job. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/

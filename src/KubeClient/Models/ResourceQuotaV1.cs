@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ResourceQuota sets aggregate quota restrictions enforced per namespace
     /// </summary>
     [KubeObject("ResourceQuota", "v1")]
-    public class ResourceQuotaV1 : KubeResourceV1
+    public partial class ResourceQuotaV1 : KubeResourceV1
     {
         /// <summary>
         ///     Spec defines the desired quota. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

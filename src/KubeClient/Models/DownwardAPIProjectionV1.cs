@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("DownwardAPIVolumeFile", "v1")]
     [KubeObject("DownwardAPIProjection", "v1")]
-    public class DownwardAPIProjectionV1
+    public partial class DownwardAPIProjectionV1
     {
         /// <summary>
         ///     Items is a list of DownwardAPIVolume file

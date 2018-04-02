@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PersistentVolumeSpec is the specification of a persistent volume.
     /// </summary>
     [KubeObject("PersistentVolumeSpec", "v1")]
-    public class PersistentVolumeSpecV1
+    public partial class PersistentVolumeSpecV1
     {
         /// <summary>
         ///     ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.

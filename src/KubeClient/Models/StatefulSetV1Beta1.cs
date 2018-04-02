@@ -11,7 +11,7 @@ namespace KubeClient.Models
     ///     The StatefulSet guarantees that a given network identity will always map to the same storage identity.
     /// </summary>
     [KubeObject("StatefulSet", "apps/v1beta1")]
-    public class StatefulSetV1Beta1 : KubeResourceV1
+    public partial class StatefulSetV1Beta1 : KubeResourceV1
     {
         /// <summary>
         ///     Spec defines the desired identities of pods in this set.

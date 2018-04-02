@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("ControllerRevision", "apps/v1beta1")]
     [KubeObject("ControllerRevisionList", "apps/v1beta1")]
-    public class ControllerRevisionListV1Beta1 : KubeResourceListV1<ControllerRevisionV1Beta1>
+    public partial class ControllerRevisionListV1Beta1 : KubeResourceListV1<ControllerRevisionV1Beta1>
     {
         /// <summary>
         ///     Items is the list of ControllerRevisions

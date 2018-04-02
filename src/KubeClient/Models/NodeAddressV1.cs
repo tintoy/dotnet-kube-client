@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NodeAddress contains information for the node's address.
     /// </summary>
     [KubeObject("NodeAddress", "v1")]
-    public class NodeAddressV1
+    public partial class NodeAddressV1
     {
         /// <summary>
         ///     Node address type, one of Hostname, ExternalIP or InternalIP.

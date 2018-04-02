@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     DeploymentSpec is the specification of the desired behavior of the Deployment.
     /// </summary>
     [KubeObject("DeploymentSpec", "v1beta1")]
-    public class DeploymentSpecV1Beta1
+    public partial class DeploymentSpecV1Beta1
     {
         /// <summary>
         ///     Indicates that the deployment is paused and will not be processed by the deployment controller.

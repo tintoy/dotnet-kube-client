@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     EventSource contains information for an event.
     /// </summary>
     [KubeObject("EventSource", "v1")]
-    public class EventSourceV1
+    public partial class EventSourceV1
     {
         /// <summary>
         ///     Component from which the event is generated.

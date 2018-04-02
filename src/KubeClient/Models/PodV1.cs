@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Pod is a collection of containers that can run on a host. This resource is created by clients and scheduled onto hosts.
     /// </summary>
     [KubeObject("Pod", "v1")]
-    public class PodV1 : KubeResourceV1
+    public partial class PodV1 : KubeResourceV1
     {
         /// <summary>
         ///     Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

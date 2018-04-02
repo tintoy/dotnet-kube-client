@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     ContainerStateRunning is a running state of a container.
     /// </summary>
     [KubeObject("ContainerStateRunning", "v1")]
-    public class ContainerStateRunningV1
+    public partial class ContainerStateRunningV1
     {
         /// <summary>
         ///     Time at which the container was last (re-)started

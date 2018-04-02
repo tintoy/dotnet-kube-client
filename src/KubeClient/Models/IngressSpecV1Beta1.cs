@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     IngressSpec describes the Ingress the user wishes to exist.
     /// </summary>
     [KubeObject("IngressSpec", "v1beta1")]
-    public class IngressSpecV1Beta1
+    public partial class IngressSpecV1Beta1
     {
         /// <summary>
         ///     A default backend capable of servicing requests that don't match any rule. At least one of 'backend' or 'rules' must be specified. This field is optional to allow the loadbalancer controller or defaulting logic to specify a global default.

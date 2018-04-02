@@ -10,7 +10,7 @@ namespace KubeClient.Models
     ///     A GCE PD must exist before mounting to a container. The disk must also be in the same GCE project and zone as the kubelet. A GCE PD can only be mounted as read/write once or read-only many times. GCE PDs support ownership management and SELinux relabeling.
     /// </summary>
     [KubeObject("GCEPersistentDiskVolumeSource", "v1")]
-    public class GCEPersistentDiskVolumeSourceV1
+    public partial class GCEPersistentDiskVolumeSourceV1
     {
         /// <summary>
         ///     Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk

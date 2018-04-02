@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     No description provided.
     /// </summary>
     [KubeObject("DaemonSetUpdateStrategy", "v1beta1")]
-    public class DaemonSetUpdateStrategyV1Beta1
+    public partial class DaemonSetUpdateStrategyV1Beta1
     {
         /// <summary>
         ///     Rolling update config params. Present only if type = "RollingUpdate".

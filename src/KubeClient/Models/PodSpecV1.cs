@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     PodSpec is a description of a pod.
     /// </summary>
     [KubeObject("PodSpec", "v1")]
-    public class PodSpecV1
+    public partial class PodSpecV1
     {
         /// <summary>
         ///     Use the host's ipc namespace. Optional: Default to false.

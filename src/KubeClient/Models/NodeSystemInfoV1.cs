@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     NodeSystemInfo is a set of ids/uuids to uniquely identify the node.
     /// </summary>
     [KubeObject("NodeSystemInfo", "v1")]
-    public class NodeSystemInfoV1
+    public partial class NodeSystemInfoV1
     {
         /// <summary>
         ///     Boot ID reported by the node.

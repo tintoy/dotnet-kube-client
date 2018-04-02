@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.
     /// </summary>
     [KubeObject("HostAlias", "v1")]
-    public class HostAliasV1
+    public partial class HostAliasV1
     {
         /// <summary>
         ///     IP address of the host file entry.

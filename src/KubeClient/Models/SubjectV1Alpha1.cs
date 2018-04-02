@@ -8,7 +8,7 @@ namespace KubeClient.Models
     ///     Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
     /// </summary>
     [KubeObject("Subject", "v1alpha1")]
-    public class SubjectV1Alpha1
+    public partial class SubjectV1Alpha1
     {
         /// <summary>
         ///     Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.

@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("Pod", "v1")]
     [KubeObject("PodList", "v1")]
-    public class PodListV1 : KubeResourceListV1<PodV1>
+    public partial class PodListV1 : KubeResourceListV1<PodV1>
     {
         /// <summary>
         ///     List of pods. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md

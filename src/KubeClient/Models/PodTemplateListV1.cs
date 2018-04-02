@@ -9,7 +9,7 @@ namespace KubeClient.Models
     /// </summary>
     [KubeListItem("PodTemplate", "v1")]
     [KubeObject("PodTemplateList", "v1")]
-    public class PodTemplateListV1 : KubeResourceListV1<PodTemplateV1>
+    public partial class PodTemplateListV1 : KubeResourceListV1<PodTemplateV1>
     {
         /// <summary>
         ///     List of pod templates
