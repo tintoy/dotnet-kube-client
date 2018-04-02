@@ -12,7 +12,11 @@ IGNORE_MODELS = [
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
     'io.k8s.apimachinery.pkg.apis.meta.v1.Time',
     'io.k8s.apimachinery.pkg.api.resource.Quantity',
-    'io.k8s.apimachinery.pkg.util.intstr.IntOrString'
+    'io.k8s.apimachinery.pkg.util.intstr.IntOrString',
+    'io.k8s.api.apps.v1beta1.ControllerRevision',
+    'io.k8s.api.apps.v1beta1.ControllerRevisionList',
+    'io.k8s.api.apps.v1beta2.ControllerRevision',
+    'io.k8s.api.apps.v1beta2.ControllerRevisionList'
 ]
 VALUE_TYPE_NAMES = [
     'int',
@@ -39,7 +43,17 @@ class KubeModel(object):
         self.properties.clear()
 
         for property_name in sorted(property_definitions.keys(), key=get_defname_sort_key):
-            self.properties[property_name] = KubeModelProperty.from_definition(
+            safe_property_name = property_name
+            if safe_property_name.startswith('$'):
+                # Trim prefix
+                safe_property_name = safe_property_name[1:]
+
+                # Capitalise
+                safe_property_name = safe_property_name[0].capitalize() + safe_property_name[1:]
+                safe_property_name = safe_property_name.replace('$', 'dollar')
+
+            self.properties[safe_property_name] = KubeModelProperty.from_definition(
+                safe_property_name,
                 property_name,
                 property_definitions[property_name],
                 data_types
@@ -160,9 +174,9 @@ class KubeModel(object):
 
 
 class KubeModelProperty(object):
-    def __init__(self, name, summary, data_type, is_optional):
+    def __init__(self, name, json_name, summary, data_type, is_optional):
         self.name = capitalize_name(name)
-        self.json_name = name
+        self.json_name = json_name
         self.summary = summary or 'No summary provided'
         self.summary = self.summary.replace(
             '&', '&amp;'
@@ -181,12 +195,12 @@ class KubeModelProperty(object):
         )
 
     @classmethod
-    def from_definition(cls, name, property_definition, data_types):
+    def from_definition(cls, name, json_name, property_definition, data_types):
         summary = property_definition.get('description', 'Description not provided.')
         is_optional = summary.startswith('Optional') or 'if not specified' in summary
         data_type = KubeDataType.from_definition(property_definition, data_types)
 
-        return KubeModelProperty(name, summary, data_type, is_optional)
+        return KubeModelProperty(name, json_name, summary, data_type, is_optional)
 
 
 class KubeDataType(object):
@@ -221,6 +235,12 @@ class KubeDataType(object):
                 element_type = KubeDataType.from_definition(item_definition, data_types)
 
                 return KubeDictionaryDataType(element_type)
+            elif type_name == 'number':
+                type_format = definition['format']
+                if type_format == 'double':
+                    return KubeIntrinsicDataType('double')
+                elif type_format == 'int64':
+                    return KubeIntrinsicDataType('long')
             else:
                 if type_name in data_types:
                     return data_types[type_name]
@@ -330,7 +350,7 @@ def get_cts_type_name(swagger_type_name):
     return swagger_type_name
 
 def parse_models(definitions):
-    return {
+    models = {
         definition_name: KubeModel.from_definition(
             definition_name,
             definitions[definition_name]
@@ -338,6 +358,22 @@ def parse_models(definitions):
         for definition_name in definitions.keys()
         if definition_name not in IGNORE_MODELS
     }
+
+    # Some model definitions are deprecated, and remapped to other definitions
+    for (definition_name, definition) in definitions.items():
+        if definition_name in IGNORE_MODELS:
+            continue
+
+        # Remapped (stub) models have '$ref' but not 'properties'.
+        if '$ref' in definition and 'properties' not in definition:
+            map_to_definition_name = definition['$ref'].replace('#/definitions/', '')
+            if map_to_definition_name in IGNORE_MODELS:
+                continue
+
+            # Point the model name to the updated definition.
+            models[definition_name] = models[map_to_definition_name]
+
+    return models
 
 def get_data_types(models):
     data_types = {
@@ -384,11 +420,12 @@ def main():
     definitions = kube_swagger["definitions"]
 
     models = parse_models(definitions)
+
     data_types = get_data_types(models)
     parse_properties(models, data_types, definitions)
 
     for definition_name in sorted(definitions.keys(), key=get_defname_sort_key):
-        if definition_name in IGNORE_MODELS or definition_name.startswith('apimachinery.pkg.'):
+        if definition_name in IGNORE_MODELS:
             continue
 
         model = models[definition_name]
@@ -425,7 +462,7 @@ def main():
                 LINE_ENDING
             ))
 
-            class_file.write('    public class ' + model.clr_name)
+            class_file.write('    public partial class ' + model.clr_name)
             if model.is_resource():
                 class_file.write(' : KubeResourceV1')
             elif model.is_resource_list():
