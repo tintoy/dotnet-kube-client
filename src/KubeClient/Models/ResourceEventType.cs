@@ -16,17 +16,19 @@ namespace KubeClient.Models
         /// <summary>
         ///     Resource was modified.
         /// </summary>
-        [EnumMember(Value = "MODIFIED")] Modified,
+        [EnumMember(Value = "MODIFIED")]
+        Modified,
 
         /// <summary>
         ///     Resource was deleted.
         /// </summary>
-        [EnumMember(Value = "DELETED")] Deleted,
+        [EnumMember(Value = "DELETED")]
+        Deleted,
 
         /// <summary>
         ///     Resource encountered an error condition.
         /// </summary>
-        [EnumMember(Value = "ERROR")] Error
+        [EnumMember(Value = "ERROR")]
+        Error
     }
-
 }
