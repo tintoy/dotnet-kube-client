@@ -7,21 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     SELinuxOptions are the labels to be applied to the container
     /// </summary>
-    [KubeObject("SELinuxOptions", "v1")]
     public partial class SELinuxOptionsV1
     {
-        /// <summary>
-        ///     Role is a SELinux role label that applies to the container.
-        /// </summary>
-        [JsonProperty("role")]
-        public string Role { get; set; }
-
-        /// <summary>
-        ///     Type is a SELinux type label that applies to the container.
-        /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
         /// <summary>
         ///     Level is SELinux level label that applies to the container.
         /// </summary>
@@ -33,5 +20,17 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("user")]
         public string User { get; set; }
+
+        /// <summary>
+        ///     Role is a SELinux role label that applies to the container.
+        /// </summary>
+        [JsonProperty("role")]
+        public string Role { get; set; }
+
+        /// <summary>
+        ///     Type is a SELinux type label that applies to the container.
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

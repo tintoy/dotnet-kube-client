@@ -7,9 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     TokenReviewStatus is the result of the token authentication request.
     /// </summary>
-    [KubeObject("TokenReviewStatus", "v1beta1")]
     public partial class TokenReviewStatusV1Beta1
     {
+        /// <summary>
+        ///     User is the UserInfo associated with the provided token.
+        /// </summary>
+        [JsonProperty("user")]
+        public UserInfoV1Beta1 User { get; set; }
+
         /// <summary>
         ///     Authenticated indicates that the token was associated with a known user.
         /// </summary>
@@ -21,11 +26,5 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("error")]
         public string Error { get; set; }
-
-        /// <summary>
-        ///     User is the UserInfo associated with the provided token.
-        /// </summary>
-        [JsonProperty("user")]
-        public UserInfoV1Beta1 User { get; set; }
     }
 }

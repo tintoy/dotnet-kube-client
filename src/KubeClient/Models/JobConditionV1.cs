@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     JobCondition describes current state of a job.
     /// </summary>
-    [KubeObject("JobCondition", "v1")]
     public partial class JobConditionV1
     {
-        /// <summary>
-        ///     Last time the condition was checked.
-        /// </summary>
-        [JsonProperty("lastProbeTime")]
-        public DateTime? LastProbeTime { get; set; }
-
         /// <summary>
         ///     Last time the condition transit from one status to another.
         /// </summary>
@@ -29,10 +22,10 @@ namespace KubeClient.Models
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type of job condition, Complete or Failed.
+        ///     Last time the condition was checked.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("lastProbeTime")]
+        public DateTime? LastProbeTime { get; set; }
 
         /// <summary>
         ///     (brief) reason for the condition's last transition.
@@ -45,5 +38,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Type of job condition, Complete or Failed.
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

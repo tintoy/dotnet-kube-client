@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodCondition contains details for the current condition of this pod.
     /// </summary>
-    [KubeObject("PodCondition", "v1")]
     public partial class PodConditionV1
     {
-        /// <summary>
-        ///     Last time we probed the condition.
-        /// </summary>
-        [JsonProperty("lastProbeTime")]
-        public DateTime? LastProbeTime { get; set; }
-
         /// <summary>
         ///     Last time the condition transitioned from one status to another.
         /// </summary>
@@ -29,10 +22,10 @@ namespace KubeClient.Models
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type is the type of the condition. Currently only Ready. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
+        ///     Last time we probed the condition.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("lastProbeTime")]
+        public DateTime? LastProbeTime { get; set; }
 
         /// <summary>
         ///     Unique, one-word, CamelCase reason for the condition's last transition.
@@ -45,5 +38,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Type is the type of the condition. Currently only Ready. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

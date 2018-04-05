@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     RoleRef contains information that points to the role being used
     /// </summary>
-    [KubeObject("RoleRef", "v1beta1")]
     public partial class RoleRefV1Beta1
     {
         /// <summary>

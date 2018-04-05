@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIServiceStatus contains derived information about an API server
     /// </summary>
-    [KubeObject("APIServiceStatus", "v1beta1")]
     public partial class APIServiceStatusV1Beta1
     {
         /// <summary>

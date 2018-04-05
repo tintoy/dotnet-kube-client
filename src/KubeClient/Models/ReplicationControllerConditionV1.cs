@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationControllerCondition describes the state of a replication controller at a certain point.
     /// </summary>
-    [KubeObject("ReplicationControllerCondition", "v1")]
     public partial class ReplicationControllerConditionV1
     {
-        /// <summary>
-        ///     The last time the condition transitioned from one status to another.
-        /// </summary>
-        [JsonProperty("lastTransitionTime")]
-        public DateTime? LastTransitionTime { get; set; }
-
         /// <summary>
         ///     A human readable message indicating details about the transition.
         /// </summary>
@@ -23,10 +16,10 @@ namespace KubeClient.Models
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type of replication controller condition.
+        ///     The last time the condition transitioned from one status to another.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("lastTransitionTime")]
+        public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
         ///     The reason for the condition's last transition.
@@ -39,5 +32,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Type of replication controller condition.
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

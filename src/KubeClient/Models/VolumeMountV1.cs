@@ -7,14 +7,13 @@ namespace KubeClient.Models
     /// <summary>
     ///     VolumeMount describes a mounting of a Volume within a container.
     /// </summary>
-    [KubeObject("VolumeMount", "v1")]
     public partial class VolumeMountV1
     {
         /// <summary>
-        ///     This must match the Name of a Volume.
+        ///     Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
         /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("subPath")]
+        public string SubPath { get; set; }
 
         /// <summary>
         ///     Path within the container at which the volume should be mounted.  Must not contain ':'.
@@ -23,10 +22,10 @@ namespace KubeClient.Models
         public string MountPath { get; set; }
 
         /// <summary>
-        ///     Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+        ///     This must match the Name of a Volume.
         /// </summary>
-        [JsonProperty("subPath")]
-        public string SubPath { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.

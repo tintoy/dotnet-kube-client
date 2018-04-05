@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     CustomResourceValidation is a list of validation methods for CustomResources.
     /// </summary>
-    [KubeObject("CustomResourceValidation", "v1beta1")]
     public partial class CustomResourceValidationV1Beta1
     {
         /// <summary>

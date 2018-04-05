@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Maps a string key to a path within a volume.
     /// </summary>
-    [KubeObject("KeyToPath", "v1")]
     public partial class KeyToPathV1
     {
         /// <summary>
@@ -17,15 +16,15 @@ namespace KubeClient.Models
         public int? Mode { get; set; }
 
         /// <summary>
-        ///     The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
-        /// </summary>
-        [JsonProperty("path")]
-        public string Path { get; set; }
-
-        /// <summary>
         ///     The key to project.
         /// </summary>
         [JsonProperty("key")]
         public string Key { get; set; }
+
+        /// <summary>
+        ///     The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+        /// </summary>
+        [JsonProperty("path")]
+        public string Path { get; set; }
     }
 }

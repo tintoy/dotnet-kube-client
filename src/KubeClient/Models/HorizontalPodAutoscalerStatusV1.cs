@@ -7,9 +7,20 @@ namespace KubeClient.Models
     /// <summary>
     ///     current status of a horizontal pod autoscaler
     /// </summary>
-    [KubeObject("HorizontalPodAutoscalerStatus", "v1")]
     public partial class HorizontalPodAutoscalerStatusV1
     {
+        /// <summary>
+        ///     current number of replicas of pods managed by this autoscaler.
+        /// </summary>
+        [JsonProperty("currentReplicas")]
+        public int CurrentReplicas { get; set; }
+
+        /// <summary>
+        ///     desired number of replicas of pods managed by this autoscaler.
+        /// </summary>
+        [JsonProperty("desiredReplicas")]
+        public int DesiredReplicas { get; set; }
+
         /// <summary>
         ///     current average CPU utilization over all pods, represented as a percentage of requested CPU, e.g. 70 means that an average pod is using now 70% of its requested CPU.
         /// </summary>
@@ -27,17 +38,5 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("observedGeneration")]
         public int ObservedGeneration { get; set; }
-
-        /// <summary>
-        ///     current number of replicas of pods managed by this autoscaler.
-        /// </summary>
-        [JsonProperty("currentReplicas")]
-        public int CurrentReplicas { get; set; }
-
-        /// <summary>
-        ///     desired number of replicas of pods managed by this autoscaler.
-        /// </summary>
-        [JsonProperty("desiredReplicas")]
-        public int DesiredReplicas { get; set; }
     }
 }

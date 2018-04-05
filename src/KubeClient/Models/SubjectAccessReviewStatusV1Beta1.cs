@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     SubjectAccessReviewStatus
     /// </summary>
-    [KubeObject("SubjectAccessReviewStatus", "v1beta1")]
     public partial class SubjectAccessReviewStatusV1Beta1
     {
         /// <summary>

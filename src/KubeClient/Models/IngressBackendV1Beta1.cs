@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     IngressBackend describes all endpoints for a given service and port.
     /// </summary>
-    [KubeObject("IngressBackend", "v1beta1")]
     public partial class IngressBackendV1Beta1
     {
         /// <summary>

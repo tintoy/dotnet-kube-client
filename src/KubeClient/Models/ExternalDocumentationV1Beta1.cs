@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ExternalDocumentation allows referencing an external resource for extended documentation.
     /// </summary>
-    [KubeObject("ExternalDocumentation", "v1beta1")]
     public partial class ExternalDocumentationV1Beta1
     {
         /// <summary>

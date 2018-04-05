@@ -7,9 +7,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.
     /// </summary>
-    [KubeObject("APIResourceList", "v1")]
     public partial class APIResourceListV1
     {
+        /// <summary>
+        ///     groupVersion is the group and version this APIResourceList is for.
+        /// </summary>
+        [JsonProperty("groupVersion")]
+        public string GroupVersion { get; set; }
+
         /// <summary>
         ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
         /// </summary>
@@ -21,12 +26,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("apiVersion")]
         public string ApiVersion { get; set; }
-
-        /// <summary>
-        ///     groupVersion is the group and version this APIResourceList is for.
-        /// </summary>
-        [JsonProperty("groupVersion")]
-        public string GroupVersion { get; set; }
 
         /// <summary>
         ///     resources contains the name of the resources and if they are namespaced.

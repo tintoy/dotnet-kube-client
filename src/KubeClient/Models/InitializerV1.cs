@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Initializer is information about an initializer that has not yet completed.
     /// </summary>
-    [KubeObject("Initializer", "v1")]
     public partial class InitializerV1
     {
         /// <summary>

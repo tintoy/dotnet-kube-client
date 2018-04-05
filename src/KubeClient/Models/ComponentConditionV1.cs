@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Information about the condition of a component.
     /// </summary>
-    [KubeObject("ComponentCondition", "v1")]
     public partial class ComponentConditionV1
     {
         /// <summary>
@@ -17,10 +16,10 @@ namespace KubeClient.Models
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type of condition for a component. Valid value: "Healthy"
+        ///     Status of the condition for a component. Valid values for "Healthy": "True", "False", or "Unknown".
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("status")]
+        public string Status { get; set; }
 
         /// <summary>
         ///     Condition error code for a component. For example, a health check error code.
@@ -29,9 +28,9 @@ namespace KubeClient.Models
         public string Error { get; set; }
 
         /// <summary>
-        ///     Status of the condition for a component. Valid values for "Healthy": "True", "False", or "Unknown".
+        ///     Type of condition for a component. Valid value: "Healthy"
         /// </summary>
-        [JsonProperty("status")]
-        public string Status { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

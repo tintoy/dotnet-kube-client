@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ContainerStateWaiting is a waiting state of a container.
     /// </summary>
-    [KubeObject("ContainerStateWaiting", "v1")]
     public partial class ContainerStateWaitingV1
     {
         /// <summary>

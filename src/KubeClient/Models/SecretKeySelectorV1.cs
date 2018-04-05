@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     SecretKeySelector selects a key of a Secret.
     /// </summary>
-    [KubeObject("SecretKeySelector", "v1")]
     public partial class SecretKeySelectorV1
     {
-        /// <summary>
-        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
         /// <summary>
         ///     Specify whether the Secret or it's key must be defined
         /// </summary>
@@ -27,5 +20,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("key")]
         public string Key { get; set; }
+
+        /// <summary>
+        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }

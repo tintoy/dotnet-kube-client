@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentRollback stores the information required to rollback a deployment.
     /// </summary>
-    [KubeObject("DeploymentRollback", "apps/v1beta1")]
     public partial class DeploymentRollbackV1Beta1
     {
         /// <summary>
@@ -17,16 +16,16 @@ namespace KubeClient.Models
         public string Kind { get; set; }
 
         /// <summary>
-        ///     Required: This must match the Name of a deployment.
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources
         /// </summary>
         [JsonProperty("apiVersion")]
         public string ApiVersion { get; set; }
+
+        /// <summary>
+        ///     Required: This must match the Name of a deployment.
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     The config of this deployment rollback.

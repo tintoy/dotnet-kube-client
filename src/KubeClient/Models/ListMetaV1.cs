@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.
     /// </summary>
-    [KubeObject("ListMeta", "v1")]
     public partial class ListMetaV1
     {
         /// <summary>

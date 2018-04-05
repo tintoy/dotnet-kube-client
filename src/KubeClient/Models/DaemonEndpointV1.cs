@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     DaemonEndpoint contains information about a single Daemon endpoint.
     /// </summary>
-    [KubeObject("DaemonEndpoint", "v1")]
     public partial class DaemonEndpointV1
     {
         /// <summary>

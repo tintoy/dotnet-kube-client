@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     NodeCondition contains condition information for a node.
     /// </summary>
-    [KubeObject("NodeCondition", "v1")]
     public partial class NodeConditionV1
     {
-        /// <summary>
-        ///     Last time we got an update on a given condition.
-        /// </summary>
-        [JsonProperty("lastHeartbeatTime")]
-        public DateTime? LastHeartbeatTime { get; set; }
-
         /// <summary>
         ///     Last time the condition transit from one status to another.
         /// </summary>
@@ -29,10 +22,10 @@ namespace KubeClient.Models
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type of node condition.
+        ///     Last time we got an update on a given condition.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("lastHeartbeatTime")]
+        public DateTime? LastHeartbeatTime { get; set; }
 
         /// <summary>
         ///     (brief) reason for the condition's last transition.
@@ -45,5 +38,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Type of node condition.
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

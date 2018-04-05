@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ResourceFieldSelector represents container resources (cpu, memory) and their output format
     /// </summary>
-    [KubeObject("ResourceFieldSelector", "v1")]
     public partial class ResourceFieldSelectorV1
     {
         /// <summary>
@@ -17,15 +16,15 @@ namespace KubeClient.Models
         public string ContainerName { get; set; }
 
         /// <summary>
-        ///     Required: resource to select
-        /// </summary>
-        [JsonProperty("resource")]
-        public string Resource { get; set; }
-
-        /// <summary>
         ///     Specifies the output format of the exposed resources, defaults to "1"
         /// </summary>
         [JsonProperty("divisor")]
         public string Divisor { get; set; }
+
+        /// <summary>
+        ///     Required: resource to select
+        /// </summary>
+        [JsonProperty("resource")]
+        public string Resource { get; set; }
     }
 }
