@@ -199,7 +199,7 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [JsonProperty("items")]
-        public JSONSchemaPropsOrArrayV1Beta1 Items { get; set; }
+        public JSONSchemaPropsV1Beta1 Items { get; set; }
 
         /// <summary>
         ///     Description not provided.

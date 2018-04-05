@@ -42990,7 +42990,7 @@ definitions:
       id:
         type: string
       items:
-        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrArray'
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
       maxItems:
         format: int64
         type: integer
@@ -43044,8 +43044,8 @@ definitions:
         type: string
       uniqueItems:
         type: boolean
-  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrArray:
-    description: JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps
+  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps:
+    description: JSONSchemaProps represents a value that can either be a JSONSchemaProps
       or an array of JSONSchemaProps. Mainly here for serialization purposes.
     properties:
       JSONSchemas:
