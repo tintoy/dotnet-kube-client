@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeObject("NetworkPolicySpec", "v1beta1")]
     public partial class NetworkPolicySpecV1Beta1
     {
         /// <summary>

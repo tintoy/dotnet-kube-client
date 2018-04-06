@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentCondition describes the state of a deployment at a certain point.
     /// </summary>
-    [KubeObject("DeploymentCondition", "v1beta1")]
     public partial class DeploymentConditionV1Beta1
     {
         /// <summary>
@@ -17,22 +16,16 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     The last time this condition was updated.
-        /// </summary>
-        [JsonProperty("lastUpdateTime")]
-        public DateTime? LastUpdateTime { get; set; }
-
-        /// <summary>
         ///     A human readable message indicating details about the transition.
         /// </summary>
         [JsonProperty("message")]
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type of deployment condition.
+        ///     Status of the condition, one of True, False, Unknown.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("status")]
+        public string Status { get; set; }
 
         /// <summary>
         ///     The reason for the condition's last transition.
@@ -41,9 +34,15 @@ namespace KubeClient.Models
         public string Reason { get; set; }
 
         /// <summary>
-        ///     Status of the condition, one of True, False, Unknown.
+        ///     The last time this condition was updated.
         /// </summary>
-        [JsonProperty("status")]
-        public string Status { get; set; }
+        [JsonProperty("lastUpdateTime")]
+        public DateTime? LastUpdateTime { get; set; }
+
+        /// <summary>
+        ///     Type of deployment condition.
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

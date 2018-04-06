@@ -7,14 +7,13 @@ namespace KubeClient.Models
     /// <summary>
     ///     AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
     /// </summary>
-    [KubeObject("AzureFileVolumeSource", "v1")]
     public partial class AzureFileVolumeSourceV1
     {
         /// <summary>
-        ///     the name of secret that contains Azure Storage Account Name and Key
+        ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
-        [JsonProperty("secretName")]
-        public string SecretName { get; set; }
+        [JsonProperty("readOnly")]
+        public bool ReadOnly { get; set; }
 
         /// <summary>
         ///     Share Name
@@ -23,9 +22,9 @@ namespace KubeClient.Models
         public string ShareName { get; set; }
 
         /// <summary>
-        ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+        ///     the name of secret that contains Azure Storage Account Name and Key
         /// </summary>
-        [JsonProperty("readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("secretName")]
+        public string SecretName { get; set; }
     }
 }

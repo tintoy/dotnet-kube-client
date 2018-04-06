@@ -7,14 +7,19 @@ namespace KubeClient.Models
     /// <summary>
     ///     Info contains versioning information. how we'll want to distribute that information.
     /// </summary>
-    [KubeObject("Info", "version")]
     public partial class InfoVersion
     {
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("buildDate")]
-        public string BuildDate { get; set; }
+        [JsonProperty("compiler")]
+        public string Compiler { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("gitVersion")]
+        public string GitVersion { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -31,26 +36,20 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("gitVersion")]
-        public string GitVersion { get; set; }
-
-        /// <summary>
-        ///     Description not provided.
-        /// </summary>
-        [JsonProperty("goVersion")]
-        public string GoVersion { get; set; }
-
-        /// <summary>
-        ///     Description not provided.
-        /// </summary>
-        [JsonProperty("compiler")]
-        public string Compiler { get; set; }
-
-        /// <summary>
-        ///     Description not provided.
-        /// </summary>
         [JsonProperty("major")]
         public string Major { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("gitCommit")]
+        public string GitCommit { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("buildDate")]
+        public string BuildDate { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -61,7 +60,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("gitCommit")]
-        public string GitCommit { get; set; }
+        [JsonProperty("goVersion")]
+        public string GoVersion { get; set; }
     }
 }

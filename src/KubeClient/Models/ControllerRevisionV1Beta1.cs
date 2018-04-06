@@ -11,15 +11,15 @@ namespace KubeClient.Models
     public partial class ControllerRevisionV1Beta1 : KubeResourceV1
     {
         /// <summary>
-        ///     Data is the serialized representation of the state.
-        /// </summary>
-        [JsonProperty("data")]
-        public RawExtensionRuntime Data { get; set; }
-
-        /// <summary>
         ///     Revision indicates the revision of the state represented by Data.
         /// </summary>
         [JsonProperty("revision")]
         public int Revision { get; set; }
+
+        /// <summary>
+        ///     Data is the serialized representation of the state.
+        /// </summary>
+        [JsonProperty("data")]
+        public RawExtensionRuntime Data { get; set; }
     }
 }

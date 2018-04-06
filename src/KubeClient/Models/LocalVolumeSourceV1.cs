@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Local represents directly-attached storage with node affinity
     /// </summary>
-    [KubeObject("LocalVolumeSource", "v1")]
     public partial class LocalVolumeSourceV1
     {
         /// <summary>

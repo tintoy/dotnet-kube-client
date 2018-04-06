@@ -7,9 +7,26 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentStatus is the most recently observed status of the Deployment.
     /// </summary>
-    [KubeObject("DeploymentStatus", "v1beta1")]
     public partial class DeploymentStatusV1Beta1
     {
+        /// <summary>
+        ///     Represents the latest available observations of a deployment's current state.
+        /// </summary>
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<DeploymentConditionV1Beta1> Conditions { get; set; } = new List<DeploymentConditionV1Beta1>();
+
+        /// <summary>
+        ///     Total number of unavailable pods targeted by this deployment.
+        /// </summary>
+        [JsonProperty("unavailableReplicas")]
+        public int UnavailableReplicas { get; set; }
+
+        /// <summary>
+        ///     Total number of non-terminated pods targeted by this deployment (their labels match the selector).
+        /// </summary>
+        [JsonProperty("replicas")]
+        public int Replicas { get; set; }
+
         /// <summary>
         ///     The generation observed by the deployment controller.
         /// </summary>
@@ -23,28 +40,10 @@ namespace KubeClient.Models
         public int AvailableReplicas { get; set; }
 
         /// <summary>
-        ///     Represents the latest available observations of a deployment's current state.
-        /// </summary>
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DeploymentConditionV1Beta1> Conditions { get; set; } = new List<DeploymentConditionV1Beta1>();
-
-        /// <summary>
         ///     Total number of ready pods targeted by this deployment.
         /// </summary>
         [JsonProperty("readyReplicas")]
         public int ReadyReplicas { get; set; }
-
-        /// <summary>
-        ///     Total number of non-terminated pods targeted by this deployment (their labels match the selector).
-        /// </summary>
-        [JsonProperty("replicas")]
-        public int Replicas { get; set; }
-
-        /// <summary>
-        ///     Total number of unavailable pods targeted by this deployment.
-        /// </summary>
-        [JsonProperty("unavailableReplicas")]
-        public int UnavailableReplicas { get; set; }
 
         /// <summary>
         ///     Total number of non-terminated pods targeted by this deployment that have the desired template spec.

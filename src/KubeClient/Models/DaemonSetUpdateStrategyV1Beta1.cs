@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeObject("DaemonSetUpdateStrategy", "v1beta1")]
     public partial class DaemonSetUpdateStrategyV1Beta1
     {
         /// <summary>

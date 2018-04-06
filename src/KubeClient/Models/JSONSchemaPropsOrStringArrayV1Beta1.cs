@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     JSONSchemaPropsOrStringArray represents a JSONSchemaProps or a string array.
     /// </summary>
-    [KubeObject("JSONSchemaPropsOrStringArray", "v1beta1")]
     public partial class JSONSchemaPropsOrStringArrayV1Beta1
     {
         /// <summary>

@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     DownwardAPIVolumeFile represents information to create the file containing the pod field
     /// </summary>
-    [KubeObject("DownwardAPIVolumeFile", "v1")]
     public partial class DownwardAPIVolumeFileV1
     {
         /// <summary>
@@ -23,15 +22,15 @@ namespace KubeClient.Models
         public ObjectFieldSelectorV1 FieldRef { get; set; }
 
         /// <summary>
-        ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-        /// </summary>
-        [JsonProperty("resourceFieldRef")]
-        public ResourceFieldSelectorV1 ResourceFieldRef { get; set; }
-
-        /// <summary>
         ///     Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
         /// </summary>
         [JsonProperty("path")]
         public string Path { get; set; }
+
+        /// <summary>
+        ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+        /// </summary>
+        [JsonProperty("resourceFieldRef")]
+        public ResourceFieldSelectorV1 ResourceFieldRef { get; set; }
     }
 }

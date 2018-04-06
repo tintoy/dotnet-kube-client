@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     No description provided.
     /// </summary>
-    [KubeObject("APIServiceCondition", "v1beta1")]
     public partial class APIServiceConditionV1Beta1
     {
-        /// <summary>
-        ///     Last time the condition transitioned from one status to another.
-        /// </summary>
-        [JsonProperty("lastTransitionTime")]
-        public DateTime? LastTransitionTime { get; set; }
-
         /// <summary>
         ///     Human-readable message indicating details about last transition.
         /// </summary>
@@ -23,10 +16,10 @@ namespace KubeClient.Models
         public string Message { get; set; }
 
         /// <summary>
-        ///     Type is the type of the condition.
+        ///     Last time the condition transitioned from one status to another.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("lastTransitionTime")]
+        public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
         ///     Unique, one-word, CamelCase reason for the condition's last transition.
@@ -39,5 +32,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Type is the type of the condition.
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

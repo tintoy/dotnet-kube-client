@@ -14,20 +14,19 @@ namespace KubeClient.Models
     ///         a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
     ///         b: [ 10.10.1.1:309, 10.10.2.2:309 ]
     /// </summary>
-    [KubeObject("EndpointSubset", "v1")]
     public partial class EndpointSubsetV1
     {
-        /// <summary>
-        ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
-        /// </summary>
-        [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointAddressV1> Addresses { get; set; } = new List<EndpointAddressV1>();
-
         /// <summary>
         ///     IP addresses which offer the related ports but are not currently marked as ready because they have not yet finished starting, have recently failed a readiness check, or have recently failed a liveness check.
         /// </summary>
         [JsonProperty("notReadyAddresses", NullValueHandling = NullValueHandling.Ignore)]
         public List<EndpointAddressV1> NotReadyAddresses { get; set; } = new List<EndpointAddressV1>();
+
+        /// <summary>
+        ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
+        /// </summary>
+        [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
+        public List<EndpointAddressV1> Addresses { get; set; } = new List<EndpointAddressV1>();
 
         /// <summary>
         ///     Port numbers available on the related IP addresses.

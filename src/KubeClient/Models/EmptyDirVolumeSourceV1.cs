@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Represents an empty directory for a pod. Empty directory volumes support ownership management and SELinux relabeling.
     /// </summary>
-    [KubeObject("EmptyDirVolumeSource", "v1")]
     public partial class EmptyDirVolumeSourceV1
     {
         /// <summary>

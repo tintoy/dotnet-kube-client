@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Pod anti affinity is a group of inter pod anti affinity scheduling rules.
     /// </summary>
-    [KubeObject("PodAntiAffinity", "v1")]
     public partial class PodAntiAffinityV1
     {
         /// <summary>

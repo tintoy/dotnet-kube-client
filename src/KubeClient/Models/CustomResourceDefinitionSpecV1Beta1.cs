@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     CustomResourceDefinitionSpec describes how a user wants their resource to appear
     /// </summary>
-    [KubeObject("CustomResourceDefinitionSpec", "v1beta1")]
     public partial class CustomResourceDefinitionSpecV1Beta1
     {
         /// <summary>
@@ -17,10 +16,10 @@ namespace KubeClient.Models
         public string Scope { get; set; }
 
         /// <summary>
-        ///     Validation describes the validation methods for CustomResources This field is alpha-level and should only be sent to servers that enable the CustomResourceValidation feature.
+        ///     Group is the group this resource belongs in
         /// </summary>
-        [JsonProperty("validation")]
-        public CustomResourceValidationV1Beta1 Validation { get; set; }
+        [JsonProperty("group")]
+        public string Group { get; set; }
 
         /// <summary>
         ///     Version is the version this resource belongs in
@@ -29,10 +28,10 @@ namespace KubeClient.Models
         public string Version { get; set; }
 
         /// <summary>
-        ///     Group is the group this resource belongs in
+        ///     Validation describes the validation methods for CustomResources This field is alpha-level and should only be sent to servers that enable the CustomResourceValidation feature.
         /// </summary>
-        [JsonProperty("group")]
-        public string Group { get; set; }
+        [JsonProperty("validation")]
+        public CustomResourceValidationV1Beta1 Validation { get; set; }
 
         /// <summary>
         ///     Names are the names used to describe this custom resource

@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     LoadBalancerIngress represents the status of a load-balancer ingress point: traffic intended for the service should be sent to an ingress point.
     /// </summary>
-    [KubeObject("LoadBalancerIngress", "v1")]
     public partial class LoadBalancerIngressV1
     {
         /// <summary>

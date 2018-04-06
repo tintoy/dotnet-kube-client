@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     TCPSocketAction describes an action based on opening a socket
     /// </summary>
-    [KubeObject("TCPSocketAction", "v1")]
     public partial class TCPSocketActionV1
     {
         /// <summary>

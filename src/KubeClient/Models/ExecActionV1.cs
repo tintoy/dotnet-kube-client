@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ExecAction describes a "run in container" action.
     /// </summary>
-    [KubeObject("ExecAction", "v1")]
     public partial class ExecActionV1
     {
         /// <summary>

@@ -7,15 +7,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     IngressSpec describes the Ingress the user wishes to exist.
     /// </summary>
-    [KubeObject("IngressSpec", "v1beta1")]
     public partial class IngressSpecV1Beta1
     {
-        /// <summary>
-        ///     A default backend capable of servicing requests that don't match any rule. At least one of 'backend' or 'rules' must be specified. This field is optional to allow the loadbalancer controller or defaulting logic to specify a global default.
-        /// </summary>
-        [JsonProperty("backend")]
-        public IngressBackendV1Beta1 Backend { get; set; }
-
         /// <summary>
         ///     A list of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
         /// </summary>
@@ -27,5 +20,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("tls", NullValueHandling = NullValueHandling.Ignore)]
         public List<IngressTLSV1Beta1> Tls { get; set; } = new List<IngressTLSV1Beta1>();
+
+        /// <summary>
+        ///     A default backend capable of servicing requests that don't match any rule. At least one of 'backend' or 'rules' must be specified. This field is optional to allow the loadbalancer controller or defaulting logic to specify a global default.
+        /// </summary>
+        [JsonProperty("backend")]
+        public IngressBackendV1Beta1 Backend { get; set; }
     }
 }

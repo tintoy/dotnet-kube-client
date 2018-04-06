@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
     /// </summary>
-    [KubeObject("LocalObjectReference", "v1")]
     public partial class LocalObjectReferenceV1
     {
         /// <summary>

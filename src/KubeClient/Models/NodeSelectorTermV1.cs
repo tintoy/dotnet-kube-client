@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     A null or empty node selector term matches no objects.
     /// </summary>
-    [KubeObject("NodeSelectorTerm", "v1")]
     public partial class NodeSelectorTermV1
     {
         /// <summary>

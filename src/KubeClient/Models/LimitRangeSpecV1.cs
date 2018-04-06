@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     LimitRangeSpec defines a min/max usage limit for resources that match on kind.
     /// </summary>
-    [KubeObject("LimitRangeSpec", "v1")]
     public partial class LimitRangeSpecV1
     {
         /// <summary>

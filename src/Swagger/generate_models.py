@@ -456,11 +456,12 @@ def main():
                     LINE_ENDING
                 ))
 
-            class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
-                model.name,
-                model.api_version,
-                LINE_ENDING
-            ))
+            if model.is_resource() or model.is_resource_list():
+                class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
+                    model.name,
+                    model.api_version,
+                    LINE_ENDING
+                ))
 
             class_file.write('    public partial class ' + model.clr_name)
             if model.is_resource():

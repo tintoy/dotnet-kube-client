@@ -11,12 +11,6 @@ namespace KubeClient.Models
     public partial class ServiceAccountV1 : KubeResourceV1
     {
         /// <summary>
-        ///     AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted. Can be overridden at the pod level.
-        /// </summary>
-        [JsonProperty("automountServiceAccountToken")]
-        public bool AutomountServiceAccountToken { get; set; }
-
-        /// <summary>
         ///     ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images in pods that reference this ServiceAccount. ImagePullSecrets are distinct from Secrets because Secrets can be mounted in the pod, but ImagePullSecrets are only accessed by the kubelet. More info: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
         /// </summary>
         [JsonProperty("imagePullSecrets", NullValueHandling = NullValueHandling.Ignore)]
@@ -27,5 +21,11 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("secrets", NullValueHandling = NullValueHandling.Ignore)]
         public List<ObjectReferenceV1> Secrets { get; set; } = new List<ObjectReferenceV1>();
+
+        /// <summary>
+        ///     AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted. Can be overridden at the pod level.
+        /// </summary>
+        [JsonProperty("automountServiceAccountToken")]
+        public bool AutomountServiceAccountToken { get; set; }
     }
 }

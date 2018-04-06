@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     IngressStatus describe the current state of the Ingress.
     /// </summary>
-    [KubeObject("IngressStatus", "v1beta1")]
     public partial class IngressStatusV1Beta1
     {
         /// <summary>

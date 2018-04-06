@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     EnvVarSource represents a source for the value of an EnvVar.
     /// </summary>
-    [KubeObject("EnvVarSource", "v1")]
     public partial class EnvVarSourceV1
     {
         /// <summary>
@@ -23,15 +22,15 @@ namespace KubeClient.Models
         public ObjectFieldSelectorV1 FieldRef { get; set; }
 
         /// <summary>
-        ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-        /// </summary>
-        [JsonProperty("resourceFieldRef")]
-        public ResourceFieldSelectorV1 ResourceFieldRef { get; set; }
-
-        /// <summary>
         ///     Selects a key of a secret in the pod's namespace
         /// </summary>
         [JsonProperty("secretKeyRef")]
         public SecretKeySelectorV1 SecretKeyRef { get; set; }
+
+        /// <summary>
+        ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+        /// </summary>
+        [JsonProperty("resourceFieldRef")]
+        public ResourceFieldSelectorV1 ResourceFieldRef { get; set; }
     }
 }

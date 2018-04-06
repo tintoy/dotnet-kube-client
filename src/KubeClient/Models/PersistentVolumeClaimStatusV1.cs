@@ -7,14 +7,13 @@ namespace KubeClient.Models
     /// <summary>
     ///     PersistentVolumeClaimStatus is the current status of a persistent volume claim.
     /// </summary>
-    [KubeObject("PersistentVolumeClaimStatus", "v1")]
     public partial class PersistentVolumeClaimStatusV1
     {
         /// <summary>
-        ///     Phase represents the current phase of PersistentVolumeClaim.
+        ///     Represents the actual resources of the underlying volume.
         /// </summary>
-        [JsonProperty("phase")]
-        public string Phase { get; set; }
+        [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     AccessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
@@ -23,9 +22,9 @@ namespace KubeClient.Models
         public List<string> AccessModes { get; set; } = new List<string>();
 
         /// <summary>
-        ///     Represents the actual resources of the underlying volume.
+        ///     Phase represents the current phase of PersistentVolumeClaim.
         /// </summary>
-        [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("phase")]
+        public string Phase { get; set; }
     }
 }

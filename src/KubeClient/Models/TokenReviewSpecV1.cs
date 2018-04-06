@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     TokenReviewSpec is a description of the token authentication request.
     /// </summary>
-    [KubeObject("TokenReviewSpec", "v1")]
     public partial class TokenReviewSpecV1
     {
         /// <summary>

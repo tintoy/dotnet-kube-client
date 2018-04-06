@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     CrossVersionObjectReference contains enough information to let you identify the referred resource.
     /// </summary>
-    [KubeObject("CrossVersionObjectReference", "v1")]
     public partial class CrossVersionObjectReferenceV1
     {
         /// <summary>
@@ -17,15 +16,15 @@ namespace KubeClient.Models
         public string Kind { get; set; }
 
         /// <summary>
-        ///     Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     API version of the referent
         /// </summary>
         [JsonProperty("apiVersion")]
         public string ApiVersion { get; set; }
+
+        /// <summary>
+        ///     Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }

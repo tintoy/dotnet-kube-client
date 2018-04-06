@@ -5,9 +5,8 @@ using System.Collections.Generic;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     describes the attributes of a scale subresource
+    ///     ScaleSpec describes the attributes of a scale subresource
     /// </summary>
-    [KubeObject("ScaleSpec", "v1beta1")]
     public partial class ScaleSpecV1Beta1
     {
         /// <summary>

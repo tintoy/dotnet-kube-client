@@ -13,15 +13,15 @@ namespace KubeClient.Models
     public partial class StorageClassV1Beta1 : KubeResourceV1
     {
         /// <summary>
-        ///     Provisioner indicates the type of the provisioner.
-        /// </summary>
-        [JsonProperty("provisioner")]
-        public string Provisioner { get; set; }
-
-        /// <summary>
         ///     Parameters holds the parameters for the provisioner that should create volumes of this storage class.
         /// </summary>
         [JsonProperty("parameters", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Provisioner indicates the type of the provisioner.
+        /// </summary>
+        [JsonProperty("provisioner")]
+        public string Provisioner { get; set; }
     }
 }

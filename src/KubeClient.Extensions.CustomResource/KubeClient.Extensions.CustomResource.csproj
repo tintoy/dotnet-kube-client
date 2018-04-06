@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <Description>Custom Resource Definition (CRD) support for KubeClient</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
+  </ItemGroup>
+
+  <Import Project="..\Common.props" />
+</Project>

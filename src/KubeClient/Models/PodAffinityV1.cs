@@ -7,7 +7,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     Pod affinity is a group of inter pod affinity scheduling rules.
     /// </summary>
-    [KubeObject("PodAffinity", "v1")]
     public partial class PodAffinityV1
     {
         /// <summary>
