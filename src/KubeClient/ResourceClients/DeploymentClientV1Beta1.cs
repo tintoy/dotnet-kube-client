@@ -97,7 +97,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<ResourceEventV1<DeploymentV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<DeploymentV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
         {
             return ObserveEvents<DeploymentV1Beta1>(
                 Requests.Collection.WithTemplateParameters(new

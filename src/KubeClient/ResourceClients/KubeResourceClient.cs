@@ -261,7 +261,7 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get an <see cref="IObservable{T}"/> for <see cref="ResourceEventV1{TResource}"/>s streamed from an HTTP GET request.
+        ///     Get an <see cref="IObservable{T}"/> for <see cref="IResourceEventV1{TResource}"/>s streamed from an HTTP GET request.
         /// </summary>
         /// <typeparam name="TResource">
         ///     The resource type that the events relate to.
@@ -272,14 +272,14 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     The <see cref="IObservable{T}"/>.
         /// </returns>
-        protected IObservable<ResourceEventV1<TResource>> ObserveEvents<TResource>(HttpRequest request)
+        protected IObservable<IResourceEventV1<TResource>> ObserveEvents<TResource>(HttpRequest request)
             where TResource : KubeResourceV1
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
             return ObserveLines(request).Select(
-                line => JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
+                line => (IResourceEventV1<TResource>)JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
             );
         }
 

@@ -96,7 +96,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<ResourceEventV1<PersistentVolumeV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<PersistentVolumeV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
         {
             return ObserveEvents<PersistentVolumeV1>(
                 Requests.Collection.WithTemplateParameters(new

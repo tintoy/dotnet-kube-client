@@ -96,7 +96,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<ResourceEventV1<JobV1>> Watch(string name, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<JobV1>> Watch(string name, string kubeNamespace = null)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -122,7 +122,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<ResourceEventV1<JobV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<JobV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
         {
             return ObserveEvents<JobV1>(
                 Requests.WatchCollection.WithTemplateParameters(new
