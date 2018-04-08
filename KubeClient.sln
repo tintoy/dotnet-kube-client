@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeClient.Extensions.Confi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigFromConfigMap", "samples\ConfigFromConfigMap\ConfigFromConfigMap.csproj", "{904A38F8-C977-4A2C-9D38-BB1ECBAF7FAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeClient.Extensions.CustomResource", "src\KubeClient.Extensions.CustomResource\KubeClient.Extensions.CustomResource.csproj", "{7A5BA699-184B-4AF9-95C9-85AC0833AD59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeClient.Extensions.CustomResources", "src\KubeClient.Extensions.CustomResources\KubeClient.Extensions.CustomResources.csproj", "{7A5BA699-184B-4AF9-95C9-85AC0833AD59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
