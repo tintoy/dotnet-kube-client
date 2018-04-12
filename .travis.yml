@@ -12,7 +12,8 @@ branches:
     - develop
     - master
 
-# We need the .NET Core 2.1 (preview 1) SDK to build. Travis doesn't know how to install this yet.
+# We need the .NET Core 2.1 (preview 2) SDK to build. Travis doesn't know how to install this yet.
+# Packages for preview 2 are currently unavailable, so we simply unpack the tarball for preview 2 on top of a preinstalled preview 1.
 before_install:
   - echo 'Installing .NET Core...'
   - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
@@ -22,6 +23,8 @@ before_install:
   - sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
   - sudo apt-get -qq update
   - sudo apt-get install -y jq dotnet-sdk-2.1.300-preview1-008174
+  - sudo curl -L -o /usr/share/dotnet-sdk.tgz https://www.microsoft.com/net/download/thank-you/dotnet-sdk-2.1.300-preview2-linux-x64-binaries
+  - sudo tar -C /usr/share xvzf /usr/share/dotnet-sdk.tgz
 
 script:
   - /bin/bash ./build-ci.sh
