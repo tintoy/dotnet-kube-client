@@ -23,7 +23,11 @@ namespace KubeClient.Extensions.CustomResources
         /// <returns>
         ///     The generated <see cref="JSONSchemaPropsV1Beta1"/>.
         /// </returns>
-        public static JSONSchemaPropsV1Beta1 GenerateSchema<TModel>() => GenerateSchema(typeof(TModel));
+        public static JSONSchemaPropsV1Beta1 GenerateSchema<TModel>()
+            where TModel : KubeCustomResourceV1
+        {
+            return GenerateSchema(typeof(TModel));
+        }
 
         /// <summary>
         ///     Generate the CRD validation schema for a model type.
@@ -38,6 +42,11 @@ namespace KubeClient.Extensions.CustomResources
         {
             if (modelType == null)
                 throw new ArgumentNullException(nameof(modelType));
+
+            if (typeof(KubeCustomResourceV1).IsAssignableFrom(modelType))
+            {
+
+            }
 
             TypeInfo modelTypeInfo = modelType.GetTypeInfo();
             if (modelTypeInfo.IsEnum)
@@ -210,9 +219,21 @@ namespace KubeClient.Extensions.CustomResources
                 Type = "object",
                 Description = objectType.Name,
                 Properties = objectType.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(
-                        property => property.CanRead && property.CanWrite && property.GetCustomAttribute<JsonIgnoreAttribute>() == null
-                    )
+                    .Where(property =>
+                    {
+                        if (!(property.CanRead && property.CanWrite))
+                            return false;
+                            
+                        // Ignore non-serialised properties.
+                        if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
+                            return false;
+
+                        // We only want properties declared on KubeCustomResourceV1 (or classes derived from it).
+                        if (!typeof(KubeCustomResourceV1).IsAssignableFrom(property.DeclaringType))
+                            return false;
+
+                        return true;
+                    })
                     .ToDictionary(
                         property => property.Name,
                         property => GenerateSchema(property.PropertyType)
