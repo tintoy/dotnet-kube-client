@@ -1,5 +1,4 @@
 using HTTPlease;
-using HTTPlease.Formatters;
 using HTTPlease.Formatters.Json;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,7 +70,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public KubeResourceClient(KubeApiClient client)
+        protected KubeResourceClient(KubeApiClient client)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -317,7 +315,7 @@ namespace KubeClient.ResourceClients
 
                         MediaTypeHeaderValue contentTypeHeader = responseMessage.Content.Headers.ContentType;
                         if (contentTypeHeader == null)
-                            throw new InvalidOperationException("Response is missing 'Content-Type' header."); // TODO: Consider custom exception type.
+                            throw new KubeClientException("Response is missing 'Content-Type' header.");
 
                         Encoding encoding =
                             !String.IsNullOrWhiteSpace(contentTypeHeader.CharSet)

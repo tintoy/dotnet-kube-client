@@ -11,6 +11,7 @@ namespace KubeClient.Models
     ///     The type of resource to which the event relates.
     /// </typeparam>
     public class ResourceEventV1<TResource>
+        : IResourceEventV1<TResource>
         where TResource : KubeResourceV1
     {
         /// <summary>

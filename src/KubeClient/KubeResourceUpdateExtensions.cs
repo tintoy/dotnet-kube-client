@@ -66,7 +66,8 @@ namespace KubeClient
                             value: configMap.Data
                         );
                     }
-                }
+                },
+                cancellationToken: cancellationToken
             );
         }
 
@@ -124,7 +125,8 @@ namespace KubeClient
                             value: secret.Data
                         );
                     }
-                }
+                },
+                cancellationToken: cancellationToken
             );
         }
     }

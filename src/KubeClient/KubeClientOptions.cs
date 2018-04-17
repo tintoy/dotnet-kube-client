@@ -126,7 +126,7 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(kubeServiceHost))
                 throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
 
-            var apiEndPoint = $"https://kubernetes/";
+            const string apiEndPoint = "https://kubernetes/";
             string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
             var kubeCACertificate = new X509Certificate2(
                 File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")

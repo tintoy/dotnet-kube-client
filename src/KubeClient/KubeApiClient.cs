@@ -3,19 +3,12 @@ using HTTPlease.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Security;
-using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
 {
     using MessageHandlers;
-    using Models;
     using ResourceClients;
 
     /// <summary>
@@ -54,14 +47,14 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Dispose of resources being used by the <see cref="KubeApiClient"/>.
+        ///     Dispose of resources being used by the <see cref="T:KubeClient.KubeApiClient" />.
         /// </summary>
         public void Dispose() => Http.Dispose();
 
         /// <summary>
         ///     The default Kubernetes namespace.
         /// </summary>
-        public string DefaultNamespace { get; set; } = "default";
+        public string DefaultNamespace { get; set; }
 
         /// <summary>
         ///     The base address of the Kubernetes API end-point targeted by the client.
