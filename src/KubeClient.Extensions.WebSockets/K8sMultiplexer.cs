@@ -341,7 +341,7 @@ namespace KubeClient.Extensions.WebSockets
 
             Log.LogTrace("Message-receive pump started.");
 
-            ArraySegment<byte> buffer;
+            ArraySegment<byte> buffer = ArraySegment<byte>.Empty;
 
             try
             {
