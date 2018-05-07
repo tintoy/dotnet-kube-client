@@ -139,7 +139,6 @@ class MyClass
 }
 ```
 
-
 ## Design philosophy
 
 Use of code generation is limited; generated clients tend to wind up being non-idiomatic and, for a Swagger spec as large as that of Kubernetes, wind up placing too many methods directly on the client class.
@@ -269,7 +268,7 @@ For information about `HttpRequest`, `UriTemplate`, and other features used to i
 
 ### Building
 
-For now, you will need to use v2.1.300-preview1 of the .NET Core SDK to build KubeClient.
+You will need to use v2.1.300-rc1-008673 (or newer) of the .NET Core SDK to build KubeClient.
 
 ## Questions / feedback
 

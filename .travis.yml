@@ -12,20 +12,16 @@ branches:
     - develop
     - master
 
-# We need the .NET Core 2.1 (preview 2) SDK to build. Travis doesn't know how to install this yet.
-# Packages for preview 2 are currently unavailable, so we simply unpack the tarball for preview 2 on top of a preinstalled preview 1.
 before_install:
   - echo 'Installing .NET Core...'
   - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
   - export DOTNET_CLI_TELEMETRY_OPTOUT=1
   - sudo apt-get -qq update
-  - sudo apt-get install -y jq libunwind8 liblttng-ust0 libcurl3 libssl1.0.0 libuuid1 libkrb5-3 zlib1g libicu52
-  - sudo curl -L -o /usr/share/dotnet-sdk.tar.gz https://download.microsoft.com/download/3/7/C/37C0D2E3-2056-4F9A-A67C-14DEFBD70F06/dotnet-sdk-2.1.300-preview2-008530-linux-x64.tar.gz
-  - sudo mkdir -p /usr/share/dotnet
-  - sudo tar -C /usr/share/dotnet -xvzf /usr/share/dotnet-sdk.tar.gz
-  - sudo rm /usr/share/dotnet-sdk.tar.gz
-  - export PATH="$HOME/.local/bin:/usr/share/dotnet:$PATH"
-  - dotnet --info
+  - sudo apt-get install -y wget
+  - sudo wget -q /tmp/packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
+  - sudo dpkg -i /tmp/packages-microsoft-prod.deb
+  - sudo apt-get -qq update
+  - sudo apt-get install dotnet-sdk-2.1.300-rc1-008673
 
 script:
   - /bin/bash ./build-ci.sh
