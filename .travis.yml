@@ -11,6 +11,7 @@ branches:
   only:
     - develop
     - master
+    - /^feature\/.*$/
 
 before_install:
   - echo 'Installing .NET Core...'
