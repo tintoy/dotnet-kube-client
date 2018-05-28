@@ -21,7 +21,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public PodClientV1(KubeApiClient client)
+        public PodClientV1(IKubeApiClient client)
             : base(client)
         {
         }

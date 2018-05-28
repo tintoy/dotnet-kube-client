@@ -22,6 +22,7 @@ namespace KubeClient.ResourceClients
     ///     The base class for Kubernetes resource API clients.
     /// </summary>
     public abstract class KubeResourceClient
+        : IKubeResourceClient
     {
         /// <summary>
         ///     The default buffer size to use when streaming data from the Kubernetes API.
@@ -70,7 +71,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        protected KubeResourceClient(KubeApiClient client)
+        protected KubeResourceClient(IKubeApiClient client)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -81,7 +82,12 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     The Kubernetes API client.
         /// </summary>
-        public KubeApiClient KubeClient { get; }
+        public IKubeApiClient KubeClient { get; }
+
+        /// <summary>
+        ///     The Kubernetes API client (for <see cref="IKubeResourceClient"/>).
+        /// </summary>
+        IKubeApiClient IKubeResourceClient.KubeClient => KubeClient;
 
         /// <summary>
         ///     The underlying HTTP client.

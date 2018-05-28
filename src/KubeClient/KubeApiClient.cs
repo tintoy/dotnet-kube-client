@@ -15,12 +15,12 @@ namespace KubeClient
     ///     Client for the Kubernetes API.
     /// </summary>
     public sealed class KubeApiClient
-        : IDisposable
+        : IKubeApiClient, IDisposable
     {
         /// <summary>
         ///     Kubernetes resource clients.
         /// </summary>
-        readonly ConcurrentDictionary<Type, KubeResourceClient> _clients = new ConcurrentDictionary<Type, KubeResourceClient>();
+        readonly ConcurrentDictionary<Type, IKubeResourceClient> _clients = new ConcurrentDictionary<Type, IKubeResourceClient>();
 
         /// <summary>
         ///     Create a new <see cref="KubeApiClient"/>.
@@ -52,24 +52,24 @@ namespace KubeClient
         public void Dispose() => Http.Dispose();
 
         /// <summary>
-        ///     The default Kubernetes namespace.
-        /// </summary>
-        public string DefaultNamespace { get; set; }
-
-        /// <summary>
         ///     The base address of the Kubernetes API end-point targeted by the client.
         /// </summary>
         public Uri ApiEndPoint => Options.ApiEndPoint;
 
         /// <summary>
+        ///     The default Kubernetes namespace.
+        /// </summary>
+        public string DefaultNamespace { get; set; }
+
+        /// <summary>
         ///     The underlying HTTP client.
         /// </summary>
-        internal HttpClient Http { get; }
+        public HttpClient Http { get; }
 
         /// <summary>
         ///     The <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </summary>
-        internal ILoggerFactory LoggerFactory { get; }
+        public ILoggerFactory LoggerFactory { get; }
 
         /// <summary>
         ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
@@ -96,8 +96,8 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public TClient ResourceClient<TClient>(Func<KubeApiClient, TClient> clientFactory)
-            where TClient : KubeResourceClient
+        public TClient ResourceClient<TClient>(Func<IKubeApiClient, TClient> clientFactory)
+            where TClient : IKubeResourceClient
         {
             if (clientFactory == null)
                 throw new ArgumentNullException(nameof(clientFactory));
@@ -108,7 +108,7 @@ namespace KubeClient
                 if (resourceClient == null)
                     throw new InvalidOperationException($"Factory for Kubernetes resource client of type '{clientType.FullName}' returned null.");
 
-                return (KubeResourceClient)resourceClient;
+                return (IKubeResourceClient)resourceClient;
             });
         }
 

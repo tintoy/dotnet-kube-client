@@ -76,7 +76,7 @@ namespace KubeClient.Extensions.WebSockets
         /// <returns>
         ///     The configured <see cref="K8sWebSocketOptions"/>.
         /// </returns>
-        public static K8sWebSocketOptions FromClientOptions(KubeApiClient client)
+        public static K8sWebSocketOptions FromClientOptions(IKubeApiClient client)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));

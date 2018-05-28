@@ -22,7 +22,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public CustomResourceDefinitionClientV1Beta1(KubeApiClient client)
+        public CustomResourceDefinitionClientV1Beta1(IKubeApiClient client)
             : base(client)
         {
         }

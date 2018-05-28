@@ -31,7 +31,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, string targetUri, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket(this IKubeApiClient client, string targetUri, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -57,7 +57,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket(this IKubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -127,7 +127,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket<TParameters>(this KubeApiClient client, string targetUri, TParameters uriTemplateParameters, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket<TParameters>(this IKubeApiClient client, string targetUri, TParameters uriTemplateParameters, CancellationToken cancellationToken = default)
             where TParameters : class
         {
             if (client == null)
@@ -175,7 +175,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this KubeApiClient client, UriTemplate targetUri, Dictionary<string, string> templateParameters, CancellationToken cancellationToken = default)
+        public static Task<WebSocket> ConnectWebSocket(this IKubeApiClient client, UriTemplate targetUri, Dictionary<string, string> templateParameters, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));

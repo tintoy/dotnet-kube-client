@@ -20,7 +20,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public ReplicationControllerClientV1(KubeApiClient client)
+        public ReplicationControllerClientV1(IKubeApiClient client)
             : base(client)
         {
         }

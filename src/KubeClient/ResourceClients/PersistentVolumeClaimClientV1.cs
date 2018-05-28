@@ -20,7 +20,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public PersistentVolumeClaimClientV1(KubeApiClient client)
+        public PersistentVolumeClaimClientV1(IKubeApiClient client)
             : base(client)
         {
         }

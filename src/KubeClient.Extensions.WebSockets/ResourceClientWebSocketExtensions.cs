@@ -74,7 +74,7 @@ namespace KubeClient
             
             return podClient.ExecAndConnectRaw(podName, command, stdin, stdout, stderr, tty, container, kubeNamespace, cancellation)
                 .Multiplexed(inputStreamIndexes, outputStreamIndexes,
-                    loggerFactory: podClient.KubeClient.LoggerFactory()
+                    loggerFactory: podClient.KubeClient.LoggerFactory
                 );
         }
 

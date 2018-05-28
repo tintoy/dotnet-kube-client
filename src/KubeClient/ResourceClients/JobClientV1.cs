@@ -20,7 +20,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public JobClientV1(KubeApiClient client)
+        public JobClientV1(IKubeApiClient client)
             : base(client)
         {
         }

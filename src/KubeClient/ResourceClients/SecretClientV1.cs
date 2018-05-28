@@ -21,7 +21,7 @@ namespace KubeClient.ResourceClients
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public SecretClientV1(KubeApiClient client)
+        public SecretClientV1(IKubeApiClient client)
             : base(client)
         {
         }
