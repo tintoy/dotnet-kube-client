@@ -8,7 +8,7 @@ namespace KubeClient
     using ResourceClients;
 
     /// <summary>
-    ///     
+    ///     Represents a client for the Kubernetes API.
     /// </summary>
     public interface IKubeApiClient
         : IDisposable
