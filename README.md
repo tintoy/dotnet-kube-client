@@ -4,7 +4,7 @@
 
 KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard1.4`).
 
-Note - there is an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (currently a work-in-progress). KubeClient functionality is also being contributed to the official client but for now this client should be good enough for most use-cases :)
+Note - there is also an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (both clients actually share code in a couple of places). These two clients are philosophically-different (from a design perspective) but either can be bent to fit your needs. For more information about how KubeClient differs from the official client, see the section below on [extensibility](#extensibility).
 
 ## Prerequisites
 
