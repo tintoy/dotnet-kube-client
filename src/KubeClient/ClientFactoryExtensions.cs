@@ -18,7 +18,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static ConfigMapClientV1 ConfigMapsV1(this KubeApiClient kubeClient)
+        public static IConfigMapClientV1 ConfigMapsV1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -29,7 +29,7 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Get the Kubernetes Secrets (v1) resource client.
+        ///     Get the Kubernetes Deployments (v1beta1) resource client.
         /// </summary>
         /// <param name="kubeClient">
         ///     The Kubernetes API client.
@@ -37,13 +37,32 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static SecretClientV1 SecretsV1(this KubeApiClient kubeClient)
+        public static DeploymentClientV1Beta1 DeploymentsV1Beta1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
-                client => new SecretClientV1(client)
+                client => new DeploymentClientV1Beta1(client)
+            );
+        }
+
+        /// <summary>
+        ///     Get the Kubernetes Jobs (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IJobClientV1 JobsV1(this KubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient(
+                client => new JobClientV1(client)
             );
         }
 
@@ -94,13 +113,32 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static PodClientV1 PodsV1(this KubeApiClient kubeClient)
+        public static IPodClientV1 PodsV1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
             
             return kubeClient.ResourceClient(
                 client => new PodClientV1(client)
+            );
+        }
+
+        /// <summary>
+        ///     Get the Kubernetes Secrets (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static SecretClientV1 SecretsV1(this KubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient(
+                client => new SecretClientV1(client)
             );
         }
 
@@ -158,44 +196,6 @@ namespace KubeClient
             
             return kubeClient.ResourceClient(
                 client => new ReplicaSetClientV1Beta1(client)
-            );
-        }
-
-        /// <summary>
-        ///     Get the Kubernetes Jobs (v1) resource client.
-        /// </summary>
-        /// <param name="kubeClient">
-        ///     The Kubernetes API client.
-        /// </param>
-        /// <returns>
-        ///     The resource client.
-        /// </returns>
-        public static JobClientV1 JobsV1(this KubeApiClient kubeClient)
-        {
-            if (kubeClient == null)
-                throw new ArgumentNullException(nameof(kubeClient));
-            
-            return kubeClient.ResourceClient(
-                client => new JobClientV1(client)
-            );
-        }
-
-        /// <summary>
-        ///     Get the Kubernetes Deployments (v1beta1) resource client.
-        /// </summary>
-        /// <param name="kubeClient">
-        ///     The Kubernetes API client.
-        /// </param>
-        /// <returns>
-        ///     The resource client.
-        /// </returns>
-        public static DeploymentClientV1Beta1 DeploymentsV1Beta1(this KubeApiClient kubeClient)
-        {
-            if (kubeClient == null)
-                throw new ArgumentNullException(nameof(kubeClient));
-            
-            return kubeClient.ResourceClient(
-                client => new DeploymentClientV1Beta1(client)
             );
         }
     }

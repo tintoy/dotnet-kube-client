@@ -12,7 +12,7 @@ namespace KubeClient.ResourceClients
     ///     A client for the Kubernetes Jobs (v1) API.
     /// </summary>
     public class JobClientV1
-        : KubeResourceClient
+        : KubeResourceClient, IJobClientV1
     {
         /// <summary>
         ///     Create a new <see cref="JobClientV1"/>.
@@ -224,5 +224,107 @@ namespace KubeClient.ResourceClients
             /// </summary>
             public static readonly HttpRequest WatchByName      = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}");
         }
+    }
+
+    /// <summary>
+    ///     Represents a client for the Kubernetes Jobs (v1) API.
+    /// </summary>
+    public interface IJobClientV1
+    {
+        /// <summary>
+        ///     Get the Job with the specified name.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Job to retrieve.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="JobV1"/> representing the current state for the Job, or <c>null</c> if no Job was found with the specified name and namespace.
+        /// </returns>
+        Task<JobV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Get all Jobs in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Jobs.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="JobListV1"/> containing the jobs.
+        /// </returns>
+        Task<JobListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Watch for events relating to a specific Job.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the job to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        IObservable<IResourceEventV1<JobV1>> Watch(string name, string kubeNamespace = null);
+
+        /// <summary>
+        ///     Watch for events relating to Jobs.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Jobs.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        IObservable<IResourceEventV1<JobV1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
+
+        /// <summary>
+        ///     Request creation of a <see cref="JobV1"/>.
+        /// </summary>
+        /// <param name="newJob">
+        ///     A <see cref="JobV1"/> representing the Job to create.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="JobV1"/> representing the current state for the newly-created Job.
+        /// </returns>
+        Task<JobV1> Create(JobV1 newJob, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request deletion of the specified Job.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Job to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The Kubernetes namespace containing the Job to delete.
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="JobV1"/> representing the job's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
+        /// </returns>
+        Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
     }
 }
