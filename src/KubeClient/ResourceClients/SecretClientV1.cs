@@ -13,7 +13,7 @@ namespace KubeClient.ResourceClients
     ///     A client for the Kubernetes Secrets (v1) API.
     /// </summary>
     public class SecretClientV1
-        : KubeResourceClient
+        : KubeResourceClient, ISecretClientV1
     {
         /// <summary>
         ///     Create a new <see cref="SecretClientV1"/>.
@@ -223,5 +223,111 @@ namespace KubeClient.ResourceClients
             /// </summary>
             public static readonly HttpRequest WatchByName  = KubeRequest.Create("api/v1/watch/namespaces/{Namespace}/secrets/{Name}");
         }
+    }
+
+    /// <summary>
+    ///     Represents a client for the Kubernetes Secrets (v1) API.
+    /// </summary>
+    public interface ISecretClientV1
+        : IKubeResourceClient
+    {
+        /// <summary>
+        ///     Get the Secret with the specified name.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Secret to retrieve.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SecretV1"/> representing the current state for the Secret, or <c>null</c> if no Secret was found with the specified name and namespace.
+        /// </returns>
+        Task<SecretV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Get all Secrets in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Secrets.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SecretListV1"/> containing the Secrets.
+        /// </returns>
+        Task<SecretListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Watch for events relating to a specific Secret.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Secret to watch.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        IObservable<IResourceEventV1<SecretV1>> Watch(string name, string kubeNamespace = null);
+
+        /// <summary>
+        ///     Request creation of a <see cref="SecretV1"/>.
+        /// </summary>
+        /// <param name="newSecret">
+        ///     A <see cref="SecretV1"/> representing the Secret to create.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SecretV1"/> representing the current state for the newly-created Secret.
+        /// </returns>
+        Task<SecretV1> Create(SecretV1 newSecret, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request update (PATCH) of a <see cref="SecretV1"/>.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target Secret.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SecretV1"/> representing the current state for the updated Secret.
+        /// </returns>
+        Task<SecretV1> Update(string name, Action<JsonPatchDocument<SecretV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request deletion of the specified Secret.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the Secret to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        /// </returns>
+        Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
     }
 }

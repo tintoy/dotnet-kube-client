@@ -230,6 +230,7 @@ namespace KubeClient.ResourceClients
     ///     Represents a client for the Kubernetes Jobs (v1) API.
     /// </summary>
     public interface IJobClientV1
+        : IKubeResourceClient
     {
         /// <summary>
         ///     Get the Job with the specified name.

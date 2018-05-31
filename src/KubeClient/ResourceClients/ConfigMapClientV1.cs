@@ -229,6 +229,7 @@ namespace KubeClient.ResourceClients
     ///     Represents a client for the Kubernetes ConfigMaps (v1) API.
     /// </summary>
     public interface IConfigMapClientV1
+        : IKubeResourceClient
     {
         /// <summary>
         ///     Get the ConfigMap with the specified name.

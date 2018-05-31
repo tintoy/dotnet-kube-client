@@ -232,6 +232,7 @@ namespace KubeClient.ResourceClients
     ///     Represents a client for the Kubernetes Deployments (v1beta2) API.
     /// </summary>
     public interface IDeploymentClientV1Beta1
+        : IKubeResourceClient
     {
         /// <summary>
         ///     Get the Deployment with the specified name.

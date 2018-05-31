@@ -13,7 +13,7 @@ namespace KubeClient.ResourceClients
     ///     A client for the Kubernetes ReplicaSets (v1beta1) API.
     /// </summary>
     public class ReplicaSetClientV1Beta1
-        : KubeResourceClient
+        : KubeResourceClient, IReplicaSetClientV1Beta1
     {
         /// <summary>
         ///     Create a new <see cref="ReplicaSetClientV1Beta1"/>.
@@ -226,5 +226,114 @@ namespace KubeClient.ResourceClients
             /// </summary>
             public static readonly HttpRequest ByName       = KubeRequest.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets/{Name}");
         }
+    }
+
+    /// <summary>
+    ///     A client for the Kubernetes ReplicaSets (v1beta1) API.
+    /// </summary>
+    public interface IReplicaSetClientV1Beta1
+        : IKubeResourceClient
+    {
+        /// <summary>
+        ///     Get the ReplicaSet with the specified name.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the ReplicaSet to retrieve.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the ReplicaSet, or <c>null</c> if no ReplicaSet was found with the specified name and namespace.
+        /// </returns>
+        Task<ReplicaSetV1Beta1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Get all ReplicaSets in the specified namespace, optionally matching a label selector.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ReplicaSets.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ReplicaSetListV1Beta1"/> containing the ReplicaSets.
+        /// </returns>
+        Task<ReplicaSetListV1Beta1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        
+        /// <summary>
+        ///     Watch for events relating to ReplicaSets.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ReplicaSets.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        IObservable<IResourceEventV1<ReplicaSetV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
+
+        /// <summary>
+        ///     Request creation of a <see cref="ReplicaSetV1Beta1"/>.
+        /// </summary>
+        /// <param name="newReplicaSet">
+        ///     A <see cref="ReplicaSetV1Beta1"/> representing the ReplicaSet to create.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the newly-created ReplicaSet.
+        /// </returns>
+        Task<ReplicaSetV1Beta1> Create(ReplicaSetV1Beta1 newReplicaSet, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request update (PATCH) of a <see cref="ReplicaSetV1Beta1"/>.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target ReplicaSet.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the updated ReplicaSet.
+        /// </returns>
+        Task<ReplicaSetV1Beta1> Update(string name, Action<JsonPatchDocument<ReplicaSetV1Beta1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request deletion of the specified ReplicaSet.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the ReplicaSet to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        /// </returns>
+        Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
     }
 }

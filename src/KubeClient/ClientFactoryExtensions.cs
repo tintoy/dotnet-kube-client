@@ -132,7 +132,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static SecretClientV1 SecretsV1(this KubeApiClient kubeClient)
+        public static ISecretClientV1 SecretsV1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -151,7 +151,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static ServiceClientV1 ServicesV1(this KubeApiClient kubeClient)
+        public static IServiceClientV1 ServicesV1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -170,7 +170,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static ReplicationControllerClientV1 ReplicationControllersV1(this KubeApiClient kubeClient)
+        public static IReplicationControllerClientV1 ReplicationControllersV1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -189,7 +189,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static ReplicaSetClientV1Beta1 ReplicaSetsV1Beta1(this KubeApiClient kubeClient)
+        public static IReplicaSetClientV1Beta1 ReplicaSetsV1Beta1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));

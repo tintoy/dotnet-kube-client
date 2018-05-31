@@ -277,6 +277,7 @@ namespace KubeClient.ResourceClients
     ///     Represents a client for the Kubernetes Pods (v1) API.
     /// </summary>
     public interface IPodClientV1
+        : IKubeResourceClient
     {
         /// <summary>
         ///     Get the Pod with the specified name.

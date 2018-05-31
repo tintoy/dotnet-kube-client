@@ -54,7 +54,7 @@ namespace KubeClient
         /// <returns>
         ///     A <see cref="K8sMultiplexer"/> that provides access to the input and output streams.
         /// </returns>
-        public static Task<K8sMultiplexer> ExecAndConnect(this PodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
+        public static Task<K8sMultiplexer> ExecAndConnect(this IPodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
         {
             if (podClient == null)
                 throw new ArgumentNullException(nameof(podClient));
@@ -118,7 +118,7 @@ namespace KubeClient
         /// <returns>
         ///     The connected <see cref="WebSocket"/>.
         /// </returns>
-        public static async Task<WebSocket> ExecAndConnectRaw(this PodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
+        public static async Task<WebSocket> ExecAndConnectRaw(this IPodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
         {
             if (podClient == null)
                 throw new ArgumentNullException(nameof(podClient));
