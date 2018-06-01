@@ -30,6 +30,10 @@ indent_size = 4
 # .NET code style settings:
 [*.{cs,vb}]
 dotnet_sort_system_directives_first = false
+
+# Avoid the use of redundant access modifiers
+dotnet_style_require_accessibility_modifiers = never:suggestion
+
 # Avoid "this." and "Me." if not necessary
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
