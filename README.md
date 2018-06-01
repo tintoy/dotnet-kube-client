@@ -75,7 +75,7 @@ KubeApiClient client = KubeApiClient.Create("http://localhost:8001", loggers);
 ```csharp
 using KubeClient.Extensions.KubeConfig;
 
-KubeClientOptions clientOptions = Config.Load(kubeConfigFile).ToKubeClientOptions(
+KubeClientOptions clientOptions = K8sConfig.Load(kubeConfigFile).ToKubeClientOptions(
     kubeContextName: "my-cluster",
     defaultKubeNamespace: "kube-system"
 );
@@ -134,8 +134,8 @@ class MyClass
         KubeClient2 = namedKubeClients.Get("another-cluster");
     }
 
-    KubeApiClient KubeClient1 { get; }
-    KubeApiClient KubeClient2 { get; }
+    IKubeApiClient KubeClient1 { get; }
+    IKubeApiClient KubeClient2 { get; }
 }
 ```
 
@@ -204,7 +204,7 @@ Through the use of extension methods, resource clients (or additional operations
 Simplified version of [ResourceClientWebSocketExtensions.cs](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56):
 
 ```csharp
-public static async Task<K8sMultiplexer> ExecAndConnect(this PodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
+public static async Task<K8sMultiplexer> ExecAndConnect(this IPodClientV1 podClient, string podName, string command, bool stdin = false, bool stdout = true, bool stderr = false, bool tty = false, string container = null, string kubeNamespace = null, CancellationToken cancellation = default)
 {
     byte[] outputStreamIndexes = stdin ? new byte[1] { 0 } : new byte[0];
     byte[] inputStreamIndexes;
