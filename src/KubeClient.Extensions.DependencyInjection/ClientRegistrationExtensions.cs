@@ -28,23 +28,29 @@ namespace KubeClient
             if (usePodServiceAccount)
             {
                 // When running inside Kubernetes, use pod-level service account (e.g. access token from mounted Secret).
-                services.AddScoped<KubeApiClient>(serviceProvider =>
+                KubeApiClient ResolveWithPodServiceAccount(IServiceProvider serviceProvider)
                 {
                     return KubeApiClient.CreateFromPodServiceAccount(
                         loggerFactory: serviceProvider.GetService<ILoggerFactory>()
                     );
-                });
+                }
+
+                services.AddScoped<KubeApiClient>(ResolveWithPodServiceAccount);
+                services.AddScoped<IKubeApiClient>(ResolveWithPodServiceAccount);
             }
             else
             {
-                services.AddScoped<KubeApiClient>(serviceProvider =>
+                KubeApiClient ResolveWithOptions(IServiceProvider serviceProvider)
                 {
                     KubeClientOptions options = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
 
                     return KubeApiClient.Create(options,
                         loggerFactory: serviceProvider.GetService<ILoggerFactory>()
                     );
-                });
+                }
+
+                services.AddScoped<KubeApiClient>(ResolveWithOptions);
+                services.AddScoped<IKubeApiClient>(ResolveWithOptions);
             }
         }
 
@@ -67,12 +73,15 @@ namespace KubeClient
 
             options.EnsureValid();
 
-            services.AddScoped<KubeApiClient>(serviceProvider =>
+            KubeApiClient ResolveWithOptions(IServiceProvider serviceProvider)
             {
                 return KubeApiClient.Create(options,
                     loggerFactory: serviceProvider.GetService<ILoggerFactory>()
                 );
-            });
+            }
+
+            services.AddScoped<KubeApiClient>(ResolveWithOptions);
+            services.AddScoped<IKubeApiClient>(ResolveWithOptions);
         }
 
         /// <summary>

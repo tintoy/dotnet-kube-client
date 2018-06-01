@@ -39,7 +39,7 @@ namespace KubeClient
         /// <returns>
         ///     The resolved <see cref="KubeApiClient"/>.
         /// </returns>
-        public KubeApiClient Get(string name)
+        public IKubeApiClient Get(string name)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));

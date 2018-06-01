@@ -16,6 +16,6 @@ namespace KubeClient
         /// <returns>
         ///     The resolved <see cref="KubeApiClient"/>.
         /// </returns>
-        KubeApiClient Get(string name);
+        IKubeApiClient Get(string name);
     }
 }
