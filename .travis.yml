@@ -22,7 +22,7 @@ before_install:
   - sudo curl -L -o /tmp/packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
   - sudo dpkg -i /tmp/packages-microsoft-prod.deb
   - sudo apt-get -qq update
-  - sudo apt-get install dotnet-sdk-2.1.300-rc1-008673
+  - sudo apt-get install dotnet-sdk-2.1.300
 
 script:
   - /bin/bash ./build-ci.sh

@@ -28,7 +28,7 @@ Note - there is also an [official](https://github.com/kubernetes-client/csharp/)
   Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).   
   This package also extends resource clients to add support for those APIs.  
   
-  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300-preview1` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).  
+  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).  
   [![KubeClient.Extensions.WebSockets](https://img.shields.io/nuget/v/KubeClient.Extensions.WebSockets.svg)](https://www.nuget.org/packages/KubeClient.Extensions.WebSockets)
 
 If you want to use the latest (development) builds of KubeClient, add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
