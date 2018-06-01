@@ -268,7 +268,7 @@ For information about `HttpRequest`, `UriTemplate`, and other features used to i
 
 ### Building
 
-You will need to use v2.1.300-rc1-008673 (or newer) of the .NET Core SDK to build KubeClient.
+You will need to use v2.1.300 (or newer) of the .NET Core SDK to build KubeClient.
 
 ## Questions / feedback
 
