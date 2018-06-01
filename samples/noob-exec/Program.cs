@@ -44,7 +44,7 @@ namespace KubeClient.Samples.NoobExec
 
             try
             {
-                KubeClientOptions clientOptions = Config.Load().ToKubeClientOptions(
+                KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(
                     kubeContextName: options.KubeContext,
                     defaultKubeNamespace: options.KubeNamespace
                 );

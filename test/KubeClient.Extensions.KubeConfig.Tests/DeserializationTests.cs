@@ -35,7 +35,7 @@ namespace KubeClient.Extensions.KubeConfig.Tests
                 Path.Combine("Configurations", $"{configName}.yml")
             );
 
-            Config kubeConfig = Config.Load(configFile);
+            K8sConfig kubeConfig = K8sConfig.Load(configFile);
             Assert.Equal("v1", kubeConfig.ApiVersion);
             Assert.Equal("Config", kubeConfig.Kind);
             Assert.Equal("docker-for-desktop", kubeConfig.CurrentContextName);

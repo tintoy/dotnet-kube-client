@@ -42,7 +42,7 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                 const string configMapName = "config-from-configmap";
                 const string configMapNamespace = "default";
 
-                KubeClientOptions clientOptions = Config.Load().ToKubeClientOptions(defaultKubeNamespace: configMapNamespace);
+                KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(defaultKubeNamespace: configMapNamespace);
                 if (options.Verbose)
                     clientOptions.LogPayloads = true;
 

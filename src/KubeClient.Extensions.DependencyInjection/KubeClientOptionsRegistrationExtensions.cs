@@ -51,7 +51,7 @@ namespace KubeClient
             // IOptions<KubeClientOptions>
             services.Configure<KubeClientOptions>(kubeClientOptions =>
             {
-                Config config = Config.Load(kubeConfigFile);
+                K8sConfig config = K8sConfig.Load(kubeConfigFile);
 
                 string targetContextName = kubeContextName ?? config.CurrentContextName;
                 if (String.IsNullOrWhiteSpace(targetContextName))
@@ -124,23 +124,23 @@ namespace KubeClient
 
             services.AddKubeClientOptions(name, kubeClientOptions =>
             {
-                Config config = Config.Load(kubeConfigFile);
+                K8sConfig config = K8sConfig.Load(kubeConfigFile);
 
                 string targetContextName = kubeContextName ?? config.CurrentContextName;
                 if (String.IsNullOrWhiteSpace(targetContextName))
-                    throw new InvalidOperationException("The kubeContextName parameter was not specified, and the Kubernetes client configuration does not specify a current context.");
+                    throw new K8sConfigException("The kubeContextName parameter was not specified, and the Kubernetes client configuration does not specify a current context.");
 
                 Context targetContext = config.Contexts.Find(context => context.Name == targetContextName);
                 if (targetContext == null)
-                    throw new InvalidOperationException($"Cannot find a context in the Kubernetes client configuration named '{targetContextName}'.");
+                    throw new K8sConfigException($"Cannot find a context in the Kubernetes client configuration named '{targetContextName}'.");
 
                 Cluster targetCluster = config.Clusters.Find(cluster => cluster.Name == targetContext.Config.ClusterName);
                 if (targetCluster == null)
-                    throw new InvalidOperationException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
+                    throw new K8sConfigException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
 
                 UserIdentity targetUser = config.UserIdentities.Find(user => user.Name == targetContext.Config.UserName);
                 if (targetUser == null)
-                    throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
+                    throw new K8sConfigException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
 
                 kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                 kubeClientOptions.KubeNamespace = defaultKubeNamespace;
@@ -186,7 +186,7 @@ namespace KubeClient
             }
             FileInfo kubeConfigFile = new FileInfo(kubeConfigFileName);
 
-            Config config = Config.Load(kubeConfigFile);
+            K8sConfig config = K8sConfig.Load(kubeConfigFile);
             foreach (Context targetContext in config.Contexts) // AF: List of contexts is static for application lifetime, but config for those contexts is dynamic.
             {
                 services.AddKubeClientOptions(targetContext.Name, kubeClientOptions =>

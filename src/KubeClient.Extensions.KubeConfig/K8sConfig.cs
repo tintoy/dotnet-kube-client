@@ -4,15 +4,15 @@ using System.IO;
 using System.Runtime.InteropServices;
 using YamlDotNet.Serialization;
 
-namespace KubeClient.Extensions.KubeConfig.Models
+namespace KubeClient
 {
+    using Extensions.KubeConfig.Models;
+
     /// <summary>
     ///     Kubernetes client configuration.
     /// </summary>
-    public class Config
+    public class K8sConfig
     {
-        // TODO: Rename to KubeClientConfig and move to KubeClient namespace.
-
         /// <summary>
         ///     The client configuration API version (should be "v1").
         /// </summary>
@@ -55,7 +55,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// <returns>
         ///     The parsed configuration.
         /// </returns>
-        public static Config Load()
+        public static K8sConfig Load()
         {
             string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "HOME";
             string homeDirectory = Environment.GetEnvironmentVariable(homeDirectoryVariableName);
@@ -76,7 +76,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// <returns>
         ///     The parsed configuration.
         /// </returns>
-        public static Config Load(string configFile) => Load(new FileInfo(configFile));
+        public static K8sConfig Load(string configFile) => Load(new FileInfo(configFile));
 
         /// <summary>
         ///     Load and parse configuration from the specified file (usually ~/.kube/config).
@@ -87,7 +87,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// <returns>
         ///     The parsed configuration.
         /// </returns>
-        public static Config Load(FileInfo configFile)
+        public static K8sConfig Load(FileInfo configFile)
         {
             if (configFile == null)
                 throw new ArgumentNullException(nameof(configFile));
@@ -98,12 +98,12 @@ namespace KubeClient.Extensions.KubeConfig.Models
 
             using (StreamReader configReader = configFile.OpenText())
             {
-                return deserializer.Deserialize<Config>(configReader);
+                return deserializer.Deserialize<K8sConfig>(configReader);
             }
         }
 
         /// <summary>
-        ///     Create <see cref="KubeClientOptions"/> from the settings specified in the <see cref="Config"/>.
+        ///     Create <see cref="KubeClientOptions"/> from the settings specified in the <see cref="K8sConfig"/>.
         /// </summary>
         /// <param name="kubeContextName">
         ///     The name of the Kubernetes context to use.
@@ -122,7 +122,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         }
 
         /// <summary>
-        ///     Configure <see cref="KubeClientOptions"/> from the settings specified in the <see cref="Config"/>.
+        ///     Configure <see cref="KubeClientOptions"/> from the settings specified in the <see cref="K8sConfig"/>.
         /// </summary>
         /// <param name="kubeClientOptions">
         ///     
