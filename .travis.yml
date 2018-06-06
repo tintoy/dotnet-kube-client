@@ -11,8 +11,10 @@ branches:
   only:
     - develop
     - master
+    # Feature branches
     - /^feature\/.*$/
-    - /^v.*$/
+    # Release tags
+    - /^v.*$/ 
 
 before_install:
   - echo 'Installing .NET Core...'
