@@ -1,3 +1,5 @@
+# Versioning scheme for KubeClient
+
 assembly-versioning-scheme: Major
 mode: ContinuousDelivery
 ignore:
