@@ -21,6 +21,12 @@ echo ''
 echo 'Publishing packages...'
 echo ''
 
+if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
+    echo "Current build is for a pull request; packages will not be published."
+
+    exit 0
+fi
+
 # Build outputs go here.
 ARTIFACTS_DIRECTORY="$PWD/artifacts"
 if [ ! -d $ARTIFACTS_DIRECTORY ]; then
