@@ -123,10 +123,11 @@ namespace KubeClient
         public static KubeClientOptions FromPodServiceAccount()
         {
             string kubeServiceHost = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
-            if (String.IsNullOrWhiteSpace(kubeServiceHost))
-                throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST environment variable is not defined).");
+            string kubeServicePort = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_PORT");
+            if (String.IsNullOrWhiteSpace(kubeServiceHost) || String.IsNullOrWhiteSpace(kubeServicePort))
+                throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST and/or KUBERNETES_SERVICE_PORT environment variable is not defined).");
 
-            const string apiEndPoint = "https://kubernetes/";
+            string apiEndPoint = $"https://{kubeServiceHost}:{kubeServicePort}/";
             string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
             var kubeCACertificate = new X509Certificate2(
                 File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
