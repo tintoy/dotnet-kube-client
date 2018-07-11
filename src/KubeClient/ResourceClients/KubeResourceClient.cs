@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace KubeClient.ResourceClients
 {
@@ -282,9 +283,21 @@ namespace KubeClient.ResourceClients
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
-            return ObserveLines(request).Select(
-                line => (IResourceEventV1<TResource>)JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
-            );
+            return ObserveLines(request)
+                   .Do(CheckForEventError)
+                   .Select(
+                       line => (IResourceEventV1<TResource>) JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
+                   );
+        }
+
+        private static void CheckForEventError(string line)
+        {
+            JToken watchEvent = JToken.Parse(line);
+            if (!watchEvent.SelectToken("type").Value<string>().Equals("error", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var status = watchEvent.SelectToken("object").ToObject<StatusV1>();
+            throw new HttpRequestException<StatusV1>((HttpStatusCode) status.Code, status);
         }
 
         /// <summary>
