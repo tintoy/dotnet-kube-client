@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
@@ -7,7 +8,6 @@ namespace KubeClient.Tests
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using TestCommon;
-    using Xunit.Abstractions;
 
     /// <summary>
     ///     Tests for serialisation of various Kubernetes models.
