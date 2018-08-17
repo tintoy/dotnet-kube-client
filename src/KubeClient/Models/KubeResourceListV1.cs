@@ -55,6 +55,7 @@ namespace KubeClient.Models
     /// <typeparam name="TResource">
     ///     The type of resource contained in the list.
     /// </typeparam>
+    [JsonObject]
     public abstract class KubeResourceListV1<TResource>
         : KubeResourceListV1, IEnumerable<TResource>
     {
