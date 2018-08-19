@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     OpenAPIV3Schema is the OpenAPI v3 schema to be validated against.
         /// </summary>
         [JsonProperty("openAPIV3Schema")]
+        [YamlMember(Alias = "openAPIV3Schema")]
         public JSONSchemaPropsV1Beta1 OpenAPIV3Schema { get; set; }
     }
 }

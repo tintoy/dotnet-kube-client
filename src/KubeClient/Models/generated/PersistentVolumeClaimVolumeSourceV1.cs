@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     ClaimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
         /// </summary>
         [JsonProperty("claimName")]
+        [YamlMember(Alias = "claimName")]
         public string ClaimName { get; set; }
 
         /// <summary>
         ///     Will force the ReadOnly setting in VolumeMounts. Default false.
         /// </summary>
         [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
     }
 }

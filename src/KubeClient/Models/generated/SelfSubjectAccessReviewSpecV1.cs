@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     NonResourceAttributes describes information for a non-resource access request
         /// </summary>
         [JsonProperty("nonResourceAttributes")]
+        [YamlMember(Alias = "nonResourceAttributes")]
         public NonResourceAttributesV1 NonResourceAttributes { get; set; }
 
         /// <summary>
         ///     ResourceAuthorizationAttributes describes information for a resource access request
         /// </summary>
         [JsonProperty("resourceAttributes")]
+        [YamlMember(Alias = "resourceAttributes")]
         public ResourceAttributesV1 ResourceAttributes { get; set; }
     }
 }

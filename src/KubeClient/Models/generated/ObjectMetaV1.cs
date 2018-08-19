@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -15,12 +16,14 @@ namespace KubeClient.Models
         ///     Populated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
         /// </summary>
         [JsonProperty("uid")]
+        [YamlMember(Alias = "uid")]
         public string Uid { get; set; }
 
         /// <summary>
         ///     The name of the cluster which the object belongs to. This is used to distinguish resources with same name and namespace in different clusters. This field is not set anywhere right now and apiserver is going to ignore it if set in create or update request.
         /// </summary>
         [JsonProperty("clusterName")]
+        [YamlMember(Alias = "clusterName")]
         public string ClusterName { get; set; }
 
         /// <summary>
@@ -31,12 +34,14 @@ namespace KubeClient.Models
         ///     Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#idempotency
         /// </summary>
         [JsonProperty("generateName")]
+        [YamlMember(Alias = "generateName")]
         public string GenerateName { get; set; }
 
         /// <summary>
         ///     Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names
         /// </summary>
         [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
         public string Name { get; set; }
 
         /// <summary>
@@ -45,18 +50,21 @@ namespace KubeClient.Models
         ///     Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces
         /// </summary>
         [JsonProperty("namespace")]
+        [YamlMember(Alias = "namespace")]
         public string Namespace { get; set; }
 
         /// <summary>
         ///     SelfLink is a URL representing this object. Populated by the system. Read-only.
         /// </summary>
         [JsonProperty("selfLink")]
+        [YamlMember(Alias = "selfLink")]
         public string SelfLink { get; set; }
 
         /// <summary>
         ///     A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
         /// </summary>
         [JsonProperty("generation")]
+        [YamlMember(Alias = "generation")]
         public int Generation { get; set; }
 
         /// <summary>
@@ -65,6 +73,7 @@ namespace KubeClient.Models
         ///     Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
         /// </summary>
         [JsonProperty("resourceVersion")]
+        [YamlMember(Alias = "resourceVersion")]
         public string ResourceVersion { get; set; }
 
         /// <summary>
@@ -73,6 +82,7 @@ namespace KubeClient.Models
         ///     Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
         [JsonProperty("creationTimestamp")]
+        [YamlMember(Alias = "creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
@@ -81,11 +91,13 @@ namespace KubeClient.Models
         ///     Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
         [JsonProperty("deletionTimestamp")]
+        [YamlMember(Alias = "deletionTimestamp")]
         public DateTime? DeletionTimestamp { get; set; }
 
         /// <summary>
         ///     Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
         /// </summary>
+        [YamlMember(Alias = "annotations")]
         [JsonProperty("annotations", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Annotations { get; set; } = new Dictionary<string, string>();
 
@@ -93,11 +105,13 @@ namespace KubeClient.Models
         ///     Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
         /// </summary>
         [JsonProperty("deletionGracePeriodSeconds")]
+        [YamlMember(Alias = "deletionGracePeriodSeconds")]
         public int DeletionGracePeriodSeconds { get; set; }
 
         /// <summary>
         ///     Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed.
         /// </summary>
+        [YamlMember(Alias = "finalizers")]
         [JsonProperty("finalizers", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Finalizers { get; set; } = new List<string>();
 
@@ -107,17 +121,20 @@ namespace KubeClient.Models
         ///     When an object is created, the system will populate this list with the current set of initializers. Only privileged users may set or modify this list. Once it is empty, it may not be modified further by any user.
         /// </summary>
         [JsonProperty("initializers")]
+        [YamlMember(Alias = "initializers")]
         public InitializersV1 Initializers { get; set; }
 
         /// <summary>
         ///     Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
         /// </summary>
+        [YamlMember(Alias = "labels")]
         [JsonProperty("labels", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Labels { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
         /// </summary>
+        [YamlMember(Alias = "ownerReferences")]
         [JsonProperty("ownerReferences", NullValueHandling = NullValueHandling.Ignore)]
         public List<OwnerReferenceV1> OwnerReferences { get; set; } = new List<OwnerReferenceV1>();
     }

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Rules holds all the PolicyRules for this ClusterRole
         /// </summary>
+        [YamlMember(Alias = "rules")]
         [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
         public List<PolicyRuleV1Alpha1> Rules { get; set; } = new List<PolicyRuleV1Alpha1>();
     }

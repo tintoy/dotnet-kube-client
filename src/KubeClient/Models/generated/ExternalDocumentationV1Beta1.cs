@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [JsonProperty("url")]
+        [YamlMember(Alias = "url")]
         public string Url { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("description")]
+        [YamlMember(Alias = "description")]
         public string Description { get; set; }
     }
 }

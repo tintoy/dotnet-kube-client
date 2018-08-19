@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Partition indicates the ordinal at which the StatefulSet should be partitioned.
         /// </summary>
         [JsonProperty("partition")]
+        [YamlMember(Alias = "partition")]
         public int Partition { get; set; }
     }
 }

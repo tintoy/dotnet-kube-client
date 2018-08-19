@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Port number of the given endpoint.
         /// </summary>
         [JsonProperty("Port")]
+        [YamlMember(Alias = "Port")]
         public int Port { get; set; }
     }
 }

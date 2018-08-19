@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Specifies the name of the referenced service.
         /// </summary>
         [JsonProperty("serviceName")]
+        [YamlMember(Alias = "serviceName")]
         public string ServiceName { get; set; }
 
         /// <summary>
         ///     Specifies the port of the referenced service.
         /// </summary>
         [JsonProperty("servicePort")]
+        [YamlMember(Alias = "servicePort")]
         public string ServicePort { get; set; }
     }
 }

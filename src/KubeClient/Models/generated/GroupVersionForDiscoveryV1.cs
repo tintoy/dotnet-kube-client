@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     groupVersion specifies the API group and version in the form "group/version"
         /// </summary>
         [JsonProperty("groupVersion")]
+        [YamlMember(Alias = "groupVersion")]
         public string GroupVersion { get; set; }
 
         /// <summary>
         ///     version specifies the version in the form of "version". This is to save the clients the trouble of splitting the GroupVersion.
         /// </summary>
         [JsonProperty("version")]
+        [YamlMember(Alias = "version")]
         public string Version { get; set; }
     }
 }

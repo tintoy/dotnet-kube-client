@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,12 +15,14 @@ namespace KubeClient.Models
         ///     Spec defines a specification of a persistent volume owned by the cluster. Provisioned by an administrator. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public PersistentVolumeSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status represents the current information/status for the persistent volume. Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
         /// </summary>
         [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
         public PersistentVolumeStatusV1 Status { get; set; }
     }
 }

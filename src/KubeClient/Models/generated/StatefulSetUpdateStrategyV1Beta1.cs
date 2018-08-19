@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
         /// </summary>
         [JsonProperty("rollingUpdate")]
+        [YamlMember(Alias = "rollingUpdate")]
         public RollingUpdateStatefulSetStrategyV1Beta1 RollingUpdate { get; set; }
 
         /// <summary>
         ///     Type indicates the type of the StatefulSetUpdateStrategy.
         /// </summary>
         [JsonProperty("type")]
+        [YamlMember(Alias = "type")]
         public string Type { get; set; }
     }
 }

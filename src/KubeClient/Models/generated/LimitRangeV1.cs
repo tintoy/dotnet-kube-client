@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,6 +15,7 @@ namespace KubeClient.Models
         ///     Spec defines the limits enforced. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public LimitRangeSpecV1 Spec { get; set; }
     }
 }

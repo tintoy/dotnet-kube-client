@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,12 +15,14 @@ namespace KubeClient.Models
         ///     The certificate request itself and any additional information.
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public CertificateSigningRequestSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Derived information about the request.
         /// </summary>
         [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
         public CertificateSigningRequestStatusV1Beta1 Status { get; set; }
     }
 }

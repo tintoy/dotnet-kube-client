@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -12,6 +13,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     A collection of paths that map requests to backends.
         /// </summary>
+        [YamlMember(Alias = "paths")]
         [JsonProperty("paths", NullValueHandling = NullValueHandling.Ignore)]
         public List<HTTPIngressPathV1Beta1> Paths { get; set; } = new List<HTTPIngressPathV1Beta1>();
     }

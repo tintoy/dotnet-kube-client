@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [JsonProperty("http")]
+        [YamlMember(Alias = "http")]
         public HTTPIngressRuleValueV1Beta1 Http { get; set; }
 
         /// <summary>
@@ -24,6 +26,7 @@ namespace KubeClient.Models
         ///     Both these may change in the future. Incoming requests are matched against the host before the IngressRuleValue. If the host is unspecified, the Ingress routes all traffic based on the specified IngressRuleValue.
         /// </summary>
         [JsonProperty("host")]
+        [YamlMember(Alias = "host")]
         public string Host { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -19,18 +20,21 @@ namespace KubeClient.Models
         /// <summary>
         ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
         /// </summary>
+        [YamlMember(Alias = "addresses")]
         [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
         public List<EndpointAddressV1> Addresses { get; set; } = new List<EndpointAddressV1>();
 
         /// <summary>
         ///     IP addresses which offer the related ports but are not currently marked as ready because they have not yet finished starting, have recently failed a readiness check, or have recently failed a liveness check.
         /// </summary>
+        [YamlMember(Alias = "notReadyAddresses")]
         [JsonProperty("notReadyAddresses", NullValueHandling = NullValueHandling.Ignore)]
         public List<EndpointAddressV1> NotReadyAddresses { get; set; } = new List<EndpointAddressV1>();
 
         /// <summary>
         ///     Port numbers available on the related IP addresses.
         /// </summary>
+        [YamlMember(Alias = "ports")]
         [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
         public List<EndpointPortV1> Ports { get; set; } = new List<EndpointPortV1>();
     }

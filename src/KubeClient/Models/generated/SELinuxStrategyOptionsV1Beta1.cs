@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     type is the strategy that will dictate the allowable labels that may be set.
         /// </summary>
         [JsonProperty("rule")]
+        [YamlMember(Alias = "rule")]
         public string Rule { get; set; }
 
         /// <summary>
         ///     seLinuxOptions required to run as; required for MustRunAs More info: https://git.k8s.io/community/contributors/design-proposals/security_context.md
         /// </summary>
         [JsonProperty("seLinuxOptions")]
+        [YamlMember(Alias = "seLinuxOptions")]
         public SELinuxOptionsV1 SeLinuxOptions { get; set; }
     }
 }

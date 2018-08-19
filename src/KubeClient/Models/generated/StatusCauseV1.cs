@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -17,18 +18,21 @@ namespace KubeClient.Models
         ///       "items[0].name" - the field "name" on the first array entry in "items"
         /// </summary>
         [JsonProperty("field")]
+        [YamlMember(Alias = "field")]
         public string Field { get; set; }
 
         /// <summary>
         ///     A human-readable description of the cause of the error.  This field may be presented as-is to a reader.
         /// </summary>
         [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
         public string Message { get; set; }
 
         /// <summary>
         ///     A machine-readable description of the cause of the error. If this value is empty there is no information available.
         /// </summary>
         [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
         public string Reason { get; set; }
     }
 }

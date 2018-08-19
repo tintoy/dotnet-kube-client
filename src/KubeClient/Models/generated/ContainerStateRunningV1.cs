@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Time at which the container was last (re-)started
         /// </summary>
         [JsonProperty("startedAt")]
+        [YamlMember(Alias = "startedAt")]
         public DateTime? StartedAt { get; set; }
     }
 }

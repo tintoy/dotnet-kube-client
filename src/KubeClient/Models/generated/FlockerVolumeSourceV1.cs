@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     UUID of the dataset. This is unique identifier of a Flocker dataset
         /// </summary>
         [JsonProperty("datasetUUID")]
+        [YamlMember(Alias = "datasetUUID")]
         public string DatasetUUID { get; set; }
 
         /// <summary>
         ///     Name of the dataset stored as metadata -&gt; name on the dataset for Flocker should be considered as deprecated
         /// </summary>
         [JsonProperty("datasetName")]
+        [YamlMember(Alias = "datasetName")]
         public string DatasetName { get; set; }
     }
 }

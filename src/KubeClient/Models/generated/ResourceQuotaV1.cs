@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,12 +15,14 @@ namespace KubeClient.Models
         ///     Spec defines the desired quota. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public ResourceQuotaSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status defines the actual enforced quota and its current usage. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
         public ResourceQuotaStatusV1 Status { get; set; }
     }
 }

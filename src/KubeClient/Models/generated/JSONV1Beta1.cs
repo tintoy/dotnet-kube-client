@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [JsonProperty("Raw")]
+        [YamlMember(Alias = "Raw")]
         public string Raw { get; set; }
     }
 }

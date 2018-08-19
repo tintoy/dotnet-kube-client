@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Name of the attached volume
         /// </summary>
         [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
         public string Name { get; set; }
 
         /// <summary>
         ///     DevicePath represents the device path where the volume should be available
         /// </summary>
         [JsonProperty("devicePath")]
+        [YamlMember(Alias = "devicePath")]
         public string DevicePath { get; set; }
     }
 }

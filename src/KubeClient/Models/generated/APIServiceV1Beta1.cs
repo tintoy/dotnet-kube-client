@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,12 +15,14 @@ namespace KubeClient.Models
         ///     Spec contains information for locating and communicating with a server
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public APIServiceSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Status contains derived information about an API server
         /// </summary>
         [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
         public APIServiceStatusV1Beta1 Status { get; set; }
     }
 }

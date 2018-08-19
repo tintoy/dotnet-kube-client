@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Required. A pod affinity term, associated with the corresponding weight.
         /// </summary>
         [JsonProperty("podAffinityTerm")]
+        [YamlMember(Alias = "podAffinityTerm")]
         public PodAffinityTermV1 PodAffinityTerm { get; set; }
 
         /// <summary>
         ///     weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
         /// </summary>
         [JsonProperty("weight")]
+        [YamlMember(Alias = "weight")]
         public int Weight { get; set; }
     }
 }

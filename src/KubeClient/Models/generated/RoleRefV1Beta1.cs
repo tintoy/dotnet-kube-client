@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,18 +14,21 @@ namespace KubeClient.Models
         ///     Kind is the type of resource being referenced
         /// </summary>
         [JsonProperty("kind")]
+        [YamlMember(Alias = "kind")]
         public string Kind { get; set; }
 
         /// <summary>
         ///     Name is the name of resource being referenced
         /// </summary>
         [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
         public string Name { get; set; }
 
         /// <summary>
         ///     APIGroup is the group for the resource being referenced
         /// </summary>
         [JsonProperty("apiGroup")]
+        [YamlMember(Alias = "apiGroup")]
         public string ApiGroup { get; set; }
     }
 }

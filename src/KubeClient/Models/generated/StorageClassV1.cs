@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -16,11 +17,13 @@ namespace KubeClient.Models
         ///     Provisioner indicates the type of the provisioner.
         /// </summary>
         [JsonProperty("provisioner")]
+        [YamlMember(Alias = "provisioner")]
         public string Provisioner { get; set; }
 
         /// <summary>
         ///     Parameters holds the parameters for the provisioner that should create volumes of this storage class.
         /// </summary>
+        [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
     }

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Path of the field to select in the specified API version.
         /// </summary>
         [JsonProperty("fieldPath")]
+        [YamlMember(Alias = "fieldPath")]
         public string FieldPath { get; set; }
 
         /// <summary>
         ///     Version of the schema the FieldPath is written in terms of, defaults to "v1".
         /// </summary>
         [JsonProperty("apiVersion")]
+        [YamlMember(Alias = "apiVersion")]
         public string ApiVersion { get; set; }
     }
 }

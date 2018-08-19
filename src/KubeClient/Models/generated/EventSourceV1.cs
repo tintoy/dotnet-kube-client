@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Component from which the event is generated.
         /// </summary>
         [JsonProperty("component")]
+        [YamlMember(Alias = "component")]
         public string Component { get; set; }
 
         /// <summary>
         ///     Node name on which the event is generated.
         /// </summary>
         [JsonProperty("host")]
+        [YamlMember(Alias = "host")]
         public string Host { get; set; }
     }
 }

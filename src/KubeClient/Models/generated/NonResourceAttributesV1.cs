@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Verb is the standard HTTP verb
         /// </summary>
         [JsonProperty("verb")]
+        [YamlMember(Alias = "verb")]
         public string Verb { get; set; }
 
         /// <summary>
         ///     Path is the URL path of the request
         /// </summary>
         [JsonProperty("path")]
+        [YamlMember(Alias = "path")]
         public string Path { get; set; }
     }
 }

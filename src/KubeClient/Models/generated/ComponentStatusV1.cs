@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of component conditions observed
         /// </summary>
+        [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<ComponentConditionV1> Conditions { get; set; } = new List<ComponentConditionV1>();
     }

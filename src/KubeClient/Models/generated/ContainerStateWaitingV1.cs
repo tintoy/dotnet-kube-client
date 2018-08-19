@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,12 +14,14 @@ namespace KubeClient.Models
         ///     Message regarding why the container is not yet running.
         /// </summary>
         [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
         public string Message { get; set; }
 
         /// <summary>
         ///     (brief) reason the container is not yet running.
         /// </summary>
         [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
         public string Reason { get; set; }
     }
 }

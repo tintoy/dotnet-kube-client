@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -12,6 +13,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Required. A list of node selector terms. The terms are ORed.
         /// </summary>
+        [YamlMember(Alias = "nodeSelectorTerms")]
         [JsonProperty("nodeSelectorTerms", NullValueHandling = NullValueHandling.Ignore)]
         public List<NodeSelectorTermV1> NodeSelectorTerms { get; set; } = new List<NodeSelectorTermV1>();
     }

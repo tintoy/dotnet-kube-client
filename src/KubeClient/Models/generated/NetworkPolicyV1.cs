@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,6 +15,7 @@ namespace KubeClient.Models
         ///     Specification of the desired behavior for this NetworkPolicy.
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public NetworkPolicySpecV1 Spec { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,6 +15,7 @@ namespace KubeClient.Models
         ///     DeleteOptions may be provided
         /// </summary>
         [JsonProperty("deleteOptions")]
+        [YamlMember(Alias = "deleteOptions")]
         public DeleteOptionsV1 DeleteOptions { get; set; }
     }
 }

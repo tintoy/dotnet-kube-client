@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Specifies the target UID.
         /// </summary>
         [JsonProperty("uid")]
+        [YamlMember(Alias = "uid")]
         public string Uid { get; set; }
     }
 }

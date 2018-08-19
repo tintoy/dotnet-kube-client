@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     name of the process that is responsible for initializing this object.
         /// </summary>
         [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
         public string Name { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -12,12 +13,14 @@ namespace KubeClient.Models
         /// <summary>
         ///     matchExpressions is a list of label selector requirements. The requirements are ANDed.
         /// </summary>
+        [YamlMember(Alias = "matchExpressions")]
         [JsonProperty("matchExpressions", NullValueHandling = NullValueHandling.Ignore)]
         public List<LabelSelectorRequirementV1> MatchExpressions { get; set; } = new List<LabelSelectorRequirementV1>();
 
         /// <summary>
         ///     matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
         /// </summary>
+        [YamlMember(Alias = "matchLabels")]
         [JsonProperty("matchLabels", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> MatchLabels { get; set; } = new Dictionary<string, string>();
     }

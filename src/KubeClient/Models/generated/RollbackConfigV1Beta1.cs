@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     The revision to rollback to. If set to 0, rollback to the last revision.
         /// </summary>
         [JsonProperty("revision")]
+        [YamlMember(Alias = "revision")]
         public int Revision { get; set; }
     }
 }

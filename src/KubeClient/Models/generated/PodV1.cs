@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,12 +15,14 @@ namespace KubeClient.Models
         ///     Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public PodSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Most recently observed status of the pod. This data may not be up to date. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
         public PodStatusV1 Status { get; set; }
     }
 }

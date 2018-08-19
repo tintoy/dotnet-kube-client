@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,12 +15,14 @@ namespace KubeClient.Models
         ///     Spec holds information about the request being evaluated
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public TokenReviewSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status is filled in by the server and indicates whether the request can be authenticated.
         /// </summary>
         [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
         public TokenReviewStatusV1 Status { get; set; }
     }
 }

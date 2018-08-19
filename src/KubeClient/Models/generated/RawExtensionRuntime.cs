@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -40,6 +41,7 @@ namespace KubeClient.Models
         ///     Raw is the underlying serialization of this object.
         /// </summary>
         [JsonProperty("Raw")]
+        [YamlMember(Alias = "Raw")]
         public string Raw { get; set; }
     }
 }

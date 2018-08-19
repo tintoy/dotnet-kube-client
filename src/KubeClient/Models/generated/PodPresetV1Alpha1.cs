@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,6 +15,7 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [JsonProperty("spec")]
+        [YamlMember(Alias = "spec")]
         public PodPresetSpecV1Alpha1 Spec { get; set; }
     }
 }

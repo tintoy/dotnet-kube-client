@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Token is the opaque bearer token.
         /// </summary>
         [JsonProperty("token")]
+        [YamlMember(Alias = "token")]
         public string Token { get; set; }
     }
 }

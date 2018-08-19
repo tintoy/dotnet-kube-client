@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Items is a list of DownwardAPIVolume file
         /// </summary>
+        [YamlMember(Alias = "items")]
         [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
         public List<DownwardAPIVolumeFileV1> Items { get; set; } = new List<DownwardAPIVolumeFileV1>();
     }

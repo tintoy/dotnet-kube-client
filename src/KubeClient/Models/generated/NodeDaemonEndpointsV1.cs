@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,6 +14,7 @@ namespace KubeClient.Models
         ///     Endpoint on which Kubelet is listening.
         /// </summary>
         [JsonProperty("kubeletEndpoint")]
+        [YamlMember(Alias = "kubeletEndpoint")]
         public DaemonEndpointV1 KubeletEndpoint { get; set; }
     }
 }

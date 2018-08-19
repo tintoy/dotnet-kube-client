@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -14,6 +15,7 @@ namespace KubeClient.Models
         ///     The target object that you want to bind to the standard object.
         /// </summary>
         [JsonProperty("target")]
+        [YamlMember(Alias = "target")]
         public ObjectReferenceV1 Target { get; set; }
     }
 }
