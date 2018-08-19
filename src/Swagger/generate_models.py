@@ -6,7 +6,7 @@ import os.path
 import pprint
 import yaml
 
-BASE_DIRECTORY = os.path.abspath('../KubeClient/Models')
+BASE_DIRECTORY = os.path.abspath('../KubeClient/Models/generated')
 ROOT_NAMESPACE = 'KubeClient.Models'
 IGNORE_MODELS = [
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
