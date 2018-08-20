@@ -12,6 +12,14 @@ namespace KubeClient.Models
         /// <summary>
         ///     Mark the property as being mergeable when using strategic-merge-patch in the Kubernetes API.
         /// </summary>
+        public StrategicMergePatchAttribute()
+            : this(mergeKey: null)
+        {
+        }
+
+        /// <summary>
+        ///     Mark the property as being mergeable when using strategic-merge-patch in the Kubernetes API.
+        /// </summary>
         /// <param name="mergeKey">
         ///     The name of the field to use as a key when merging items.
         /// </param>
@@ -21,7 +29,7 @@ namespace KubeClient.Models
         }
 
         /// <summary>
-        ///     The name of the field to use as a key when merging items.
+        ///     The name of the field (if any) to use as a key when merging items.
         /// </summary>
         public string MergeKey { get; }
     }
