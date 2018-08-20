@@ -17,7 +17,6 @@ IGNORE_MODELS = [
     'io.k8s.api.apps.v1beta1.ControllerRevisionList',
     'io.k8s.api.apps.v1beta2.ControllerRevision',
     'io.k8s.api.apps.v1beta2.ControllerRevisionList',
-    'io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps',
 ]
 VALUE_TYPE_NAMES = [
     'int',
@@ -509,14 +508,15 @@ def main():
                     class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
                 class_file.write('        /// </summary>' + LINE_ENDING)
 
-                if (model_property.is_mergeable):
-                    if (model_property.merge_key):
-                        class_file.write('        [StrategicMergePatch(Key = "%s")]%s' % (model_property.merge_key,LINE_ENDING))
-                    else:
-                        class_file.write('        [StrategicMergePatch]%s' % (LINE_ENDING,))
-
                 if model_property.data_type.is_collection():
+                    if model_property.is_mergeable:
+                        if model_property.merge_key:
+                            class_file.write('        [StrategicMergePatch("%s")]%s' % (model_property.merge_key,LINE_ENDING))
+                        else:
+                            class_file.write('        [StrategicMergePatch]%s' % (LINE_ENDING,))
+
                     class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
+
                     class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
                     class_file.write('        public %s %s { get; set; } = new %s();%s' % (
                         model_property.data_type.to_clr_type_name(),
@@ -526,7 +526,12 @@ def main():
                     ))
                 else:
                     class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
+                    
+                    if (model_property.is_mergeable and model_property.merge_key == model_property.json_name):
+                        class_file.write('        [StrategicMergeKey("%s")]%s' % (model_property.json_name,LINE_ENDING))
+
                     class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
+
                     class_file.write('        public %s %s { get; set; }%s' % (
                         model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),
                         model_property.name,

@@ -28,6 +28,7 @@ namespace KubeClient.Models
         ///     key is the label key that the selector applies to.
         /// </summary>
         [JsonProperty("key")]
+        [StrategicMergeKey("key")]
         [YamlMember(Alias = "key")]
         public string Key { get; set; }
     }

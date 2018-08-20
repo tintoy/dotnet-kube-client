@@ -111,6 +111,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed.
         /// </summary>
+        [StrategicMergePatch]
         [YamlMember(Alias = "finalizers")]
         [JsonProperty("finalizers", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Finalizers { get; set; } = new List<string>();
@@ -134,6 +135,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
         /// </summary>
+        [StrategicMergePatch("uid")]
         [YamlMember(Alias = "ownerReferences")]
         [JsonProperty("ownerReferences", NullValueHandling = NullValueHandling.Ignore)]
         public List<OwnerReferenceV1> OwnerReferences { get; set; } = new List<OwnerReferenceV1>();

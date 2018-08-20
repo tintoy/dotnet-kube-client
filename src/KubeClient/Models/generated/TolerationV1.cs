@@ -42,6 +42,7 @@ namespace KubeClient.Models
         ///     Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
         /// </summary>
         [JsonProperty("key")]
+        [StrategicMergeKey("key")]
         [YamlMember(Alias = "key")]
         public string Key { get; set; }
     }

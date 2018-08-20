@@ -14,6 +14,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of component conditions observed
         /// </summary>
+        [StrategicMergePatch("type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<ComponentConditionV1> Conditions { get; set; } = new List<ComponentConditionV1>();

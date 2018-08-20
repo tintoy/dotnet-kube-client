@@ -55,6 +55,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Current service state of pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
         /// </summary>
+        [StrategicMergePatch("type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<PodConditionV1> Conditions { get; set; } = new List<PodConditionV1>();
