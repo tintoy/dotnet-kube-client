@@ -175,7 +175,7 @@ class KubeModel(object):
 
 
 class KubeModelProperty(object):
-    def __init__(self, name, json_name, summary, data_type, is_optional):
+    def __init__(self, name, json_name, summary, data_type, is_optional, is_mergeable, merge_key):
         self.name = capitalize_name(name)
         self.json_name = json_name
         self.summary = summary or 'No summary provided'
@@ -188,6 +188,8 @@ class KubeModelProperty(object):
         )
         self.data_type = data_type
         self.is_optional = is_optional
+        self.is_mergeable = is_mergeable
+        self.merge_key = merge_key
 
     def __repr__(self):
         return 'KubeModelProperty(name="{}",type={})'.format(
@@ -201,7 +203,13 @@ class KubeModelProperty(object):
         is_optional = summary.startswith('Optional') or 'if not specified' in summary
         data_type = KubeDataType.from_definition(property_definition, data_types)
 
-        return KubeModelProperty(name, json_name, summary, data_type, is_optional)
+        is_mergeable = False
+        merge_key = None
+        if property_definition.get('x-kubernetes-patch-strategy') == 'merge':
+            is_mergeable = True
+            merge_key = property_definition['x-kubernetes-patch-merge-key']
+
+        return KubeModelProperty(name, json_name, summary, data_type, is_optional, is_mergeable, merge_key)
 
 
 class KubeDataType(object):
@@ -500,6 +508,9 @@ def main():
                 for property_summary_line in model_property.summary.split('\n'):
                     class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
                 class_file.write('        /// </summary>' + LINE_ENDING)
+
+                if (model_property.is_mergeable):
+                    class_file.write('        [StrategicMergePatch(Key = "%s")]%s' % (model_property.merge_key,LINE_ENDING))
 
                 if model_property.data_type.is_collection():
                     class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
