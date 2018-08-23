@@ -18,95 +18,6 @@ namespace KubeClient.Models
             /// <summary>
             ///     Determine whether the specified property supports merge in K8s strategic resource patching.
             /// </summary>
-            /// <typeparam name="TModel">
-            ///     The model type.
-            /// </typeparam>
-            /// <typeparam name="TProperty">
-            ///     The property type.
-            /// </typeparam>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
-            /// </returns>
-            public static bool IsMergeProperty<TModel, TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
-                where TModel : class
-            {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
-
-                return IsMergeProperty(
-                    GetProperty(propertyAccessExpression)
-                );
-            }
-
-            /// <summary>
-            ///     Determine whether the specified property represents a resource's merge key in K8s strategic resource patching.
-            /// </summary>
-            /// <typeparam name="TModel">
-            ///     The model type.
-            /// </typeparam>
-            /// <typeparam name="TProperty">
-            ///     The property type.
-            /// </typeparam>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     <c>true</c>, if the property represents the resource's merge key; otherwise, <c>false</c>.
-            /// </returns>
-            public static bool IsMergeKeyProperty<TModel, TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
-                where TModel : class
-            {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
-
-                return IsMergeKeyProperty(
-                    GetProperty(propertyAccessExpression)
-                );
-            }
-
-            /// <summary>
-            ///     Get the merge key (if any) represented by the specified model property.
-            /// </summary>
-            /// <typeparam name="TModel">
-            ///     The model type.
-            /// </typeparam>
-            /// <typeparam name="TProperty">
-            ///     The property type.
-            /// </typeparam>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     The merge key, or <c>null</c> if the property does not represent the resource's merge key.
-            /// </returns>
-            public static string GetMergeKey<TModel, TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
-                where TModel : class
-            {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
-
-                return GetMergeKey(
-                    GetProperty(propertyAccessExpression)
-                );
-            }
-
-            /// <summary>
-            ///     Get the merge key (if any) for the resource represented by the specified model.
-            /// </summary>
-            /// <typeparam name="TModel">
-            ///     The model type.
-            /// </typeparam>
-            /// <returns>
-            ///     The name of the resource's merge-key field; <c>null</c> if no merge key is defined for the resource type.
-            /// </returns>
-            public static string GetMergeKey<TModel>() where TModel : class => GetMergeKey(typeof(TModel));
-
-            /// <summary>
-            ///     Determine whether the specified property supports merge in K8s strategic resource patching.
-            /// </summary>
             /// <param name="property">
             ///     The target property.
             /// </param>
@@ -184,6 +95,90 @@ namespace KubeClient.Models
         }
 
         /// <summary>
+        ///     Helper methods for working with model metadata relating to strategic resource patching.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     The model type.
+        /// </typeparam>
+        public static class StrategicPatch<TModel>
+            where TModel : class
+        {
+            /// <summary>
+            ///     Determine whether the specified property supports merge in K8s strategic resource patching.
+            /// </summary>
+            /// <typeparam name="TProperty">
+            ///     The property type.
+            /// </typeparam>
+            /// <param name="propertyAccessExpression">
+            ///     A property-access expression representing the target property.
+            /// </param>
+            /// <returns>
+            ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
+            /// </returns>
+            public static bool IsMergeProperty<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+            {
+                if (propertyAccessExpression == null)
+                    throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                return StrategicPatch.IsMergeProperty(
+                    GetProperty(propertyAccessExpression)
+                );
+            }
+
+            /// <summary>
+            ///     Determine whether the specified property represents a resource's merge key in K8s strategic resource patching.
+            /// </summary>
+            /// <typeparam name="TProperty">
+            ///     The property type.
+            /// </typeparam>
+            /// <param name="propertyAccessExpression">
+            ///     A property-access expression representing the target property.
+            /// </param>
+            /// <returns>
+            ///     <c>true</c>, if the property represents the resource's merge key; otherwise, <c>false</c>.
+            /// </returns>
+            public static bool IsMergeKeyProperty<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+            {
+                if (propertyAccessExpression == null)
+                    throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                return StrategicPatch.IsMergeKeyProperty(
+                    GetProperty(propertyAccessExpression)
+                );
+            }
+
+            /// <summary>
+            ///     Get the merge key (if any) represented by the specified model property.
+            /// </summary>
+            /// <typeparam name="TProperty">
+            ///     The property type.
+            /// </typeparam>
+            /// <param name="propertyAccessExpression">
+            ///     A property-access expression representing the target property.
+            /// </param>
+            /// <returns>
+            ///     The merge key, or <c>null</c> if the property does not represent the resource's merge key.
+            /// </returns>
+            public static string GetMergeKey<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+            {
+                if (propertyAccessExpression == null)
+                    throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                return StrategicPatch.GetMergeKey(
+                    GetProperty(propertyAccessExpression)
+                );
+            }
+
+            /// <summary>
+            ///     Get the merge key (if any) for the resource represented by the specified model.
+            /// </summary>
+            /// <returns>
+            ///     The name of the resource's merge-key field; <c>null</c> if no merge key is defined for the resource type.
+            /// </returns>
+            public static string GetMergeKey() => StrategicPatch.GetMergeKey(typeof(TModel));
+        }
+
+        /// <summary>
         ///     Retrieve the property represented by the specified property-access expression.
         /// </summary>
         /// <param name="propertyAccessExpression">
@@ -201,9 +196,6 @@ namespace KubeClient.Models
         static PropertyInfo GetProperty<TModel, TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
             where TModel : class
         {
-            if (propertyAccessExpression.NodeType != ExpressionType.MemberAccess)
-                throw new ArgumentException("The supplied expression does not represent member access.", nameof(propertyAccessExpression));
-
             if (propertyAccessExpression.Body.NodeType != ExpressionType.MemberAccess)
                 throw new ArgumentException("The supplied expression does not represent a member-access expression.", nameof(propertyAccessExpression));
 
