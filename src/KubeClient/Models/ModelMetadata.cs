@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace KubeClient.Models
@@ -15,6 +16,101 @@ namespace KubeClient.Models
         ///     Represents an empty list of keys (resource field names).
         /// </summary>
         static readonly IReadOnlyList<string> NoKeys = new string[0];
+
+        /// <summary>
+        ///     <see cref="KubeObjectV1"/> model metadata.
+        /// </summary>
+        public static class KubeObject
+        {
+            /// <summary>
+            ///     The <see cref="Type"/> representing <see cref="KubeObjectV1"/>.
+            /// </summary>
+            static readonly Type KubeObjectV1Type = typeof(KubeObjectV1);
+
+            /// <summary>
+            ///     Get kind and apiVersion metadata for all model types in the specified assembly that derive from <see cref="KubeObjectV1"/>.
+            /// </summary>
+            /// <param name="assembly">
+            ///     The target assembly.
+            /// </param>
+            /// <returns>
+            ///     A dictionary of kind/apiVersion tuples, keyed by model type.
+            /// </returns>
+            public static Dictionary<Type, (string kind, string apiVersion)> BuildTypeToKindLookup(Assembly assembly)
+            {
+                if (assembly == null)
+                    throw new ArgumentNullException(nameof(assembly));
+                
+                var objectTypes = new Dictionary<Type, (string kind, string apiVersion)>();
+
+                foreach (Type modelType in assembly.GetTypes())
+                {
+                    TypeInfo modelTypeInfo = modelType.GetTypeInfo();
+                    if (!modelTypeInfo.IsPublic)
+                        continue;
+
+                    if (!modelTypeInfo.IsClass)
+                        continue;
+
+                    if (modelTypeInfo.IsAbstract)
+                        continue;
+
+                    if (!KubeObjectV1Type.IsAssignableFrom(modelType))
+                        continue;
+
+                    var kubeObjectAttribute = modelTypeInfo.GetCustomAttribute<KubeObjectAttribute>();
+                    if (kubeObjectAttribute == null)
+                        continue;
+
+                    var kubeKind = (kind: kubeObjectAttribute.Kind, apiVersion: kubeObjectAttribute.ApiVersion);
+                    objectTypes[modelType] = kubeKind;
+                }
+
+                return objectTypes;
+            }
+
+            /// <summary>
+            ///     Get kind and apiVersion metadata for all model types in the specified assembly that derive from <see cref="KubeObjectV1"/>.
+            /// </summary>
+            /// <param name="assembly">
+            ///     The target assembly.
+            /// </param>
+            /// <returns>
+            ///     A dictionary of model types, keyed by kind/apiVersion tuple.
+            /// </returns>
+            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToTypeLookup(Assembly assembly)
+            {
+                if (assembly == null)
+                    throw new ArgumentNullException(nameof(assembly));
+                
+                var objectTypes = new Dictionary<(string kind, string apiVersion), Type>();
+
+                foreach (Type modelType in assembly.GetTypes())
+                {
+                    TypeInfo modelTypeInfo = modelType.GetTypeInfo();
+                    if (!modelTypeInfo.IsPublic)
+                        continue;
+
+                    if (!modelTypeInfo.IsClass)
+                        continue;
+
+                    if (modelTypeInfo.IsAbstract)
+                        continue;
+
+                    if (!KubeObjectV1Type.IsAssignableFrom(modelType))
+                        continue;
+
+                    var kubeObjectAttribute = modelTypeInfo.GetCustomAttribute<KubeObjectAttribute>();
+                    if (kubeObjectAttribute == null)
+                        continue;
+
+                    var kubeKind = (kind: kubeObjectAttribute.Kind, apiVersion: kubeObjectAttribute.ApiVersion);
+                    objectTypes[kubeKind] = modelType;
+                }
+
+                return objectTypes;
+            }
+        }
 
         /// <summary>
         ///     Helper methods for working with model metadata relating to strategic resource patching.
