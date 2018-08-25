@@ -20,5 +20,10 @@ namespace KubeClient.Models
         ///     The name of the field (if any) to use as a key when merging items.
         /// </summary>
         public string Key { get; set; }
+
+        /// <summary>
+        ///     When merging items, retain existing values for fields not supplied in the request?
+        /// </summary>
+        public bool RetainExistingFields { get; set; }
     }
 }

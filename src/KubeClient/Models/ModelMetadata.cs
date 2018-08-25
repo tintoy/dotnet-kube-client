@@ -39,20 +39,20 @@ namespace KubeClient.Models
             }
 
             /// <summary>
-            ///     Determine whether the specified resource field discards a subset of fields if they are not supplied in K8s strategic patch.
+            ///     Determine whether the specified resource field retains existing values for fields if they are not supplied in K8s strategic patch.
             /// </summary>
             /// <param name="property">
             ///     The target property.
             /// </param>
             /// <returns>
-            ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
+            ///     <c>true</c>, if the existing values are retained; otherwise, <c>false</c>.
             /// </returns>
             public static bool IsRetainKeysProperty(PropertyInfo property)
             {
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
                 
-                return property.GetCustomAttribute<StrategicPatchRetainKeysAttribute>() != null;
+                return property.GetCustomAttribute<StrategicPatchMergeAttribute>()?.RetainExistingFields ?? false;
             }
 
             /// <summary>
@@ -70,23 +70,6 @@ namespace KubeClient.Models
                     throw new ArgumentNullException(nameof(property));
                 
                 return property.GetCustomAttribute<StrategicPatchMergeAttribute>()?.Key;
-            }
-
-            /// <summary>
-            ///     Get the names of fields (if any) that are always retained when patching the resource field represented by the specified model property.
-            /// </summary>
-            /// <param name="property">
-            ///     The target property.
-            /// </param>
-            /// <returns>
-            ///     A read-only list of field names.
-            /// </returns>
-            public static IReadOnlyList<string> GetRetainKeys(PropertyInfo property)
-            {
-                if (property == null)
-                    throw new ArgumentNullException(nameof(property));
-                
-                return property.GetCustomAttribute<StrategicPatchRetainKeysAttribute>()?.RetainKeys ?? NoKeys;
             }
         }
 
@@ -139,25 +122,6 @@ namespace KubeClient.Models
                     throw new ArgumentNullException(nameof(propertyAccessExpression));
 
                 return StrategicPatch.GetMergeKey(
-                    GetProperty(propertyAccessExpression)
-                );
-            }
-
-            /// <summary>
-            ///     Get the names of fields (if any) that are always retained when patching the resource field represented by the specified model property.
-            /// </summary>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     A read-only list of field names.
-            /// </returns>
-            public static IReadOnlyList<string> GetRetainKeys<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
-            {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
-
-                return StrategicPatch.GetRetainKeys(
                     GetProperty(propertyAccessExpression)
                 );
             }

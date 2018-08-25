@@ -174,7 +174,7 @@ class KubeModel(object):
 
 
 class KubeModelProperty(object):
-    def __init__(self, name, json_name, summary, data_type, is_optional, is_mergeable, merge_key):
+    def __init__(self, name, json_name, summary, data_type, is_optional, is_mergeable, merge_key, retain_existing_fields):
         self.name = capitalize_name(name)
         self.json_name = json_name
         self.summary = summary or 'No summary provided'
@@ -189,6 +189,7 @@ class KubeModelProperty(object):
         self.is_optional = is_optional
         self.is_mergeable = is_mergeable
         self.merge_key = merge_key
+        self.retain_existing_fields = retain_existing_fields
 
     def __repr__(self):
         return 'KubeModelProperty(name="{}",type={})'.format(
@@ -204,11 +205,18 @@ class KubeModelProperty(object):
 
         is_mergeable = False
         merge_key = None
+        retain_existing_fields = False
         if property_definition.get('x-kubernetes-patch-strategy') == 'merge':
             is_mergeable = True
-            merge_key = property_definition.get('x-kubernetes-patch-merge-key')
 
-        return KubeModelProperty(name, json_name, summary, data_type, is_optional, is_mergeable, merge_key)
+        if property_definition.get('x-kubernetes-patch-strategy') == 'merge,retainKeys':
+            is_mergeable = True
+            merge_key = property_definition.get('x-kubernetes-patch-merge-key')
+            retain_existing_fields = True
+
+        merge_key = property_definition.get('x-kubernetes-patch-merge-key')
+
+        return KubeModelProperty(name, json_name, summary, data_type, is_optional, is_mergeable, merge_key, retain_existing_fields)
 
 
 class KubeDataType(object):
@@ -509,10 +517,13 @@ def main():
                 class_file.write('        /// </summary>' + LINE_ENDING)
 
                 if model_property.data_type.is_collection():
-                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
+                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
 
                     if model_property.is_mergeable and model_property.merge_key:
-                        class_file.write('        [StrategicPatchMerge(Key = "%s")]%s' % (model_property.merge_key,LINE_ENDING))
+                        if model_property.retain_existing_fields:
+                            class_file.write('        [StrategicPatchMerge(Key = "%s", RetainExistingFields = true)]%s' % (model_property.merge_key, LINE_ENDING))
+                        else:
+                            class_file.write('        [StrategicPatchMerge(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
 
                     class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
 
@@ -525,13 +536,17 @@ def main():
                 else:
                     class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
 
-                    if (model_property.is_mergeable and not model_property.merge_key):
-                        class_file.write('        [StrategicPatchMerge]%s' % (model_property.merge_key,LINE_ENDING))
+                    if model_property.is_mergeable and not model_property.merge_key and not model_property.retain_existing_keys:
+                        class_file.write('        [StrategicPatchMerge]%s' % (LINE_ENDING,))
 
-                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
+                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
 
-                    if (model_property.is_mergeable and model_property.merge_key):
-                        class_file.write('        [StrategicPatchMerge(Key = "%s")]%s' % (model_property.merge_key,LINE_ENDING))
+                    if model_property.is_mergeable:
+                        if model_property.merge_key:
+                            if model_property.retain_existing_fields:
+                                class_file.write('        [StrategicPatchMerge(Key = "%s", RetainExistingFields = true)]%s' % (model_property.merge_key, LINE_ENDING))
+                            else:
+                                class_file.write('        [StrategicPatchMerge(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
 
                     class_file.write('        public %s %s { get; set; }%s' % (
                         model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),
