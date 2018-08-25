@@ -27,8 +27,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Represents the latest available observations of a replication controller's current state.
         /// </summary>
-        [StrategicMergePatch("type")]
         [YamlMember(Alias = "conditions")]
+        [StrategicPatchMerge(Key = "type")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<ReplicationControllerConditionV1> Conditions { get; set; } = new List<ReplicationControllerConditionV1>();
 

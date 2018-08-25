@@ -30,7 +30,7 @@ namespace KubeClient.Tests
         [Fact(DisplayName = "ComponentStatusV1.Conditions is a Merge property (typed)")]
         public void IsMergeProperty_ComponentStatusV1_Conditions_Typed()
         {
-            bool isMergeProperty = ModelMetadata.StrategicPatch<ComponentStatusV1>.IsMergeProperty(status => status.Conditions);
+            bool isMergeProperty = ModelMetadata.StrategicPatchFor<ComponentStatusV1>.IsMergeProperty(status => status.Conditions);
             Assert.True(isMergeProperty);
         }
 

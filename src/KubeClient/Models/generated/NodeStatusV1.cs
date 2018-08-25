@@ -48,16 +48,16 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of addresses reachable to the node. Queried from cloud provider, if available. More info: https://kubernetes.io/docs/concepts/nodes/node/#addresses
         /// </summary>
-        [StrategicMergePatch("type")]
         [YamlMember(Alias = "addresses")]
+        [StrategicPatchMerge(Key = "type")]
         [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
         public List<NodeAddressV1> Addresses { get; set; } = new List<NodeAddressV1>();
 
         /// <summary>
         ///     Conditions is an array of current observed node conditions. More info: https://kubernetes.io/docs/concepts/nodes/node/#condition
         /// </summary>
-        [StrategicMergePatch("type")]
         [YamlMember(Alias = "conditions")]
+        [StrategicPatchMerge(Key = "type")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<NodeConditionV1> Conditions { get; set; } = new List<NodeConditionV1>();
 

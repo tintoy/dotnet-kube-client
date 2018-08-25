@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace KubeClient.Models
 {
@@ -11,12 +12,17 @@ namespace KubeClient.Models
     public static class ModelMetadata
     {
         /// <summary>
+        ///     Represents an empty list of keys (resource field names).
+        /// </summary>
+        static readonly IReadOnlyList<string> NoKeys = new string[0];
+
+        /// <summary>
         ///     Helper methods for working with model metadata relating to strategic resource patching.
         /// </summary>
         public static class StrategicPatch
         {
             /// <summary>
-            ///     Determine whether the specified property supports merge in K8s strategic resource patching.
+            ///     Determine whether the specified resource field supports merge in K8s strategic patch.
             /// </summary>
             /// <param name="property">
             ///     The target property.
@@ -29,24 +35,24 @@ namespace KubeClient.Models
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
                 
-                return property.GetCustomAttribute<StrategicMergePatchAttribute>() != null;
+                return property.GetCustomAttribute<StrategicPatchMergeAttribute>() != null;
             }
 
             /// <summary>
-            ///     Determine whether the specified property represents a resource's merge key in K8s strategic resource patching.
+            ///     Determine whether the specified resource field discards a subset of fields if they are not supplied in K8s strategic patch.
             /// </summary>
             /// <param name="property">
             ///     The target property.
             /// </param>
             /// <returns>
-            ///     <c>true</c>, if the property represents the resource's merge key; otherwise, <c>false</c>.
+            ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
             /// </returns>
-            public static bool IsMergeKeyProperty(PropertyInfo property)
+            public static bool IsRetainKeysProperty(PropertyInfo property)
             {
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
-
-                return property.GetCustomAttribute<StrategicMergeKeyAttribute>() != null;
+                
+                return property.GetCustomAttribute<StrategicPatchRetainKeysAttribute>() != null;
             }
 
             /// <summary>
@@ -63,44 +69,34 @@ namespace KubeClient.Models
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
                 
-                return property.GetCustomAttribute<StrategicMergePatchAttribute>()?.MergeKey;
+                return property.GetCustomAttribute<StrategicPatchMergeAttribute>()?.Key;
             }
 
             /// <summary>
-            ///     Get the merge key (if any) for the resource represented by the specified model.
+            ///     Get the names of fields (if any) that are always retained when patching the resource field represented by the specified model property.
             /// </summary>
-            /// <param name="modelClass">
-            ///     The model type.
+            /// <param name="property">
+            ///     The target property.
             /// </param>
             /// <returns>
-            ///     The name of the resource's merge-key field; <c>null</c> if no merge key is defined for the resource type.
+            ///     A read-only list of field names.
             /// </returns>
-            public static string GetMergeKey(Type modelClass)
+            public static IReadOnlyList<string> GetRetainKeys(PropertyInfo property)
             {
-                if (modelClass == null)
-                    throw new ArgumentNullException(nameof(modelClass));
-
-                if (!modelClass.GetTypeInfo().IsClass)
-                    throw new InvalidOperationException($"Type '{modelClass.FullName}' is not a class.");
-
-                PropertyInfo mergeKeyProperty = modelClass.GetProperties(BindingFlags.Instance | BindingFlags.Public).FirstOrDefault(
-                    property => property.CanRead && property.CanWrite && IsMergeKeyProperty(property)
-                );
-
-                if (mergeKeyProperty == null)
-                    return null;
-
-                return GetMergeKey(mergeKeyProperty);
+                if (property == null)
+                    throw new ArgumentNullException(nameof(property));
+                
+                return property.GetCustomAttribute<StrategicPatchRetainKeysAttribute>()?.RetainKeys ?? NoKeys;
             }
         }
 
         /// <summary>
-        ///     Helper methods for working with model metadata relating to strategic resource patching.
+        ///     Helper methods for working with typed model metadata relating to strategic resource patching.
         /// </summary>
         /// <typeparam name="TModel">
         ///     The model type.
         /// </typeparam>
-        public static class StrategicPatch<TModel>
+        public static class StrategicPatchFor<TModel>
             where TModel : class
         {
             /// <summary>
@@ -121,28 +117,6 @@ namespace KubeClient.Models
                     throw new ArgumentNullException(nameof(propertyAccessExpression));
 
                 return StrategicPatch.IsMergeProperty(
-                    GetProperty(propertyAccessExpression)
-                );
-            }
-
-            /// <summary>
-            ///     Determine whether the specified property represents a resource's merge key in K8s strategic resource patching.
-            /// </summary>
-            /// <typeparam name="TProperty">
-            ///     The property type.
-            /// </typeparam>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     <c>true</c>, if the property represents the resource's merge key; otherwise, <c>false</c>.
-            /// </returns>
-            public static bool IsMergeKeyProperty<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
-            {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
-
-                return StrategicPatch.IsMergeKeyProperty(
                     GetProperty(propertyAccessExpression)
                 );
             }
@@ -170,12 +144,23 @@ namespace KubeClient.Models
             }
 
             /// <summary>
-            ///     Get the merge key (if any) for the resource represented by the specified model.
+            ///     Get the names of fields (if any) that are always retained when patching the resource field represented by the specified model property.
             /// </summary>
+            /// <param name="propertyAccessExpression">
+            ///     A property-access expression representing the target property.
+            /// </param>
             /// <returns>
-            ///     The name of the resource's merge-key field; <c>null</c> if no merge key is defined for the resource type.
+            ///     A read-only list of field names.
             /// </returns>
-            public static string GetMergeKey() => StrategicPatch.GetMergeKey(typeof(TModel));
+            public static IReadOnlyList<string> GetRetainKeys<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+            {
+                if (propertyAccessExpression == null)
+                    throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                return StrategicPatch.GetRetainKeys(
+                    GetProperty(propertyAccessExpression)
+                );
+            }
         }
 
         /// <summary>

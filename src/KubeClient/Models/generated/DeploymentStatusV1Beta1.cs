@@ -27,8 +27,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Represents the latest available observations of a deployment's current state.
         /// </summary>
-        [StrategicMergePatch("type")]
         [YamlMember(Alias = "conditions")]
+        [StrategicPatchMerge(Key = "type")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<DeploymentConditionV1Beta1> Conditions { get; set; } = new List<DeploymentConditionV1Beta1>();
 

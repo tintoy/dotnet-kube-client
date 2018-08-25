@@ -62,8 +62,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The list of ports that are exposed by this service. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
         /// </summary>
-        [StrategicMergePatch("port")]
         [YamlMember(Alias = "ports")]
+        [StrategicPatchMerge(Key = "port")]
         [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
         public List<ServicePortV1> Ports { get; set; } = new List<ServicePortV1>();
 

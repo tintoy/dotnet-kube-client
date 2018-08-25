@@ -509,15 +509,13 @@ def main():
                 class_file.write('        /// </summary>' + LINE_ENDING)
 
                 if model_property.data_type.is_collection():
-                    if model_property.is_mergeable:
-                        if model_property.merge_key:
-                            class_file.write('        [StrategicMergePatch("%s")]%s' % (model_property.merge_key,LINE_ENDING))
-                        else:
-                            class_file.write('        [StrategicMergePatch]%s' % (LINE_ENDING,))
-
                     class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
 
+                    if model_property.is_mergeable and model_property.merge_key:
+                        class_file.write('        [StrategicPatchMerge(Key = "%s")]%s' % (model_property.merge_key,LINE_ENDING))
+
                     class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
+
                     class_file.write('        public %s %s { get; set; } = new %s();%s' % (
                         model_property.data_type.to_clr_type_name(),
                         model_property.name,
@@ -526,11 +524,14 @@ def main():
                     ))
                 else:
                     class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
-                    
-                    if (model_property.is_mergeable and model_property.merge_key == model_property.json_name):
-                        class_file.write('        [StrategicMergeKey("%s")]%s' % (model_property.json_name,LINE_ENDING))
+
+                    if (model_property.is_mergeable and not model_property.merge_key):
+                        class_file.write('        [StrategicPatchMerge]%s' % (model_property.merge_key,LINE_ENDING))
 
                     class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name,LINE_ENDING))
+
+                    if (model_property.is_mergeable and model_property.merge_key):
+                        class_file.write('        [StrategicPatchMerge(Key = "%s")]%s' % (model_property.merge_key,LINE_ENDING))
 
                     class_file.write('        public %s %s { get; set; }%s' % (
                         model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),

@@ -35,8 +35,8 @@ namespace KubeClient.Models
         ///     Required. The taint key to be applied to a node.
         /// </summary>
         [JsonProperty("key")]
-        [StrategicMergeKey("key")]
         [YamlMember(Alias = "key")]
+        [StrategicPatchMerge(Key = "key")]
         public string Key { get; set; }
     }
 }

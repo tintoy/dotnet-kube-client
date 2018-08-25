@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Current service state of apiService.
         /// </summary>
-        [StrategicMergePatch("type")]
         [YamlMember(Alias = "conditions")]
+        [StrategicPatchMerge(Key = "type")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<APIServiceConditionV1Beta1> Conditions { get; set; } = new List<APIServiceConditionV1Beta1>();
     }
