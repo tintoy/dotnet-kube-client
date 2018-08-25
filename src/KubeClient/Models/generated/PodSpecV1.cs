@@ -90,32 +90,32 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of containers belonging to the pod. Containers cannot currently be added or removed. There must be at least one container in a Pod. Cannot be updated.
         /// </summary>
+        [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "containers")]
-        [StrategicPatchMerge(Key = "name")]
         [JsonProperty("containers", NullValueHandling = NullValueHandling.Ignore)]
         public List<ContainerV1> Containers { get; set; } = new List<ContainerV1>();
 
         /// <summary>
         ///     HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified. This is only valid for non-hostNetwork pods.
         /// </summary>
+        [MergeStrategy(Key = "ip")]
         [YamlMember(Alias = "hostAliases")]
-        [StrategicPatchMerge(Key = "ip")]
         [JsonProperty("hostAliases", NullValueHandling = NullValueHandling.Ignore)]
         public List<HostAliasV1> HostAliases { get; set; } = new List<HostAliasV1>();
 
         /// <summary>
         ///     ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. For example, in the case of docker, only DockerConfig type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
         /// </summary>
+        [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "imagePullSecrets")]
-        [StrategicPatchMerge(Key = "name")]
         [JsonProperty("imagePullSecrets", NullValueHandling = NullValueHandling.Ignore)]
         public List<LocalObjectReferenceV1> ImagePullSecrets { get; set; } = new List<LocalObjectReferenceV1>();
 
         /// <summary>
         ///     List of initialization containers belonging to the pod. Init containers are executed in order prior to containers being started. If any init container fails, the pod is considered to have failed and is handled according to its restartPolicy. The name for an init container or normal container must be unique among all containers. Init containers may not have Lifecycle actions, Readiness probes, or Liveness probes. The resourceRequirements of an init container are taken into account during scheduling by finding the highest request/limit for each resource type, and then using the max of of that value or the sum of the normal containers. Limits are applied to init containers in a similar fashion. Init containers cannot currently be added or removed. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
         /// </summary>
+        [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "initContainers")]
-        [StrategicPatchMerge(Key = "name")]
         [JsonProperty("initContainers", NullValueHandling = NullValueHandling.Ignore)]
         public List<ContainerV1> InitContainers { get; set; } = new List<ContainerV1>();
 
@@ -136,8 +136,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of volumes that can be mounted by containers belonging to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes
         /// </summary>
+        [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "volumes")]
-        [StrategicPatchMerge(Key = "name")]
         [JsonProperty("volumes", NullValueHandling = NullValueHandling.Ignore)]
         public List<VolumeV1> Volumes { get; set; } = new List<VolumeV1>();
 

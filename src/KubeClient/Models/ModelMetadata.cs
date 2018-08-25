@@ -40,7 +40,7 @@ namespace KubeClient.Models
             {
                 if (assembly == null)
                     throw new ArgumentNullException(nameof(assembly));
-                
+
                 var objectTypes = new Dictionary<Type, (string kind, string apiVersion)>();
 
                 foreach (Type modelType in assembly.GetTypes())
@@ -82,7 +82,7 @@ namespace KubeClient.Models
             {
                 if (assembly == null)
                     throw new ArgumentNullException(nameof(assembly));
-                
+
                 var objectTypes = new Dictionary<(string kind, string apiVersion), Type>();
 
                 foreach (Type modelType in assembly.GetTypes())
@@ -126,16 +126,16 @@ namespace KubeClient.Models
             /// <returns>
             ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
             /// </returns>
-            public static bool IsMergeProperty(PropertyInfo property)
+            public static bool IsMergeStrategy(PropertyInfo property)
             {
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
-                
-                return property.GetCustomAttribute<StrategicPatchMergeAttribute>() != null;
+
+                return property.GetCustomAttribute<MergeStrategyAttribute>() != null;
             }
 
             /// <summary>
-            ///     Determine whether the specified resource field retains existing values for fields if they are not supplied in K8s strategic patch.
+            ///     Determine whether the specified resource field retains existing values for fields if they are not supplied in K8s strategic patch (via the $retainKeys directive).
             /// </summary>
             /// <param name="property">
             ///     The target property.
@@ -143,12 +143,47 @@ namespace KubeClient.Models
             /// <returns>
             ///     <c>true</c>, if the existing values are retained; otherwise, <c>false</c>.
             /// </returns>
-            public static bool IsRetainKeysProperty(PropertyInfo property)
+            public static bool IsRetainKeysStrategy(PropertyInfo property)
             {
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
-                
-                return property.GetCustomAttribute<StrategicPatchMergeAttribute>()?.RetainExistingFields ?? false;
+
+                return property.GetCustomAttribute<RetainKeysStrategyAttribute>() != null;
+            }
+
+            /// <summary>
+            ///     Get all patch strategies applicable to the specified property.
+            /// </summary>
+            /// <param name="property">
+            ///     The target property.
+            /// </param>
+            /// <returns>
+            ///     One or more <see cref="PatchStrategies"/> flags indicating the applicable strategies.
+            /// </returns>
+            public static PatchStrategies GetStrategies(PropertyInfo property)
+            {
+                PatchStrategies patchStrategies = PatchStrategies.Replace;
+
+                foreach (PatchStrategyAttribute strategyAttribute in property.GetCustomAttributes<PatchStrategyAttribute>())
+                {
+                    switch (strategyAttribute)
+                    {
+                        case MergeStrategyAttribute mergeStrategy:
+                            {
+                                patchStrategies |= PatchStrategies.Merge;
+
+                                break;
+                            }
+                        case RetainKeysStrategyAttribute retainKeys:
+                            {
+                                patchStrategies |= PatchStrategies.RetainKeys;
+
+                                break;
+                            }
+                    }
+                }
+
+                return patchStrategies;
             }
 
             /// <summary>
@@ -164,62 +199,106 @@ namespace KubeClient.Models
             {
                 if (property == null)
                     throw new ArgumentNullException(nameof(property));
-                
-                return property.GetCustomAttribute<StrategicPatchMergeAttribute>()?.Key;
-            }
-        }
 
-        /// <summary>
-        ///     Helper methods for working with typed model metadata relating to strategic resource patching.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     The model type.
-        /// </typeparam>
-        public static class StrategicPatchFor<TModel>
-            where TModel : class
-        {
-            /// <summary>
-            ///     Determine whether the specified property supports merge in K8s strategic resource patching.
-            /// </summary>
-            /// <typeparam name="TProperty">
-            ///     The property type.
-            /// </typeparam>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
-            /// </returns>
-            public static bool IsMergeProperty<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
-            {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
-
-                return StrategicPatch.IsMergeProperty(
-                    GetProperty(propertyAccessExpression)
-                );
+                return property.GetCustomAttribute<MergeStrategyAttribute>()?.Key;
             }
 
             /// <summary>
-            ///     Get the merge key (if any) represented by the specified model property.
+            ///     Helper methods for working with typed model metadata relating to strategic resource patching.
             /// </summary>
-            /// <typeparam name="TProperty">
-            ///     The property type.
+            /// <typeparam name="TModel">
+            ///     The model type.
             /// </typeparam>
-            /// <param name="propertyAccessExpression">
-            ///     A property-access expression representing the target property.
-            /// </param>
-            /// <returns>
-            ///     The merge key, or <c>null</c> if the property does not represent the resource's merge key.
-            /// </returns>
-            public static string GetMergeKey<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+            public static class For<TModel>
+                where TModel : class
             {
-                if (propertyAccessExpression == null)
-                    throw new ArgumentNullException(nameof(propertyAccessExpression));
+                /// <summary>
+                ///     Determine whether the specified property supports merge in K8s strategic resource patching.
+                /// </summary>
+                /// <typeparam name="TProperty">
+                ///     The property type.
+                /// </typeparam>
+                /// <param name="propertyAccessExpression">
+                ///     A property-access expression representing the target property.
+                /// </param>
+                /// <returns>
+                ///     <c>true</c>, if the property supports merge; otherwise, <c>false</c>.
+                /// </returns>
+                public static bool IsMergeStrategy<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+                {
+                    if (propertyAccessExpression == null)
+                        throw new ArgumentNullException(nameof(propertyAccessExpression));
 
-                return StrategicPatch.GetMergeKey(
-                    GetProperty(propertyAccessExpression)
-                );
+                    return StrategicPatch.IsMergeStrategy(
+                        GetProperty(propertyAccessExpression)
+                    );
+                }
+
+                /// <summary>
+                ///     Determine whether the specified resource field retains existing values for fields if they are not supplied in K8s strategic patch (via the $retainKeys directive).
+                /// </summary>
+                /// <typeparam name="TProperty">
+                ///     The property type.
+                /// </typeparam>
+                /// <param name="propertyAccessExpression">
+                ///     A property-access expression representing the target property.
+                /// </param>
+                /// <returns>
+                ///     <c>true</c>, if existing values are retained; otherwise, <c>false</c>.
+                /// </returns>
+                public static bool IsRetainKeysStrategy<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+                {
+                    if (propertyAccessExpression == null)
+                        throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                    return StrategicPatch.IsRetainKeysStrategy(
+                        GetProperty(propertyAccessExpression)
+                    );
+                }
+
+                /// <summary>
+                ///     Get all patch strategies applicable to the specified property.
+                /// </summary>
+                /// <typeparam name="TProperty">
+                ///     The property type.
+                /// </typeparam>
+                /// <param name="propertyAccessExpression">
+                ///     A property-access expression representing the target property.
+                /// </param>
+                /// <returns>
+                ///     One or more <see cref="PatchStrategies"/> flags indicating the applicable strategies.
+                /// </returns>
+                public static PatchStrategies GetStrategies<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+                {
+                    if (propertyAccessExpression == null)
+                        throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                    return StrategicPatch.GetStrategies(
+                        GetProperty(propertyAccessExpression)
+                    );
+                }
+
+                /// <summary>
+                ///     Get the merge key (if any) represented by the specified model property.
+                /// </summary>
+                /// <typeparam name="TProperty">
+                ///     The property type.
+                /// </typeparam>
+                /// <param name="propertyAccessExpression">
+                ///     A property-access expression representing the target property.
+                /// </param>
+                /// <returns>
+                ///     The merge key, or <c>null</c> if the property does not represent the resource's merge key.
+                /// </returns>
+                public static string GetMergeKey<TProperty>(Expression<Func<TModel, TProperty>> propertyAccessExpression)
+                {
+                    if (propertyAccessExpression == null)
+                        throw new ArgumentNullException(nameof(propertyAccessExpression));
+
+                    return StrategicPatch.GetMergeKey(
+                        GetProperty(propertyAccessExpression)
+                    );
+                }
             }
         }
 

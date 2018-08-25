@@ -30,17 +30,17 @@ namespace KubeClient.Tests
         [Fact(DisplayName = "ComponentStatusV1.Conditions is a Merge property (typed)")]
         public void IsMergeProperty_ComponentStatusV1_Conditions_Typed()
         {
-            bool isMergeProperty = ModelMetadata.StrategicPatchFor<ComponentStatusV1>.IsMergeProperty(status => status.Conditions);
+            bool isMergeProperty = ModelMetadata.StrategicPatch.For<ComponentStatusV1>.IsMergeStrategy(status => status.Conditions);
             Assert.True(isMergeProperty);
         }
 
         /// <summary>
         ///     Verify that the untyped ModelMetadata API correctly indicates that ComponentStatusV1.Conditions is a merge property.
         /// </summary>
-        [Fact(DisplayName = "ComponentStatusV1.Conditions is a Merge property (unyped)")]
+        [Fact(DisplayName = "ComponentStatusV1.Conditions is a Merge property (untyped)")]
         public void IsMergeProperty_ComponentStatusV1_Conditions_Untyped()
         {
-            bool isMergeProperty = ModelMetadata.StrategicPatch.IsMergeProperty(
+            bool isMergeProperty = ModelMetadata.StrategicPatch.IsMergeStrategy(
                 typeof(ComponentStatusV1).GetProperty("Conditions")
             );
             Assert.True(isMergeProperty);

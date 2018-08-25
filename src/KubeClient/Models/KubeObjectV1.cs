@@ -64,8 +64,9 @@ namespace KubeClient.Models
         /// </summary>
         /// <param name="kubeObjectType">
         ///     The Kubernetes object type.
+        /// </param>
         /// <returns>
-        ///     A tuple containing the object's Kind and ApiVersion metadata (or <c>null</c> and <c>null</c>, if no metadata is available for <typeparamref name="TObject"/>).
+        ///     A tuple containing the object's Kind and ApiVersion metadata (or <c>null</c> and <c>null</c>, if no metadata is available for <paramref name="kubeObjectType"/>).
         /// </returns>
         public static (string kind, string apiVersion) GetKubeKind(Type kubeObjectType)
         {

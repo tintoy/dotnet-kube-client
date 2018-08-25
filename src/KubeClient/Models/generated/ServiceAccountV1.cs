@@ -28,8 +28,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Secrets is the list of secrets allowed to be used by pods running using this ServiceAccount. More info: https://kubernetes.io/docs/concepts/configuration/secret
         /// </summary>
+        [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "secrets")]
-        [StrategicPatchMerge(Key = "name")]
         [JsonProperty("secrets", NullValueHandling = NullValueHandling.Ignore)]
         public List<ObjectReferenceV1> Secrets { get; set; } = new List<ObjectReferenceV1>();
     }
