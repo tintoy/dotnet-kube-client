@@ -375,6 +375,12 @@ namespace KubeClient.ApiMetadata
             }
         }
 
+        /// <summary>
+        ///     Retrieve all keys for which the cache contains metadata.
+        /// </summary>
+        /// <returns>
+        ///     An array of strings representing the cache keys.
+        /// </returns>
         public string[] GetCacheKeys()
         {
             lock (_stateLock)
@@ -383,6 +389,12 @@ namespace KubeClient.ApiMetadata
             }
         }
 
+        /// <summary>
+        ///     Retrieve all resource kinds for which the cache contains metadata.
+        /// </summary>
+        /// <returns>
+        ///     An array of (kind, apiVersion) tuples.
+        /// </returns>
         public (string kind, string apiVersion)[] GetKnownResourceKinds()
         {
             lock (_stateLock)
