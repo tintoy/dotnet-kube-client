@@ -198,5 +198,43 @@ namespace KubeClient
                 client => new ReplicaSetClientV1Beta1(client)
             );
         }
+
+        /// <summary>
+        ///     Get the Kubernetes APIGroups (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IAPIGroupClientV1 APIGroupsV1(this KubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+            
+            return kubeClient.ResourceClient(
+                client => new APIGroupClientV1(client)
+            );
+        }
+
+        /// <summary>
+        ///     Get the Kubernetes APIResources (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IAPIResourceClientV1 APIResourcesV1(this KubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+            
+            return kubeClient.ResourceClient(
+                client => new APIResourceClientV1(client)
+            );
+        }
     }
 }
