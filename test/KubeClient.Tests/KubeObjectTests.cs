@@ -1,11 +1,11 @@
 using System;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
     using Models;
     using TestCommon;
-    using Xunit.Abstractions;
 
     /// <summary>
     ///     Tests for the <see cref="KubeObjectV1"/> base class.

@@ -48,6 +48,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     The latest available observations of an object's current state. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
         /// </summary>
+        [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<JobConditionV1> Conditions { get; set; } = new List<JobConditionV1>();

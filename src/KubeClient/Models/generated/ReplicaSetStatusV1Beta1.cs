@@ -27,6 +27,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Represents the latest available observations of a replica set's current state.
         /// </summary>
+        [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<ReplicaSetConditionV1Beta1> Conditions { get; set; } = new List<ReplicaSetConditionV1Beta1>();

@@ -54,8 +54,27 @@ namespace KubeClient.Models
         public static (string kind, string apiVersion) GetKubeKind<TObject>()
             where TObject : KubeObjectV1
         {
+            return GetKubeKind(
+                typeof(TObject)
+            );
+        }
+
+        /// <summary>
+        ///     Get Kubernetes Kind / ApiVersion metadata for the specified object type.
+        /// </summary>
+        /// <param name="kubeObjectType">
+        ///     The Kubernetes object type.
+        /// </param>
+        /// <returns>
+        ///     A tuple containing the object's Kind and ApiVersion metadata (or <c>null</c> and <c>null</c>, if no metadata is available for <paramref name="kubeObjectType"/>).
+        /// </returns>
+        public static (string kind, string apiVersion) GetKubeKind(Type kubeObjectType)
+        {
+            if (kubeObjectType == null)
+                throw new ArgumentNullException(nameof(kubeObjectType));
+
             (string kind, string apiVersion) kubeKind;
-            ModelMetadata.TryGetValue(typeof(TObject), out kubeKind);
+            ModelMetadata.TryGetValue(kubeObjectType, out kubeKind);
 
             return kubeKind;
         }

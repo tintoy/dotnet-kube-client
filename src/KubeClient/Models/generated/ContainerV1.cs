@@ -98,6 +98,7 @@ namespace KubeClient.Models
         ///     List of ports to expose from the container. Exposing a port here gives the system additional information about the network connections a container uses, but is primarily informational. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Cannot be updated.
         /// </summary>
         [YamlMember(Alias = "ports")]
+        [MergeStrategy(Key = "containerPort")]
         [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
         public List<ContainerPortV1> Ports { get; set; } = new List<ContainerPortV1>();
 
@@ -111,6 +112,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Pod volumes to mount into the container's filesystem. Cannot be updated.
         /// </summary>
+        [MergeStrategy(Key = "mountPath")]
         [YamlMember(Alias = "volumeMounts")]
         [JsonProperty("volumeMounts", NullValueHandling = NullValueHandling.Ignore)]
         public List<VolumeMountV1> VolumeMounts { get; set; } = new List<VolumeMountV1>();
@@ -126,6 +128,7 @@ namespace KubeClient.Models
         ///     List of environment variables to set in the container. Cannot be updated.
         /// </summary>
         [YamlMember(Alias = "env")]
+        [MergeStrategy(Key = "name")]
         [JsonProperty("env", NullValueHandling = NullValueHandling.Ignore)]
         public List<EnvVarV1> Env { get; set; } = new List<EnvVarV1>();
 
