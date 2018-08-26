@@ -15,10 +15,12 @@ namespace KubeClient.ResourceClients
     using ApiMetadata;
     using Models;
 
+    // TODO: Always prefer namespaced API paths (except for List operations) and use client's default namespace.
+
     /// <summary>
     ///     A client for dynamic access to Kubernetes resource APIs.
     /// </summary>
-    public class DynamicResourceClient
+    public sealed class DynamicResourceClient
         : KubeResourceClient, IDynamicResourceClient
     {
         /// <summary>
@@ -54,14 +56,14 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     Retrieve a single resource by name.
         /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
         /// <param name="kind">
         ///     The resource kind.
         /// </param>
         /// <param name="apiVersion">
         ///     The resource API version.
-        /// </param>
-        /// <param name="name">
-        ///     The resource name.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The (optional) name of a Kubernetes namespace containing the resource.
@@ -72,16 +74,16 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     The resource, or <c>null</c> if the resource was not found.
         /// </returns>
-        public async Task<KubeResourceV1> Get(string kind, string apiVersion, string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<KubeResourceV1> Get(string name, string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
             
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
-
-            if (String.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
             bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
 
@@ -175,6 +177,91 @@ namespace KubeClient.ResourceClients
                 StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
 
                 throw new KubeClientException($"Failed to list {apiVersion}/{kind} resources (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
+                );
+            }
+        }
+
+        /// <summary>
+        ///     Perform a JSON patch operation on a Kubernetes resource.
+        /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="patch">
+        ///     A <see cref="JsonPatchDocument"/> representing the patch operation(s) to perform.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the updated resource.
+        /// </returns>
+        public async Task<KubeResourceV1> Patch(string name, string kind, string apiVersion, JsonPatchDocument patch, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if (String.IsNullOrWhiteSpace(kind))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+            
+            if (String.IsNullOrWhiteSpace(apiVersion))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+            
+            if (patch == null)
+                throw new ArgumentNullException(nameof(patch)); 
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+            
+            Type modelType = GetModelType(kind, apiVersion);
+
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{Name}")
+                .WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace
+                });
+
+            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody: patch, mediaType: PatchMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (TextReader responseReader = new StreamReader(responseStream))
+                    {
+                        JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+
+                        return (KubeResourceV1)serializer.Deserialize(responseReader, modelType);
+                    }
+                }
+
+                // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
+                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+                if (status.Reason == "NotFound")
+                {
+                    string errorMessage = isNamespaced ?
+                        $"Failed to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' (resource not found)."
+                        :
+                        $"Failed to patch {apiVersion}/{kind} resource '{name}' (resource not found).";
+
+
+                    throw new KubeClientException(errorMessage);
+                }
+
+                throw new KubeClientException($"Failed to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
                 );
             }
