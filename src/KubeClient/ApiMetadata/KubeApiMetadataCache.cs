@@ -271,23 +271,23 @@ namespace KubeClient.ApiMetadata
 
                 foreach (APIGroupV1 apiGroup in apiGroups.Groups)
                 {
-                    List<string> groupVersions = new List<string>();
+                    List<GroupVersionForDiscoveryV1> groupVersions;
                     if (apiGroupPrefix == "api")
                     {
-                        groupVersions.Add("v1");
+                        groupVersions = new List<GroupVersionForDiscoveryV1>
+                        {
+                            new GroupVersionForDiscoveryV1
+                            {
+                                GroupVersion = "v1"
+                            }
+                        };
                     }
                     else
-                    {
-                        groupVersions.AddRange(
-                            apiGroup.Versions.Select(
-                                version => version.GroupVersion
-                            )
-                        );
-                    }
+                        groupVersions = apiGroup.Versions;
 
-                    foreach (string groupVersion in groupVersions)
+                    foreach (GroupVersionForDiscoveryV1 groupVersion in groupVersions)
                     {
-                        APIResourceListV1 apis = await kubeClient.APIResourcesV1().List(apiGroupPrefix, groupVersion, cancellationToken);
+                        APIResourceListV1 apis = await kubeClient.APIResourcesV1().List(apiGroupPrefix, groupVersion.GroupVersion, cancellationToken);
                         foreach (var apisForKind in apis.Resources.GroupBy(api => api.Kind))
                         {
                             string kind = apisForKind.Key;
@@ -296,11 +296,11 @@ namespace KubeClient.ApiMetadata
 
                             var apiPaths = new List<KubeApiPathMetadata>();
 
-                            bool isPreferredVersion = (groupVersion == apiGroup.PreferredVersion.GroupVersion);
+                            bool isPreferredVersion = (groupVersion.GroupVersion == apiGroup.PreferredVersion.GroupVersion);
 
                             foreach (APIResourceV1 api in apisForKind)
-                            {
-                                string apiPath = $"{apiGroupPrefix}/{apiGroup.PreferredVersion.GroupVersion}/{api.Name}";
+                            {   
+                                string apiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/{api.Name}";
 
                                 apiPaths.Add(
                                     new KubeApiPathMetadata(apiPath,
@@ -311,7 +311,7 @@ namespace KubeClient.ApiMetadata
 
                                 if (api.Namespaced)
                                 {
-                                    string namespacedApiPath = $"{apiGroupPrefix}/{apiGroup.PreferredVersion.GroupVersion}/namespaces/{{Namespace}}/{api.Name}";
+                                    string namespacedApiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/namespaces/{{Namespace}}/{api.Name}";
 
                                     apiPaths.Add(
                                         new KubeApiPathMetadata(namespacedApiPath,
@@ -333,7 +333,7 @@ namespace KubeClient.ApiMetadata
                             }
 
                             loadedMetadata.Add(
-                                new KubeApiMetadata(kind, groupVersion, singularName, shortNames, isPreferredVersion, apiPaths)
+                                new KubeApiMetadata(kind, groupVersion.Version ?? groupVersion.GroupVersion, singularName, shortNames, isPreferredVersion, apiPaths)
                             );
                         }
                     }
@@ -351,6 +351,17 @@ namespace KubeClient.ApiMetadata
                     string cacheKey = CreateCacheKey(apiMetadata.Kind, apiMetadata.ApiVersion);
                     _metadata[cacheKey] = apiMetadata;
 
+                    // Special-case: pluralise the resource kind.
+                    string suffix = String.Empty;
+                    if (apiMetadata.Kind.EndsWith("y"))
+                        suffix = "ies";
+                    else if (!apiMetadata.Kind.EndsWith("s"))
+                        suffix = "s";
+
+                    cacheKey = $"{apiMetadata.Kind}{suffix}";
+                    if (!_metadata.ContainsKey(cacheKey))
+                        _metadata.Add(cacheKey, apiMetadata);
+
                     // Only cache aliases from preferred API version.
                     if (apiMetadata.IsPreferredVersion)
                     {
@@ -361,6 +372,32 @@ namespace KubeClient.ApiMetadata
                             _metadata[shortName] = apiMetadata;
                     }
                 }
+            }
+        }
+
+        public string[] GetCacheKeys()
+        {
+            lock (_stateLock)
+            {
+                return _metadata.Keys.ToArray();
+            }
+        }
+
+        public (string kind, string apiVersion)[] GetKnownResourceKinds()
+        {
+            lock (_stateLock)
+            {
+                return _metadata.Keys
+                    .Where(
+                        key => key.IndexOf('/') != -1
+                    )
+                    .Select(
+                        key => key.Split('/')
+                    )
+                    .Select(
+                        keyParts => (kind: keyParts[0], apiVersion: keyParts[1])
+                    )
+                    .ToArray();
             }
         }
 
