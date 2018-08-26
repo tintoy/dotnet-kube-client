@@ -18,7 +18,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IConfigMapClientV1 ConfigMapsV1(this KubeApiClient kubeClient)
+        public static IConfigMapClientV1 ConfigMapsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -37,7 +37,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static DeploymentClientV1Beta1 DeploymentsV1Beta1(this KubeApiClient kubeClient)
+        public static DeploymentClientV1Beta1 DeploymentsV1Beta1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -56,7 +56,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IJobClientV1 JobsV1(this KubeApiClient kubeClient)
+        public static IJobClientV1 JobsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -75,7 +75,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static PersistentVolumeClientV1 PersistentVolumesV1(this KubeApiClient kubeClient)
+        public static PersistentVolumeClientV1 PersistentVolumesV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -94,7 +94,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static PersistentVolumeClaimClientV1 PersistentVolumeClaimsV1(this KubeApiClient kubeClient)
+        public static PersistentVolumeClaimClientV1 PersistentVolumeClaimsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -113,7 +113,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IPodClientV1 PodsV1(this KubeApiClient kubeClient)
+        public static IPodClientV1 PodsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -132,7 +132,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static ISecretClientV1 SecretsV1(this KubeApiClient kubeClient)
+        public static ISecretClientV1 SecretsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -151,7 +151,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IServiceClientV1 ServicesV1(this KubeApiClient kubeClient)
+        public static IServiceClientV1 ServicesV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -170,7 +170,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IReplicationControllerClientV1 ReplicationControllersV1(this KubeApiClient kubeClient)
+        public static IReplicationControllerClientV1 ReplicationControllersV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -189,7 +189,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IReplicaSetClientV1Beta1 ReplicaSetsV1Beta1(this KubeApiClient kubeClient)
+        public static IReplicaSetClientV1Beta1 ReplicaSetsV1Beta1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -208,7 +208,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IAPIGroupClientV1 APIGroupsV1(this KubeApiClient kubeClient)
+        public static IAPIGroupClientV1 APIGroupsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -227,7 +227,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IAPIResourceClientV1 APIResourcesV1(this KubeApiClient kubeClient)
+        public static IAPIResourceClientV1 APIResourcesV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KubeClient.ApiMetadata
 {
@@ -85,14 +86,24 @@ namespace KubeClient.ApiMetadata
         public bool IsPreferredVersion { get; }
 
         /// <summary>
-        ///     The metadata for the API's primary path.
+        ///     The metadata for the API's primary (non-namespaced) path.
         /// </summary>
-        public string PrimaryPath => PrimaryPathMetadata.Path;
+        public string PrimaryPath => PrimaryPathMetadata?.Path;
 
         /// <summary>
-        ///     The metadata for the API's primary path.
+        ///     The metadata for the API's primary namespaced path.
         /// </summary>
-        public KubeApiPathMetadata PrimaryPathMetadata => PathMetadata[0];
+        public string PrimaryNamespacedPath => PrimaryNamespacedPathMetadata?.Path;
+
+        /// <summary>
+        ///     The metadata for the API's primary (non-namespaced) path.
+        /// </summary>
+        public KubeApiPathMetadata PrimaryPathMetadata => PathMetadata.FirstOrDefault(path => !path.IsNamespaced);
+
+        /// <summary>
+        ///     The metadata for the API's primary namespaced path.
+        /// </summary>
+        public KubeApiPathMetadata PrimaryNamespacedPathMetadata => PathMetadata.FirstOrDefault(path => path.IsNamespaced);
 
         /// <summary>
         ///     The metadata for the API's path(s).

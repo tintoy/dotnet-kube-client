@@ -14,10 +14,13 @@ namespace KubeClient.ApiMetadata
         /// <param name="path">
         ///     The API path.
         /// </param>
+        /// <param name="isNamespaced">
+        ///     Is the path namespaced?
+        /// </param>
         /// <param name="verbs">
         ///     The verbs supported on the path.
         /// </param>
-        public KubeApiPathMetadata(string path, IReadOnlyCollection<string> verbs)
+        public KubeApiPathMetadata(string path, bool isNamespaced, IReadOnlyCollection<string> verbs)
         {
             if (String.IsNullOrWhiteSpace(path))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'path'.", nameof(path));
@@ -33,6 +36,11 @@ namespace KubeClient.ApiMetadata
         ///     The API path.
         /// </summary>
         public string Path { get; }
+
+        /// <summary>
+        ///     Is the path namespaced?
+        /// </summary>
+        public bool IsNamespaced { get; }
 
         /// <summary>
         ///     The verbs supported on the path.

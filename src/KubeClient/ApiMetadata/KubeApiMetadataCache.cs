@@ -246,7 +246,7 @@ namespace KubeClient.ApiMetadata
         /// <returns>
         ///     A <see cref="Task"/> representing the asynchronous operation.
         /// </returns>
-        public async Task Load(KubeApiClient kubeClient, CancellationToken cancellationToken = default)
+        public async Task Load(IKubeApiClient kubeClient, CancellationToken cancellationToken = default)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -304,9 +304,22 @@ namespace KubeClient.ApiMetadata
 
                                 apiPaths.Add(
                                     new KubeApiPathMetadata(apiPath,
+                                        isNamespaced: false,
                                         verbs: api.Verbs.ToArray()
                                     )
                                 );
+
+                                if (api.Namespaced)
+                                {
+                                    string namespacedApiPath = $"{apiGroupPrefix}/{apiGroup.PreferredVersion.GroupVersion}/namespaces/{{Namespace}}/{api.Name}";
+
+                                    apiPaths.Add(
+                                        new KubeApiPathMetadata(namespacedApiPath,
+                                            isNamespaced: true,
+                                            verbs: api.Verbs.ToArray()
+                                        )
+                                    );
+                                }
 
                                 // Only use aliases from preferred API version.
                                 if (isPreferredVersion)
