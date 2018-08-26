@@ -355,7 +355,7 @@ namespace KubeClient.ApiMetadata
                     if (apiMetadata.IsPreferredVersion)
                     {
                         if (apiMetadata.SingularName != null)
-                        _metadata[apiMetadata.SingularName] = apiMetadata;
+                            _metadata[apiMetadata.SingularName] = apiMetadata;
 
                         foreach (string shortName in apiMetadata.ShortNames)
                             _metadata[shortName] = apiMetadata;
