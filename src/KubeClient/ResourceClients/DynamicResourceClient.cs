@@ -76,14 +76,12 @@ namespace KubeClient.ResourceClients
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            Type modelType = GetModelType(kind, apiVersion);
-            if (!_modelTypeLookup.TryGetValue((kind, apiVersion), out modelType))
-                throw new KubeClientException($"Cannot determine the model type that corresponds to {apiVersion}/{kind}.");
-
-            await EnsureMetadata(cancellationToken);
-
             bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
             string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+            
+            Type modelType = GetModelType(kind, apiVersion);
 
             HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{Name}")
                 .WithTemplateParameters(new
@@ -126,7 +124,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="Task"/> representing the asynchronous operation.
         /// </returns>
-        async Task EnsureMetadata(CancellationToken cancellationToken)
+        async Task EnsureApiMetadata(CancellationToken cancellationToken)
         {
             if (ApiMetadata.IsEmpty)
                 await ApiMetadata.Load(KubeClient, cancellationToken);
@@ -141,9 +139,13 @@ namespace KubeClient.ResourceClients
         /// <param name="apiVersion">
         ///     The resource API version.
         /// </param>
-        /// <param name="isNamespaced"></param>
-        /// <returns></returns>
-        string GetApiPath(string kind, string apiVersion, bool isNamespaced)
+        /// <param name="namespaced">
+        ///     Require a path with Kubernetes namespace support?
+        /// </param>
+        /// <returns>
+        ///     The resource API path.
+        /// </returns>
+        string GetApiPath(string kind, string apiVersion, bool namespaced)
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
@@ -155,11 +157,11 @@ namespace KubeClient.ResourceClients
             if (apiMetadata == null)
                 throw new KubeClientException($"Cannot find resource API for {apiVersion}/{kind}.");
 
-            KubeApiPathMetadata apiPathMetadata = isNamespaced ? apiMetadata.PrimaryPathMetadata : apiMetadata.PrimaryNamespacedPathMetadata;
+            KubeApiPathMetadata apiPathMetadata = namespaced ? apiMetadata.PrimaryPathMetadata : apiMetadata.PrimaryNamespacedPathMetadata;
             
             if (apiPathMetadata == null)
             {
-                if (isNamespaced)
+                if (namespaced)
                     throw new KubeClientException($"Resource API for {apiVersion}/{kind} only supports listing resources within a specific namespace.");
                 else
                     throw new KubeClientException($"Resource API for {apiVersion}/{kind} does not support listing resources within a specific namespace.");
@@ -168,6 +170,18 @@ namespace KubeClient.ResourceClients
             return apiPathMetadata.Path;
         }
 
+        /// <summary>
+        ///     Get the CLR <see cref="Type"/> of the model that corresponds to the specified Kubernetes resource type.
+        /// </summary>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <returns>
+        ///     The model <see cref="Type"/>.
+        /// </returns>
         Type GetModelType(string kind, string apiVersion)
         {
             if (String.IsNullOrWhiteSpace(kind))
