@@ -425,5 +425,31 @@ namespace KubeClient.ResourceClients
         ///     The resource list (can be cast to <see cref="KubeResourceListV1{TResource}"/> for access to individual resources).
         /// </returns>
         Task<KubeResourceListV1> List(string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Perform a JSON patch operation on a Kubernetes resource.
+        /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="patch">
+        ///     A <see cref="JsonPatchDocument"/> representing the patch operation(s) to perform.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the updated resource.
+        /// </returns>
+        Task<KubeResourceV1> Patch(string name, string kind, string apiVersion, JsonPatchDocument patch, string kubeNamespace = null, CancellationToken cancellationToken = default);
     }
 }
