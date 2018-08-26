@@ -25,6 +25,14 @@ namespace KubeClient.Models
         public ListMetaV1 Metadata { get; set; }
 
         /// <summary>
+        ///     Enumerate the list's items.
+        /// </summary>
+        /// <returns>
+        ///     The list's items.
+        /// </returns>
+        public abstract IEnumerable<KubeResourceV1> EnumerateItems();
+
+        /// <summary>
         ///     Get Kubernetes Kind / ApiVersion metadata for the items contained by the specified list type.
         /// </summary>
         /// <typeparam name="TResourceList">
@@ -74,11 +82,24 @@ namespace KubeClient.Models
     [JsonObject]
     public abstract class KubeResourceListV1<TResource>
         : KubeResourceListV1, IEnumerable<TResource>
+        where TResource : KubeResourceV1
     {
         /// <summary>
         ///     The list's resources.
         /// </summary>
         public abstract List<TResource> Items { get; }
+
+        /// <summary>
+        ///     Enumerate the list's items.
+        /// </summary>
+        /// <returns>
+        ///     The list's items.
+        /// </returns>
+        public override IEnumerable<KubeResourceV1> EnumerateItems()
+        {
+            foreach (TResource resource in Items)
+                yield return (KubeResourceV1)resource;
+        }
 
         /// <summary>
         ///     Get a typed enumerator for the list's resources.
