@@ -236,5 +236,24 @@ namespace KubeClient
                 client => new APIResourceClientV1(client)
             );
         }
+
+        /// <summary>
+        ///     Get a client for dynamic access to Kubernetes resource APIs.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IDynamicResourceClient Dynamic(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+            
+            return kubeClient.ResourceClient(
+                client => new DynamicResourceClient(client)
+            );
+        }
     }
 }

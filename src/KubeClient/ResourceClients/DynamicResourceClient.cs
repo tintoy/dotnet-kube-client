@@ -16,10 +16,10 @@ namespace KubeClient.ResourceClients
     using Models;
 
     /// <summary>
-    ///     A client for the Kubernetes resource APIs whose types are only known at runtime.
+    ///     A client for dynamic access to Kubernetes resource APIs.
     /// </summary>
-    public class DynamicClientV1
-        : KubeResourceClient
+    public class DynamicResourceClient
+        : KubeResourceClient, IDynamicResourceClient
     {
         /// <summary>
         ///     Model CLR types, keyed by resource kind and API version.
@@ -29,12 +29,19 @@ namespace KubeClient.ResourceClients
         );
 
         /// <summary>
-        ///     Create a new <see cref="DynamicClientV1"/>.
+        ///     Model CLR types, keyed by resource kind and API version.
+        /// </summary>
+        readonly Dictionary<(string kind, string apiVersion), Type> _listModelTypeLookup = ModelMetadata.KubeObject.BuildKindToListTypeLookup(
+            typeof(KubeObjectV1).GetTypeInfo().Assembly
+        );
+
+        /// <summary>
+        ///     Create a new <see cref="DynamicResourceClient"/>.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public DynamicClientV1(IKubeApiClient client)
+        public DynamicResourceClient(IKubeApiClient client)
             : base(client)
         {
         }
@@ -110,7 +117,65 @@ namespace KubeClient.ResourceClients
                     return null;
 
                 throw new KubeClientException($"Failed to retrieve {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
-                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, response: status)
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
+                );
+            }
+        }
+
+        /// <summary>
+        ///     List resources.
+        /// </summary>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional cancellation token that can be used to cancel the operation.
+        /// </param>
+        /// <returns>
+        ///     The resource list (can be cast to <see cref="KubeResourceListV1{TResource}"/> for access to individual resources).
+        /// </returns>
+        public async Task<KubeResourceListV1> List(string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(kind))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+            
+            if (String.IsNullOrWhiteSpace(apiVersion))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+            
+            Type listModelType = GetListModelType(kind, apiVersion);
+
+            HttpRequest request = KubeRequest.Create(apiPath)
+                .WithTemplateParameter("Namespace", kubeNamespace);
+
+            using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken).ConfigureAwait(false))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (TextReader responseReader = new StreamReader(responseStream))
+                    {
+                        JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+
+                        return (KubeResourceListV1)serializer.Deserialize(responseReader, listModelType);
+                    }
+                }
+
+                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+
+                throw new KubeClientException($"Failed to list {apiVersion}/{kind} resources (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
                 );
             }
         }
@@ -196,5 +261,82 @@ namespace KubeClient.ResourceClients
 
             return modelType;
         }
+
+        /// <summary>
+        ///     Get the CLR <see cref="Type"/> of the list model that corresponds to the specified Kubernetes resource type.
+        /// </summary>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <returns>
+        ///     The model <see cref="Type"/>.
+        /// </returns>
+        Type GetListModelType(string kind, string apiVersion)
+        {
+            if (String.IsNullOrWhiteSpace(kind))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+            
+            if (String.IsNullOrWhiteSpace(apiVersion))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            Type listModelType;
+            if (!_listModelTypeLookup.TryGetValue((kind, apiVersion), out listModelType))
+                throw new KubeClientException($"Cannot determine the list model type that corresponds to {apiVersion}/{kind}.");
+
+            return listModelType;
+        }
+    }
+
+    /// <summary>
+    ///     Represents a client for dynamic access to Kubernetes resource APIs.
+    /// </summary>
+    public interface IDynamicResourceClient
+        : IKubeResourceClient
+    {
+        /// <summary>
+        ///     Retrieve a single resource by name.
+        /// </summary>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resource.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional cancellation token that can be used to cancel the operation.
+        /// </param>
+        /// <returns>
+        ///     The resource, or <c>null</c> if the resource was not found.
+        /// </returns>
+        Task<KubeResourceV1> Get(string kind, string apiVersion, string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     List resources.
+        /// </summary>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional cancellation token that can be used to cancel the operation.
+        /// </param>
+        /// <returns>
+        ///     The resource list (can be cast to <see cref="KubeResourceListV1{TResource}"/> for access to individual resources).
+        /// </returns>
+        Task<KubeResourceListV1> List(string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default);
     }
 }

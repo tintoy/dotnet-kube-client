@@ -36,7 +36,23 @@ namespace KubeClient.Models
         public static (string kind, string apiVersion) GetListItemKubeKind<TResourceList>()
             where TResourceList : KubeResourceListV1
         {
-            (string kind, string apiVersion) = ItemModelMetadata.GetOrAdd(typeof(TResourceList), modelType =>
+            return GetListItemKubeKind(
+                typeof(TResourceList)
+            );
+        }
+
+        /// <summary>
+        ///     Get Kubernetes Kind / ApiVersion metadata for the items contained by the specified list type.
+        /// </summary>
+        /// <param name="resourceListType">
+        ///     The target resource-list type.
+        /// </param>
+        /// <returns>
+        ///     A tuple containing the item Kind and ApiVersion metadata (or <c>null</c> and <c>null</c>, if no item metadata is available for the resource-list type).
+        /// </returns>
+        public static (string kind, string apiVersion) GetListItemKubeKind(Type resourceListType)
+        {
+            (string kind, string apiVersion) = ItemModelMetadata.GetOrAdd(resourceListType, modelType =>
             {
                 var kubeListItemAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeListItemAttribute>();
                 if (kubeListItemAttribute != null)
