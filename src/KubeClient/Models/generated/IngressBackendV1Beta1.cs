@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("serviceName")]
         [YamlMember(Alias = "serviceName")]
-        public string ServiceName { get; set; }
+        public virtual string ServiceName { get; set; }
 
         /// <summary>
         ///     Specifies the port of the referenced service.
         /// </summary>
         [JsonProperty("servicePort")]
         [YamlMember(Alias = "servicePort")]
-        public string ServicePort { get; set; }
+        public virtual string ServicePort { get; set; }
     }
 }

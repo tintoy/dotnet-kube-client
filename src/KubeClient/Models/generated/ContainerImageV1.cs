@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "names")]
         [JsonProperty("names", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Names { get; set; } = new List<string>();
+        public virtual List<string> Names { get; set; } = new List<string>();
 
         /// <summary>
         ///     The size of the image in bytes.
         /// </summary>
         [JsonProperty("sizeBytes")]
         [YamlMember(Alias = "sizeBytes")]
-        public int SizeBytes { get; set; }
+        public virtual int SizeBytes { get; set; }
     }
 }

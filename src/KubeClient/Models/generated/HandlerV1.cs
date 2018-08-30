@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("exec")]
         [YamlMember(Alias = "exec")]
-        public ExecActionV1 Exec { get; set; }
+        public virtual ExecActionV1 Exec { get; set; }
 
         /// <summary>
         ///     HTTPGet specifies the http request to perform.
         /// </summary>
         [JsonProperty("httpGet")]
         [YamlMember(Alias = "httpGet")]
-        public HTTPGetActionV1 HttpGet { get; set; }
+        public virtual HTTPGetActionV1 HttpGet { get; set; }
 
         /// <summary>
         ///     TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported
         /// </summary>
         [JsonProperty("tcpSocket")]
         [YamlMember(Alias = "tcpSocket")]
-        public TCPSocketActionV1 TcpSocket { get; set; }
+        public virtual TCPSocketActionV1 TcpSocket { get; set; }
     }
 }

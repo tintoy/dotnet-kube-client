@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("replicas")]
         [YamlMember(Alias = "replicas")]
-        public int Replicas { get; set; }
+        public virtual int Replicas { get; set; }
     }
 }

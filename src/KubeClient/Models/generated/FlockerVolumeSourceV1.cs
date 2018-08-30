@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("datasetUUID")]
         [YamlMember(Alias = "datasetUUID")]
-        public string DatasetUUID { get; set; }
+        public virtual string DatasetUUID { get; set; }
 
         /// <summary>
         ///     Name of the dataset stored as metadata -&gt; name on the dataset for Flocker should be considered as deprecated
         /// </summary>
         [JsonProperty("datasetName")]
         [YamlMember(Alias = "datasetName")]
-        public string DatasetName { get; set; }
+        public virtual string DatasetName { get; set; }
     }
 }

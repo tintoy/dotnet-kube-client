@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "active")]
         [JsonProperty("active", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ObjectReferenceV1> Active { get; set; } = new List<ObjectReferenceV1>();
+        public virtual List<ObjectReferenceV1> Active { get; set; } = new List<ObjectReferenceV1>();
 
         /// <summary>
         ///     Information when was the last time the job was successfully scheduled.
         /// </summary>
         [JsonProperty("lastScheduleTime")]
         [YamlMember(Alias = "lastScheduleTime")]
-        public DateTime? LastScheduleTime { get; set; }
+        public virtual DateTime? LastScheduleTime { get; set; }
     }
 }

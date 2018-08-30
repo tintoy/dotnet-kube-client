@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "pending")]
         [JsonProperty("pending", NullValueHandling = NullValueHandling.Ignore)]
-        public List<InitializerV1> Pending { get; set; } = new List<InitializerV1>();
+        public virtual List<InitializerV1> Pending { get; set; } = new List<InitializerV1>();
 
         /// <summary>
         ///     If result is set with the Failure field, the object will be persisted to storage and then deleted, ensuring that other clients can observe the deletion.
         /// </summary>
         [JsonProperty("result")]
         [YamlMember(Alias = "result")]
-        public StatusV1 Result { get; set; }
+        public virtual StatusV1 Result { get; set; }
     }
 }

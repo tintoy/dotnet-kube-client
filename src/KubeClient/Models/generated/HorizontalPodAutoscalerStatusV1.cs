@@ -15,34 +15,34 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("currentCPUUtilizationPercentage")]
         [YamlMember(Alias = "currentCPUUtilizationPercentage")]
-        public int CurrentCPUUtilizationPercentage { get; set; }
+        public virtual int CurrentCPUUtilizationPercentage { get; set; }
 
         /// <summary>
         ///     last time the HorizontalPodAutoscaler scaled the number of pods; used by the autoscaler to control how often the number of pods is changed.
         /// </summary>
         [JsonProperty("lastScaleTime")]
         [YamlMember(Alias = "lastScaleTime")]
-        public DateTime? LastScaleTime { get; set; }
+        public virtual DateTime? LastScaleTime { get; set; }
 
         /// <summary>
         ///     most recent generation observed by this autoscaler.
         /// </summary>
         [JsonProperty("observedGeneration")]
         [YamlMember(Alias = "observedGeneration")]
-        public int ObservedGeneration { get; set; }
+        public virtual int ObservedGeneration { get; set; }
 
         /// <summary>
         ///     current number of replicas of pods managed by this autoscaler.
         /// </summary>
         [JsonProperty("currentReplicas")]
         [YamlMember(Alias = "currentReplicas")]
-        public int CurrentReplicas { get; set; }
+        public virtual int CurrentReplicas { get; set; }
 
         /// <summary>
         ///     desired number of replicas of pods managed by this autoscaler.
         /// </summary>
         [JsonProperty("desiredReplicas")]
         [YamlMember(Alias = "desiredReplicas")]
-        public int DesiredReplicas { get; set; }
+        public virtual int DesiredReplicas { get; set; }
     }
 }

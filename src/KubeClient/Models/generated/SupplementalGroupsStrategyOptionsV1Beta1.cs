@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
-        public string Rule { get; set; }
+        public virtual string Rule { get; set; }
 
         /// <summary>
         ///     Ranges are the allowed ranges of supplemental groups.  If you would like to force a single supplemental group then supply a single range with the same start and end.
         /// </summary>
         [YamlMember(Alias = "ranges")]
         [JsonProperty("ranges", NullValueHandling = NullValueHandling.Ignore)]
-        public List<IDRangeV1Beta1> Ranges { get; set; } = new List<IDRangeV1Beta1>();
+        public virtual List<IDRangeV1Beta1> Ranges { get; set; } = new List<IDRangeV1Beta1>();
     }
 }

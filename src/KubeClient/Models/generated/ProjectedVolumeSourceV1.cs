@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("defaultMode")]
         [YamlMember(Alias = "defaultMode")]
-        public int DefaultMode { get; set; }
+        public virtual int DefaultMode { get; set; }
 
         /// <summary>
         ///     list of volume projections
         /// </summary>
         [YamlMember(Alias = "sources")]
         [JsonProperty("sources", NullValueHandling = NullValueHandling.Ignore)]
-        public List<VolumeProjectionV1> Sources { get; set; } = new List<VolumeProjectionV1>();
+        public virtual List<VolumeProjectionV1> Sources { get; set; } = new List<VolumeProjectionV1>();
     }
 }

@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "command")]
         [JsonProperty("command", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Command { get; set; } = new List<string>();
+        public virtual List<string> Command { get; set; } = new List<string>();
     }
 }

@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
 
         /// <summary>
         ///     The node address.
         /// </summary>
         [JsonProperty("address")]
         [YamlMember(Alias = "address")]
-        public string Address { get; set; }
+        public virtual string Address { get; set; }
     }
 }

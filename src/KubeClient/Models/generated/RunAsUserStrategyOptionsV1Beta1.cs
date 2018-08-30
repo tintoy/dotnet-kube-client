@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
-        public string Rule { get; set; }
+        public virtual string Rule { get; set; }
 
         /// <summary>
         ///     Ranges are the allowed ranges of uids that may be used.
         /// </summary>
         [YamlMember(Alias = "ranges")]
         [JsonProperty("ranges", NullValueHandling = NullValueHandling.Ignore)]
-        public List<IDRangeV1Beta1> Ranges { get; set; } = new List<IDRangeV1Beta1>();
+        public virtual List<IDRangeV1Beta1> Ranges { get; set; } = new List<IDRangeV1Beta1>();
     }
 }

@@ -15,27 +15,27 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("mode")]
         [YamlMember(Alias = "mode")]
-        public int? Mode { get; set; }
+        public virtual int? Mode { get; set; }
 
         /// <summary>
         ///     Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
         /// </summary>
         [JsonProperty("fieldRef")]
         [YamlMember(Alias = "fieldRef")]
-        public ObjectFieldSelectorV1 FieldRef { get; set; }
+        public virtual ObjectFieldSelectorV1 FieldRef { get; set; }
 
         /// <summary>
         ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
         /// </summary>
         [JsonProperty("resourceFieldRef")]
         [YamlMember(Alias = "resourceFieldRef")]
-        public ResourceFieldSelectorV1 ResourceFieldRef { get; set; }
+        public virtual ResourceFieldSelectorV1 ResourceFieldRef { get; set; }
 
         /// <summary>
         ///     Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
         /// </summary>
         [JsonProperty("path")]
         [YamlMember(Alias = "path")]
-        public string Path { get; set; }
+        public virtual string Path { get; set; }
     }
 }

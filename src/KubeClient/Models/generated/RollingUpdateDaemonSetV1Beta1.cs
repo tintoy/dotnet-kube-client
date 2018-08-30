@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("maxUnavailable")]
         [YamlMember(Alias = "maxUnavailable")]
-        public string MaxUnavailable { get; set; }
+        public virtual string MaxUnavailable { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     Items is the list of StorageClasses
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<StorageClassV1> Items { get; } = new List<StorageClassV1>();
+        public virtual List<StorageClassV1> Items { get; } = new List<StorageClassV1>();
     }
 }

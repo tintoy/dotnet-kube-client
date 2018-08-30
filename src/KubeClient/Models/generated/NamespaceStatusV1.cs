@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
-        public string Phase { get; set; }
+        public virtual string Phase { get; set; }
     }
 }

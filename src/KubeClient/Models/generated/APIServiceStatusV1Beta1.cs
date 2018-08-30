@@ -16,6 +16,6 @@ namespace KubeClient.Models
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<APIServiceConditionV1Beta1> Conditions { get; set; } = new List<APIServiceConditionV1Beta1>();
+        public virtual List<APIServiceConditionV1Beta1> Conditions { get; set; } = new List<APIServiceConditionV1Beta1>();
     }
 }

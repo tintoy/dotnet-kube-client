@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "preferredDuringSchedulingIgnoredDuringExecution")]
         [JsonProperty("preferredDuringSchedulingIgnoredDuringExecution", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PreferredSchedulingTermV1> PreferredDuringSchedulingIgnoredDuringExecution { get; set; } = new List<PreferredSchedulingTermV1>();
+        public virtual List<PreferredSchedulingTermV1> PreferredDuringSchedulingIgnoredDuringExecution { get; set; } = new List<PreferredSchedulingTermV1>();
 
         /// <summary>
         ///     If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
         /// </summary>
         [JsonProperty("requiredDuringSchedulingIgnoredDuringExecution")]
         [YamlMember(Alias = "requiredDuringSchedulingIgnoredDuringExecution")]
-        public NodeSelectorV1 RequiredDuringSchedulingIgnoredDuringExecution { get; set; }
+        public virtual NodeSelectorV1 RequiredDuringSchedulingIgnoredDuringExecution { get; set; }
     }
 }

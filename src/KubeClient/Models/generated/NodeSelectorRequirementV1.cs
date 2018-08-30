@@ -15,14 +15,14 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("operator")]
         [YamlMember(Alias = "operator")]
-        public string Operator { get; set; }
+        public virtual string Operator { get; set; }
 
         /// <summary>
         ///     An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
         /// </summary>
         [YamlMember(Alias = "values")]
         [JsonProperty("values", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Values { get; set; } = new List<string>();
+        public virtual List<string> Values { get; set; } = new List<string>();
 
         /// <summary>
         ///     The label key that the selector applies to.
@@ -30,6 +30,6 @@ namespace KubeClient.Models
         [JsonProperty("key")]
         [YamlMember(Alias = "key")]
         [MergeStrategy(Key = "key")]
-        public string Key { get; set; }
+        public virtual string Key { get; set; }
     }
 }

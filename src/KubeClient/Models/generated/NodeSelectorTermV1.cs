@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "matchExpressions")]
         [JsonProperty("matchExpressions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NodeSelectorRequirementV1> MatchExpressions { get; set; } = new List<NodeSelectorRequirementV1>();
+        public virtual List<NodeSelectorRequirementV1> MatchExpressions { get; set; } = new List<NodeSelectorRequirementV1>();
     }
 }

@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rollingUpdate")]
         [YamlMember(Alias = "rollingUpdate")]
-        public RollingUpdateDaemonSetV1Beta1 RollingUpdate { get; set; }
+        public virtual RollingUpdateDaemonSetV1Beta1 RollingUpdate { get; set; }
 
         /// <summary>
         ///     Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is OnDelete.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
     }
 }

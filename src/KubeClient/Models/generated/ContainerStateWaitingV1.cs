@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
-        public string Message { get; set; }
+        public virtual string Message { get; set; }
 
         /// <summary>
         ///     (brief) reason the container is not yet running.
         /// </summary>
         [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
+        public virtual string Reason { get; set; }
     }
 }

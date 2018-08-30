@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("mode")]
         [YamlMember(Alias = "mode")]
-        public int? Mode { get; set; }
+        public virtual int? Mode { get; set; }
 
         /// <summary>
         ///     The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
         /// </summary>
         [JsonProperty("path")]
         [YamlMember(Alias = "path")]
-        public string Path { get; set; }
+        public virtual string Path { get; set; }
 
         /// <summary>
         ///     The key to project.
         /// </summary>
         [JsonProperty("key")]
         [YamlMember(Alias = "key")]
-        public string Key { get; set; }
+        public virtual string Key { get; set; }
     }
 }

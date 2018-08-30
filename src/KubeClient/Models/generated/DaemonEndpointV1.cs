@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("Port")]
         [YamlMember(Alias = "Port")]
-        public int Port { get; set; }
+        public virtual int Port { get; set; }
     }
 }

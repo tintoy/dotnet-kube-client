@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("token")]
         [YamlMember(Alias = "token")]
-        public string Token { get; set; }
+        public virtual string Token { get; set; }
     }
 }

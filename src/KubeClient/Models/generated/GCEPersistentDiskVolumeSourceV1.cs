@@ -17,27 +17,27 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("fsType")]
         [YamlMember(Alias = "fsType")]
-        public string FsType { get; set; }
+        public virtual string FsType { get; set; }
 
         /// <summary>
         ///     Unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
         /// </summary>
         [JsonProperty("pdName")]
         [YamlMember(Alias = "pdName")]
-        public string PdName { get; set; }
+        public virtual string PdName { get; set; }
 
         /// <summary>
         ///     The partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
         /// </summary>
         [JsonProperty("partition")]
         [YamlMember(Alias = "partition")]
-        public int Partition { get; set; }
+        public virtual int Partition { get; set; }
 
         /// <summary>
         ///     ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
         /// </summary>
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        public virtual bool ReadOnly { get; set; }
     }
 }

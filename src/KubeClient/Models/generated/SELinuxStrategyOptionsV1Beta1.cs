@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
-        public string Rule { get; set; }
+        public virtual string Rule { get; set; }
 
         /// <summary>
         ///     seLinuxOptions required to run as; required for MustRunAs More info: https://git.k8s.io/community/contributors/design-proposals/security_context.md
         /// </summary>
         [JsonProperty("seLinuxOptions")]
         [YamlMember(Alias = "seLinuxOptions")]
-        public SELinuxOptionsV1 SeLinuxOptions { get; set; }
+        public virtual SELinuxOptionsV1 SeLinuxOptions { get; set; }
     }
 }

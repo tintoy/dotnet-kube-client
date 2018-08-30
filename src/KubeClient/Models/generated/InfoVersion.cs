@@ -15,62 +15,62 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("buildDate")]
         [YamlMember(Alias = "buildDate")]
-        public string BuildDate { get; set; }
+        public virtual string BuildDate { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("gitTreeState")]
         [YamlMember(Alias = "gitTreeState")]
-        public string GitTreeState { get; set; }
+        public virtual string GitTreeState { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("platform")]
         [YamlMember(Alias = "platform")]
-        public string Platform { get; set; }
+        public virtual string Platform { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("gitVersion")]
         [YamlMember(Alias = "gitVersion")]
-        public string GitVersion { get; set; }
+        public virtual string GitVersion { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("goVersion")]
         [YamlMember(Alias = "goVersion")]
-        public string GoVersion { get; set; }
+        public virtual string GoVersion { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("compiler")]
         [YamlMember(Alias = "compiler")]
-        public string Compiler { get; set; }
+        public virtual string Compiler { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("major")]
         [YamlMember(Alias = "major")]
-        public string Major { get; set; }
+        public virtual string Major { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("minor")]
         [YamlMember(Alias = "minor")]
-        public string Minor { get; set; }
+        public virtual string Minor { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("gitCommit")]
         [YamlMember(Alias = "gitCommit")]
-        public string GitCommit { get; set; }
+        public virtual string GitCommit { get; set; }
     }
 }

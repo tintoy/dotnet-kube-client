@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("downwardAPI")]
         [YamlMember(Alias = "downwardAPI")]
-        public DownwardAPIProjectionV1 DownwardAPI { get; set; }
+        public virtual DownwardAPIProjectionV1 DownwardAPI { get; set; }
 
         /// <summary>
         ///     information about the configMap data to project
         /// </summary>
         [JsonProperty("configMap")]
         [YamlMember(Alias = "configMap")]
-        public ConfigMapProjectionV1 ConfigMap { get; set; }
+        public virtual ConfigMapProjectionV1 ConfigMap { get; set; }
 
         /// <summary>
         ///     information about the secret data to project
         /// </summary>
         [JsonProperty("secret")]
         [YamlMember(Alias = "secret")]
-        public SecretProjectionV1 Secret { get; set; }
+        public virtual SecretProjectionV1 Secret { get; set; }
     }
 }

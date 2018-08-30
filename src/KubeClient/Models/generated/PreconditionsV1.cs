@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
-        public string Uid { get; set; }
+        public virtual string Uid { get; set; }
     }
 }

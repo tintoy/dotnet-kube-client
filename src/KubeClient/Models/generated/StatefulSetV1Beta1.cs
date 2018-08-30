@@ -19,13 +19,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public StatefulSetSpecV1Beta1 Spec { get; set; }
+        public virtual StatefulSetSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Status is the current status of Pods in this StatefulSet. This data may be out of date by some window of time.
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public StatefulSetStatusV1Beta1 Status { get; set; }
+        public virtual StatefulSetStatusV1Beta1 Status { get; set; }
     }
 }

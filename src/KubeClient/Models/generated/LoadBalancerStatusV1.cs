@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "ingress")]
         [JsonProperty("ingress", NullValueHandling = NullValueHandling.Ignore)]
-        public List<LoadBalancerIngressV1> Ingress { get; set; } = new List<LoadBalancerIngressV1>();
+        public virtual List<LoadBalancerIngressV1> Ingress { get; set; } = new List<LoadBalancerIngressV1>();
     }
 }

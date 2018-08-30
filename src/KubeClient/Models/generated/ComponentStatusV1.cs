@@ -17,6 +17,6 @@ namespace KubeClient.Models
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ComponentConditionV1> Conditions { get; set; } = new List<ComponentConditionV1>();
+        public virtual List<ComponentConditionV1> Conditions { get; set; } = new List<ComponentConditionV1>();
     }
 }

@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rollingUpdate")]
         [YamlMember(Alias = "rollingUpdate")]
-        public RollingUpdateStatefulSetStrategyV1Beta1 RollingUpdate { get; set; }
+        public virtual RollingUpdateStatefulSetStrategyV1Beta1 RollingUpdate { get; set; }
 
         /// <summary>
         ///     Type indicates the type of the StatefulSetUpdateStrategy.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
     }
 }

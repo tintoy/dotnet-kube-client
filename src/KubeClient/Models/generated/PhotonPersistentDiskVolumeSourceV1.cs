@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("pdID")]
         [YamlMember(Alias = "pdID")]
-        public string PdID { get; set; }
+        public virtual string PdID { get; set; }
 
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
         /// </summary>
         [JsonProperty("fsType")]
         [YamlMember(Alias = "fsType")]
-        public string FsType { get; set; }
+        public virtual string FsType { get; set; }
     }
 }

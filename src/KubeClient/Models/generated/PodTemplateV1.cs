@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("template")]
         [YamlMember(Alias = "template")]
-        public PodTemplateSpecV1 Template { get; set; }
+        public virtual PodTemplateSpecV1 Template { get; set; }
     }
 }

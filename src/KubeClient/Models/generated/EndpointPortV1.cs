@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     The IP protocol for this port. Must be UDP or TCP. Default is TCP.
         /// </summary>
         [JsonProperty("protocol")]
         [YamlMember(Alias = "protocol")]
-        public string Protocol { get; set; }
+        public virtual string Protocol { get; set; }
 
         /// <summary>
         ///     The port number of the endpoint.
         /// </summary>
         [JsonProperty("port")]
         [YamlMember(Alias = "port")]
-        public int Port { get; set; }
+        public virtual int Port { get; set; }
     }
 }

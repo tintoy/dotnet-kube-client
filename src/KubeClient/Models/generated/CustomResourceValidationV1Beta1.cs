@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("openAPIV3Schema")]
         [YamlMember(Alias = "openAPIV3Schema")]
-        public JSONSchemaPropsV1Beta1 OpenAPIV3Schema { get; set; }
+        public virtual JSONSchemaPropsV1Beta1 OpenAPIV3Schema { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<CertificateSigningRequestV1Beta1> Items { get; } = new List<CertificateSigningRequestV1Beta1>();
+        public virtual List<CertificateSigningRequestV1Beta1> Items { get; } = new List<CertificateSigningRequestV1Beta1>();
     }
 }

@@ -16,14 +16,14 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("automountServiceAccountToken")]
         [YamlMember(Alias = "automountServiceAccountToken")]
-        public bool AutomountServiceAccountToken { get; set; }
+        public virtual bool AutomountServiceAccountToken { get; set; }
 
         /// <summary>
         ///     ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images in pods that reference this ServiceAccount. ImagePullSecrets are distinct from Secrets because Secrets can be mounted in the pod, but ImagePullSecrets are only accessed by the kubelet. More info: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
         /// </summary>
         [YamlMember(Alias = "imagePullSecrets")]
         [JsonProperty("imagePullSecrets", NullValueHandling = NullValueHandling.Ignore)]
-        public List<LocalObjectReferenceV1> ImagePullSecrets { get; set; } = new List<LocalObjectReferenceV1>();
+        public virtual List<LocalObjectReferenceV1> ImagePullSecrets { get; set; } = new List<LocalObjectReferenceV1>();
 
         /// <summary>
         ///     Secrets is the list of secrets allowed to be used by pods running using this ServiceAccount. More info: https://kubernetes.io/docs/concepts/configuration/secret
@@ -31,6 +31,6 @@ namespace KubeClient.Models
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "secrets")]
         [JsonProperty("secrets", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ObjectReferenceV1> Secrets { get; set; } = new List<ObjectReferenceV1>();
+        public virtual List<ObjectReferenceV1> Secrets { get; set; } = new List<ObjectReferenceV1>();
     }
 }

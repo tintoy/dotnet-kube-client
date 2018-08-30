@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("data")]
         [YamlMember(Alias = "data")]
-        public RawExtensionRuntime Data { get; set; }
+        public virtual RawExtensionRuntime Data { get; set; }
 
         /// <summary>
         ///     Revision indicates the revision of the state represented by Data.
         /// </summary>
         [JsonProperty("revision")]
         [YamlMember(Alias = "revision")]
-        public int Revision { get; set; }
+        public virtual int Revision { get; set; }
     }
 }

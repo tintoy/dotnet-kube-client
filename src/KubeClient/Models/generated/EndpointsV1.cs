@@ -27,6 +27,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "subsets")]
         [JsonProperty("subsets", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointSubsetV1> Subsets { get; set; } = new List<EndpointSubsetV1>();
+        public virtual List<EndpointSubsetV1> Subsets { get; set; } = new List<EndpointSubsetV1>();
     }
 }

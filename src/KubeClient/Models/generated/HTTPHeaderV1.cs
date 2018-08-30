@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     The header field value
         /// </summary>
         [JsonProperty("value")]
         [YamlMember(Alias = "value")]
-        public string Value { get; set; }
+        public virtual string Value { get; set; }
     }
 }

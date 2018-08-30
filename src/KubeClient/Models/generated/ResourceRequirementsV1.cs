@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "limits")]
         [JsonProperty("limits", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Limits { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Limits { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
         /// </summary>
         [YamlMember(Alias = "requests")]
         [JsonProperty("requests", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Requests { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Requests { get; set; } = new Dictionary<string, string>();
     }
 }

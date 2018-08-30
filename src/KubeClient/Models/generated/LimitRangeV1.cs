@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public LimitRangeSpecV1 Spec { get; set; }
+        public virtual LimitRangeSpecV1 Spec { get; set; }
     }
 }

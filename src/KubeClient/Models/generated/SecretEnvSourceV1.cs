@@ -17,13 +17,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     Specify whether the Secret must be defined
         /// </summary>
         [JsonProperty("optional")]
         [YamlMember(Alias = "optional")]
-        public bool Optional { get; set; }
+        public virtual bool Optional { get; set; }
     }
 }

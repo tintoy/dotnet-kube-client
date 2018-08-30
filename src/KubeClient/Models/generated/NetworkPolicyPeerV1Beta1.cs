@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("namespaceSelector")]
         [YamlMember(Alias = "namespaceSelector")]
-        public LabelSelectorV1 NamespaceSelector { get; set; }
+        public virtual LabelSelectorV1 NamespaceSelector { get; set; }
 
         /// <summary>
         ///     This is a label selector which selects Pods in this namespace. This field follows standard label selector semantics. If present but empty, this selector selects all pods in this namespace.
         /// </summary>
         [JsonProperty("podSelector")]
         [YamlMember(Alias = "podSelector")]
-        public LabelSelectorV1 PodSelector { get; set; }
+        public virtual LabelSelectorV1 PodSelector { get; set; }
     }
 }

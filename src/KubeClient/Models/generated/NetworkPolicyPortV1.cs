@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("protocol")]
         [YamlMember(Alias = "protocol")]
-        public string Protocol { get; set; }
+        public virtual string Protocol { get; set; }
 
         /// <summary>
         ///     The port on the given protocol. This can either be a numerical or named port on a pod. If this field is not provided, this matches all port names and numbers.
         /// </summary>
         [JsonProperty("port")]
         [YamlMember(Alias = "port")]
-        public string Port { get; set; }
+        public virtual string Port { get; set; }
     }
 }

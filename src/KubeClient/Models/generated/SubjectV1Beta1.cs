@@ -15,27 +15,27 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        public virtual string Kind { get; set; }
 
         /// <summary>
         ///     Name of the object being referenced.
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
         /// </summary>
         [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
-        public string Namespace { get; set; }
+        public virtual string Namespace { get; set; }
 
         /// <summary>
         ///     APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
         /// </summary>
         [JsonProperty("apiGroup")]
         [YamlMember(Alias = "apiGroup")]
-        public string ApiGroup { get; set; }
+        public virtual string ApiGroup { get; set; }
     }
 }

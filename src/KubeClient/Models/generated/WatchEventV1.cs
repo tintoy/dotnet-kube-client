@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
 
         /// <summary>
         ///     Object is:
@@ -26,6 +26,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("object")]
         [YamlMember(Alias = "object")]
-        public RawExtensionRuntime Object { get; set; }
+        public virtual RawExtensionRuntime Object { get; set; }
     }
 }

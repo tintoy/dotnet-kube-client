@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("component")]
         [YamlMember(Alias = "component")]
-        public string Component { get; set; }
+        public virtual string Component { get; set; }
 
         /// <summary>
         ///     Node name on which the event is generated.
         /// </summary>
         [JsonProperty("host")]
         [YamlMember(Alias = "host")]
-        public string Host { get; set; }
+        public virtual string Host { get; set; }
     }
 }

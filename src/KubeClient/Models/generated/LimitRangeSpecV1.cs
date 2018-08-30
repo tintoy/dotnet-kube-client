@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "limits")]
         [JsonProperty("limits", NullValueHandling = NullValueHandling.Ignore)]
-        public List<LimitRangeItemV1> Limits { get; set; } = new List<LimitRangeItemV1>();
+        public virtual List<LimitRangeItemV1> Limits { get; set; } = new List<LimitRangeItemV1>();
     }
 }

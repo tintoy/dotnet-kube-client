@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("kubeletEndpoint")]
         [YamlMember(Alias = "kubeletEndpoint")]
-        public DaemonEndpointV1 KubeletEndpoint { get; set; }
+        public virtual DaemonEndpointV1 KubeletEndpoint { get; set; }
     }
 }

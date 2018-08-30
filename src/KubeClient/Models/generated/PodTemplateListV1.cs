@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     List of pod templates
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<PodTemplateV1> Items { get; } = new List<PodTemplateV1>();
+        public virtual List<PodTemplateV1> Items { get; } = new List<PodTemplateV1>();
     }
 }

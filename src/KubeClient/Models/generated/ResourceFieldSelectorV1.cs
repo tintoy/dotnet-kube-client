@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("containerName")]
         [YamlMember(Alias = "containerName")]
-        public string ContainerName { get; set; }
+        public virtual string ContainerName { get; set; }
 
         /// <summary>
         ///     Required: resource to select
         /// </summary>
         [JsonProperty("resource")]
         [YamlMember(Alias = "resource")]
-        public string Resource { get; set; }
+        public virtual string Resource { get; set; }
 
         /// <summary>
         ///     Specifies the output format of the exposed resources, defaults to "1"
         /// </summary>
         [JsonProperty("divisor")]
         [YamlMember(Alias = "divisor")]
-        public string Divisor { get; set; }
+        public virtual string Divisor { get; set; }
     }
 }

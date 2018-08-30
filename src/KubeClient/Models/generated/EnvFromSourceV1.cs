@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("configMapRef")]
         [YamlMember(Alias = "configMapRef")]
-        public ConfigMapEnvSourceV1 ConfigMapRef { get; set; }
+        public virtual ConfigMapEnvSourceV1 ConfigMapRef { get; set; }
 
         /// <summary>
         ///     The Secret to select from
         /// </summary>
         [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
-        public SecretEnvSourceV1 SecretRef { get; set; }
+        public virtual SecretEnvSourceV1 SecretRef { get; set; }
 
         /// <summary>
         ///     An optional identifer to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
         /// </summary>
         [JsonProperty("prefix")]
         [YamlMember(Alias = "prefix")]
-        public string Prefix { get; set; }
+        public virtual string Prefix { get; set; }
     }
 }

@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("partition")]
         [YamlMember(Alias = "partition")]
-        public int Partition { get; set; }
+        public virtual int Partition { get; set; }
     }
 }

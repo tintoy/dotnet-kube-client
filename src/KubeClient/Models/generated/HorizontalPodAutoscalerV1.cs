@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public HorizontalPodAutoscalerSpecV1 Spec { get; set; }
+        public virtual HorizontalPodAutoscalerSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     current information about the autoscaler.
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public HorizontalPodAutoscalerStatusV1 Status { get; set; }
+        public virtual HorizontalPodAutoscalerStatusV1 Status { get; set; }
     }
 }

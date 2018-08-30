@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public SubjectAccessReviewSpecV1 Spec { get; set; }
+        public virtual SubjectAccessReviewSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status is filled in by the server and indicates whether the request is allowed or not
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public SubjectAccessReviewStatusV1 Status { get; set; }
+        public virtual SubjectAccessReviewStatusV1 Status { get; set; }
     }
 }

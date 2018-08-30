@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("roleRef")]
         [YamlMember(Alias = "roleRef")]
-        public RoleRefV1Beta1 RoleRef { get; set; }
+        public virtual RoleRefV1Beta1 RoleRef { get; set; }
 
         /// <summary>
         ///     Subjects holds references to the objects the role applies to.
         /// </summary>
         [YamlMember(Alias = "subjects")]
         [JsonProperty("subjects", NullValueHandling = NullValueHandling.Ignore)]
-        public List<SubjectV1Beta1> Subjects { get; set; } = new List<SubjectV1Beta1>();
+        public virtual List<SubjectV1Beta1> Subjects { get; set; } = new List<SubjectV1Beta1>();
     }
 }

@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     Items is a list of ResourceQuota objects. More info: https://git.k8s.io/community/contributors/design-proposals/admission_control_resource_quota.md
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<ResourceQuotaV1> Items { get; } = new List<ResourceQuotaV1>();
+        public virtual List<ResourceQuotaV1> Items { get; } = new List<ResourceQuotaV1>();
     }
 }

@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("path")]
         [YamlMember(Alias = "path")]
-        public string Path { get; set; }
+        public virtual string Path { get; set; }
     }
 }

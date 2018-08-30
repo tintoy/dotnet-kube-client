@@ -15,34 +15,34 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("externalID")]
         [YamlMember(Alias = "externalID")]
-        public string ExternalID { get; set; }
+        public virtual string ExternalID { get; set; }
 
         /// <summary>
         ///     ID of the node assigned by the cloud provider in the format: &lt;ProviderName&gt;://&lt;ProviderSpecificNodeID&gt;
         /// </summary>
         [JsonProperty("providerID")]
         [YamlMember(Alias = "providerID")]
-        public string ProviderID { get; set; }
+        public virtual string ProviderID { get; set; }
 
         /// <summary>
         ///     PodCIDR represents the pod IP range assigned to the node.
         /// </summary>
         [JsonProperty("podCIDR")]
         [YamlMember(Alias = "podCIDR")]
-        public string PodCIDR { get; set; }
+        public virtual string PodCIDR { get; set; }
 
         /// <summary>
         ///     Unschedulable controls node schedulability of new pods. By default, node is schedulable. More info: https://kubernetes.io/docs/concepts/nodes/node/#manual-node-administration
         /// </summary>
         [JsonProperty("unschedulable")]
         [YamlMember(Alias = "unschedulable")]
-        public bool Unschedulable { get; set; }
+        public virtual bool Unschedulable { get; set; }
 
         /// <summary>
         ///     If specified, the node's taints.
         /// </summary>
         [YamlMember(Alias = "taints")]
         [JsonProperty("taints", NullValueHandling = NullValueHandling.Ignore)]
-        public List<TaintV1> Taints { get; set; } = new List<TaintV1>();
+        public virtual List<TaintV1> Taints { get; set; } = new List<TaintV1>();
     }
 }

@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public ReplicationControllerSpecV1 Spec { get; set; }
+        public virtual ReplicationControllerSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status is the most recently observed status of the replication controller. This data may be out of date by some window of time. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public ReplicationControllerStatusV1 Status { get; set; }
+        public virtual ReplicationControllerStatusV1 Status { get; set; }
     }
 }

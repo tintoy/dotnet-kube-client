@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "nodeSelectorTerms")]
         [JsonProperty("nodeSelectorTerms", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NodeSelectorTermV1> NodeSelectorTerms { get; set; } = new List<NodeSelectorTermV1>();
+        public virtual List<NodeSelectorTermV1> NodeSelectorTerms { get; set; } = new List<NodeSelectorTermV1>();
     }
 }

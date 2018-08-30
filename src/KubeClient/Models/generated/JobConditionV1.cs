@@ -15,41 +15,41 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("lastProbeTime")]
         [YamlMember(Alias = "lastProbeTime")]
-        public DateTime? LastProbeTime { get; set; }
+        public virtual DateTime? LastProbeTime { get; set; }
 
         /// <summary>
         ///     Last time the condition transit from one status to another.
         /// </summary>
         [JsonProperty("lastTransitionTime")]
         [YamlMember(Alias = "lastTransitionTime")]
-        public DateTime? LastTransitionTime { get; set; }
+        public virtual DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
         ///     Human readable message indicating details about last transition.
         /// </summary>
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
-        public string Message { get; set; }
+        public virtual string Message { get; set; }
 
         /// <summary>
         ///     Type of job condition, Complete or Failed.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
 
         /// <summary>
         ///     (brief) reason for the condition's last transition.
         /// </summary>
         [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
+        public virtual string Reason { get; set; }
 
         /// <summary>
         ///     Status of the condition, one of True, False, Unknown.
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public string Status { get; set; }
+        public virtual string Status { get; set; }
     }
 }

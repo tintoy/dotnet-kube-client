@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("target")]
         [YamlMember(Alias = "target")]
-        public ObjectReferenceV1 Target { get; set; }
+        public virtual ObjectReferenceV1 Target { get; set; }
     }
 }

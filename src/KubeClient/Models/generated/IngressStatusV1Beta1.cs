@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("loadBalancer")]
         [YamlMember(Alias = "loadBalancer")]
-        public LoadBalancerStatusV1 LoadBalancer { get; set; }
+        public virtual LoadBalancerStatusV1 LoadBalancer { get; set; }
     }
 }

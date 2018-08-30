@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("secretName")]
         [YamlMember(Alias = "secretName")]
-        public string SecretName { get; set; }
+        public virtual string SecretName { get; set; }
 
         /// <summary>
         ///     Share Name
         /// </summary>
         [JsonProperty("shareName")]
         [YamlMember(Alias = "shareName")]
-        public string ShareName { get; set; }
+        public virtual string ShareName { get; set; }
 
         /// <summary>
         ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        public virtual bool ReadOnly { get; set; }
     }
 }

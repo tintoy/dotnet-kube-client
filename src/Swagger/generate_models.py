@@ -6,8 +6,8 @@ import os.path
 import pprint
 import yaml
 
-BASE_DIRECTORY = os.path.abspath('../KubeClient/Models/generated')
-ROOT_NAMESPACE = 'KubeClient.Models'
+BASE_DIRECTORY = os.path.abspath('../KubeClient/Models')
+ROOT_NAMESPACE = 'KubeClient'
 IGNORE_MODELS = [
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
     'io.k8s.apimachinery.pkg.apis.meta.v1.Time',
@@ -424,6 +424,172 @@ def parse_properties(models, data_types, definitions):
         model = models[definition_name]
         model.update_properties(properties, data_types)
 
+def generate(model, is_tracked):
+    target_directory = None
+    target_namespace = None
+    base_class = None
+    member_modifier = None
+
+    if is_tracked:
+        target_directory = os.path.join(BASE_DIRECTORY, 'Tracked', 'generated')
+        target_namespace = ROOT_NAMESPACE + '.Models.Tracked'
+
+        base_class = model.to_clr_type_name()
+        member_modifier = 'override'
+    else:
+        target_directory = os.path.join(BASE_DIRECTORY, 'generated')
+        target_namespace = ROOT_NAMESPACE + '.Models'
+
+        if model.is_resource():
+            base_class = 'KubeResourceV1'
+        elif model.is_resource_list():
+            if model.has_list_items():
+                base_class = 'KubeResourceListV1<{0}>'.format(
+                    model.list_item_data_type().to_clr_type_name()
+                )
+            else:
+                base_class = 'KubeResourceListV1'
+
+        member_modifier = 'virtual'
+
+    class_file_name = os.path.join(target_directory, model.clr_name + '.cs')
+    with open(class_file_name, 'w') as class_file:
+        class_file.write('using Newtonsoft.Json;' + LINE_ENDING)
+        class_file.write('using System;' + LINE_ENDING)
+        class_file.write('using System.Collections.Generic;' + LINE_ENDING)
+        class_file.write('using YamlDotNet.Serialization;' + LINE_ENDING)
+        class_file.write(LINE_ENDING)
+        class_file.write('namespace ' + target_namespace + LINE_ENDING)
+        class_file.write('{' + LINE_ENDING)
+
+        class_file.write('    /// <summary>' + LINE_ENDING)
+
+        for model_summary_line in model.summary.split('\n'):
+            class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
+        class_file.write('    /// </summary>' + LINE_ENDING)
+
+        if model.has_list_items():
+            list_item_model = model.list_item_data_type().model
+
+            class_file.write('    [KubeListItem("{0}", "{1}")]{2}'.format(
+                list_item_model.name,
+                list_item_model.api_version,
+                LINE_ENDING
+            ))
+
+        if model.is_resource() or model.is_resource_list():
+            class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
+                model.name,
+                model.api_version,
+                LINE_ENDING
+            ))
+
+        class_file.write('    public partial class ' + model.clr_name)
+        if base_class:
+            class_file.write(' : ' + base_class)
+        class_file.write(LINE_ENDING)
+
+        class_file.write('    {' + LINE_ENDING)
+
+        properties = model.properties
+        property_names = [name for name in properties.keys()]
+
+        if model.is_resource() or model.is_resource_list():
+            property_names.remove('apiVersion')
+            property_names.remove('kind')
+
+            if model.has_metadata() or model.has_list_metadata():
+                property_names.remove('metadata')
+
+            if model.is_resource_list() and model.has_list_items():
+                property_names.remove('items')
+
+        for property_index in range(0, len(property_names)):
+            property_name = property_names[property_index]
+            model_property = properties[property_name]
+
+            class_file.write('        /// <summary>' + LINE_ENDING)
+            for property_summary_line in model_property.summary.split('\n'):
+                class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
+            class_file.write('        /// </summary>' + LINE_ENDING)
+
+            if model_property.data_type.is_collection():
+                if model_property.is_retain_keys:
+                    class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
+
+                # Shorter attribute comes before [YamlMember]...
+                if model_property.is_merge:
+                    if not model_property.merge_key:
+                        class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
+                    elif len(model_property.merge_key) <= len(model_property.json_name):
+                        class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))  
+
+                class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
+
+                # ...but longer attribute comes after [YamlMember].
+                if model_property.is_merge:
+                    if model_property.merge_key and len(model_property.merge_key) > len(model_property.json_name):
+                        class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
+
+                class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
+
+                class_file.write('        public %s %s %s { get; set; } = new %s();%s' % (
+                    member_modifier,
+                    model_property.data_type.to_clr_type_name(),
+                    model_property.name,
+                    model_property.data_type.to_clr_type_name(),
+                    LINE_ENDING
+                ))
+            else:
+                if model_property.is_retain_keys:
+                    class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
+
+                # Shorter attribute comes before [JsonProperty]...
+                if model_property.is_merge:
+                    if not model_property.merge_key:
+                        class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
+
+                class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
+
+                class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
+
+                # ...but longer attribute comes after [YamlMember].
+                if model_property.is_merge:
+                    if model_property.merge_key:
+                        class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
+
+                class_file.write('        public %s %s %s { get; set; }%s' % (
+                    member_modifier,
+                    model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),
+                    model_property.name,
+                    LINE_ENDING
+                ))
+
+            if property_index + 1 < len(property_names):
+                class_file.write(LINE_ENDING)
+
+        # Special case for Items property (we override the base class's property, adding the JsonProperty attribute).
+        if model.is_resource_list() and model.has_list_items():
+            model_property = model.properties['items']
+
+            class_file.write('        /// <summary>' + LINE_ENDING)
+            for property_summary_line in model_property.summary.split('\n'):
+                class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
+            class_file.write('        /// </summary>' + LINE_ENDING)
+
+            class_file.write('        [JsonProperty("%s", ObjectCreationHandling = ObjectCreationHandling.Reuse)]%s' % (model_property.json_name, LINE_ENDING))
+            class_file.write('        public %s %s %s { get; } = new %s();%s' % (
+                member_modifier,
+                model_property.data_type.to_clr_type_name(),
+                model_property.name,
+                model_property.data_type.to_clr_type_name(),
+                LINE_ENDING
+            ))
+
+        class_file.write('    }' + LINE_ENDING) # Class
+
+        class_file.write('}' + LINE_ENDING) # Namespace
+
 def main():
     try:
         os.stat(BASE_DIRECTORY)
@@ -448,147 +614,8 @@ def main():
         if model.kube_group == 'extensions':
             continue
 
-        class_file_name = os.path.join(BASE_DIRECTORY, model.clr_name + '.cs')
-        with open(class_file_name, 'w') as class_file:
-            class_file.write('using Newtonsoft.Json;' + LINE_ENDING)
-            class_file.write('using System;' + LINE_ENDING)
-            class_file.write('using System.Collections.Generic;' + LINE_ENDING)
-            class_file.write('using YamlDotNet.Serialization;' + LINE_ENDING)
-            class_file.write(LINE_ENDING)
-            class_file.write('namespace ' + ROOT_NAMESPACE + LINE_ENDING)
-            class_file.write('{' + LINE_ENDING)
-
-            class_file.write('    /// <summary>' + LINE_ENDING)
-
-            for model_summary_line in model.summary.split('\n'):
-                class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
-            class_file.write('    /// </summary>' + LINE_ENDING)
-
-            if model.has_list_items():
-                list_item_model = model.list_item_data_type().model
-
-                class_file.write('    [KubeListItem("{0}", "{1}")]{2}'.format(
-                    list_item_model.name,
-                    list_item_model.api_version,
-                    LINE_ENDING
-                ))
-
-            if model.is_resource() or model.is_resource_list():
-                class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
-                    model.name,
-                    model.api_version,
-                    LINE_ENDING
-                ))
-
-            class_file.write('    public partial class ' + model.clr_name)
-            if model.is_resource():
-                class_file.write(' : KubeResourceV1')
-            elif model.is_resource_list():
-                if model.has_list_items():
-                    class_file.write(' : KubeResourceListV1<{0}>'.format(
-                        model.list_item_data_type().to_clr_type_name()
-                    ))
-                else:
-                    class_file.write(' : KubeResourceListV1')
-            class_file.write(LINE_ENDING)
-
-            class_file.write('    {' + LINE_ENDING)
-
-            properties = model.properties
-            property_names = [name for name in properties.keys()]
-
-            if model.is_resource() or model.is_resource_list():
-                property_names.remove('apiVersion')
-                property_names.remove('kind')
-
-                if model.has_metadata() or model.has_list_metadata():
-                    property_names.remove('metadata')
-
-                if model.is_resource_list() and model.has_list_items():
-                    property_names.remove('items')
-
-            for property_index in range(0, len(property_names)):
-                property_name = property_names[property_index]
-                model_property = properties[property_name]
-
-                class_file.write('        /// <summary>' + LINE_ENDING)
-                for property_summary_line in model_property.summary.split('\n'):
-                    class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
-                class_file.write('        /// </summary>' + LINE_ENDING)
-
-                if model_property.data_type.is_collection():
-                    if model_property.is_retain_keys:
-                        class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
-
-                    # Shorter attribute comes before [YamlMember]...
-                    if model_property.is_merge:
-                        if not model_property.merge_key:
-                            class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
-                        elif len(model_property.merge_key) <= len(model_property.json_name):
-                            class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))  
-
-                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
-
-                    # ...but longer attribute comes after [YamlMember].
-                    if model_property.is_merge:
-                        if model_property.merge_key and len(model_property.merge_key) > len(model_property.json_name):
-                            class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
-
-                    class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
-
-                    class_file.write('        public %s %s { get; set; } = new %s();%s' % (
-                        model_property.data_type.to_clr_type_name(),
-                        model_property.name,
-                        model_property.data_type.to_clr_type_name(),
-                        LINE_ENDING
-                    ))
-                else:
-                    if model_property.is_retain_keys:
-                        class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
-
-                    # Shorter attribute comes before [JsonProperty]...
-                    if model_property.is_merge:
-                        if not model_property.merge_key:
-                            class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
-
-                    class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
-
-                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
-
-                    # ...but longer attribute comes after [YamlMember].
-                    if model_property.is_merge:
-                        if model_property.merge_key:
-                            class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
-
-                    class_file.write('        public %s %s { get; set; }%s' % (
-                        model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),
-                        model_property.name,
-                        LINE_ENDING
-                    ))
-
-                if property_index + 1 < len(property_names):
-                    class_file.write(LINE_ENDING)
-
-            # Special case for Items property (we override the base class's property, adding the JsonProperty attribute).
-            if model.is_resource_list() and model.has_list_items():
-                model_property = model.properties['items']
-
-                class_file.write('        /// <summary>' + LINE_ENDING)
-                for property_summary_line in model_property.summary.split('\n'):
-                    class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
-                class_file.write('        /// </summary>' + LINE_ENDING)
-
-                class_file.write('        [JsonProperty("%s", ObjectCreationHandling = ObjectCreationHandling.Reuse)]%s' % (model_property.json_name, LINE_ENDING))
-                class_file.write('        public override %s %s { get; } = new %s();%s' % (
-                    model_property.data_type.to_clr_type_name(),
-                    model_property.name,
-                    model_property.data_type.to_clr_type_name(),
-                    LINE_ENDING
-                ))
-
-            class_file.write('    }' + LINE_ENDING) # Class
-
-            class_file.write('}' + LINE_ENDING) # Namespace
+        generate(model, is_tracked=False)
+        generate(model, is_tracked=True)
 
 if __name__ == '__main__':
     main()

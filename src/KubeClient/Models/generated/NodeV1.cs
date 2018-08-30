@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public NodeSpecV1 Spec { get; set; }
+        public virtual NodeSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Most recently observed status of the node. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public NodeStatusV1 Status { get; set; }
+        public virtual NodeStatusV1 Status { get; set; }
     }
 }

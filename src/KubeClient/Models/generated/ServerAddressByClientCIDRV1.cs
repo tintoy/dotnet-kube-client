@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("clientCIDR")]
         [YamlMember(Alias = "clientCIDR")]
-        public string ClientCIDR { get; set; }
+        public virtual string ClientCIDR { get; set; }
 
         /// <summary>
         ///     Address of this server, suitable for a client that matches the above CIDR. This can be a hostname, hostname:port, IP or IP:port.
         /// </summary>
         [JsonProperty("serverAddress")]
         [YamlMember(Alias = "serverAddress")]
-        public string ServerAddress { get; set; }
+        public virtual string ServerAddress { get; set; }
     }
 }

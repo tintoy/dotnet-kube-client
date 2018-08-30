@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public NetworkPolicySpecV1 Spec { get; set; }
+        public virtual NetworkPolicySpecV1 Spec { get; set; }
     }
 }

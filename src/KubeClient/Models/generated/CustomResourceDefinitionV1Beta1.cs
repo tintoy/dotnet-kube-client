@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public CustomResourceDefinitionSpecV1Beta1 Spec { get; set; }
+        public virtual CustomResourceDefinitionSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Status indicates the actual state of the CustomResourceDefinition
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public CustomResourceDefinitionStatusV1Beta1 Status { get; set; }
+        public virtual CustomResourceDefinitionStatusV1Beta1 Status { get; set; }
     }
 }

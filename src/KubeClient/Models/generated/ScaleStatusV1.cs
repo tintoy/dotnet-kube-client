@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("selector")]
         [YamlMember(Alias = "selector")]
-        public string Selector { get; set; }
+        public virtual string Selector { get; set; }
 
         /// <summary>
         ///     actual number of observed instances of the scaled object.
         /// </summary>
         [JsonProperty("replicas")]
         [YamlMember(Alias = "replicas")]
-        public int Replicas { get; set; }
+        public virtual int Replicas { get; set; }
     }
 }

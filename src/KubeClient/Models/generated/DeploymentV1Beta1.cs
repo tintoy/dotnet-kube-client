@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public DeploymentSpecV1Beta1 Spec { get; set; }
+        public virtual DeploymentSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Most recently observed status of the Deployment.
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public DeploymentStatusV1Beta1 Status { get; set; }
+        public virtual DeploymentStatusV1Beta1 Status { get; set; }
     }
 }

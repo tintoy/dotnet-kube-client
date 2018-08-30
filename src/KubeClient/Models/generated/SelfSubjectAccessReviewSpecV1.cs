@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("nonResourceAttributes")]
         [YamlMember(Alias = "nonResourceAttributes")]
-        public NonResourceAttributesV1 NonResourceAttributes { get; set; }
+        public virtual NonResourceAttributesV1 NonResourceAttributes { get; set; }
 
         /// <summary>
         ///     ResourceAuthorizationAttributes describes information for a resource access request
         /// </summary>
         [JsonProperty("resourceAttributes")]
         [YamlMember(Alias = "resourceAttributes")]
-        public ResourceAttributesV1 ResourceAttributes { get; set; }
+        public virtual ResourceAttributesV1 ResourceAttributes { get; set; }
     }
 }

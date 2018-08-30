@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("url")]
         [YamlMember(Alias = "url")]
-        public string Url { get; set; }
+        public virtual string Url { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [JsonProperty("description")]
         [YamlMember(Alias = "description")]
-        public string Description { get; set; }
+        public virtual string Description { get; set; }
     }
 }

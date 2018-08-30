@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
-        public string Phase { get; set; }
+        public virtual string Phase { get; set; }
 
         /// <summary>
         ///     AccessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
         /// </summary>
         [YamlMember(Alias = "accessModes")]
         [JsonProperty("accessModes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> AccessModes { get; set; } = new List<string>();
+        public virtual List<string> AccessModes { get; set; } = new List<string>();
 
         /// <summary>
         ///     Represents the actual resources of the underlying volume.
         /// </summary>
         [YamlMember(Alias = "capacity")]
         [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
     }
 }

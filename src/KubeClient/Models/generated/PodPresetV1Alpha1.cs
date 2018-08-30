@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public PodPresetSpecV1Alpha1 Spec { get; set; }
+        public virtual PodPresetSpecV1Alpha1 Spec { get; set; }
     }
 }

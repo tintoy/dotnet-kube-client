@@ -15,41 +15,41 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        public virtual string Kind { get; set; }
 
         /// <summary>
         ///     UID of the resource. (when there is a single resource which can be described). More info: http://kubernetes.io/docs/user-guide/identifiers#uids
         /// </summary>
         [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
-        public string Uid { get; set; }
+        public virtual string Uid { get; set; }
 
         /// <summary>
         ///     The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     The group attribute of the resource associated with the status StatusReason.
         /// </summary>
         [JsonProperty("group")]
         [YamlMember(Alias = "group")]
-        public string Group { get; set; }
+        public virtual string Group { get; set; }
 
         /// <summary>
         ///     The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.
         /// </summary>
         [YamlMember(Alias = "causes")]
         [JsonProperty("causes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<StatusCauseV1> Causes { get; set; } = new List<StatusCauseV1>();
+        public virtual List<StatusCauseV1> Causes { get; set; } = new List<StatusCauseV1>();
 
         /// <summary>
         ///     If specified, the time in seconds before the operation should be retried.
         /// </summary>
         [JsonProperty("retryAfterSeconds")]
         [YamlMember(Alias = "retryAfterSeconds")]
-        public int RetryAfterSeconds { get; set; }
+        public virtual int RetryAfterSeconds { get; set; }
     }
 }

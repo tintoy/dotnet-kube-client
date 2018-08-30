@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     DevicePath represents the device path where the volume should be available
         /// </summary>
         [JsonProperty("devicePath")]
         [YamlMember(Alias = "devicePath")]
-        public string DevicePath { get; set; }
+        public virtual string DevicePath { get; set; }
     }
 }

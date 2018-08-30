@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     items is the list of Jobs.
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<JobV1> Items { get; } = new List<JobV1>();
+        public virtual List<JobV1> Items { get; } = new List<JobV1>();
     }
 }

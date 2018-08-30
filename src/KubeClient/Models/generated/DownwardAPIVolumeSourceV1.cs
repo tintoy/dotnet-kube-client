@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("defaultMode")]
         [YamlMember(Alias = "defaultMode")]
-        public int? DefaultMode { get; set; }
+        public virtual int? DefaultMode { get; set; }
 
         /// <summary>
         ///     Items is a list of downward API volume file
         /// </summary>
         [YamlMember(Alias = "items")]
         [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DownwardAPIVolumeFileV1> Items { get; set; } = new List<DownwardAPIVolumeFileV1>();
+        public virtual List<DownwardAPIVolumeFileV1> Items { get; set; } = new List<DownwardAPIVolumeFileV1>();
     }
 }

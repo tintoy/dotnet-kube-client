@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     Items is a list of secret objects. More info: https://kubernetes.io/docs/concepts/configuration/secret
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<SecretV1> Items { get; } = new List<SecretV1>();
+        public virtual List<SecretV1> Items { get; } = new List<SecretV1>();
     }
 }

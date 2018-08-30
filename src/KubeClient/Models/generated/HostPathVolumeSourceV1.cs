@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
 
         /// <summary>
         ///     Path of the directory on the host. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
         /// </summary>
         [JsonProperty("path")]
         [YamlMember(Alias = "path")]
-        public string Path { get; set; }
+        public virtual string Path { get; set; }
     }
 }

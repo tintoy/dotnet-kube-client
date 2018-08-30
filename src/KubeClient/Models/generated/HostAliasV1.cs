@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("ip")]
         [YamlMember(Alias = "ip")]
-        public string Ip { get; set; }
+        public virtual string Ip { get; set; }
 
         /// <summary>
         ///     Hostnames for the above IP address.
         /// </summary>
         [YamlMember(Alias = "hostnames")]
         [JsonProperty("hostnames", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Hostnames { get; set; } = new List<string>();
+        public virtual List<string> Hostnames { get; set; } = new List<string>();
     }
 }

@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        public virtual string Kind { get; set; }
 
         /// <summary>
         ///     Name is the name of resource being referenced
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     APIGroup is the group for the resource being referenced
         /// </summary>
         [JsonProperty("apiGroup")]
         [YamlMember(Alias = "apiGroup")]
-        public string ApiGroup { get; set; }
+        public virtual string ApiGroup { get; set; }
     }
 }

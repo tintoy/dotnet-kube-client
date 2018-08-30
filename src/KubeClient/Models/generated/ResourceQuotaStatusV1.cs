@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "hard")]
         [JsonProperty("hard", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Hard { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Hard { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     Used is the current observed total usage of the resource in the namespace.
         /// </summary>
         [YamlMember(Alias = "used")]
         [JsonProperty("used", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Used { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Used { get; set; } = new Dictionary<string, string>();
     }
 }

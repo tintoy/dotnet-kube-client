@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "hard")]
         [JsonProperty("hard", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Hard { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Hard { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     A collection of filters that must match each object tracked by a quota. If not specified, the quota matches all objects.
         /// </summary>
         [YamlMember(Alias = "scopes")]
         [JsonProperty("scopes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Scopes { get; set; } = new List<string>();
+        public virtual List<string> Scopes { get; set; } = new List<string>();
     }
 }

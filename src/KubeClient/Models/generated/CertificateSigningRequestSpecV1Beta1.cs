@@ -15,28 +15,28 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "extra")]
         [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        public virtual Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
 
         /// <summary>
         ///     UID information about the requesting user. See user.Info interface for details.
         /// </summary>
         [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
-        public string Uid { get; set; }
+        public virtual string Uid { get; set; }
 
         /// <summary>
         ///     Information about the requesting user. See user.Info interface for details.
         /// </summary>
         [JsonProperty("username")]
         [YamlMember(Alias = "username")]
-        public string Username { get; set; }
+        public virtual string Username { get; set; }
 
         /// <summary>
         ///     Group information about the requesting user. See user.Info interface for details.
         /// </summary>
         [YamlMember(Alias = "groups")]
         [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Groups { get; set; } = new List<string>();
+        public virtual List<string> Groups { get; set; } = new List<string>();
 
         /// <summary>
         ///     allowedUsages specifies a set of usage contexts the key will be valid for. See: https://tools.ietf.org/html/rfc5280#section-4.2.1.3
@@ -44,13 +44,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "usages")]
         [JsonProperty("usages", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Usages { get; set; } = new List<string>();
+        public virtual List<string> Usages { get; set; } = new List<string>();
 
         /// <summary>
         ///     Base64-encoded PKCS#10 CSR data
         /// </summary>
         [JsonProperty("request")]
         [YamlMember(Alias = "request")]
-        public string Request { get; set; }
+        public virtual string Request { get; set; }
     }
 }

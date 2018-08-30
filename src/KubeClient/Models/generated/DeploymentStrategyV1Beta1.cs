@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rollingUpdate")]
         [YamlMember(Alias = "rollingUpdate")]
-        public RollingUpdateDeploymentV1Beta1 RollingUpdate { get; set; }
+        public virtual RollingUpdateDeploymentV1Beta1 RollingUpdate { get; set; }
 
         /// <summary>
         ///     Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
     }
 }

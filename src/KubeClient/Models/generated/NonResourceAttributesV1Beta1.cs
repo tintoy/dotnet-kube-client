@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("verb")]
         [YamlMember(Alias = "verb")]
-        public string Verb { get; set; }
+        public virtual string Verb { get; set; }
 
         /// <summary>
         ///     Path is the URL path of the request
         /// </summary>
         [JsonProperty("path")]
         [YamlMember(Alias = "path")]
-        public string Path { get; set; }
+        public virtual string Path { get; set; }
     }
 }

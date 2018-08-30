@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "rules")]
         [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PolicyRuleV1Alpha1> Rules { get; set; } = new List<PolicyRuleV1Alpha1>();
+        public virtual List<PolicyRuleV1Alpha1> Rules { get; set; } = new List<PolicyRuleV1Alpha1>();
     }
 }

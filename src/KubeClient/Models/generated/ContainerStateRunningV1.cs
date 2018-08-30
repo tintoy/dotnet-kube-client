@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("startedAt")]
         [YamlMember(Alias = "startedAt")]
-        public DateTime? StartedAt { get; set; }
+        public virtual DateTime? StartedAt { get; set; }
     }
 }

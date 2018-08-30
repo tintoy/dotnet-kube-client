@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public PersistentVolumeClaimSpecV1 Spec { get; set; }
+        public virtual PersistentVolumeClaimSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status represents the current information/status of a persistent volume claim. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public PersistentVolumeClaimStatusV1 Status { get; set; }
+        public virtual PersistentVolumeClaimStatusV1 Status { get; set; }
     }
 }

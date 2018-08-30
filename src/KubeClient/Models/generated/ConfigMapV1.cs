@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "data")]
         [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
     }
 }

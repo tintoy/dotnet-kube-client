@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("revision")]
         [YamlMember(Alias = "revision")]
-        public int Revision { get; set; }
+        public virtual int Revision { get; set; }
     }
 }

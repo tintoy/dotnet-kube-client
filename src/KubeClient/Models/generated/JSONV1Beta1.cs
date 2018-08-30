@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("Raw")]
         [YamlMember(Alias = "Raw")]
-        public string Raw { get; set; }
+        public virtual string Raw { get; set; }
     }
 }

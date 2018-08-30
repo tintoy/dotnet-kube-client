@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("acceptedNames")]
         [YamlMember(Alias = "acceptedNames")]
-        public CustomResourceDefinitionNamesV1Beta1 AcceptedNames { get; set; }
+        public virtual CustomResourceDefinitionNamesV1Beta1 AcceptedNames { get; set; }
 
         /// <summary>
         ///     Conditions indicate state for particular aspects of a CustomResourceDefinition
         /// </summary>
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<CustomResourceDefinitionConditionV1Beta1> Conditions { get; set; } = new List<CustomResourceDefinitionConditionV1Beta1>();
+        public virtual List<CustomResourceDefinitionConditionV1Beta1> Conditions { get; set; } = new List<CustomResourceDefinitionConditionV1Beta1>();
     }
 }

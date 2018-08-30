@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "items")]
         [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DownwardAPIVolumeFileV1> Items { get; set; } = new List<DownwardAPIVolumeFileV1>();
+        public virtual List<DownwardAPIVolumeFileV1> Items { get; set; } = new List<DownwardAPIVolumeFileV1>();
     }
 }

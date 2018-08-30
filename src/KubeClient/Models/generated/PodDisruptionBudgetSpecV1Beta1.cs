@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("maxUnavailable")]
         [YamlMember(Alias = "maxUnavailable")]
-        public string MaxUnavailable { get; set; }
+        public virtual string MaxUnavailable { get; set; }
 
         /// <summary>
         ///     An eviction is allowed if at least "minAvailable" pods selected by "selector" will still be available after the eviction, i.e. even in the absence of the evicted pod.  So for example you can prevent all voluntary evictions by specifying "100%".
         /// </summary>
         [JsonProperty("minAvailable")]
         [YamlMember(Alias = "minAvailable")]
-        public string MinAvailable { get; set; }
+        public virtual string MinAvailable { get; set; }
 
         /// <summary>
         ///     Label query over pods whose evictions are managed by the disruption budget.
         /// </summary>
         [JsonProperty("selector")]
         [YamlMember(Alias = "selector")]
-        public LabelSelectorV1 Selector { get; set; }
+        public virtual LabelSelectorV1 Selector { get; set; }
     }
 }

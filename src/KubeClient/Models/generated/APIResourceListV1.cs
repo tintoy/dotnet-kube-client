@@ -15,27 +15,27 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        public virtual string Kind { get; set; }
 
         /// <summary>
         ///     APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources
         /// </summary>
         [JsonProperty("apiVersion")]
         [YamlMember(Alias = "apiVersion")]
-        public string ApiVersion { get; set; }
+        public virtual string ApiVersion { get; set; }
 
         /// <summary>
         ///     groupVersion is the group and version this APIResourceList is for.
         /// </summary>
         [JsonProperty("groupVersion")]
         [YamlMember(Alias = "groupVersion")]
-        public string GroupVersion { get; set; }
+        public virtual string GroupVersion { get; set; }
 
         /// <summary>
         ///     resources contains the name of the resources and if they are namespaced.
         /// </summary>
         [YamlMember(Alias = "resources")]
         [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
-        public List<APIResourceV1> Resources { get; set; } = new List<APIResourceV1>();
+        public virtual List<APIResourceV1> Resources { get; set; } = new List<APIResourceV1>();
     }
 }

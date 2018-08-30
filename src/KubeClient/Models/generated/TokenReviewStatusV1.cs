@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("authenticated")]
         [YamlMember(Alias = "authenticated")]
-        public bool Authenticated { get; set; }
+        public virtual bool Authenticated { get; set; }
 
         /// <summary>
         ///     Error indicates that the token couldn't be checked
         /// </summary>
         [JsonProperty("error")]
         [YamlMember(Alias = "error")]
-        public string Error { get; set; }
+        public virtual string Error { get; set; }
 
         /// <summary>
         ///     User is the UserInfo associated with the provided token.
         /// </summary>
         [JsonProperty("user")]
         [YamlMember(Alias = "user")]
-        public UserInfoV1 User { get; set; }
+        public virtual UserInfoV1 User { get; set; }
     }
 }

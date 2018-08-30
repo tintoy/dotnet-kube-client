@@ -16,20 +16,20 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "data")]
         [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     stringData allows specifying non-binary secret data in string form. It is provided as a write-only convenience method. All keys and values are merged into the data field on write, overwriting any existing values. It is never output when reading from the API.
         /// </summary>
         [YamlMember(Alias = "stringData")]
         [JsonProperty("stringData", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> StringData { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> StringData { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     Used to facilitate programmatic handling of secret data.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("http")]
         [YamlMember(Alias = "http")]
-        public HTTPIngressRuleValueV1Beta1 Http { get; set; }
+        public virtual HTTPIngressRuleValueV1Beta1 Http { get; set; }
 
         /// <summary>
         ///     Host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the "host" part of the URI as defined in the RFC: 1. IPs are not allowed. Currently an IngressRuleValue can only apply to the
@@ -27,6 +27,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("host")]
         [YamlMember(Alias = "host")]
-        public string Host { get; set; }
+        public virtual string Host { get; set; }
     }
 }

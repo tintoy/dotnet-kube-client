@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "paths")]
         [JsonProperty("paths", NullValueHandling = NullValueHandling.Ignore)]
-        public List<HTTPIngressPathV1Beta1> Paths { get; set; } = new List<HTTPIngressPathV1Beta1>();
+        public virtual List<HTTPIngressPathV1Beta1> Paths { get; set; } = new List<HTTPIngressPathV1Beta1>();
     }
 }

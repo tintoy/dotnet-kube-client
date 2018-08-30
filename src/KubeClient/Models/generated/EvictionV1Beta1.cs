@@ -16,6 +16,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("deleteOptions")]
         [YamlMember(Alias = "deleteOptions")]
-        public DeleteOptionsV1 DeleteOptions { get; set; }
+        public virtual DeleteOptionsV1 DeleteOptions { get; set; }
     }
 }

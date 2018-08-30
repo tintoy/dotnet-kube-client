@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public ScaleSpecV1Beta1 Spec { get; set; }
+        public virtual ScaleSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     current status of the scale. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status. Read-only.
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public ScaleStatusV1Beta1 Status { get; set; }
+        public virtual ScaleStatusV1Beta1 Status { get; set; }
     }
 }

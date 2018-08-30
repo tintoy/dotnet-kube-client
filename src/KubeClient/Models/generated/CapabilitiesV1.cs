@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "add")]
         [JsonProperty("add", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Add { get; set; } = new List<string>();
+        public virtual List<string> Add { get; set; } = new List<string>();
 
         /// <summary>
         ///     Removed capabilities
         /// </summary>
         [YamlMember(Alias = "drop")]
         [JsonProperty("drop", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Drop { get; set; } = new List<string>();
+        public virtual List<string> Drop { get; set; } = new List<string>();
     }
 }

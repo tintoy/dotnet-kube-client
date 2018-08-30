@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     List of events
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<EventV1> Items { get; } = new List<EventV1>();
+        public virtual List<EventV1> Items { get; } = new List<EventV1>();
     }
 }

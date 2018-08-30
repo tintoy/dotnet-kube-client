@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("certificate")]
         [YamlMember(Alias = "certificate")]
-        public string Certificate { get; set; }
+        public virtual string Certificate { get; set; }
 
         /// <summary>
         ///     Conditions applied to the request, such as approval or denial.
         /// </summary>
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<CertificateSigningRequestConditionV1Beta1> Conditions { get; set; } = new List<CertificateSigningRequestConditionV1Beta1>();
+        public virtual List<CertificateSigningRequestConditionV1Beta1> Conditions { get; set; } = new List<CertificateSigningRequestConditionV1Beta1>();
     }
 }

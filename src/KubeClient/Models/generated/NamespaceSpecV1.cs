@@ -15,6 +15,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "finalizers")]
         [JsonProperty("finalizers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Finalizers { get; set; } = new List<string>();
+        public virtual List<string> Finalizers { get; set; } = new List<string>();
     }
 }

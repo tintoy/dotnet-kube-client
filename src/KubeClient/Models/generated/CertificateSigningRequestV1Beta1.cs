@@ -16,13 +16,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
-        public CertificateSigningRequestSpecV1Beta1 Spec { get; set; }
+        public virtual CertificateSigningRequestSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Derived information about the request.
         /// </summary>
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
-        public CertificateSigningRequestStatusV1Beta1 Status { get; set; }
+        public virtual CertificateSigningRequestStatusV1Beta1 Status { get; set; }
     }
 }

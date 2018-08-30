@@ -15,55 +15,55 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("fsType")]
         [YamlMember(Alias = "fsType")]
-        public string FsType { get; set; }
+        public virtual string FsType { get; set; }
 
         /// <summary>
         ///     The rados image name. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("image")]
         [YamlMember(Alias = "image")]
-        public string Image { get; set; }
+        public virtual string Image { get; set; }
 
         /// <summary>
         ///     SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
-        public LocalObjectReferenceV1 SecretRef { get; set; }
+        public virtual LocalObjectReferenceV1 SecretRef { get; set; }
 
         /// <summary>
         ///     Keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("keyring")]
         [YamlMember(Alias = "keyring")]
-        public string Keyring { get; set; }
+        public virtual string Keyring { get; set; }
 
         /// <summary>
         ///     The rados pool name. Default is rbd. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("pool")]
         [YamlMember(Alias = "pool")]
-        public string Pool { get; set; }
+        public virtual string Pool { get; set; }
 
         /// <summary>
         ///     The rados user name. Default is admin. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("user")]
         [YamlMember(Alias = "user")]
-        public string User { get; set; }
+        public virtual string User { get; set; }
 
         /// <summary>
         ///     A collection of Ceph monitors. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [YamlMember(Alias = "monitors")]
         [JsonProperty("monitors", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Monitors { get; set; } = new List<string>();
+        public virtual List<string> Monitors { get; set; } = new List<string>();
 
         /// <summary>
         ///     ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        public virtual bool ReadOnly { get; set; }
     }
 }

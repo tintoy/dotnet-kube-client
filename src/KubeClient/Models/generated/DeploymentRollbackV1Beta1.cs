@@ -15,34 +15,34 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        public virtual string Kind { get; set; }
 
         /// <summary>
         ///     Required: This must match the Name of a deployment.
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         ///     APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources
         /// </summary>
         [JsonProperty("apiVersion")]
         [YamlMember(Alias = "apiVersion")]
-        public string ApiVersion { get; set; }
+        public virtual string ApiVersion { get; set; }
 
         /// <summary>
         ///     The config of this deployment rollback.
         /// </summary>
         [JsonProperty("rollbackTo")]
         [YamlMember(Alias = "rollbackTo")]
-        public RollbackConfigV1Beta1 RollbackTo { get; set; }
+        public virtual RollbackConfigV1Beta1 RollbackTo { get; set; }
 
         /// <summary>
         ///     The annotations to be updated to a deployment
         /// </summary>
         [YamlMember(Alias = "updatedAnnotations")]
         [JsonProperty("updatedAnnotations", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> UpdatedAnnotations { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> UpdatedAnnotations { get; set; } = new Dictionary<string, string>();
     }
 }

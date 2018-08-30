@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     Items is a list of ClusterRoleBindings
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<ClusterRoleBindingV1Alpha1> Items { get; } = new List<ClusterRoleBindingV1Alpha1>();
+        public virtual List<ClusterRoleBindingV1Alpha1> Items { get; } = new List<ClusterRoleBindingV1Alpha1>();
     }
 }

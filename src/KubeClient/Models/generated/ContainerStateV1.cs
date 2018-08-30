@@ -15,20 +15,20 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("terminated")]
         [YamlMember(Alias = "terminated")]
-        public ContainerStateTerminatedV1 Terminated { get; set; }
+        public virtual ContainerStateTerminatedV1 Terminated { get; set; }
 
         /// <summary>
         ///     Details about a running container
         /// </summary>
         [JsonProperty("running")]
         [YamlMember(Alias = "running")]
-        public ContainerStateRunningV1 Running { get; set; }
+        public virtual ContainerStateRunningV1 Running { get; set; }
 
         /// <summary>
         ///     Details about a waiting container
         /// </summary>
         [JsonProperty("waiting")]
         [YamlMember(Alias = "waiting")]
-        public ContainerStateWaitingV1 Waiting { get; set; }
+        public virtual ContainerStateWaitingV1 Waiting { get; set; }
     }
 }

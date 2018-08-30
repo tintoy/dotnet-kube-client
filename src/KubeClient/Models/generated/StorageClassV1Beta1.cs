@@ -18,13 +18,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("provisioner")]
         [YamlMember(Alias = "provisioner")]
-        public string Provisioner { get; set; }
+        public virtual string Provisioner { get; set; }
 
         /// <summary>
         ///     Parameters holds the parameters for the provisioner that should create volumes of this storage class.
         /// </summary>
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        public virtual Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
     }
 }

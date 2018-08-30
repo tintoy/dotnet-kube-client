@@ -15,48 +15,48 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("containerID")]
         [YamlMember(Alias = "containerID")]
-        public string ContainerID { get; set; }
+        public virtual string ContainerID { get; set; }
 
         /// <summary>
         ///     Exit status from the last termination of the container
         /// </summary>
         [JsonProperty("exitCode")]
         [YamlMember(Alias = "exitCode")]
-        public int ExitCode { get; set; }
+        public virtual int ExitCode { get; set; }
 
         /// <summary>
         ///     Message regarding the last termination of the container
         /// </summary>
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
-        public string Message { get; set; }
+        public virtual string Message { get; set; }
 
         /// <summary>
         ///     Signal from the last termination of the container
         /// </summary>
         [JsonProperty("signal")]
         [YamlMember(Alias = "signal")]
-        public int Signal { get; set; }
+        public virtual int Signal { get; set; }
 
         /// <summary>
         ///     (brief) reason from the last termination of the container
         /// </summary>
         [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
+        public virtual string Reason { get; set; }
 
         /// <summary>
         ///     Time at which the container last terminated
         /// </summary>
         [JsonProperty("finishedAt")]
         [YamlMember(Alias = "finishedAt")]
-        public DateTime? FinishedAt { get; set; }
+        public virtual DateTime? FinishedAt { get; set; }
 
         /// <summary>
         ///     Time at which previous execution of the container started
         /// </summary>
         [JsonProperty("startedAt")]
         [YamlMember(Alias = "startedAt")]
-        public DateTime? StartedAt { get; set; }
+        public virtual DateTime? StartedAt { get; set; }
     }
 }

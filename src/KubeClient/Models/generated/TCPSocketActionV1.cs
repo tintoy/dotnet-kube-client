@@ -15,13 +15,13 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("host")]
         [YamlMember(Alias = "host")]
-        public string Host { get; set; }
+        public virtual string Host { get; set; }
 
         /// <summary>
         ///     Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
         /// </summary>
         [JsonProperty("port")]
         [YamlMember(Alias = "port")]
-        public string Port { get; set; }
+        public virtual string Port { get; set; }
     }
 }
