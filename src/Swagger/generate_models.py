@@ -628,13 +628,13 @@ def generate(model, is_tracked):
             ))
 
         # HashSet used to track modified property names.
-        if is_tracked and has_non_collection_properties:
+        if is_tracked:
             class_file.write(LINE_ENDING)
             class_file.write('        /// <summary>' + LINE_ENDING)
             class_file.write('        ///     Names of model properties that have been modified.' + LINE_ENDING)
             class_file.write('        /// </summary>' + LINE_ENDING)
             class_file.write('        [JsonIgnore, YamlIgnore]' + LINE_ENDING)
-            class_file.write('        public HashSet<string> __ModifiedProperties__ { get; } = new HashSet<string>();' + LINE_ENDING)
+            class_file.write('        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();' + LINE_ENDING)
 
         class_file.write('    }' + LINE_ENDING) # Class
 

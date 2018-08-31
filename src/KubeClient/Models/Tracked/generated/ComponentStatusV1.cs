@@ -18,5 +18,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.ComponentConditionV1> Conditions { get; set; } = new List<Models.ComponentConditionV1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

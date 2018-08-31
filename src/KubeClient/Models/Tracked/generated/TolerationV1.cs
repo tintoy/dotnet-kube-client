@@ -115,6 +115,6 @@ namespace KubeClient.Models.Tracked
         ///     Names of model properties that have been modified.
         /// </summary>
         [JsonIgnore, YamlIgnore]
-        public HashSet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

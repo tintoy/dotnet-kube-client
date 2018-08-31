@@ -16,5 +16,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "paths")]
         [JsonProperty("paths", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.HTTPIngressPathV1Beta1> Paths { get; set; } = new List<Models.HTTPIngressPathV1Beta1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

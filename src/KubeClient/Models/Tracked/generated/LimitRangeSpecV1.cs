@@ -16,5 +16,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "limits")]
         [JsonProperty("limits", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.LimitRangeItemV1> Limits { get; set; } = new List<Models.LimitRangeItemV1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

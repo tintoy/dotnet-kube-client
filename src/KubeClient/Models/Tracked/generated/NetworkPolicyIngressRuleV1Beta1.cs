@@ -23,5 +23,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "ports")]
         [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.NetworkPolicyPortV1Beta1> Ports { get; set; } = new List<Models.NetworkPolicyPortV1Beta1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

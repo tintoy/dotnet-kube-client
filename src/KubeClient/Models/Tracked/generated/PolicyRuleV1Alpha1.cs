@@ -44,5 +44,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "verbs")]
         [JsonProperty("verbs", NullValueHandling = NullValueHandling.Ignore)]
         public override List<string> Verbs { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

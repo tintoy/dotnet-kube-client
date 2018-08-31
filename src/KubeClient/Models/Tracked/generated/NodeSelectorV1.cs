@@ -16,5 +16,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "nodeSelectorTerms")]
         [JsonProperty("nodeSelectorTerms", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.NodeSelectorTermV1> NodeSelectorTerms { get; set; } = new List<Models.NodeSelectorTermV1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

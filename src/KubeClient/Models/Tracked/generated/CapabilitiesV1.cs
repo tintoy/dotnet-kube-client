@@ -23,5 +23,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "drop")]
         [JsonProperty("drop", NullValueHandling = NullValueHandling.Ignore)]
         public override List<string> Drop { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

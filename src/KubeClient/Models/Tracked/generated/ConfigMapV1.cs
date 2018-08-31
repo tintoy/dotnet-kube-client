@@ -17,5 +17,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "data")]
         [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
         public override Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

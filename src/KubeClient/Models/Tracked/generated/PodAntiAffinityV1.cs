@@ -23,5 +23,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "requiredDuringSchedulingIgnoredDuringExecution")]
         [JsonProperty("requiredDuringSchedulingIgnoredDuringExecution", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.PodAffinityTermV1> RequiredDuringSchedulingIgnoredDuringExecution { get; set; } = new List<Models.PodAffinityTermV1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

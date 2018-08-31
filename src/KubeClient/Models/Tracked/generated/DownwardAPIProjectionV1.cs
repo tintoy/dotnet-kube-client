@@ -17,5 +17,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "items")]
         [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.DownwardAPIVolumeFileV1> Items { get; set; } = new List<Models.DownwardAPIVolumeFileV1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

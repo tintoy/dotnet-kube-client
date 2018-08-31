@@ -17,5 +17,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "rules")]
         [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.PolicyRuleV1Beta1> Rules { get; set; } = new List<Models.PolicyRuleV1Beta1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }

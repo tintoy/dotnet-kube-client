@@ -28,5 +28,11 @@ namespace KubeClient.Models.Tracked
         [YamlMember(Alias = "subsets")]
         [JsonProperty("subsets", NullValueHandling = NullValueHandling.Ignore)]
         public override List<Models.EndpointSubsetV1> Subsets { get; set; } = new List<Models.EndpointSubsetV1>();
+
+        /// <summary>
+        ///     Names of model properties that have been modified.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public ISet<string> __ModifiedProperties__ { get; } = new HashSet<string>();
     }
 }
