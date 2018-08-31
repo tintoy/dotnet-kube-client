@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     List of persistent volumes. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public virtual List<PersistentVolumeV1> Items { get; } = new List<PersistentVolumeV1>();
+        public override List<PersistentVolumeV1> Items { get; } = new List<PersistentVolumeV1>();
     }
 }

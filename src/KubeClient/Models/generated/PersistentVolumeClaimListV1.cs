@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     A list of persistent volume claims. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public virtual List<PersistentVolumeClaimV1> Items { get; } = new List<PersistentVolumeClaimV1>();
+        public override List<PersistentVolumeClaimV1> Items { get; } = new List<PersistentVolumeClaimV1>();
     }
 }

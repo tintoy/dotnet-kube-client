@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     Items is the list of ControllerRevisions
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public virtual List<ControllerRevisionV1Beta1> Items { get; } = new List<ControllerRevisionV1Beta1>();
+        public override List<ControllerRevisionV1Beta1> Items { get; } = new List<ControllerRevisionV1Beta1>();
     }
 }

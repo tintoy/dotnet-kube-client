@@ -228,9 +228,12 @@ class KubeDataType(object):
         return False
 
     def is_collection(self):
+        return 
+        
+    def is_map(self):
         return False
 
-    def to_clr_type_name(self, is_nullable=False):
+    def to_clr_type_name(self, is_nullable=False, is_tracked=False):
         return get_cts_type_name(self.name)
 
     def __repr__(self):
@@ -286,8 +289,8 @@ class KubeIntrinsicDataType(KubeDataType):
     def __repr__(self):
         return "KubeIntrinsicDataType(name='{0}')".format(self.name)
 
-    def to_clr_type_name(self, is_nullable=False):
-        clr_type_name = super().to_clr_type_name(is_nullable)
+    def to_clr_type_name(self, is_nullable=False, is_tracked=False):
+        clr_type_name = super().to_clr_type_name(is_nullable=is_nullable, is_tracked=is_tracked)
 
         if (is_nullable and clr_type_name in VALUE_TYPE_NAMES) or clr_type_name == 'DateTime':
             clr_type_name += '?'
@@ -308,9 +311,9 @@ class KubeArrayDataType(KubeDataType):
             repr(self.element_type)
         )
 
-    def to_clr_type_name(self, is_nullable=False):
+    def to_clr_type_name(self, is_nullable=False, is_tracked=False):
         return 'List<{}>'.format(
-            get_cts_type_name(self.element_type.to_clr_type_name(is_nullable)).replace('?', '') # List<DateTime?> would be odious to deal with.
+            get_cts_type_name(self.element_type.to_clr_type_name(is_nullable=is_nullable, is_tracked=is_tracked)).replace('?', '') # List<DateTime?> would be odious to deal with.
         )
 
 class KubeDictionaryDataType(KubeDataType):
@@ -322,14 +325,17 @@ class KubeDictionaryDataType(KubeDataType):
     def is_collection(self):
         return True
 
+    def is_map(self):
+        return True
+
     def __repr__(self):
         return "KubeDictionaryDataType(element_type={0})".format(
             repr(self.element_type)
         )
 
-    def to_clr_type_name(self, is_nullable=False):
+    def to_clr_type_name(self, is_nullable=False, is_tracked=False):
         return 'Dictionary<string, {}>'.format( # AFAICT, Kubernetes models only use strings as dictionary keys
-            get_cts_type_name(self.element_type.to_clr_type_name(is_nullable)).replace('?', '') # Dictionary<string, DateTime?> would be odious to deal with.
+            self.element_type.to_clr_type_name(is_nullable=is_nullable, is_tracked=is_tracked).replace('?', '') # Dictionary<string, DateTime?> would be odious to deal with.
         )
 
 class KubeModelDataType(KubeDataType):
@@ -345,8 +351,11 @@ class KubeModelDataType(KubeDataType):
             self.to_clr_type_name()
         )
 
-    def to_clr_type_name(self, is_nullable=False):
-        return self.model.clr_name
+    def to_clr_type_name(self, is_nullable=False, is_tracked=False):
+        if is_tracked:
+            return 'Models.' + self.model.clr_name
+        else:
+            return self.model.clr_name
 
 def capitalize_name(name):
     return name[0].capitalize() + name[1:]
@@ -434,7 +443,7 @@ def generate(model, is_tracked):
         target_directory = os.path.join(BASE_DIRECTORY, 'Tracked', 'generated')
         target_namespace = ROOT_NAMESPACE + '.Models.Tracked'
 
-        base_class = model.to_clr_type_name()
+        base_class = 'Models.' + model.clr_name
         member_modifier = 'override'
     else:
         target_directory = os.path.join(BASE_DIRECTORY, 'generated')
@@ -451,6 +460,9 @@ def generate(model, is_tracked):
                 base_class = 'KubeResourceListV1'
 
         member_modifier = 'virtual'
+
+    if not os.path.isdir(target_directory):
+        os.makedirs(target_directory)
 
     class_file_name = os.path.join(target_directory, model.clr_name + '.cs')
     with open(class_file_name, 'w') as class_file:
@@ -491,6 +503,8 @@ def generate(model, is_tracked):
 
         class_file.write('    {' + LINE_ENDING)
 
+        has_non_collection_properties = False
+
         properties = model.properties
         property_names = [name for name in properties.keys()]
 
@@ -508,6 +522,7 @@ def generate(model, is_tracked):
             property_name = property_names[property_index]
             model_property = properties[property_name]
 
+            property_type = model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional, is_tracked=is_tracked)
             class_file.write('        /// <summary>' + LINE_ENDING)
             for property_summary_line in model_property.summary.split('\n'):
                 class_file.write('        ///     ' + property_summary_line + LINE_ENDING)
@@ -535,12 +550,14 @@ def generate(model, is_tracked):
 
                 class_file.write('        public %s %s %s { get; set; } = new %s();%s' % (
                     member_modifier,
-                    model_property.data_type.to_clr_type_name(),
+                    property_type,
                     model_property.name,
-                    model_property.data_type.to_clr_type_name(),
+                    property_type,
                     LINE_ENDING
                 ))
             else:
+                has_non_collection_properties = True
+
                 if model_property.is_retain_keys:
                     class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
 
@@ -558,12 +575,30 @@ def generate(model, is_tracked):
                     if model_property.merge_key:
                         class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
 
-                class_file.write('        public %s %s %s { get; set; }%s' % (
+                class_file.write('        public %s %s %s' % (
                     member_modifier,
-                    model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),
-                    model_property.name,
-                    LINE_ENDING
+                    property_type,
+                    model_property.name
                 ))
+
+                if is_tracked:
+                    class_file.write(LINE_ENDING)
+                    class_file.write('        {' + LINE_ENDING)
+                    class_file.write('            get' + LINE_ENDING)
+                    class_file.write('            {' + LINE_ENDING)
+                    class_file.write('                return base.' + model_property.name + ';' + LINE_ENDING)
+                    class_file.write('            }' + LINE_ENDING)
+                    class_file.write('            set' + LINE_ENDING)
+                    class_file.write('            {' + LINE_ENDING)
+                    class_file.write('                base.' + model_property.name + ' = value;' + LINE_ENDING)
+                    class_file.write(LINE_ENDING)
+                    class_file.write('                __ModifiedProperties__.Add("' + model_property.name + '");' + LINE_ENDING)
+                    class_file.write('            }' + LINE_ENDING)
+                    class_file.write('        }' + LINE_ENDING)
+                else:
+                    class_file.write(' { get; set; }')
+
+                class_file.write(LINE_ENDING)
 
             if property_index + 1 < len(property_names):
                 class_file.write(LINE_ENDING)
@@ -571,6 +606,7 @@ def generate(model, is_tracked):
         # Special case for Items property (we override the base class's property, adding the JsonProperty attribute).
         if model.is_resource_list() and model.has_list_items():
             model_property = model.properties['items']
+            model_type = model_property.data_type.to_clr_type_name(is_tracked=is_tracked)
 
             class_file.write('        /// <summary>' + LINE_ENDING)
             for property_summary_line in model_property.summary.split('\n'):
@@ -578,13 +614,21 @@ def generate(model, is_tracked):
             class_file.write('        /// </summary>' + LINE_ENDING)
 
             class_file.write('        [JsonProperty("%s", ObjectCreationHandling = ObjectCreationHandling.Reuse)]%s' % (model_property.json_name, LINE_ENDING))
-            class_file.write('        public %s %s %s { get; } = new %s();%s' % (
-                member_modifier,
-                model_property.data_type.to_clr_type_name(),
+            class_file.write('        public override %s %s { get; } = new %s();%s' % (
+                model_type,
                 model_property.name,
-                model_property.data_type.to_clr_type_name(),
+                model_type,
                 LINE_ENDING
             ))
+
+        # HashSet used to track modified property names.
+        if is_tracked and has_non_collection_properties:
+            class_file.write(LINE_ENDING)
+            class_file.write('        /// <summary>' + LINE_ENDING)
+            class_file.write('        ///     Names of model properties that have been modified.' + LINE_ENDING)
+            class_file.write('        /// </summary>' + LINE_ENDING)
+            class_file.write('        [JsonIgnore, YamlIgnore]' + LINE_ENDING)
+            class_file.write('        public HashSet<string> __ModifiedProperties__ { get; } = new HashSet<string>();' + LINE_ENDING)
 
         class_file.write('    }' + LINE_ENDING) # Class
 
@@ -612,7 +656,8 @@ def main():
 
         model = models[definition_name]
         if model.kube_group == 'extensions':
-            continue
+            if not model.name.startswith('ReplicaSet'):
+                continue
 
         generate(model, is_tracked=False)
         generate(model, is_tracked=True)

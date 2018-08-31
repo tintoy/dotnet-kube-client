@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     List of ComponentStatus objects.
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public virtual List<ComponentStatusV1> Items { get; } = new List<ComponentStatusV1>();
+        public override List<ComponentStatusV1> Items { get; } = new List<ComponentStatusV1>();
     }
 }

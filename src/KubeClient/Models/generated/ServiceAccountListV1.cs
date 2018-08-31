@@ -16,6 +16,6 @@ namespace KubeClient.Models
         ///     List of ServiceAccounts. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public virtual List<ServiceAccountV1> Items { get; } = new List<ServiceAccountV1>();
+        public override List<ServiceAccountV1> Items { get; } = new List<ServiceAccountV1>();
     }
 }
