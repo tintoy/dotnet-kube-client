@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
     /// </summary>
-    public partial class LabelSelectorRequirementV1 : Models.LabelSelectorRequirementV1
+    public partial class LabelSelectorRequirementV1 : Models.LabelSelectorRequirementV1, ITracked
     {
         /// <summary>
         ///     operator represents a key's relationship to a set of values. Valid operators ard In, NotIn, Exists and DoesNotExist.

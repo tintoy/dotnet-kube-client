@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JobStatus represents the current state of a Job.
     /// </summary>
-    public partial class JobStatusV1 : Models.JobStatusV1
+    public partial class JobStatusV1 : Models.JobStatusV1, ITracked
     {
         /// <summary>
         ///     The number of pods which reached phase Failed.

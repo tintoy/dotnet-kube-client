@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
     /// </summary>
     [KubeObject("PodDisruptionBudget", "policy/v1beta1")]
-    public partial class PodDisruptionBudgetV1Beta1 : Models.PodDisruptionBudgetV1Beta1
+    public partial class PodDisruptionBudgetV1Beta1 : Models.PodDisruptionBudgetV1Beta1, ITracked
     {
         /// <summary>
         ///     Specification of the desired behavior of the PodDisruptionBudget.

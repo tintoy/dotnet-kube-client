@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("HorizontalPodAutoscaler", "autoscaling/v1")]
     [KubeObject("HorizontalPodAutoscalerList", "autoscaling/v1")]
-    public partial class HorizontalPodAutoscalerListV1 : Models.HorizontalPodAutoscalerListV1
+    public partial class HorizontalPodAutoscalerListV1 : Models.HorizontalPodAutoscalerListV1, ITracked
     {
         /// <summary>
         ///     list of horizontal pod autoscaler objects.

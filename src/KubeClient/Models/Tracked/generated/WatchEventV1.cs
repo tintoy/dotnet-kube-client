@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Event represents a single event to a watched resource.
     /// </summary>
-    public partial class WatchEventV1 : Models.WatchEventV1
+    public partial class WatchEventV1 : Models.WatchEventV1, ITracked
     {
         /// <summary>
         ///     Description not provided.

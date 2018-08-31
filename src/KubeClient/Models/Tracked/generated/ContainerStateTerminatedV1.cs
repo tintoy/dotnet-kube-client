@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ContainerStateTerminated is a terminated state of a container.
     /// </summary>
-    public partial class ContainerStateTerminatedV1 : Models.ContainerStateTerminatedV1
+    public partial class ContainerStateTerminatedV1 : Models.ContainerStateTerminatedV1, ITracked
     {
         /// <summary>
         ///     Container's ID in the format 'docker://&lt;container_id&gt;'

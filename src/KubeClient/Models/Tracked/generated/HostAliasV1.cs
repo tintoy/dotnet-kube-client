@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.
     /// </summary>
-    public partial class HostAliasV1 : Models.HostAliasV1
+    public partial class HostAliasV1 : Models.HostAliasV1, ITracked
     {
         /// <summary>
         ///     IP address of the host file entry.

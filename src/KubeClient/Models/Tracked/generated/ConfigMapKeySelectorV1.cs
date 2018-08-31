@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Selects a key from a ConfigMap.
     /// </summary>
-    public partial class ConfigMapKeySelectorV1 : Models.ConfigMapKeySelectorV1
+    public partial class ConfigMapKeySelectorV1 : Models.ConfigMapKeySelectorV1, ITracked
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

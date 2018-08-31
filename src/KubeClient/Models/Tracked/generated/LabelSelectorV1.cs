@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
     /// </summary>
-    public partial class LabelSelectorV1 : Models.LabelSelectorV1
+    public partial class LabelSelectorV1 : Models.LabelSelectorV1, ITracked
     {
         /// <summary>
         ///     matchExpressions is a list of label selector requirements. The requirements are ANDed.

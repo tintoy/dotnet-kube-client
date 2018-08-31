@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     NetworkPolicy describes what network traffic is allowed for a set of Pods
     /// </summary>
     [KubeObject("NetworkPolicy", "networking.k8s.io/v1")]
-    public partial class NetworkPolicyV1 : Models.NetworkPolicyV1
+    public partial class NetworkPolicyV1 : Models.NetworkPolicyV1, ITracked
     {
         /// <summary>
         ///     Specification of the desired behavior for this NetworkPolicy.

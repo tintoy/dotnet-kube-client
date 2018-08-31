@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PersistentVolumeStatus is the current status of a persistent volume.
     /// </summary>
-    public partial class PersistentVolumeStatusV1 : Models.PersistentVolumeStatusV1
+    public partial class PersistentVolumeStatusV1 : Models.PersistentVolumeStatusV1, ITracked
     {
         /// <summary>
         ///     A human-readable message indicating details about why the volume is in this state.

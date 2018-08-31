@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     EventSource contains information for an event.
     /// </summary>
-    public partial class EventSourceV1 : Models.EventSourceV1
+    public partial class EventSourceV1 : Models.EventSourceV1, ITracked
     {
         /// <summary>
         ///     Component from which the event is generated.

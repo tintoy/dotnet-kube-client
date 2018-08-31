@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DaemonSetStatus represents the current status of a daemon set.
     /// </summary>
-    public partial class DaemonSetStatusV1Beta1 : Models.DaemonSetStatusV1Beta1
+    public partial class DaemonSetStatusV1Beta1 : Models.DaemonSetStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/

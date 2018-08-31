@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Pod", "v1")]
     [KubeObject("PodList", "v1")]
-    public partial class PodListV1 : Models.PodListV1
+    public partial class PodListV1 : Models.PodListV1, ITracked
     {
         /// <summary>
         ///     List of pods. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md

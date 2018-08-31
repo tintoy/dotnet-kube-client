@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
     /// </summary>
-    public partial class ProbeV1 : Models.ProbeV1
+    public partial class ProbeV1 : Models.ProbeV1, ITracked
     {
         /// <summary>
         ///     One and only one of the following should be specified. Exec specifies the action to take.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class DaemonSetUpdateStrategyV1Beta1 : Models.DaemonSetUpdateStrategyV1Beta1
+    public partial class DaemonSetUpdateStrategyV1Beta1 : Models.DaemonSetUpdateStrategyV1Beta1, ITracked
     {
         /// <summary>
         ///     Rolling update config params. Present only if type = "RollingUpdate".

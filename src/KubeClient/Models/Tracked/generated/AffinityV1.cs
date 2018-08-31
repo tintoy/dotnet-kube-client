@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Affinity is a group of affinity scheduling rules.
     /// </summary>
-    public partial class AffinityV1 : Models.AffinityV1
+    public partial class AffinityV1 : Models.AffinityV1, ITracked
     {
         /// <summary>
         ///     Describes node affinity scheduling rules for the pod.

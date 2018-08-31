@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     TokenReviewStatus is the result of the token authentication request.
     /// </summary>
-    public partial class TokenReviewStatusV1 : Models.TokenReviewStatusV1
+    public partial class TokenReviewStatusV1 : Models.TokenReviewStatusV1, ITracked
     {
         /// <summary>
         ///     Authenticated indicates that the token was associated with a known user.

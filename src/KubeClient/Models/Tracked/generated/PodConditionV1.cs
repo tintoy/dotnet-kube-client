@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PodCondition contains details for the current condition of this pod.
     /// </summary>
-    public partial class PodConditionV1 : Models.PodConditionV1
+    public partial class PodConditionV1 : Models.PodConditionV1, ITracked
     {
         /// <summary>
         ///     Last time we probed the condition.

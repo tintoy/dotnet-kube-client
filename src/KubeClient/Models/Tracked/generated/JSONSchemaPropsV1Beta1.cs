@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JSONSchemaProps is a JSON-Schema following Specification Draft 4 (http://json-schema.org/).
     /// </summary>
-    public partial class JSONSchemaPropsV1Beta1 : Models.JSONSchemaPropsV1Beta1
+    public partial class JSONSchemaPropsV1Beta1 : Models.JSONSchemaPropsV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

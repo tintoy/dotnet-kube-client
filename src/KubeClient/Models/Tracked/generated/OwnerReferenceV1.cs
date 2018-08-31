@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     OwnerReference contains enough information to let you identify an owning object. Currently, an owning object must be in the same namespace, so there is no namespace field.
     /// </summary>
-    public partial class OwnerReferenceV1 : Models.OwnerReferenceV1
+    public partial class OwnerReferenceV1 : Models.OwnerReferenceV1, ITracked
     {
         /// <summary>
         ///     Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     EnvFromSource represents the source of a set of ConfigMaps
     /// </summary>
-    public partial class EnvFromSourceV1 : Models.EnvFromSourceV1
+    public partial class EnvFromSourceV1 : Models.EnvFromSourceV1, ITracked
     {
         /// <summary>
         ///     The ConfigMap to select from

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     UserInfo holds the information about the user needed to implement the user.Info interface.
     /// </summary>
-    public partial class UserInfoV1Beta1 : Models.UserInfoV1Beta1
+    public partial class UserInfoV1Beta1 : Models.UserInfoV1Beta1, ITracked
     {
         /// <summary>
         ///     Any additional information provided by the authenticator.

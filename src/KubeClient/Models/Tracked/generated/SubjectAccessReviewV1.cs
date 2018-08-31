@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     SubjectAccessReview checks whether or not a user or group can perform an action.
     /// </summary>
     [KubeObject("SubjectAccessReview", "authorization.k8s.io/v1")]
-    public partial class SubjectAccessReviewV1 : Models.SubjectAccessReviewV1
+    public partial class SubjectAccessReviewV1 : Models.SubjectAccessReviewV1, ITracked
     {
         /// <summary>
         ///     Spec holds information about the request being evaluated

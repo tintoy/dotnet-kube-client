@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PodSpec is a description of a pod.
     /// </summary>
-    public partial class PodSpecV1 : Models.PodSpecV1
+    public partial class PodSpecV1 : Models.PodSpecV1, ITracked
     {
         /// <summary>
         ///     Use the host's ipc namespace. Optional: Default to false.

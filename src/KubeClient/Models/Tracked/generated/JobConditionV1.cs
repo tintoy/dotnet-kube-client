@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JobCondition describes current state of a job.
     /// </summary>
-    public partial class JobConditionV1 : Models.JobConditionV1
+    public partial class JobConditionV1 : Models.JobConditionV1, ITracked
     {
         /// <summary>
         ///     Last time the condition was checked.

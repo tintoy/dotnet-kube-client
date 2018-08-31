@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ClusterRole", "rbac.authorization.k8s.io/v1beta1")]
     [KubeObject("ClusterRoleList", "rbac.authorization.k8s.io/v1beta1")]
-    public partial class ClusterRoleListV1Beta1 : Models.ClusterRoleListV1Beta1
+    public partial class ClusterRoleListV1Beta1 : Models.ClusterRoleListV1Beta1, ITracked
     {
         /// <summary>
         ///     Items is a list of ClusterRoles

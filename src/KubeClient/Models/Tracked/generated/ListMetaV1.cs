@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.
     /// </summary>
-    public partial class ListMetaV1 : Models.ListMetaV1
+    public partial class ListMetaV1 : Models.ListMetaV1, ITracked
     {
         /// <summary>
         ///     SelfLink is a URL representing this object. Populated by the system. Read-only.

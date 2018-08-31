@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ServiceStatus represents the current status of a service.
     /// </summary>
-    public partial class ServiceStatusV1 : Models.ServiceStatusV1
+    public partial class ServiceStatusV1 : Models.ServiceStatusV1, ITracked
     {
         /// <summary>
         ///     LoadBalancer contains the current status of the load-balancer, if one is present.

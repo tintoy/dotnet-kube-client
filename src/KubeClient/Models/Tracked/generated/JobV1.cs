@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Job represents the configuration of a single job.
     /// </summary>
     [KubeObject("Job", "batch/v1")]
-    public partial class JobV1 : Models.JobV1
+    public partial class JobV1 : Models.JobV1, ITracked
     {
         /// <summary>
         ///     Specification of the desired behavior of a job. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

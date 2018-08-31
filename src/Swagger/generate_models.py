@@ -497,8 +497,14 @@ def generate(model, is_tracked):
             ))
 
         class_file.write('    public partial class ' + model.clr_name)
-        if base_class:
-            class_file.write(' : ' + base_class)
+        if is_tracked or base_class:
+            class_file.write(' : ')    
+            if base_class:
+                class_file.write(base_class)
+                if is_tracked:
+                    class_file.write(', ')
+            if is_tracked:
+                class_file.write('ITracked')
         class_file.write(LINE_ENDING)
 
         class_file.write('    {' + LINE_ENDING)

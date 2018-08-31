@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a Glusterfs mount that lasts the lifetime of a pod. Glusterfs volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    public partial class GlusterfsVolumeSourceV1 : Models.GlusterfsVolumeSourceV1
+    public partial class GlusterfsVolumeSourceV1 : Models.GlusterfsVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Path is the Glusterfs volume path. More info: https://releases.k8s.io/HEAD/examples/volumes/glusterfs/README.md#create-a-pod

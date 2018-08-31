@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CustomResourceDefinitionNames indicates the names to serve this CustomResourceDefinition
     /// </summary>
-    public partial class CustomResourceDefinitionNamesV1Beta1 : Models.CustomResourceDefinitionNamesV1Beta1
+    public partial class CustomResourceDefinitionNamesV1Beta1 : Models.CustomResourceDefinitionNamesV1Beta1, ITracked
     {
         /// <summary>
         ///     Kind is the serialized kind of the resource.  It is normally CamelCase and singular.

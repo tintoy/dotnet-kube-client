@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     ReplicationController represents the configuration of a replication controller.
     /// </summary>
     [KubeObject("ReplicationController", "v1")]
-    public partial class ReplicationControllerV1 : Models.ReplicationControllerV1
+    public partial class ReplicationControllerV1 : Models.ReplicationControllerV1, ITracked
     {
         /// <summary>
         ///     Spec defines the specification of the desired behavior of the replication controller. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

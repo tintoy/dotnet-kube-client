@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PersistentVolumeClaimSpec describes the common attributes of storage devices and allows a Source for provider-specific attributes
     /// </summary>
-    public partial class PersistentVolumeClaimSpecV1 : Models.PersistentVolumeClaimSpecV1
+    public partial class PersistentVolumeClaimSpecV1 : Models.PersistentVolumeClaimSpecV1, ITracked
     {
         /// <summary>
         ///     Name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1

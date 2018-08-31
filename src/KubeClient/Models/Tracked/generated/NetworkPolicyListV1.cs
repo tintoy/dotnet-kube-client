@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("NetworkPolicy", "networking.k8s.io/v1")]
     [KubeObject("NetworkPolicyList", "networking.k8s.io/v1")]
-    public partial class NetworkPolicyListV1 : Models.NetworkPolicyListV1
+    public partial class NetworkPolicyListV1 : Models.NetworkPolicyListV1, ITracked
     {
         /// <summary>
         ///     Items is a list of schema objects.

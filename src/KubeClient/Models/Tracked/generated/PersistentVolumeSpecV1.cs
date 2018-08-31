@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PersistentVolumeSpec is the specification of a persistent volume.
     /// </summary>
-    public partial class PersistentVolumeSpecV1 : Models.PersistentVolumeSpecV1
+    public partial class PersistentVolumeSpecV1 : Models.PersistentVolumeSpecV1, ITracked
     {
         /// <summary>
         ///     ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.

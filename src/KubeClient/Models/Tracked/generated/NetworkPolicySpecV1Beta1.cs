@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class NetworkPolicySpecV1Beta1 : Models.NetworkPolicySpecV1Beta1
+    public partial class NetworkPolicySpecV1Beta1 : Models.NetworkPolicySpecV1Beta1, ITracked
     {
         /// <summary>
         ///     Selects the pods to which this NetworkPolicy object applies.  The array of ingress rules is applied to any pods selected by this field. Multiple network policies can select the same set of pods.  In this case, the ingress rules for each are combined additively. This field is NOT optional and follows standard label selector semantics. An empty podSelector matches all pods in this namespace.

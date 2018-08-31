@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ContainerStateWaiting is a waiting state of a container.
     /// </summary>
-    public partial class ContainerStateWaitingV1 : Models.ContainerStateWaitingV1
+    public partial class ContainerStateWaitingV1 : Models.ContainerStateWaitingV1, ITracked
     {
         /// <summary>
         ///     Message regarding why the container is not yet running.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ServiceReference holds a reference to Service.legacy.k8s.io
     /// </summary>
-    public partial class ServiceReferenceV1Beta1 : Models.ServiceReferenceV1Beta1
+    public partial class ServiceReferenceV1Beta1 : Models.ServiceReferenceV1Beta1, ITracked
     {
         /// <summary>
         ///     Name is the name of the service

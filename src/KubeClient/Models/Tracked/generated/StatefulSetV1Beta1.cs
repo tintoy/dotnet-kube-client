@@ -12,7 +12,7 @@ namespace KubeClient.Models.Tracked
     ///     The StatefulSet guarantees that a given network identity will always map to the same storage identity.
     /// </summary>
     [KubeObject("StatefulSet", "apps/v1beta1")]
-    public partial class StatefulSetV1Beta1 : Models.StatefulSetV1Beta1
+    public partial class StatefulSetV1Beta1 : Models.StatefulSetV1Beta1, ITracked
     {
         /// <summary>
         ///     Spec defines the desired identities of pods in this set.

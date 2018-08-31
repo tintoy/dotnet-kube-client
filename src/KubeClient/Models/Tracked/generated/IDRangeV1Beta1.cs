@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ID Range provides a min/max of an allowed range of IDs.
     /// </summary>
-    public partial class IDRangeV1Beta1 : Models.IDRangeV1Beta1
+    public partial class IDRangeV1Beta1 : Models.IDRangeV1Beta1, ITracked
     {
         /// <summary>
         ///     Min is the start of the range, inclusive.

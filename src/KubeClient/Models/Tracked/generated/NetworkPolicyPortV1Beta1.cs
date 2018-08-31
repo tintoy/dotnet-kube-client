@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class NetworkPolicyPortV1Beta1 : Models.NetworkPolicyPortV1Beta1
+    public partial class NetworkPolicyPortV1Beta1 : Models.NetworkPolicyPortV1Beta1, ITracked
     {
         /// <summary>
         ///     Optional.  The protocol (TCP or UDP) which traffic must match. If not specified, this field defaults to TCP.

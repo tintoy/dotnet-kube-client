@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class CertificateSigningRequestStatusV1Beta1 : Models.CertificateSigningRequestStatusV1Beta1
+    public partial class CertificateSigningRequestStatusV1Beta1 : Models.CertificateSigningRequestStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     If request was approved, the controller will place the issued certificate here.

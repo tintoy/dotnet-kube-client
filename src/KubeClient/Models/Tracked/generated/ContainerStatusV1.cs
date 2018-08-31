@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ContainerStatus contains details for the current status of this container.
     /// </summary>
-    public partial class ContainerStatusV1 : Models.ContainerStatusV1
+    public partial class ContainerStatusV1 : Models.ContainerStatusV1, ITracked
     {
         /// <summary>
         ///     Container's ID in the format 'docker://&lt;container_id&gt;'.

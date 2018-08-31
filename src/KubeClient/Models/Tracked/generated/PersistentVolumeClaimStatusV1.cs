@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PersistentVolumeClaimStatus is the current status of a persistent volume claim.
     /// </summary>
-    public partial class PersistentVolumeClaimStatusV1 : Models.PersistentVolumeClaimStatusV1
+    public partial class PersistentVolumeClaimStatusV1 : Models.PersistentVolumeClaimStatusV1, ITracked
     {
         /// <summary>
         ///     Phase represents the current phase of PersistentVolumeClaim.

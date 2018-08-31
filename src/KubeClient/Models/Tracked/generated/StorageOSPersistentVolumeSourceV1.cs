@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a StorageOS persistent volume resource.
     /// </summary>
-    public partial class StorageOSPersistentVolumeSourceV1 : Models.StorageOSPersistentVolumeSourceV1
+    public partial class StorageOSPersistentVolumeSourceV1 : Models.StorageOSPersistentVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.

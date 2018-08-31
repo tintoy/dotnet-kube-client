@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
     /// </summary>
-    public partial class NodeSelectorRequirementV1 : Models.NodeSelectorRequirementV1
+    public partial class NodeSelectorRequirementV1 : Models.NodeSelectorRequirementV1, ITracked
     {
         /// <summary>
         ///     Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.

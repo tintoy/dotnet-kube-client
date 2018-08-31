@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DeploymentCondition describes the state of a deployment at a certain point.
     /// </summary>
-    public partial class DeploymentConditionV1Beta1 : Models.DeploymentConditionV1Beta1
+    public partial class DeploymentConditionV1Beta1 : Models.DeploymentConditionV1Beta1, ITracked
     {
         /// <summary>
         ///     Last time the condition transitioned from one status to another.

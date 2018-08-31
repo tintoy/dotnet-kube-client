@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("PodTemplate", "v1")]
     [KubeObject("PodTemplateList", "v1")]
-    public partial class PodTemplateListV1 : Models.PodTemplateListV1
+    public partial class PodTemplateListV1 : Models.PodTemplateListV1, ITracked
     {
         /// <summary>
         ///     List of pod templates

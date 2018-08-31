@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ContainerPort represents a network port in a single container.
     /// </summary>
-    public partial class ContainerPortV1 : Models.ContainerPortV1
+    public partial class ContainerPortV1 : Models.ContainerPortV1, ITracked
     {
         /// <summary>
         ///     What host IP to bind the external port to.

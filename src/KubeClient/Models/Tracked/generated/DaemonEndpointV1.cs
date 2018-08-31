@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DaemonEndpoint contains information about a single Daemon endpoint.
     /// </summary>
-    public partial class DaemonEndpointV1 : Models.DaemonEndpointV1
+    public partial class DaemonEndpointV1 : Models.DaemonEndpointV1, ITracked
     {
         /// <summary>
         ///     Port number of the given endpoint.

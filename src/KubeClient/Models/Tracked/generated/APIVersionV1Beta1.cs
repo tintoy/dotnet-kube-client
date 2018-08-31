@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     An APIVersion represents a single concrete version of an object model.
     /// </summary>
-    public partial class APIVersionV1Beta1 : Models.APIVersionV1Beta1
+    public partial class APIVersionV1Beta1 : Models.APIVersionV1Beta1, ITracked
     {
         /// <summary>
         ///     Name of this version (e.g. 'v1').

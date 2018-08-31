@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a Ceph Filesystem mount that lasts the lifetime of a pod Cephfs volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    public partial class CephFSVolumeSourceV1 : Models.CephFSVolumeSourceV1
+    public partial class CephFSVolumeSourceV1 : Models.CephFSVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it

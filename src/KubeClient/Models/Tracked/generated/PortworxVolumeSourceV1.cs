@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PortworxVolumeSource represents a Portworx volume resource.
     /// </summary>
-    public partial class PortworxVolumeSourceV1 : Models.PortworxVolumeSourceV1
+    public partial class PortworxVolumeSourceV1 : Models.PortworxVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     VolumeID uniquely identifies a Portworx volume

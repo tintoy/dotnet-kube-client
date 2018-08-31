@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ReplicationControllerCondition describes the state of a replication controller at a certain point.
     /// </summary>
-    public partial class ReplicationControllerConditionV1 : Models.ReplicationControllerConditionV1
+    public partial class ReplicationControllerConditionV1 : Models.ReplicationControllerConditionV1, ITracked
     {
         /// <summary>
         ///     The last time the condition transitioned from one status to another.

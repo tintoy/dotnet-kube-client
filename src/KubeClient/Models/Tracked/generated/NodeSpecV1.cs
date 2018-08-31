@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NodeSpec describes the attributes that a node is created with.
     /// </summary>
-    public partial class NodeSpecV1 : Models.NodeSpecV1
+    public partial class NodeSpecV1 : Models.NodeSpecV1, ITracked
     {
         /// <summary>
         ///     External ID of the node assigned by some machine database (e.g. a cloud provider). Deprecated.

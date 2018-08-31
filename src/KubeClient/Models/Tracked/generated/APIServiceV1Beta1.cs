@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     APIService represents a server for a particular GroupVersion. Name must be "version.group".
     /// </summary>
     [KubeObject("APIService", "v1beta1")]
-    public partial class APIServiceV1Beta1 : Models.APIServiceV1Beta1
+    public partial class APIServiceV1Beta1 : Models.APIServiceV1Beta1, ITracked
     {
         /// <summary>
         ///     Spec contains information for locating and communicating with a server

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ReplicationControllerStatus represents the current status of a replication controller.
     /// </summary>
-    public partial class ReplicationControllerStatusV1 : Models.ReplicationControllerStatusV1
+    public partial class ReplicationControllerStatusV1 : Models.ReplicationControllerStatusV1, ITracked
     {
         /// <summary>
         ///     ObservedGeneration reflects the generation of the most recently observed replication controller.

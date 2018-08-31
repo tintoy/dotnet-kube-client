@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     RollingUpdateStatefulSetStrategy is used to communicate parameter for RollingUpdateStatefulSetStrategyType.
     /// </summary>
-    public partial class RollingUpdateStatefulSetStrategyV1Beta1 : Models.RollingUpdateStatefulSetStrategyV1Beta1
+    public partial class RollingUpdateStatefulSetStrategyV1Beta1 : Models.RollingUpdateStatefulSetStrategyV1Beta1, ITracked
     {
         /// <summary>
         ///     Partition indicates the ordinal at which the StatefulSet should be partitioned.

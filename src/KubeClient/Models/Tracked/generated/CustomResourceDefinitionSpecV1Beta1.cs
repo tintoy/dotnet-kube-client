@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CustomResourceDefinitionSpec describes how a user wants their resource to appear
     /// </summary>
-    public partial class CustomResourceDefinitionSpecV1Beta1 : Models.CustomResourceDefinitionSpecV1Beta1
+    public partial class CustomResourceDefinitionSpecV1Beta1 : Models.CustomResourceDefinitionSpecV1Beta1, ITracked
     {
         /// <summary>
         ///     Scope indicates whether this resource is cluster or namespace scoped.  Default is namespaced

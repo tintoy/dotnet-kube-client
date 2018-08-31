@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Local represents directly-attached storage with node affinity
     /// </summary>
-    public partial class LocalVolumeSourceV1 : Models.LocalVolumeSourceV1
+    public partial class LocalVolumeSourceV1 : Models.LocalVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     The full path to the volume on the node For alpha, this path must be a directory Once block as a source is supported, then this path can point to a block device

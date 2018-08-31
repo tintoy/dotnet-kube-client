@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CustomResourceDefinitionCondition contains details for the current condition of this pod.
     /// </summary>
-    public partial class CustomResourceDefinitionConditionV1Beta1 : Models.CustomResourceDefinitionConditionV1Beta1
+    public partial class CustomResourceDefinitionConditionV1Beta1 : Models.CustomResourceDefinitionConditionV1Beta1, ITracked
     {
         /// <summary>
         ///     Last time the condition transitioned from one status to another.

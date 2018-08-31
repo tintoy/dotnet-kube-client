@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     ReplicaSet represents the configuration of a ReplicaSet.
     /// </summary>
     [KubeObject("ReplicaSet", "extensions/v1beta1")]
-    public partial class ReplicaSetV1Beta1 : Models.ReplicaSetV1Beta1
+    public partial class ReplicaSetV1Beta1 : Models.ReplicaSetV1Beta1, ITracked
     {
         /// <summary>
         ///     Spec defines the specification of the desired behavior of the ReplicaSet. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Host Port Range defines a range of host ports that will be enabled by a policy for pods to use.  It requires both the start and end to be defined.
     /// </summary>
-    public partial class HostPortRangeV1Beta1 : Models.HostPortRangeV1Beta1
+    public partial class HostPortRangeV1Beta1 : Models.HostPortRangeV1Beta1, ITracked
     {
         /// <summary>
         ///     min is the start of the range, inclusive.

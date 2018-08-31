@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     HTTPIngressPath associates a path regex with a backend. Incoming urls matching the path are forwarded to the backend.
     /// </summary>
-    public partial class HTTPIngressPathV1Beta1 : Models.HTTPIngressPathV1Beta1
+    public partial class HTTPIngressPathV1Beta1 : Models.HTTPIngressPathV1Beta1, ITracked
     {
         /// <summary>
         ///     Backend defines the referenced service endpoint to which the traffic will be forwarded to.

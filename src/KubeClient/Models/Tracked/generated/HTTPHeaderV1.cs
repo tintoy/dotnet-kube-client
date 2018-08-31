@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     HTTPHeader describes a custom header to be used in HTTP probes
     /// </summary>
-    public partial class HTTPHeaderV1 : Models.HTTPHeaderV1
+    public partial class HTTPHeaderV1 : Models.HTTPHeaderV1, ITracked
     {
         /// <summary>
         ///     The header field name

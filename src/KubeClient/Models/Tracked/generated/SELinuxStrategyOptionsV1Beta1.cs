@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SELinux  Strategy Options defines the strategy type and any options used to create the strategy.
     /// </summary>
-    public partial class SELinuxStrategyOptionsV1Beta1 : Models.SELinuxStrategyOptionsV1Beta1
+    public partial class SELinuxStrategyOptionsV1Beta1 : Models.SELinuxStrategyOptionsV1Beta1, ITracked
     {
         /// <summary>
         ///     type is the strategy that will dictate the allowable labels that may be set.

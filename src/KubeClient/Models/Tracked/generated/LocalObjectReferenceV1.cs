@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
     /// </summary>
-    public partial class LocalObjectReferenceV1 : Models.LocalObjectReferenceV1
+    public partial class LocalObjectReferenceV1 : Models.LocalObjectReferenceV1, ITracked
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

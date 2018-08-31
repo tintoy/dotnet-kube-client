@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     EnvVar represents an environment variable present in a Container.
     /// </summary>
-    public partial class EnvVarV1 : Models.EnvVarV1
+    public partial class EnvVarV1 : Models.EnvVarV1, ITracked
     {
         /// <summary>
         ///     Name of the environment variable. Must be a C_IDENTIFIER.

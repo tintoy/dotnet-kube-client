@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ObjectReference contains enough information to let you inspect or modify the referred object.
     /// </summary>
-    public partial class ObjectReferenceV1 : Models.ObjectReferenceV1
+    public partial class ObjectReferenceV1 : Models.ObjectReferenceV1, ITracked
     {
         /// <summary>
         ///     Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Projection that may be projected along with other supported volume types
     /// </summary>
-    public partial class VolumeProjectionV1 : Models.VolumeProjectionV1
+    public partial class VolumeProjectionV1 : Models.VolumeProjectionV1, ITracked
     {
         /// <summary>
         ///     information about the downwardAPI data to project

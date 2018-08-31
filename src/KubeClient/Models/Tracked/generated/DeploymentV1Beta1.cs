@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
     [KubeObject("Deployment", "apps/v1beta1")]
-    public partial class DeploymentV1Beta1 : Models.DeploymentV1Beta1
+    public partial class DeploymentV1Beta1 : Models.DeploymentV1Beta1, ITracked
     {
         /// <summary>
         ///     Specification of the desired behavior of the Deployment.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PodSecurityContext holds pod-level security attributes and common container settings. Some fields are also present in container.securityContext.  Field values of container.securityContext take precedence over field values of PodSecurityContext.
     /// </summary>
-    public partial class PodSecurityContextV1 : Models.PodSecurityContextV1
+    public partial class PodSecurityContextV1 : Models.PodSecurityContextV1, ITracked
     {
         /// <summary>
         ///     A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod:

@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     CronJob represents the configuration of a single cron job.
     /// </summary>
     [KubeObject("CronJob", "batch/v2alpha1")]
-    public partial class CronJobV2Alpha1 : Models.CronJobV2Alpha1
+    public partial class CronJobV2Alpha1 : Models.CronJobV2Alpha1, ITracked
     {
         /// <summary>
         ///     Specification of the desired behavior of a cron job, including the schedule. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

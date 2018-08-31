@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     EndpointPort is a tuple that describes a single port.
     /// </summary>
-    public partial class EndpointPortV1 : Models.EndpointPortV1
+    public partial class EndpointPortV1 : Models.EndpointPortV1, ITracked
     {
         /// <summary>
         ///     The name of this port (corresponds to ServicePort.Name). Must be a DNS_LABEL. Optional only if one port is defined.

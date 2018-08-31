@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DeploymentSpec is the specification of the desired behavior of the Deployment.
     /// </summary>
-    public partial class DeploymentSpecV1Beta1 : Models.DeploymentSpecV1Beta1
+    public partial class DeploymentSpecV1Beta1 : Models.DeploymentSpecV1Beta1, ITracked
     {
         /// <summary>
         ///     Indicates that the deployment is paused and will not be processed by the deployment controller.

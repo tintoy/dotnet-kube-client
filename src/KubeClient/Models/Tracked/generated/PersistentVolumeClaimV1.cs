@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     PersistentVolumeClaim is a user's request for and claim to a persistent volume
     /// </summary>
     [KubeObject("PersistentVolumeClaim", "v1")]
-    public partial class PersistentVolumeClaimV1 : Models.PersistentVolumeClaimV1
+    public partial class PersistentVolumeClaimV1 : Models.PersistentVolumeClaimV1, ITracked
     {
         /// <summary>
         ///     Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims

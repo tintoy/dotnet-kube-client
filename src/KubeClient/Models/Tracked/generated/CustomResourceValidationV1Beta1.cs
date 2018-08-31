@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CustomResourceValidation is a list of validation methods for CustomResources.
     /// </summary>
-    public partial class CustomResourceValidationV1Beta1 : Models.CustomResourceValidationV1Beta1
+    public partial class CustomResourceValidationV1Beta1 : Models.CustomResourceValidationV1Beta1, ITracked
     {
         /// <summary>
         ///     OpenAPIV3Schema is the OpenAPI v3 schema to be validated against.

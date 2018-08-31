@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Information about the condition of a component.
     /// </summary>
-    public partial class ComponentConditionV1 : Models.ComponentConditionV1
+    public partial class ComponentConditionV1 : Models.ComponentConditionV1, ITracked
     {
         /// <summary>
         ///     Message about the condition for a component. For example, information about a health check.

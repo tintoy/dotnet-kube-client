@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CronJobSpec describes how the job execution will look like and when it will actually run.
     /// </summary>
-    public partial class CronJobSpecV2Alpha1 : Models.CronJobSpecV2Alpha1
+    public partial class CronJobSpecV2Alpha1 : Models.CronJobSpecV2Alpha1, ITracked
     {
         /// <summary>
         ///     This flag tells the controller to suspend subsequent executions, it does not apply to already started executions.  Defaults to false.

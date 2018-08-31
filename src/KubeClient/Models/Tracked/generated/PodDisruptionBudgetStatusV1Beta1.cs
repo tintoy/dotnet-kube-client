@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PodDisruptionBudgetStatus represents information about the status of a PodDisruptionBudget. Status may trail the actual state of a system.
     /// </summary>
-    public partial class PodDisruptionBudgetStatusV1Beta1 : Models.PodDisruptionBudgetStatusV1Beta1
+    public partial class PodDisruptionBudgetStatusV1Beta1 : Models.PodDisruptionBudgetStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     Number of pod disruptions that are currently allowed.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     AttachedVolume describes a volume attached to a node
     /// </summary>
-    public partial class AttachedVolumeV1 : Models.AttachedVolumeV1
+    public partial class AttachedVolumeV1 : Models.AttachedVolumeV1, ITracked
     {
         /// <summary>
         ///     Name of the attached volume

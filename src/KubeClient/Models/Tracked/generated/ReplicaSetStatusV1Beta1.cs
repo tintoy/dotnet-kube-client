@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ReplicaSetStatus represents the current status of a ReplicaSet.
     /// </summary>
-    public partial class ReplicaSetStatusV1Beta1 : Models.ReplicaSetStatusV1Beta1
+    public partial class ReplicaSetStatusV1Beta1 : Models.ReplicaSetStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     ObservedGeneration reflects the generation of the most recently observed ReplicaSet.

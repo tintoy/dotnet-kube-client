@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     IngressTLS describes the transport layer security associated with an Ingress.
     /// </summary>
-    public partial class IngressTLSV1Beta1 : Models.IngressTLSV1Beta1
+    public partial class IngressTLSV1Beta1 : Models.IngressTLSV1Beta1, ITracked
     {
         /// <summary>
         ///     SecretName is the name of the secret used to terminate SSL traffic on 443. Field is left optional to allow SSL routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the Host header is used for routing.

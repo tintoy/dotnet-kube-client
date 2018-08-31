@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SupplementalGroupsStrategyOptions defines the strategy type and options used to create the strategy.
     /// </summary>
-    public partial class SupplementalGroupsStrategyOptionsV1Beta1 : Models.SupplementalGroupsStrategyOptionsV1Beta1
+    public partial class SupplementalGroupsStrategyOptionsV1Beta1 : Models.SupplementalGroupsStrategyOptionsV1Beta1, ITracked
     {
         /// <summary>
         ///     Rule is the strategy that will dictate what supplemental groups is used in the SecurityContext.

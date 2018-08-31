@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
     /// </summary>
-    public partial class AzureFileVolumeSourceV1 : Models.AzureFileVolumeSourceV1
+    public partial class AzureFileVolumeSourceV1 : Models.AzureFileVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     the name of secret that contains Azure Storage Account Name and Key

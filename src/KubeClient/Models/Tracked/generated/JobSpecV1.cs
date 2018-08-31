@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JobSpec describes how the job execution will look like.
     /// </summary>
-    public partial class JobSpecV1 : Models.JobSpecV1
+    public partial class JobSpecV1 : Models.JobSpecV1, ITracked
     {
         /// <summary>
         ///     Describes the pod that will be created when executing a job. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/

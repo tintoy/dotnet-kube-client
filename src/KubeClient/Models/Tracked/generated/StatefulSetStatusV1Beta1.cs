@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     StatefulSetStatus represents the current state of a StatefulSet.
     /// </summary>
-    public partial class StatefulSetStatusV1Beta1 : Models.StatefulSetStatusV1Beta1
+    public partial class StatefulSetStatusV1Beta1 : Models.StatefulSetStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     currentRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).

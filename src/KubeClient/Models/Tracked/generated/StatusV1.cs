@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Status is a return value for calls that don't return other objects.
     /// </summary>
     [KubeObject("Status", "v1")]
-    public partial class StatusV1 : Models.StatusV1
+    public partial class StatusV1 : Models.StatusV1, ITracked
     {
         /// <summary>
         ///     Suggested HTTP return code for this status, 0 if not set.

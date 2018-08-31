@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("CertificateSigningRequest", "certificates.k8s.io/v1beta1")]
     [KubeObject("CertificateSigningRequestList", "certificates.k8s.io/v1beta1")]
-    public partial class CertificateSigningRequestListV1Beta1 : Models.CertificateSigningRequestListV1Beta1
+    public partial class CertificateSigningRequestListV1Beta1 : Models.CertificateSigningRequestListV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

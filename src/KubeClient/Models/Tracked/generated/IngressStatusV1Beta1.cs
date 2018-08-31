@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     IngressStatus describe the current state of the Ingress.
     /// </summary>
-    public partial class IngressStatusV1Beta1 : Models.IngressStatusV1Beta1
+    public partial class IngressStatusV1Beta1 : Models.IngressStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     LoadBalancer contains the current status of the load-balancer.

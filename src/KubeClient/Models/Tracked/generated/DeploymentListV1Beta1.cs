@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Deployment", "apps/v1beta1")]
     [KubeObject("DeploymentList", "apps/v1beta1")]
-    public partial class DeploymentListV1Beta1 : Models.DeploymentListV1Beta1
+    public partial class DeploymentListV1Beta1 : Models.DeploymentListV1Beta1, ITracked
     {
         /// <summary>
         ///     Items is the list of Deployments.

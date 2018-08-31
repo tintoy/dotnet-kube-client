@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     EndpointAddress is a tuple that describes single IP address.
     /// </summary>
-    public partial class EndpointAddressV1 : Models.EndpointAddressV1
+    public partial class EndpointAddressV1 : Models.EndpointAddressV1, ITracked
     {
         /// <summary>
         ///     The Hostname of this endpoint

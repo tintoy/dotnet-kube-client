@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SecretKeySelector selects a key of a Secret.
     /// </summary>
-    public partial class SecretKeySelectorV1 : Models.SecretKeySelectorV1
+    public partial class SecretKeySelectorV1 : Models.SecretKeySelectorV1, ITracked
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

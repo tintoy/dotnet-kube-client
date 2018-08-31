@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DeploymentStatus is the most recently observed status of the Deployment.
     /// </summary>
-    public partial class DeploymentStatusV1Beta1 : Models.DeploymentStatusV1Beta1
+    public partial class DeploymentStatusV1Beta1 : Models.DeploymentStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     The generation observed by the deployment controller.

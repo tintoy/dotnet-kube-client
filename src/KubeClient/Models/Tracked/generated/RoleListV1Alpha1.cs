@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Role", "rbac.authorization.k8s.io/v1alpha1")]
     [KubeObject("RoleList", "rbac.authorization.k8s.io/v1alpha1")]
-    public partial class RoleListV1Alpha1 : Models.RoleListV1Alpha1
+    public partial class RoleListV1Alpha1 : Models.RoleListV1Alpha1, ITracked
     {
         /// <summary>
         ///     Items is a list of Roles

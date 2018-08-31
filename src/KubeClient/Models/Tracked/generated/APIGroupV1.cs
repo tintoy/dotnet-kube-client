@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     APIGroup contains the name, the supported versions, and the preferred version of a group.
     /// </summary>
-    public partial class APIGroupV1 : Models.APIGroupV1
+    public partial class APIGroupV1 : Models.APIGroupV1, ITracked
     {
         /// <summary>
         ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

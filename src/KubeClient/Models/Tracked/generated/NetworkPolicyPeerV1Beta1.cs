@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class NetworkPolicyPeerV1Beta1 : Models.NetworkPolicyPeerV1Beta1
+    public partial class NetworkPolicyPeerV1Beta1 : Models.NetworkPolicyPeerV1Beta1, ITracked
     {
         /// <summary>
         ///     Selects Namespaces using cluster scoped-labels.  This matches all pods in all namespaces selected by this label selector. This field follows standard label selector semantics. If present but empty, this selector selects all namespaces.

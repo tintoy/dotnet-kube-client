@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     TokenReviewSpec is a description of the token authentication request.
     /// </summary>
-    public partial class TokenReviewSpecV1Beta1 : Models.TokenReviewSpecV1Beta1
+    public partial class TokenReviewSpecV1Beta1 : Models.TokenReviewSpecV1Beta1, ITracked
     {
         /// <summary>
         ///     Token is the opaque bearer token.

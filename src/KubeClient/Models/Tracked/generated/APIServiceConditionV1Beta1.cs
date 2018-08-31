@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class APIServiceConditionV1Beta1 : Models.APIServiceConditionV1Beta1
+    public partial class APIServiceConditionV1Beta1 : Models.APIServiceConditionV1Beta1, ITracked
     {
         /// <summary>
         ///     Last time the condition transitioned from one status to another.

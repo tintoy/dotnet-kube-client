@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     GroupVersion contains the "group/version" and "version" string of a version. It is made a struct to keep extensibility.
     /// </summary>
-    public partial class GroupVersionForDiscoveryV1 : Models.GroupVersionForDiscoveryV1
+    public partial class GroupVersionForDiscoveryV1 : Models.GroupVersionForDiscoveryV1, ITracked
     {
         /// <summary>
         ///     groupVersion specifies the API group and version in the form "group/version"

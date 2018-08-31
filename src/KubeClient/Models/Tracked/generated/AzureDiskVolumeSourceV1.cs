@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     /// </summary>
-    public partial class AzureDiskVolumeSourceV1 : Models.AzureDiskVolumeSourceV1
+    public partial class AzureDiskVolumeSourceV1 : Models.AzureDiskVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     The URI the data disk in the blob storage

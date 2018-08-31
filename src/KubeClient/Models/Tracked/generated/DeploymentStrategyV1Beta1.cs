@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DeploymentStrategy describes how to replace existing pods with new ones.
     /// </summary>
-    public partial class DeploymentStrategyV1Beta1 : Models.DeploymentStrategyV1Beta1
+    public partial class DeploymentStrategyV1Beta1 : Models.DeploymentStrategyV1Beta1, ITracked
     {
         /// <summary>
         ///     Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate.

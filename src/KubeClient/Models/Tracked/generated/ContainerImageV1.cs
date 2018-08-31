@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Describe a container image
     /// </summary>
-    public partial class ContainerImageV1 : Models.ContainerImageV1
+    public partial class ContainerImageV1 : Models.ContainerImageV1, ITracked
     {
         /// <summary>
         ///     Names by which this image is known. e.g. ["gcr.io/google_containers/hyperkube:v1.0.7", "dockerhub.io/google_containers/hyperkube:v1.0.7"]

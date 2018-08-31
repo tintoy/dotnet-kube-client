@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     LimitRangeItem defines a min/max usage limit for any resource that matches on kind.
     /// </summary>
-    public partial class LimitRangeItemV1 : Models.LimitRangeItemV1
+    public partial class LimitRangeItemV1 : Models.LimitRangeItemV1, ITracked
     {
         /// <summary>
         ///     Type of resource that this limit applies to.

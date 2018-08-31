@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SubjectAccessReviewStatus
     /// </summary>
-    public partial class SubjectAccessReviewStatusV1 : Models.SubjectAccessReviewStatusV1
+    public partial class SubjectAccessReviewStatusV1 : Models.SubjectAccessReviewStatusV1, ITracked
     {
         /// <summary>
         ///     Allowed is required.  True if the action would be allowed, false otherwise.

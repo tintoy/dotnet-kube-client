@@ -11,7 +11,7 @@ namespace KubeClient.Models.Tracked
     ///     The contents of the target Secret's Data field will be presented in a volume as files using the keys in the Data field as the file names. Secret volumes support ownership management and SELinux relabeling.
     /// </summary>
     [KubeListItem("KeyToPath", "v1")]
-    public partial class SecretVolumeSourceV1 : Models.SecretVolumeSourceV1
+    public partial class SecretVolumeSourceV1 : Models.SecretVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.

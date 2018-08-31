@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PolicyRule holds information that describes a policy rule, but does not contain information about who the rule applies to or which namespace the rule applies to.
     /// </summary>
-    public partial class PolicyRuleV1Alpha1 : Models.PolicyRuleV1Alpha1
+    public partial class PolicyRuleV1Alpha1 : Models.PolicyRuleV1Alpha1, ITracked
     {
         /// <summary>
         ///     APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed.

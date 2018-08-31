@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class RollbackConfigV1Beta1 : Models.RollbackConfigV1Beta1
+    public partial class RollbackConfigV1Beta1 : Models.RollbackConfigV1Beta1, ITracked
     {
         /// <summary>
         ///     The revision to rollback to. If set to 0, rollback to the last revision.

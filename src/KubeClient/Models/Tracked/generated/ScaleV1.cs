@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Scale represents a scaling request for a resource.
     /// </summary>
     [KubeObject("Scale", "autoscaling/v1")]
-    public partial class ScaleV1 : Models.ScaleV1
+    public partial class ScaleV1 : Models.ScaleV1, ITracked
     {
         /// <summary>
         ///     defines the behavior of the scale. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status.

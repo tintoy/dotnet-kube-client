@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ServiceAccount", "v1")]
     [KubeObject("ServiceAccountList", "v1")]
-    public partial class ServiceAccountListV1 : Models.ServiceAccountListV1
+    public partial class ServiceAccountListV1 : Models.ServiceAccountListV1, ITracked
     {
         /// <summary>
         ///     List of ServiceAccounts. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/

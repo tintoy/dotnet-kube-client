@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     A null or empty node selector term matches no objects.
     /// </summary>
-    public partial class NodeSelectorTermV1 : Models.NodeSelectorTermV1
+    public partial class NodeSelectorTermV1 : Models.NodeSelectorTermV1, ITracked
     {
         /// <summary>
         ///     Required. A list of node selector requirements. The requirements are ANDed.

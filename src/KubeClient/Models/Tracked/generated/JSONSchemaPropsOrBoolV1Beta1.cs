@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property.
     /// </summary>
-    public partial class JSONSchemaPropsOrBoolV1Beta1 : Models.JSONSchemaPropsOrBoolV1Beta1
+    public partial class JSONSchemaPropsOrBoolV1Beta1 : Models.JSONSchemaPropsOrBoolV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

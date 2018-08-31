@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ComponentStatus", "v1")]
     [KubeObject("ComponentStatusList", "v1")]
-    public partial class ComponentStatusListV1 : Models.ComponentStatusListV1
+    public partial class ComponentStatusListV1 : Models.ComponentStatusListV1, ITracked
     {
         /// <summary>
         ///     List of ComponentStatus objects.

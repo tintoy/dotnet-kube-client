@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Represents downward API info for projecting into a projected volume. Note that this is identical to a downwardAPI volume source without the default mode.
     /// </summary>
     [KubeListItem("DownwardAPIVolumeFile", "v1")]
-    public partial class DownwardAPIProjectionV1 : Models.DownwardAPIProjectionV1
+    public partial class DownwardAPIProjectionV1 : Models.DownwardAPIProjectionV1, ITracked
     {
         /// <summary>
         ///     Items is a list of DownwardAPIVolume file

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Handler defines a specific action that should be taken
     /// </summary>
-    public partial class HandlerV1 : Models.HandlerV1
+    public partial class HandlerV1 : Models.HandlerV1, ITracked
     {
         /// <summary>
         ///     One and only one of the following should be specified. Exec specifies the action to take.

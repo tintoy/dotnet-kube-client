@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JobTemplateSpec describes the data a Job should have when created from a template
     /// </summary>
-    public partial class JobTemplateSpecV2Alpha1 : Models.JobTemplateSpecV2Alpha1
+    public partial class JobTemplateSpecV2Alpha1 : Models.JobTemplateSpecV2Alpha1, ITracked
     {
         /// <summary>
         ///     Standard object's metadata of the jobs created from this template. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     TCPSocketAction describes an action based on opening a socket
     /// </summary>
-    public partial class TCPSocketActionV1 : Models.TCPSocketActionV1
+    public partial class TCPSocketActionV1 : Models.TCPSocketActionV1, ITracked
     {
         /// <summary>
         ///     Optional: Host name to connect to, defaults to the pod IP.

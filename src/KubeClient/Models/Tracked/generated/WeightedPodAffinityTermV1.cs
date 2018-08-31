@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
     /// </summary>
-    public partial class WeightedPodAffinityTermV1 : Models.WeightedPodAffinityTermV1
+    public partial class WeightedPodAffinityTermV1 : Models.WeightedPodAffinityTermV1, ITracked
     {
         /// <summary>
         ///     Required. A pod affinity term, associated with the corresponding weight.

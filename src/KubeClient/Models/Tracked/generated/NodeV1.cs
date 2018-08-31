@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Node is a worker node in Kubernetes. Each node will have a unique identifier in the cache (i.e. in etcd).
     /// </summary>
     [KubeObject("Node", "v1")]
-    public partial class NodeV1 : Models.NodeV1
+    public partial class NodeV1 : Models.NodeV1, ITracked
     {
         /// <summary>
         ///     Spec defines the behavior of a node. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

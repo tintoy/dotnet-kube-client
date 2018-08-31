@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     DeploymentRollback stores the information required to rollback a deployment.
     /// </summary>
-    public partial class DeploymentRollbackV1Beta1 : Models.DeploymentRollbackV1Beta1
+    public partial class DeploymentRollbackV1Beta1 : Models.DeploymentRollbackV1Beta1, ITracked
     {
         /// <summary>
         ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds

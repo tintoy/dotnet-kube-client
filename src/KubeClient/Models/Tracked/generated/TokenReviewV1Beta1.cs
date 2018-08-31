@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     TokenReview attempts to authenticate a token to a known user. Note: TokenReview requests may be cached by the webhook token authenticator plugin in the kube-apiserver.
     /// </summary>
     [KubeObject("TokenReview", "authentication.k8s.io/v1beta1")]
-    public partial class TokenReviewV1Beta1 : Models.TokenReviewV1Beta1
+    public partial class TokenReviewV1Beta1 : Models.TokenReviewV1Beta1, ITracked
     {
         /// <summary>
         ///     Spec holds information about the request being evaluated

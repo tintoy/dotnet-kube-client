@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     No description provided.
     /// </summary>
-    public partial class CertificateSigningRequestConditionV1Beta1 : Models.CertificateSigningRequestConditionV1Beta1
+    public partial class CertificateSigningRequestConditionV1Beta1 : Models.CertificateSigningRequestConditionV1Beta1, ITracked
     {
         /// <summary>
         ///     timestamp for the last update to this condition

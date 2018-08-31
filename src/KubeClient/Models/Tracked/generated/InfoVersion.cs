@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Info contains versioning information. how we'll want to distribute that information.
     /// </summary>
-    public partial class InfoVersion : Models.InfoVersion
+    public partial class InfoVersion : Models.InfoVersion, ITracked
     {
         /// <summary>
         ///     Description not provided.

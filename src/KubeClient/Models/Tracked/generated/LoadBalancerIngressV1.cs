@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     LoadBalancerIngress represents the status of a load-balancer ingress point: traffic intended for the service should be sent to an ingress point.
     /// </summary>
-    public partial class LoadBalancerIngressV1 : Models.LoadBalancerIngressV1
+    public partial class LoadBalancerIngressV1 : Models.LoadBalancerIngressV1, ITracked
     {
         /// <summary>
         ///     Hostname is set for load-balancer ingress points that are DNS based (typically AWS load-balancers)

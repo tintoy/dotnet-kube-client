@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CronJobStatus represents the current state of a cron job.
     /// </summary>
-    public partial class CronJobStatusV2Alpha1 : Models.CronJobStatusV2Alpha1
+    public partial class CronJobStatusV2Alpha1 : Models.CronJobStatusV2Alpha1, ITracked
     {
         /// <summary>
         ///     A list of pointers to currently running jobs.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PodTemplateSpec describes the data a pod should have when created from a template
     /// </summary>
-    public partial class PodTemplateSpecV1 : Models.PodTemplateSpecV1
+    public partial class PodTemplateSpecV1 : Models.PodTemplateSpecV1, ITracked
     {
         /// <summary>
         ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata

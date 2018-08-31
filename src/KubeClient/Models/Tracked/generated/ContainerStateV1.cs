@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting.
     /// </summary>
-    public partial class ContainerStateV1 : Models.ContainerStateV1
+    public partial class ContainerStateV1 : Models.ContainerStateV1, ITracked
     {
         /// <summary>
         ///     Details about a terminated container

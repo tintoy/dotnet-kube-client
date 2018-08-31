@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NodeDaemonEndpoints lists ports opened by daemons running on the Node.
     /// </summary>
-    public partial class NodeDaemonEndpointsV1 : Models.NodeDaemonEndpointsV1
+    public partial class NodeDaemonEndpointsV1 : Models.NodeDaemonEndpointsV1, ITracked
     {
         /// <summary>
         ///     Endpoint on which Kubelet is listening.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NodeAddress contains information for the node's address.
     /// </summary>
-    public partial class NodeAddressV1 : Models.NodeAddressV1
+    public partial class NodeAddressV1 : Models.NodeAddressV1, ITracked
     {
         /// <summary>
         ///     Node address type, one of Hostname, ExternalIP or InternalIP.

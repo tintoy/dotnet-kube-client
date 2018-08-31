@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Describes a certificate signing request
     /// </summary>
     [KubeObject("CertificateSigningRequest", "certificates.k8s.io/v1beta1")]
-    public partial class CertificateSigningRequestV1Beta1 : Models.CertificateSigningRequestV1Beta1
+    public partial class CertificateSigningRequestV1Beta1 : Models.CertificateSigningRequestV1Beta1, ITracked
     {
         /// <summary>
         ///     The certificate request itself and any additional information.

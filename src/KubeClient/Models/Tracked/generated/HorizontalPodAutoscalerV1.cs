@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     configuration of a horizontal pod autoscaler.
     /// </summary>
     [KubeObject("HorizontalPodAutoscaler", "autoscaling/v1")]
-    public partial class HorizontalPodAutoscalerV1 : Models.HorizontalPodAutoscalerV1
+    public partial class HorizontalPodAutoscalerV1 : Models.HorizontalPodAutoscalerV1, ITracked
     {
         /// <summary>
         ///     behaviour of autoscaler. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status.

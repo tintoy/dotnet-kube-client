@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     ResourceQuota sets aggregate quota restrictions enforced per namespace
     /// </summary>
     [KubeObject("ResourceQuota", "v1")]
-    public partial class ResourceQuotaV1 : Models.ResourceQuotaV1
+    public partial class ResourceQuotaV1 : Models.ResourceQuotaV1, ITracked
     {
         /// <summary>
         ///     Spec defines the desired quota. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

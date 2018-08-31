@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NamespaceSpec describes the attributes on a Namespace.
     /// </summary>
-    public partial class NamespaceSpecV1 : Models.NamespaceSpecV1
+    public partial class NamespaceSpecV1 : Models.NamespaceSpecV1, ITracked
     {
         /// <summary>
         ///     Finalizers is an opaque list of values that must be empty to permanently remove object from storage. More info: https://git.k8s.io/community/contributors/design-proposals/namespaces.md#finalizers

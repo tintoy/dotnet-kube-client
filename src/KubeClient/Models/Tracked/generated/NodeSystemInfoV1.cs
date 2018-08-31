@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NodeSystemInfo is a set of ids/uuids to uniquely identify the node.
     /// </summary>
-    public partial class NodeSystemInfoV1 : Models.NodeSystemInfoV1
+    public partial class NodeSystemInfoV1 : Models.NodeSystemInfoV1, ITracked
     {
         /// <summary>
         ///     Boot ID reported by the node.

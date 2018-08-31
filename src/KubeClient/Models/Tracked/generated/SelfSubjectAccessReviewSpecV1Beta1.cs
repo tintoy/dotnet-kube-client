@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SelfSubjectAccessReviewSpec is a description of the access request.  Exactly one of ResourceAuthorizationAttributes and NonResourceAuthorizationAttributes must be set
     /// </summary>
-    public partial class SelfSubjectAccessReviewSpecV1Beta1 : Models.SelfSubjectAccessReviewSpecV1Beta1
+    public partial class SelfSubjectAccessReviewSpecV1Beta1 : Models.SelfSubjectAccessReviewSpecV1Beta1, ITracked
     {
         /// <summary>
         ///     NonResourceAttributes describes information for a non-resource access request

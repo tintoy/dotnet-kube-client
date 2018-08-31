@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     LimitRangeSpec defines a min/max usage limit for resources that match on kind.
     /// </summary>
-    public partial class LimitRangeSpecV1 : Models.LimitRangeSpecV1
+    public partial class LimitRangeSpecV1 : Models.LimitRangeSpecV1, ITracked
     {
         /// <summary>
         ///     Limits is the list of LimitRangeItem objects that are enforced.

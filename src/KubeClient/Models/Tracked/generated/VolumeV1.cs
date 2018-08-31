@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Volume represents a named volume in a pod that may be accessed by any container in the pod.
     /// </summary>
-    public partial class VolumeV1 : Models.VolumeV1
+    public partial class VolumeV1 : Models.VolumeV1, ITracked
     {
         /// <summary>
         ///     DownwardAPI represents downward API about the pod that should populate this volume

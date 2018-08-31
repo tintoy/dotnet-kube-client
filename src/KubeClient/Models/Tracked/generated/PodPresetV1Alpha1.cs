@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     PodPreset is a policy resource that defines additional runtime requirements for a Pod.
     /// </summary>
     [KubeObject("PodPreset", "settings.k8s.io/v1alpha1")]
-    public partial class PodPresetV1Alpha1 : Models.PodPresetV1Alpha1
+    public partial class PodPresetV1Alpha1 : Models.PodPresetV1Alpha1, ITracked
     {
         /// <summary>
         ///     Description not provided.

@@ -11,7 +11,7 @@ namespace KubeClient.Models.Tracked
     ///     The contents of the target ConfigMap's Data field will be presented in a projected volume as files using the keys in the Data field as the file names, unless the items element is populated with specific mappings of keys to paths. Note that this is identical to a configmap volume source without the default mode.
     /// </summary>
     [KubeListItem("KeyToPath", "v1")]
-    public partial class ConfigMapProjectionV1 : Models.ConfigMapProjectionV1
+    public partial class ConfigMapProjectionV1 : Models.ConfigMapProjectionV1, ITracked
     {
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names

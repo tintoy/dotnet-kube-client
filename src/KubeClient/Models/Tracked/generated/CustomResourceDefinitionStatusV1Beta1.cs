@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     CustomResourceDefinitionStatus indicates the state of the CustomResourceDefinition
     /// </summary>
-    public partial class CustomResourceDefinitionStatusV1Beta1 : Models.CustomResourceDefinitionStatusV1Beta1
+    public partial class CustomResourceDefinitionStatusV1Beta1 : Models.CustomResourceDefinitionStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     AcceptedNames are the names that are actually being used to serve discovery They may be different than the names in spec.

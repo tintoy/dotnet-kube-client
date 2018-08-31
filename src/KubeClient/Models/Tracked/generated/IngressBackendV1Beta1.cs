@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     IngressBackend describes all endpoints for a given service and port.
     /// </summary>
-    public partial class IngressBackendV1Beta1 : Models.IngressBackendV1Beta1
+    public partial class IngressBackendV1Beta1 : Models.IngressBackendV1Beta1, ITracked
     {
         /// <summary>
         ///     Specifies the name of the referenced service.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     HTTPGetAction describes an action based on HTTP Get requests.
     /// </summary>
-    public partial class HTTPGetActionV1 : Models.HTTPGetActionV1
+    public partial class HTTPGetActionV1 : Models.HTTPGetActionV1, ITracked
     {
         /// <summary>
         ///     Scheme to use for connecting to the host. Defaults to HTTP.

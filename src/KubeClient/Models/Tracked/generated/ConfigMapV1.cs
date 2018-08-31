@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     ConfigMap holds configuration data for pods to consume.
     /// </summary>
     [KubeObject("ConfigMap", "v1")]
-    public partial class ConfigMapV1 : Models.ConfigMapV1
+    public partial class ConfigMapV1 : Models.ConfigMapV1, ITracked
     {
         /// <summary>
         ///     Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'.

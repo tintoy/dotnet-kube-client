@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.
     /// </summary>
-    public partial class PreconditionsV1 : Models.PreconditionsV1
+    public partial class PreconditionsV1 : Models.PreconditionsV1, ITracked
     {
         /// <summary>
         ///     Specifies the target UID.

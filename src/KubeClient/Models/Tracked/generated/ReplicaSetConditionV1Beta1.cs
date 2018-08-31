@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ReplicaSetCondition describes the state of a replica set at a certain point.
     /// </summary>
-    public partial class ReplicaSetConditionV1Beta1 : Models.ReplicaSetConditionV1Beta1
+    public partial class ReplicaSetConditionV1Beta1 : Models.ReplicaSetConditionV1Beta1, ITracked
     {
         /// <summary>
         ///     The last time the condition transitioned from one status to another.

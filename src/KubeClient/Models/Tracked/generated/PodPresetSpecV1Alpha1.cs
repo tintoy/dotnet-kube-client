@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     PodPresetSpec is a description of a pod preset.
     /// </summary>
-    public partial class PodPresetSpecV1Alpha1 : Models.PodPresetSpecV1Alpha1
+    public partial class PodPresetSpecV1Alpha1 : Models.PodPresetSpecV1Alpha1, ITracked
     {
         /// <summary>
         ///     EnvFrom defines the collection of EnvFromSource to inject into containers.

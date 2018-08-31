@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ControllerRevision", "apps/v1beta1")]
     [KubeObject("ControllerRevisionList", "apps/v1beta1")]
-    public partial class ControllerRevisionListV1Beta1 : Models.ControllerRevisionListV1Beta1
+    public partial class ControllerRevisionListV1Beta1 : Models.ControllerRevisionListV1Beta1, ITracked
     {
         /// <summary>
         ///     Items is the list of ControllerRevisions

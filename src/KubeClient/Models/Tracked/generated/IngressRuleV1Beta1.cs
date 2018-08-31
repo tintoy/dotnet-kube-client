@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     IngressRule represents the rules mapping the paths under a specified host to the related backend services. Incoming requests are first evaluated for a host match, then routed to the backend associated with the matching IngressRuleValue.
     /// </summary>
-    public partial class IngressRuleV1Beta1 : Models.IngressRuleV1Beta1
+    public partial class IngressRuleV1Beta1 : Models.IngressRuleV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ResourceQuota", "v1")]
     [KubeObject("ResourceQuotaList", "v1")]
-    public partial class ResourceQuotaListV1 : Models.ResourceQuotaListV1
+    public partial class ResourceQuotaListV1 : Models.ResourceQuotaListV1, ITracked
     {
         /// <summary>
         ///     Items is a list of ResourceQuota objects. More info: https://git.k8s.io/community/contributors/design-proposals/admission_control_resource_quota.md

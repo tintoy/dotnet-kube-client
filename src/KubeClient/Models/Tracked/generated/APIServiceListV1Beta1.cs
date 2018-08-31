@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("APIService", "v1beta1")]
     [KubeObject("APIServiceList", "v1beta1")]
-    public partial class APIServiceListV1Beta1 : Models.APIServiceListV1Beta1
+    public partial class APIServiceListV1Beta1 : Models.APIServiceListV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

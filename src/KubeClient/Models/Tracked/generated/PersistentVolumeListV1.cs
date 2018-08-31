@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("PersistentVolume", "v1")]
     [KubeObject("PersistentVolumeList", "v1")]
-    public partial class PersistentVolumeListV1 : Models.PersistentVolumeListV1
+    public partial class PersistentVolumeListV1 : Models.PersistentVolumeListV1, ITracked
     {
         /// <summary>
         ///     List of persistent volumes. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes

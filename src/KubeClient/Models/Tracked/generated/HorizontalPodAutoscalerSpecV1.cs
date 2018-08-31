@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     specification of a horizontal pod autoscaler.
     /// </summary>
-    public partial class HorizontalPodAutoscalerSpecV1 : Models.HorizontalPodAutoscalerSpecV1
+    public partial class HorizontalPodAutoscalerSpecV1 : Models.HorizontalPodAutoscalerSpecV1, ITracked
     {
         /// <summary>
         ///     target average CPU utilization (represented as a percentage of requested CPU) over all the pods; if not specified the default autoscaling policy will be used.

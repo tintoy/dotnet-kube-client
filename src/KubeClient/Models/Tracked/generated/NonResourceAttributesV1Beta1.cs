@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NonResourceAttributes includes the authorization attributes available for non-resource requests to the Authorizer interface
     /// </summary>
-    public partial class NonResourceAttributesV1Beta1 : Models.NonResourceAttributesV1Beta1
+    public partial class NonResourceAttributesV1Beta1 : Models.NonResourceAttributesV1Beta1, ITracked
     {
         /// <summary>
         ///     Verb is the standard HTTP verb

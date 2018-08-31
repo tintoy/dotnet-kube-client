@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("CronJob", "batch/v2alpha1")]
     [KubeObject("CronJobList", "batch/v2alpha1")]
-    public partial class CronJobListV2Alpha1 : Models.CronJobListV2Alpha1
+    public partial class CronJobListV2Alpha1 : Models.CronJobListV2Alpha1, ITracked
     {
         /// <summary>
         ///     items is the list of CronJobs.

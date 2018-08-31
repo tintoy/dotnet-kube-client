@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ObjectFieldSelector selects an APIVersioned field of an object.
     /// </summary>
-    public partial class ObjectFieldSelectorV1 : Models.ObjectFieldSelectorV1
+    public partial class ObjectFieldSelectorV1 : Models.ObjectFieldSelectorV1, ITracked
     {
         /// <summary>
         ///     Path of the field to select in the specified API version.

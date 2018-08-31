@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Secret", "v1")]
     [KubeObject("SecretList", "v1")]
-    public partial class SecretListV1 : Models.SecretListV1
+    public partial class SecretListV1 : Models.SecretListV1, ITracked
     {
         /// <summary>
         ///     Items is a list of secret objects. More info: https://kubernetes.io/docs/concepts/configuration/secret

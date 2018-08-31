@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SecurityContext holds security configuration that will be applied to a container. Some fields are present in both SecurityContext and PodSecurityContext.  When both are set, the values in SecurityContext take precedence.
     /// </summary>
-    public partial class SecurityContextV1 : Models.SecurityContextV1
+    public partial class SecurityContextV1 : Models.SecurityContextV1, ITracked
     {
         /// <summary>
         ///     Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false.

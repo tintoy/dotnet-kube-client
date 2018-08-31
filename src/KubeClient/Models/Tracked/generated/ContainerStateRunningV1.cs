@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ContainerStateRunning is a running state of a container.
     /// </summary>
-    public partial class ContainerStateRunningV1 : Models.ContainerStateRunningV1
+    public partial class ContainerStateRunningV1 : Models.ContainerStateRunningV1, ITracked
     {
         /// <summary>
         ///     Time at which the container was last (re-)started

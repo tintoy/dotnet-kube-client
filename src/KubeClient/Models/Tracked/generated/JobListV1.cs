@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Job", "batch/v1")]
     [KubeObject("JobList", "batch/v1")]
-    public partial class JobListV1 : Models.JobListV1
+    public partial class JobListV1 : Models.JobListV1, ITracked
     {
         /// <summary>
         ///     items is the list of Jobs.

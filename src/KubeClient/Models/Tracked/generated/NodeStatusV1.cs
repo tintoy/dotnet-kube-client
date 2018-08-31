@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NodeStatus is information about the current status of a node.
     /// </summary>
-    public partial class NodeStatusV1 : Models.NodeStatusV1
+    public partial class NodeStatusV1 : Models.NodeStatusV1, ITracked
     {
         /// <summary>
         ///     List of volumes that are attached to the node.

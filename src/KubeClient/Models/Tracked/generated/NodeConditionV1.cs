@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     NodeCondition contains condition information for a node.
     /// </summary>
-    public partial class NodeConditionV1 : Models.NodeConditionV1
+    public partial class NodeConditionV1 : Models.NodeConditionV1, ITracked
     {
         /// <summary>
         ///     Last time we got an update on a given condition.

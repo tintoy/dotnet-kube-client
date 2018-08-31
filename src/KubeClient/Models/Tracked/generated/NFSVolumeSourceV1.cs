@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents an NFS mount that lasts the lifetime of a pod. NFS volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    public partial class NFSVolumeSourceV1 : Models.NFSVolumeSourceV1
+    public partial class NFSVolumeSourceV1 : Models.NFSVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs

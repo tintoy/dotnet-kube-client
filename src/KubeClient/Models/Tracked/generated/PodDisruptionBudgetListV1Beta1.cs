@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("PodDisruptionBudget", "policy/v1beta1")]
     [KubeObject("PodDisruptionBudgetList", "policy/v1beta1")]
-    public partial class PodDisruptionBudgetListV1Beta1 : Models.PodDisruptionBudgetListV1Beta1
+    public partial class PodDisruptionBudgetListV1Beta1 : Models.PodDisruptionBudgetListV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

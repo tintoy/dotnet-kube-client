@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
     /// </summary>
     [KubeObject("Service", "v1")]
-    public partial class ServiceV1 : Models.ServiceV1
+    public partial class ServiceV1 : Models.ServiceV1, ITracked
     {
         /// <summary>
         ///     Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

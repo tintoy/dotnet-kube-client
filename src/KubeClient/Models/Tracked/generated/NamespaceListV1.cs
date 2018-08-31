@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Namespace", "v1")]
     [KubeObject("NamespaceList", "v1")]
-    public partial class NamespaceListV1 : Models.NamespaceListV1
+    public partial class NamespaceListV1 : Models.NamespaceListV1, ITracked
     {
         /// <summary>
         ///     Items is the list of Namespace objects in the list. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/

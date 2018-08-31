@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("Event", "v1")]
     [KubeObject("EventList", "v1")]
-    public partial class EventListV1 : Models.EventListV1
+    public partial class EventListV1 : Models.EventListV1, ITracked
     {
         /// <summary>
         ///     List of events

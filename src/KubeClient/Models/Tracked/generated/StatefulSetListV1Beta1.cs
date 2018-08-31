@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("StatefulSet", "apps/v1beta1")]
     [KubeObject("StatefulSetList", "apps/v1beta1")]
-    public partial class StatefulSetListV1Beta1 : Models.StatefulSetListV1Beta1
+    public partial class StatefulSetListV1Beta1 : Models.StatefulSetListV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

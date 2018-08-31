@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ReplicaSet", "extensions/v1beta1")]
     [KubeObject("ReplicaSetList", "extensions/v1beta1")]
-    public partial class ReplicaSetListV1Beta1 : Models.ReplicaSetListV1Beta1
+    public partial class ReplicaSetListV1Beta1 : Models.ReplicaSetListV1Beta1, ITracked
     {
         /// <summary>
         ///     List of ReplicaSets. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller

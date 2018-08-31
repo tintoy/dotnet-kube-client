@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a Quobyte mount that lasts the lifetime of a pod. Quobyte volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    public partial class QuobyteVolumeSourceV1 : Models.QuobyteVolumeSourceV1
+    public partial class QuobyteVolumeSourceV1 : Models.QuobyteVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Volume is a string that references an already created Quobyte volume by name.

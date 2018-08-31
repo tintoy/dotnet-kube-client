@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Initializer is information about an initializer that has not yet completed.
     /// </summary>
-    public partial class InitializerV1 : Models.InitializerV1
+    public partial class InitializerV1 : Models.InitializerV1, ITracked
     {
         /// <summary>
         ///     name of the process that is responsible for initializing this object.

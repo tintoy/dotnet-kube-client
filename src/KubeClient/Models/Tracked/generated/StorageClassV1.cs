@@ -11,7 +11,7 @@ namespace KubeClient.Models.Tracked
     ///     StorageClasses are non-namespaced; the name of the storage class according to etcd is in ObjectMeta.Name.
     /// </summary>
     [KubeObject("StorageClass", "storage.k8s.io/v1")]
-    public partial class StorageClassV1 : Models.StorageClassV1
+    public partial class StorageClassV1 : Models.StorageClassV1, ITracked
     {
         /// <summary>
         ///     Provisioner indicates the type of the provisioner.

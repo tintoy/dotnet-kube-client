@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     APIServiceStatus contains derived information about an API server
     /// </summary>
-    public partial class APIServiceStatusV1Beta1 : Models.APIServiceStatusV1Beta1
+    public partial class APIServiceStatusV1Beta1 : Models.APIServiceStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     Current service state of apiService.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     VolumeMount describes a mounting of a Volume within a container.
     /// </summary>
-    public partial class VolumeMountV1 : Models.VolumeMountV1
+    public partial class VolumeMountV1 : Models.VolumeMountV1, ITracked
     {
         /// <summary>
         ///     This must match the Name of a Volume.

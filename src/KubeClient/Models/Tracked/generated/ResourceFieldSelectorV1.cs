@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ResourceFieldSelector represents container resources (cpu, memory) and their output format
     /// </summary>
-    public partial class ResourceFieldSelectorV1 : Models.ResourceFieldSelectorV1
+    public partial class ResourceFieldSelectorV1 : Models.ResourceFieldSelectorV1, ITracked
     {
         /// <summary>
         ///     Container name: required for volumes, optional for env vars

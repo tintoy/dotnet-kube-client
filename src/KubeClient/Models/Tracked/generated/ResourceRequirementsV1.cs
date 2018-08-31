@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ResourceRequirements describes the compute resource requirements.
     /// </summary>
-    public partial class ResourceRequirementsV1 : Models.ResourceRequirementsV1
+    public partial class ResourceRequirementsV1 : Models.ResourceRequirementsV1, ITracked
     {
         /// <summary>
         ///     Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/

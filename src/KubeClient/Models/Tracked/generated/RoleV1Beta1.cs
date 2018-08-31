@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.
     /// </summary>
     [KubeObject("Role", "rbac.authorization.k8s.io/v1beta1")]
-    public partial class RoleV1Beta1 : Models.RoleV1Beta1
+    public partial class RoleV1Beta1 : Models.RoleV1Beta1, ITracked
     {
         /// <summary>
         ///     Rules holds all the PolicyRules for this Role

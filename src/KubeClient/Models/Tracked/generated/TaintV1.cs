@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     The node this Taint is attached to has the effect "effect" on any pod that that does not tolerate the Taint.
     /// </summary>
-    public partial class TaintV1 : Models.TaintV1
+    public partial class TaintV1 : Models.TaintV1, ITracked
     {
         /// <summary>
         ///     TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.

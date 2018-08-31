@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     SELinuxOptions are the labels to be applied to the container
     /// </summary>
-    public partial class SELinuxOptionsV1 : Models.SELinuxOptionsV1
+    public partial class SELinuxOptionsV1 : Models.SELinuxOptionsV1, ITracked
     {
         /// <summary>
         ///     Role is a SELinux role label that applies to the container.

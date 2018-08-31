@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject.
     /// </summary>
     [KubeObject("ClusterRoleBinding", "rbac.authorization.k8s.io/v1alpha1")]
-    public partial class ClusterRoleBindingV1Alpha1 : Models.ClusterRoleBindingV1Alpha1
+    public partial class ClusterRoleBindingV1Alpha1 : Models.ClusterRoleBindingV1Alpha1, ITracked
     {
         /// <summary>
         ///     RoleRef can only reference a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error.

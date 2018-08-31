@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     ExternalDocumentation allows referencing an external resource for extended documentation.
     /// </summary>
-    public partial class ExternalDocumentationV1Beta1 : Models.ExternalDocumentationV1Beta1
+    public partial class ExternalDocumentationV1Beta1 : Models.ExternalDocumentationV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a vSphere volume resource.
     /// </summary>
-    public partial class VsphereVirtualDiskVolumeSourceV1 : Models.VsphereVirtualDiskVolumeSourceV1
+    public partial class VsphereVirtualDiskVolumeSourceV1 : Models.VsphereVirtualDiskVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.

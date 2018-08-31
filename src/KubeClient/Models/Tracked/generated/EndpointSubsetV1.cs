@@ -15,7 +15,7 @@ namespace KubeClient.Models.Tracked
     ///         a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
     ///         b: [ 10.10.1.1:309, 10.10.2.2:309 ]
     /// </summary>
-    public partial class EndpointSubsetV1 : Models.EndpointSubsetV1
+    public partial class EndpointSubsetV1 : Models.EndpointSubsetV1, ITracked
     {
         /// <summary>
         ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.

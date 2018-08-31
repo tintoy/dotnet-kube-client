@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     describes the attributes of a scale subresource
     /// </summary>
-    public partial class ScaleSpecV1Beta1 : Models.ScaleSpecV1Beta1
+    public partial class ScaleSpecV1Beta1 : Models.ScaleSpecV1Beta1, ITracked
     {
         /// <summary>
         ///     desired number of instances for the scaled object.

@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("ConfigMap", "v1")]
     [KubeObject("ConfigMapList", "v1")]
-    public partial class ConfigMapListV1 : Models.ConfigMapListV1
+    public partial class ConfigMapListV1 : Models.ConfigMapListV1, ITracked
     {
         /// <summary>
         ///     Items is the list of ConfigMaps.

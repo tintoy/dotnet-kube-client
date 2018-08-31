@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a host path mapped into a pod. Host path volumes do not support ownership management or SELinux relabeling.
     /// </summary>
-    public partial class HostPathVolumeSourceV1 : Models.HostPathVolumeSourceV1
+    public partial class HostPathVolumeSourceV1 : Models.HostPathVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     The volume type. Can be one of ["File", "Directory", "FileOrCreate", "DirectoryOrCreate", "Socket", "CharDevice", "BlockDevice"].

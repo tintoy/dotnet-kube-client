@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     represents the current status of a scale subresource.
     /// </summary>
-    public partial class ScaleStatusV1Beta1 : Models.ScaleStatusV1Beta1
+    public partial class ScaleStatusV1Beta1 : Models.ScaleStatusV1Beta1, ITracked
     {
         /// <summary>
         ///     label query over pods that should match the replicas count. More info: http://kubernetes.io/docs/user-guide/labels#label-selectors

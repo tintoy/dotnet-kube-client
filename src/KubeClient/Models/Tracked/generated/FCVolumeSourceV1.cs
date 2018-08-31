@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a Fibre Channel volume. Fibre Channel volumes can only be mounted as read/write once. Fibre Channel volumes support ownership management and SELinux relabeling.
     /// </summary>
-    public partial class FCVolumeSourceV1 : Models.FCVolumeSourceV1
+    public partial class FCVolumeSourceV1 : Models.FCVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.

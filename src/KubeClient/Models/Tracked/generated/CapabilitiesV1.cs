@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Adds and removes POSIX capabilities from running containers.
     /// </summary>
-    public partial class CapabilitiesV1 : Models.CapabilitiesV1
+    public partial class CapabilitiesV1 : Models.CapabilitiesV1, ITracked
     {
         /// <summary>
         ///     Added capabilities

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using KubeClient.Models.Tracked;
 
 namespace KubeClient.Models
 {
@@ -122,10 +123,13 @@ namespace KubeClient.Models
             /// <param name="assembly">
             ///     The target assembly.
             /// </param>
+            /// <param name="tracked">
+            ///     Whether to map to tracked models.
+            /// </param>
             /// <returns>
             ///     A dictionary of model types, keyed by kind/apiVersion tuple.
             /// </returns>
-            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToTypeLookup(Assembly assembly)
+            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToTypeLookup(Assembly assembly, bool tracked = false)
             {
                 if (assembly == null)
                     throw new ArgumentNullException(nameof(assembly));
@@ -145,6 +149,9 @@ namespace KubeClient.Models
                         continue;
 
                     if (!KubeResourceV1Type.IsAssignableFrom(modelType))
+                        continue;
+
+                    if (tracked != typeof(ITracked).IsAssignableFrom(modelType))
                         continue;
 
                     var kubeObjectAttribute = modelTypeInfo.GetCustomAttribute<KubeObjectAttribute>();

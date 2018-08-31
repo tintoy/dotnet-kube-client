@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a volume that is populated with the contents of a git repository. Git repo volumes do not support ownership management. Git repo volumes support SELinux relabeling.
     /// </summary>
-    public partial class GitRepoVolumeSourceV1 : Models.GitRepoVolumeSourceV1
+    public partial class GitRepoVolumeSourceV1 : Models.GitRepoVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Commit hash for the specified revision.

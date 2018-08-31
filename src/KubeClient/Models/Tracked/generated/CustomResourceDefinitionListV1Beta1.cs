@@ -10,7 +10,7 @@ namespace KubeClient.Models.Tracked
     /// </summary>
     [KubeListItem("CustomResourceDefinition", "v1beta1")]
     [KubeObject("CustomResourceDefinitionList", "v1beta1")]
-    public partial class CustomResourceDefinitionListV1Beta1 : Models.CustomResourceDefinitionListV1Beta1
+    public partial class CustomResourceDefinitionListV1Beta1 : Models.CustomResourceDefinitionListV1Beta1, ITracked
     {
         /// <summary>
         ///     Items individual CustomResourceDefinitions

@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     Event is a report of an event somewhere in the cluster.
     /// </summary>
     [KubeObject("Event", "v1")]
-    public partial class EventV1 : Models.EventV1
+    public partial class EventV1 : Models.EventV1, ITracked
     {
         /// <summary>
         ///     A human-readable description of the status of this operation.

@@ -9,7 +9,7 @@ namespace KubeClient.Models.Tracked
     ///     LimitRange sets resource usage limits for each kind of resource in a Namespace.
     /// </summary>
     [KubeObject("LimitRange", "v1")]
-    public partial class LimitRangeV1 : Models.LimitRangeV1
+    public partial class LimitRangeV1 : Models.LimitRangeV1, ITracked
     {
         /// <summary>
         ///     Spec defines the limits enforced. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status

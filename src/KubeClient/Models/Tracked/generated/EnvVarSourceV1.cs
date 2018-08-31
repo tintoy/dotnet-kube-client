@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     EnvVarSource represents a source for the value of an EnvVar.
     /// </summary>
-    public partial class EnvVarSourceV1 : Models.EnvVarSourceV1
+    public partial class EnvVarSourceV1 : Models.EnvVarSourceV1, ITracked
     {
         /// <summary>
         ///     Selects a key of a ConfigMap.

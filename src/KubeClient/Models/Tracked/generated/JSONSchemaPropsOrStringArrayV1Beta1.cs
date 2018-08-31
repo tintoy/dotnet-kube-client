@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     JSONSchemaPropsOrStringArray represents a JSONSchemaProps or a string array.
     /// </summary>
-    public partial class JSONSchemaPropsOrStringArrayV1Beta1 : Models.JSONSchemaPropsOrStringArrayV1Beta1
+    public partial class JSONSchemaPropsOrStringArrayV1Beta1 : Models.JSONSchemaPropsOrStringArrayV1Beta1, ITracked
     {
         /// <summary>
         ///     Description not provided.

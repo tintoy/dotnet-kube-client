@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents a Photon Controller persistent disk resource.
     /// </summary>
-    public partial class PhotonPersistentDiskVolumeSourceV1 : Models.PhotonPersistentDiskVolumeSourceV1
+    public partial class PhotonPersistentDiskVolumeSourceV1 : Models.PhotonPersistentDiskVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     ID that identifies Photon Controller persistent disk

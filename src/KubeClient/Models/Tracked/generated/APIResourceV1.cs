@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     APIResource specifies the name of a resource and whether it is namespaced.
     /// </summary>
-    public partial class APIResourceV1 : Models.APIResourceV1
+    public partial class APIResourceV1 : Models.APIResourceV1, ITracked
     {
         /// <summary>
         ///     kind is the kind for the resource (e.g. 'Foo' is the kind for a resource 'foo')

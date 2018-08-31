@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     Represents an ISCSI disk. ISCSI volumes can only be mounted as read/write once. ISCSI volumes support ownership management and SELinux relabeling.
     /// </summary>
-    public partial class ISCSIVolumeSourceV1 : Models.ISCSIVolumeSourceV1
+    public partial class ISCSIVolumeSourceV1 : Models.ISCSIVolumeSourceV1, ITracked
     {
         /// <summary>
         ///     Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi

@@ -8,7 +8,7 @@ namespace KubeClient.Models.Tracked
     /// <summary>
     ///     RoleRef contains information that points to the role being used
     /// </summary>
-    public partial class RoleRefV1Beta1 : Models.RoleRefV1Beta1
+    public partial class RoleRefV1Beta1 : Models.RoleRefV1Beta1, ITracked
     {
         /// <summary>
         ///     Kind is the type of resource being referenced
