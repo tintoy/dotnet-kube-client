@@ -309,7 +309,7 @@ namespace KubeClient.ResourceClients
             if (apiMetadata == null)
                 throw new KubeClientException($"Cannot find resource API for kind '{kind}', apiVersion '{apiVersion}'.");
 
-            KubeApiPathMetadata apiPathMetadata = namespaced ? apiMetadata.PrimaryPathMetadata : apiMetadata.PrimaryNamespacedPathMetadata;
+            KubeApiPathMetadata apiPathMetadata = namespaced ? apiMetadata.PrimaryNamespacedPathMetadata : apiMetadata.PrimaryPathMetadata;
 
             if (apiPathMetadata == null)
             {

@@ -27,9 +27,10 @@ namespace KubeClient.ApiMetadata
 
             if (verbs == null)
                 throw new ArgumentNullException(nameof(verbs));
-            
+
             Path = path;
             Verbs = verbs;
+            IsNamespaced = isNamespaced;
         }
 
         /// <summary>
