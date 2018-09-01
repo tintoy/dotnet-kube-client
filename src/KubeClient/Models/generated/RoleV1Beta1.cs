@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.
     /// </summary>
-    [KubeObject("Role", "rbac.authorization.k8s.io/v1beta1")]
+    [KubeObject("Role", "v1beta1")]
     public partial class RoleV1Beta1 : KubeResourceV1
     {
         /// <summary>

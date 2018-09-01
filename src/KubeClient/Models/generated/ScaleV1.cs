@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Scale represents a scaling request for a resource.
     /// </summary>
-    [KubeObject("Scale", "autoscaling/v1")]
+    [KubeObject("Scale", "v1")]
     public partial class ScaleV1 : KubeResourceV1
     {
         /// <summary>

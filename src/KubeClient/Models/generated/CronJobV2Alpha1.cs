@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJob represents the configuration of a single cron job.
     /// </summary>
-    [KubeObject("CronJob", "batch/v2alpha1")]
+    [KubeObject("CronJob", "v2alpha1")]
     public partial class CronJobV2Alpha1 : KubeResourceV1
     {
         /// <summary>

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace.
     /// </summary>
-    [KubeObject("RoleBinding", "rbac.authorization.k8s.io/v1beta1")]
+    [KubeObject("RoleBinding", "v1beta1")]
     public partial class RoleBindingV1Beta1 : KubeResourceV1
     {
         /// <summary>

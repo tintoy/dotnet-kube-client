@@ -129,19 +129,14 @@ class KubeModel(object):
         )
 
         # Override model metadata with Kubernetes-specific values, if available.
-        kube_group = None
+        kube_group = ''
         if 'x-kubernetes-group-version-kind' in definition:
             kube_metadata = definition['x-kubernetes-group-version-kind'][0]
             kube_group = kube_metadata.get('group', '')
             kube_kind = kube_metadata['kind']
-            kube_api_version = kube_metadata['version']
+            api_version = kube_metadata['version']
 
             name = kube_kind
-
-            if kube_group:
-                api_version = kube_group + '/' + kube_api_version
-            else:
-                api_version = kube_api_version
 
         return KubeModel(name, summary, api_version, pretty_api_version, kube_group)
 

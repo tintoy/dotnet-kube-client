@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     SubjectAccessReview checks whether or not a user or group can perform an action.
     /// </summary>
-    [KubeObject("SubjectAccessReview", "authorization.k8s.io/v1beta1")]
+    [KubeObject("SubjectAccessReview", "v1beta1")]
     public partial class SubjectAccessReviewV1Beta1 : KubeResourceV1
     {
         /// <summary>
