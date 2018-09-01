@@ -81,7 +81,7 @@ namespace KubeClient.ResourceClients
 
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
@@ -89,7 +89,7 @@ namespace KubeClient.ResourceClients
 
             await EnsureApiMetadata(cancellationToken);
             string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
-            
+
             Type modelType = GetModelType(kind, apiVersion);
 
             HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{Name}")
@@ -146,7 +146,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
@@ -154,7 +154,7 @@ namespace KubeClient.ResourceClients
 
             await EnsureApiMetadata(cancellationToken);
             string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
-            
+
             Type listModelType = GetListModelType(kind, apiVersion);
 
             HttpRequest request = KubeRequest.Create(apiPath)
@@ -213,18 +213,18 @@ namespace KubeClient.ResourceClients
 
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
-            
+
             if (patch == null)
-                throw new ArgumentNullException(nameof(patch)); 
+                throw new ArgumentNullException(nameof(patch));
 
             bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
 
             await EnsureApiMetadata(cancellationToken);
             string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
-            
+
             Type modelType = GetModelType(kind, apiVersion);
 
             HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{Name}")
@@ -301,16 +301,16 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
-            
+
             KubeApiMetadata apiMetadata = ApiMetadata.Get(kind, apiVersion);
             if (apiMetadata == null)
-                throw new KubeClientException($"Cannot find resource API for {apiVersion}/{kind}.");
+                throw new KubeClientException($"Cannot find resource API for kind '{kind}', apiVersion '{apiVersion}'.");
 
             KubeApiPathMetadata apiPathMetadata = namespaced ? apiMetadata.PrimaryPathMetadata : apiMetadata.PrimaryNamespacedPathMetadata;
-            
+
             if (apiPathMetadata == null)
             {
                 if (namespaced)
@@ -338,7 +338,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
@@ -365,7 +365,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
@@ -404,7 +404,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     The resource, or <c>null</c> if the resource was not found.
         /// </returns>
-        Task<KubeResourceV1> Get(string kind, string apiVersion, string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<KubeResourceV1> Get(string name, string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     List resources.
