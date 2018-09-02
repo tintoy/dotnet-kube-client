@@ -374,6 +374,8 @@ namespace KubeClient.ApiMetadata
 
                             foreach (APIResourceV1 api in apisForKind)
                             {
+                                // TODO: Parse and examine verbs to improve path resolution.
+
                                 string apiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/{api.Name}";
 
                                 apiPaths.Add(
