@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ClusterRoleList is a collection of ClusterRoles
     /// </summary>
-    [KubeListItem("ClusterRole", "v1beta1")]
-    [KubeObject("ClusterRoleList", "v1beta1")]
     public partial class ClusterRoleListV1Beta1 : KubeResourceListV1<ClusterRoleV1Beta1>
     {
         /// <summary>

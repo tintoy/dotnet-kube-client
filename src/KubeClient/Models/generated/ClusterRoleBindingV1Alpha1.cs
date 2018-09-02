@@ -9,10 +9,10 @@ namespace KubeClient.Models
     ///     ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject.
     /// </summary>
     [KubeObject("ClusterRoleBinding", "v1alpha1")]
-    [KubeApi("apis/rbac.authorization.k8s.io/v1alpha1/clusterrolebindings", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/rbac.authorization.k8s.io/v1alpha1/clusterrolebindings/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     [KubeApi("apis/rbac.authorization.k8s.io/v1alpha1/watch/clusterrolebindings", KubeAction.WatchList)]
     [KubeApi("apis/rbac.authorization.k8s.io/v1alpha1/watch/clusterrolebindings/{name}", KubeAction.Watch)]
+    [KubeApi("apis/rbac.authorization.k8s.io/v1alpha1/clusterrolebindings", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/rbac.authorization.k8s.io/v1alpha1/clusterrolebindings/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     public partial class ClusterRoleBindingV1Alpha1 : KubeResourceV1
     {
         /// <summary>

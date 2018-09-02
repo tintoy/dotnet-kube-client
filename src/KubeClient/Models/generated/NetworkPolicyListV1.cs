@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicyList is a list of NetworkPolicy objects.
     /// </summary>
-    [KubeListItem("NetworkPolicy", "v1")]
-    [KubeObject("NetworkPolicyList", "v1")]
     public partial class NetworkPolicyListV1 : KubeResourceListV1<NetworkPolicyV1>
     {
         /// <summary>

@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     NamespaceList is a list of Namespaces.
     /// </summary>
-    [KubeListItem("Namespace", "v1")]
-    [KubeObject("NamespaceList", "v1")]
     public partial class NamespaceListV1 : KubeResourceListV1<NamespaceV1>
     {
         /// <summary>

@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ServiceAccountList is a list of ServiceAccount objects
     /// </summary>
-    [KubeListItem("ServiceAccount", "v1")]
-    [KubeObject("ServiceAccountList", "v1")]
     public partial class ServiceAccountListV1 : KubeResourceListV1<ServiceAccountV1>
     {
         /// <summary>

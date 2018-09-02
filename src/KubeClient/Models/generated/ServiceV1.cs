@@ -9,14 +9,17 @@ namespace KubeClient.Models
     ///     Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
     /// </summary>
     [KubeObject("Service", "v1")]
-    [KubeApi("api/v1/namespaces/{namespace}/services", KubeAction.Create)]
-    [KubeApi("api/v1/namespaces/{namespace}/services/{name}", KubeAction.Delete)]
-    [KubeApi("api/v1/namespaces/{namespace}/services/{name}/proxy/{path}", KubeAction.Connect)]
-    [KubeApi("api/v1/namespaces/{namespace}/services/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("api/v1/proxy/namespaces/{namespace}/services/{name}/{path}", KubeAction.Proxy)]
     [KubeApi("api/v1/services", KubeAction.List)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/services/{name}", KubeAction.Watch)]
     [KubeApi("api/v1/watch/services", KubeAction.WatchList)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/services", KubeAction.WatchList)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/services/{name}", KubeAction.Watch)]
+    [KubeApi("api/v1/namespaces/{namespace}/services", KubeAction.Create, KubeAction.List)]
+    [KubeApi("api/v1/namespaces/{namespace}/services/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/namespaces/{namespace}/services/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/proxy/namespaces/{namespace}/services/{name}", KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy)]
+    [KubeApi("api/v1/proxy/namespaces/{namespace}/services/{name}/{path}", KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy)]
+    [KubeApi("api/v1/namespaces/{namespace}/services/{name}/proxy", KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect)]
+    [KubeApi("api/v1/namespaces/{namespace}/services/{name}/proxy/{path}", KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect)]
     public partial class ServiceV1 : KubeResourceV1
     {
         /// <summary>

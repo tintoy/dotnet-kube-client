@@ -9,11 +9,12 @@ namespace KubeClient.Models
     ///     PodPreset is a policy resource that defines additional runtime requirements for a Pod.
     /// </summary>
     [KubeObject("PodPreset", "v1alpha1")]
-    [KubeApi("apis/settings.k8s.io/v1alpha1/namespaces/{namespace}/podpresets", KubeAction.Create, KubeAction.DeleteCollection)]
-    [KubeApi("apis/settings.k8s.io/v1alpha1/namespaces/{namespace}/podpresets/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     [KubeApi("apis/settings.k8s.io/v1alpha1/podpresets", KubeAction.List)]
-    [KubeApi("apis/settings.k8s.io/v1alpha1/watch/namespaces/{namespace}/podpresets/{name}", KubeAction.Watch)]
     [KubeApi("apis/settings.k8s.io/v1alpha1/watch/podpresets", KubeAction.WatchList)]
+    [KubeApi("apis/settings.k8s.io/v1alpha1/watch/namespaces/{namespace}/podpresets", KubeAction.WatchList)]
+    [KubeApi("apis/settings.k8s.io/v1alpha1/watch/namespaces/{namespace}/podpresets/{name}", KubeAction.Watch)]
+    [KubeApi("apis/settings.k8s.io/v1alpha1/namespaces/{namespace}/podpresets", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/settings.k8s.io/v1alpha1/namespaces/{namespace}/podpresets/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     public partial class PodPresetV1Alpha1 : KubeResourceV1
     {
         /// <summary>

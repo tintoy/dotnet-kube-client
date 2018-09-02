@@ -11,10 +11,10 @@ namespace KubeClient.Models
     ///     StorageClasses are non-namespaced; the name of the storage class according to etcd is in ObjectMeta.Name.
     /// </summary>
     [KubeObject("StorageClass", "v1beta1")]
-    [KubeApi("apis/storage.k8s.io/v1beta1/storageclasses", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/storage.k8s.io/v1beta1/storageclasses/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     [KubeApi("apis/storage.k8s.io/v1beta1/watch/storageclasses", KubeAction.WatchList)]
     [KubeApi("apis/storage.k8s.io/v1beta1/watch/storageclasses/{name}", KubeAction.Watch)]
+    [KubeApi("apis/storage.k8s.io/v1beta1/storageclasses", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/storage.k8s.io/v1beta1/storageclasses/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     public partial class StorageClassV1Beta1 : KubeResourceV1
     {
         /// <summary>

@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ControllerRevisionList is a resource containing a list of ControllerRevision objects.
     /// </summary>
-    [KubeListItem("ControllerRevision", "v1beta1")]
-    [KubeObject("ControllerRevisionList", "v1beta1")]
     public partial class ControllerRevisionListV1Beta1 : KubeResourceListV1<ControllerRevisionV1Beta1>
     {
         /// <summary>

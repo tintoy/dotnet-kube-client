@@ -457,7 +457,10 @@ def parse_apis(api_paths):
                 api = {}
                 apis[api_key] = api
 
-            api[action] = api_path
+            if action not in api:
+                api[action] = []
+
+            api[action].append(api_path)
 
     return apis
 
@@ -506,17 +509,19 @@ def main():
                 class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
             class_file.write('    /// </summary>' + LINE_ENDING)
 
+            model_annotations = []
+
             if model.has_list_items():
                 list_item_model = model.list_item_data_type().model
 
-                class_file.write('    [KubeListItem("{0}", "{1}")]{2}'.format(
+                model_annotations.append('    [KubeListItem("{0}", "{1}")]{2}'.format(
                     list_item_model.name,
                     list_item_model.api_version,
                     LINE_ENDING
                 ))
 
             if model.is_resource() or model.is_resource_list():
-                class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
+                model_annotations.append('    [KubeObject("{0}", "{1}")]{2}'.format(
                     model.name,
                     model.api_version,
                     LINE_ENDING
@@ -525,26 +530,31 @@ def main():
             if model.is_resource() and resource_api:
                 path_actions = {}
                 for action in sorted(resource_api.keys()):
-                    api_path = resource_api[action]
+                    api_paths = resource_api[action]
                     api_action = KUBE_ACTIONS.get(action,
                         action.capitalize()  # Default
                     )
 
-                    if api_path not in path_actions:
-                        path_actions[api_path] = []
+                    for api_path in api_paths:
+                        if api_path not in path_actions:
+                            path_actions[api_path] = []
 
-                    path_actions[api_path].append(
-                        'KubeAction.' + api_action
-                    )
+                        path_actions[api_path].append(
+                            'KubeAction.' + api_action
+                        )
 
                 for api_path in sorted(path_actions.keys()):
                     api_actions = sorted(path_actions[api_path])
 
-                    class_file.write('    [KubeApi("{0}", {1})]{2}'.format(
+                    model_annotations.append('    [KubeApi("{0}", {1})]{2}'.format(
                         api_path.strip('/'),
                         ', '.join(api_actions),
                         LINE_ENDING
                     ))
+
+                model_annotations.sort(key=len)
+                for model_annotation in model_annotations:
+                    class_file.write(model_annotation)
 
             class_file.write('    public partial class ' + model.clr_name)
             if model.is_resource():

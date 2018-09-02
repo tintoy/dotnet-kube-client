@@ -9,10 +9,12 @@ namespace KubeClient.Models
     ///     Event is a report of an event somewhere in the cluster.
     /// </summary>
     [KubeObject("Event", "v1")]
-    [KubeApi("api/v1/namespaces/{namespace}/events", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{namespace}/events/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/events", KubeAction.List)]
+    [KubeApi("api/v1/watch/events", KubeAction.WatchList)]
     [KubeApi("api/v1/watch/namespaces/{namespace}/events", KubeAction.WatchList)]
     [KubeApi("api/v1/watch/namespaces/{namespace}/events/{name}", KubeAction.Watch)]
+    [KubeApi("api/v1/namespaces/{namespace}/events", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("api/v1/namespaces/{namespace}/events/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     public partial class EventV1 : KubeResourceV1
     {
         /// <summary>

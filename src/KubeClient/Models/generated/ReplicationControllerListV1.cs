@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicationControllerList is a collection of replication controllers.
     /// </summary>
-    [KubeListItem("ReplicationController", "v1")]
-    [KubeObject("ReplicationControllerList", "v1")]
     public partial class ReplicationControllerListV1 : KubeResourceListV1<ReplicationControllerV1>
     {
         /// <summary>

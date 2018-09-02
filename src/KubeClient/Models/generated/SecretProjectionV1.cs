@@ -10,7 +10,6 @@ namespace KubeClient.Models
     ///     
     ///     The contents of the target Secret's Data field will be presented in a projected volume as files using the keys in the Data field as the file names. Note that this is identical to a secret volume source without the default mode.
     /// </summary>
-    [KubeListItem("KeyToPath", "v1")]
     public partial class SecretProjectionV1
     {
         /// <summary>

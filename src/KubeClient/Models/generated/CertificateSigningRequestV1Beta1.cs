@@ -9,11 +9,12 @@ namespace KubeClient.Models
     ///     Describes a certificate signing request
     /// </summary>
     [KubeObject("CertificateSigningRequest", "v1beta1")]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/status", KubeAction.Update)]
     [KubeApi("apis/certificates.k8s.io/v1beta1/watch/certificatesigningrequests", KubeAction.WatchList)]
     [KubeApi("apis/certificates.k8s.io/v1beta1/watch/certificatesigningrequests/{name}", KubeAction.Watch)]
+    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/status", KubeAction.Update)]
+    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/approval", KubeAction.Update)]
+    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
     public partial class CertificateSigningRequestV1Beta1 : KubeResourceV1
     {
         /// <summary>

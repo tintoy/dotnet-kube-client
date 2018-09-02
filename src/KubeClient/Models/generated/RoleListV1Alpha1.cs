@@ -8,8 +8,6 @@ namespace KubeClient.Models
     /// <summary>
     ///     RoleList is a collection of Roles
     /// </summary>
-    [KubeListItem("Role", "v1alpha1")]
-    [KubeObject("RoleList", "v1alpha1")]
     public partial class RoleListV1Alpha1 : KubeResourceListV1<RoleV1Alpha1>
     {
         /// <summary>
