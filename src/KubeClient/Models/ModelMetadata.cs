@@ -193,7 +193,11 @@ namespace KubeClient.Models
                     if (kubeObjectAttribute == null)
                         continue;
 
-                    var kubeKind = (kind: kubeObjectAttribute.Kind, apiVersion: kubeObjectAttribute.ApiVersion);
+                    var kubeListItemAttribute = modelTypeInfo.GetCustomAttribute<KubeListItemAttribute>();
+                    if (kubeListItemAttribute == null)
+                        continue;
+
+                    var kubeKind = (kind: kubeListItemAttribute.Kind, apiVersion: kubeListItemAttribute.ApiVersion);
                     lookup[kubeKind] = modelType;
                 }
 

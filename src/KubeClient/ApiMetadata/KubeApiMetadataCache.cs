@@ -292,6 +292,9 @@ namespace KubeClient.ApiMetadata
                     ));
                 }
 
+                if (apiPaths.Count == 0)
+                    continue;
+
                 loadedMetadata.Add(new KubeApiMetadata(
                     kindAndApiVersion.kind,
                     kindAndApiVersion.apiVersion,
@@ -359,66 +362,116 @@ namespace KubeClient.ApiMetadata
                     else
                         groupVersions = apiGroup.Versions;
 
+                    var metadataLoaders = new List<Task<List<KubeApiMetadata>>>();
+
                     foreach (GroupVersionForDiscoveryV1 groupVersion in groupVersions)
                     {
-                        APIResourceListV1 apis = await kubeClient.APIResourcesV1().List(apiGroupPrefix, groupVersion.GroupVersion, cancellationToken);
-                        foreach (var apisForKind in apis.Resources.GroupBy(api => api.Kind))
-                        {
-                            string kind = apisForKind.Key;
-                            string singularName = null;
-                            IReadOnlyCollection<string> shortNames = new string[0];
-
-                            var apiPaths = new List<KubeApiPathMetadata>();
-
-                            bool isPreferredVersion = (groupVersion.GroupVersion == apiGroup.PreferredVersion.GroupVersion);
-
-                            foreach (APIResourceV1 api in apisForKind)
-                            {
-                                // TODO: Parse and examine verbs to improve path resolution.
-
-                                string apiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/{api.Name}";
-
-                                apiPaths.Add(
-                                    new KubeApiPathMetadata(apiPath,
-                                        isNamespaced: false,
-                                        verbs: api.Verbs.ToArray()
-                                    )
-                                );
-
-                                if (api.Namespaced)
-                                {
-                                    string namespacedApiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/namespaces/{{namespace}}/{api.Name}";
-
-                                    apiPaths.Add(
-                                        new KubeApiPathMetadata(namespacedApiPath,
-                                            isNamespaced: true,
-                                            verbs: api.Verbs.ToArray()
-                                        )
-                                    );
-                                }
-
-                                // Only use aliases from preferred API version.
-                                if (isPreferredVersion)
-                                {
-                                    if (singularName == null)
-                                        singularName = api.SingularName;
-
-                                    if (shortNames.Count == 0)
-                                        shortNames = api.ShortNames.ToArray();
-                                }
-                            }
-
-                            loadedMetadata.Add(
-                                new KubeApiMetadata(kind, groupVersion.Version ?? groupVersion.GroupVersion, singularName, shortNames, isPreferredVersion, apiPaths)
-                            );
-                        }
+                        metadataLoaders.Add(
+                            LoadGroupApis(kubeClient, apiGroupPrefix, apiGroup, groupVersion, cancellationToken)
+                        );
                     }
+
+                    List<KubeApiMetadata>[] completedLoads = await Task.WhenAll(metadataLoaders);
+                    foreach (List<KubeApiMetadata> completedLoad in completedLoads)
+                        loadedMetadata.AddRange(completedLoad);
                 }
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
             Cache(loadedMetadata, clearExisting);
+        }
+
+        /// <summary>
+        ///     Load metadata for the specified group of resource APIs.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client used to load API metadata.
+        /// </param>
+        /// <param name="apiGroupPrefix">
+        ///     The API group prefix (usually "api" or "apis").
+        /// </param>
+        /// <param name="apiGroup">
+        ///     The API group.
+        /// </param>
+        /// <param name="groupVersion">
+        ///     The current API group version to examine.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     A <see cref="CancellationToken"/> that can be used to cancel the operation.
+        /// </param>
+        /// <returns>
+        ///     A list of <see cref="KubeApiMetadata"/> representing the group's APIs.
+        /// </returns>
+        async Task<List<KubeApiMetadata>> LoadGroupApis(IKubeApiClient kubeClient, string apiGroupPrefix, APIGroupV1 apiGroup, GroupVersionForDiscoveryV1 groupVersion, CancellationToken cancellationToken)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+            
+            if (String.IsNullOrWhiteSpace(apiGroupPrefix))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiGroupPrefix'.", nameof(apiGroupPrefix));
+            
+            if (apiGroup == null)
+                throw new ArgumentNullException(nameof(apiGroup));
+            
+            if (groupVersion == null)
+                throw new ArgumentNullException(nameof(groupVersion));
+
+            var apiMetadata = new List<KubeApiMetadata>();
+
+            APIResourceListV1 apis = await kubeClient.APIResourcesV1().List(apiGroupPrefix, groupVersion.GroupVersion, cancellationToken);
+            foreach (var apisForKind in apis.Resources.GroupBy(api => api.Kind))
+            {
+                string kind = apisForKind.Key;
+                string singularName = null;
+                IReadOnlyCollection<string> shortNames = new string[0];
+
+                var apiPaths = new List<KubeApiPathMetadata>();
+
+                bool isPreferredVersion = (groupVersion.GroupVersion == apiGroup.PreferredVersion.GroupVersion);
+
+                foreach (APIResourceV1 api in apisForKind)
+                {
+                    // TODO: Parse and examine verbs to improve path resolution.
+
+                    string apiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/{api.Name}";
+
+                    apiPaths.Add(
+                        new KubeApiPathMetadata(apiPath,
+                            isNamespaced: false,
+                            verbs: api.Verbs.ToArray()
+                        )
+                    );
+
+                    if (api.Namespaced)
+                    {
+                        string namespacedApiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/namespaces/{{namespace}}/{api.Name}";
+
+                        apiPaths.Add(
+                            new KubeApiPathMetadata(namespacedApiPath,
+                                isNamespaced: true,
+                                verbs: api.Verbs.ToArray()
+                            )
+                        );
+                    }
+
+                    // Only use aliases from preferred API version.
+                    if (isPreferredVersion)
+                    {
+                        if (singularName == null)
+                            singularName = api.SingularName;
+
+                        if (shortNames.Count == 0)
+                            shortNames = api.ShortNames.ToArray();
+                    }
+                }
+
+                apiMetadata.Add(
+                    new KubeApiMetadata(kind, groupVersion.Version ?? groupVersion.GroupVersion, singularName, shortNames, isPreferredVersion, apiPaths)
+                );
+            }
+
+            return apiMetadata;
         }
 
         /// <summary>
