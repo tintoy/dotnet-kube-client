@@ -527,6 +527,8 @@ def main():
                     LINE_ENDING
                 ))
 
+            # TODO: Add KubeResourceAliasAttribute, but how do we infer singularName and shortNames? These are only available via the API.
+
             if model.is_resource() and resource_api:
                 added_annotations = set()
                 action_paths = {}

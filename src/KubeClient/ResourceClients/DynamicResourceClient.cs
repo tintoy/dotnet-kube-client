@@ -279,7 +279,7 @@ namespace KubeClient.ResourceClients
         async Task EnsureApiMetadata(CancellationToken cancellationToken)
         {
             if (ApiMetadata.IsEmpty)
-                await ApiMetadata.Load(KubeClient, cancellationToken);
+                await ApiMetadata.Load(KubeClient, cancellationToken: cancellationToken);
         }
 
         /// <summary>

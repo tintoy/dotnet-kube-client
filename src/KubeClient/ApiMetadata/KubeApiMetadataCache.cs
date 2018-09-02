@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -101,7 +102,7 @@ namespace KubeClient.ApiMetadata
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             if (_metadata.TryGetValue(name, out KubeApiMetadata apiMetadata))
                 return apiMetadata;
 
@@ -168,7 +169,7 @@ namespace KubeClient.ApiMetadata
         {
             if (modelType == null)
                 throw new ArgumentNullException(nameof(modelType));
-            
+
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind(modelType);
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException($"Model type {modelType.FullName} has not been decorated with KubeResourceAttribute or KubeResourceListAttribute.", nameof(modelType));
@@ -189,7 +190,7 @@ namespace KubeClient.ApiMetadata
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return Get(name)?.PrimaryPath;
         }
 
@@ -235,10 +236,83 @@ namespace KubeClient.ApiMetadata
         }
 
         /// <summary>
-        ///     Populate the cache.
+        ///     Populate the cache from model metadata.
+        /// </summary>
+        /// <param name="assembly">
+        ///     The assembly containing model types to process.
+        /// </param>
+        /// <param name="clearExisting">
+        ///     Remove existing metadata from the cache?
+        /// </param>
+        public void LoadFromMetadata(Assembly assembly, bool clearExisting = false)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+
+            Dictionary<(string kind, string apiVersion), Type> modelMetadata = ModelMetadata.KubeObject.BuildKindToTypeLookup(assembly);
+
+            var loadedMetadata = new List<KubeApiMetadata>();
+
+            foreach (var kindAndApiVersion in modelMetadata.Keys)
+            {
+                Type modelType = modelMetadata[kindAndApiVersion];
+
+                // TODO: Add SingularName and ShortNames to model metadata (as custom attributes), but where do we get them from? They appear to only be available at runtime (via the API).
+
+                var apiPaths = new List<KubeApiPathMetadata>();
+
+                KubeApiAttribute[] apiAttributes = modelType.GetTypeInfo().GetCustomAttributes<KubeApiAttribute>().ToArray();
+
+                string[] listApiPaths =
+                    apiAttributes.Where(
+                        api => api.Action == KubeAction.List
+                    )
+                    .SelectMany(api => api.Paths)
+                    .ToArray();
+                string namespacedPath = listApiPaths.FirstOrDefault(
+                    path => path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
+                );
+                if (!String.IsNullOrWhiteSpace(namespacedPath))
+                {
+                    apiPaths.Add(new KubeApiPathMetadata(
+                        path: namespacedPath,
+                        isNamespaced: true,
+                        verbs: new string[] { "list", "get", "put", "patch" }
+                    ));
+                }
+                string allNamespacesPath = listApiPaths.FirstOrDefault(
+                    path => !path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
+                );
+                if (!String.IsNullOrWhiteSpace(namespacedPath))
+                {
+                    apiPaths.Add(new KubeApiPathMetadata(
+                        path: namespacedPath,
+                        isNamespaced: false,
+                        verbs: new string[] { "list", "post" }
+                    ));
+                }
+
+                loadedMetadata.Add(new KubeApiMetadata(
+                    kindAndApiVersion.kind,
+                    kindAndApiVersion.apiVersion,
+                    singularName: null,
+                    shortNames: new string[0],
+                    isPreferredVersion: true,
+                    paths: apiPaths
+                ));
+            }
+
+            Cache(loadedMetadata, clearExisting);
+        }
+
+        /// <summary>
+        ///     Populate the cache from the Kubernetes API.
         /// </summary>
         /// <param name="kubeClient">
         ///     The <see cref="KubeClient"/> used to retrieve API metadata.
+        /// </param>
+        /// <param name="clearExisting">
+        ///     Remove existing metadata from the cache?
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the operation.
@@ -246,7 +320,7 @@ namespace KubeClient.ApiMetadata
         /// <returns>
         ///     A <see cref="Task"/> representing the asynchronous operation.
         /// </returns>
-        public async Task Load(IKubeApiClient kubeClient, CancellationToken cancellationToken = default)
+        public async Task Load(IKubeApiClient kubeClient, bool clearExisting = false, CancellationToken cancellationToken = default)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -299,7 +373,7 @@ namespace KubeClient.ApiMetadata
                             bool isPreferredVersion = (groupVersion.GroupVersion == apiGroup.PreferredVersion.GroupVersion);
 
                             foreach (APIResourceV1 api in apisForKind)
-                            {   
+                            {
                                 string apiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/{api.Name}";
 
                                 apiPaths.Add(
@@ -342,37 +416,7 @@ namespace KubeClient.ApiMetadata
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            lock (_stateLock)
-            {
-                Clear();
-
-                foreach (KubeApiMetadata apiMetadata in loadedMetadata)
-                {
-                    string cacheKey = CreateCacheKey(apiMetadata.Kind, apiMetadata.ApiVersion);
-                    _metadata[cacheKey] = apiMetadata;
-
-                    // Special-case: pluralise the resource kind.
-                    string suffix = String.Empty;
-                    if (apiMetadata.Kind.EndsWith("y"))
-                        suffix = "ies";
-                    else if (!apiMetadata.Kind.EndsWith("s"))
-                        suffix = "s";
-
-                    cacheKey = $"{apiMetadata.Kind}{suffix}";
-                    if (!_metadata.ContainsKey(cacheKey))
-                        _metadata.Add(cacheKey, apiMetadata);
-
-                    // Only cache aliases from preferred API version.
-                    if (apiMetadata.IsPreferredVersion)
-                    {
-                        if (apiMetadata.SingularName != null)
-                            _metadata[apiMetadata.SingularName] = apiMetadata;
-
-                        foreach (string shortName in apiMetadata.ShortNames)
-                            _metadata[shortName] = apiMetadata;
-                    }
-                }
-            }
+            Cache(loadedMetadata, clearExisting);
         }
 
         /// <summary>
@@ -410,6 +454,54 @@ namespace KubeClient.ApiMetadata
                         keyParts => (kind: keyParts[0], apiVersion: keyParts[1])
                     )
                     .ToArray();
+            }
+        }
+
+        /// <summary>
+        ///     Populate the cache using the specified metadata.
+        /// </summary>
+        /// <param name="loadedMetadata">
+        ///     API metadata to be added to the cache.
+        /// </param>
+        /// <param name="clearExisting">
+        ///     Remove existing metadata from the cache?
+        /// </param>
+        void Cache(IEnumerable<KubeApiMetadata> loadedMetadata, bool clearExisting)
+        {
+            if (loadedMetadata == null)
+                throw new ArgumentNullException(nameof(loadedMetadata));
+
+            lock (_stateLock)
+            {
+                if (clearExisting)
+                    Clear();
+
+                foreach (KubeApiMetadata apiMetadata in loadedMetadata)
+                {
+                    string cacheKey = CreateCacheKey(apiMetadata.Kind, apiMetadata.ApiVersion);
+                    _metadata[cacheKey] = apiMetadata;
+
+                    // Special-case: pluralise the resource kind.
+                    string suffix = String.Empty;
+                    if (apiMetadata.Kind.EndsWith("y"))
+                        suffix = "ies";
+                    else if (!apiMetadata.Kind.EndsWith("s"))
+                        suffix = "s";
+
+                    cacheKey = $"{apiMetadata.Kind}{suffix}";
+                    if (!_metadata.ContainsKey(cacheKey))
+                        _metadata.Add(cacheKey, apiMetadata);
+
+                    // Only cache aliases from preferred API version.
+                    if (apiMetadata.IsPreferredVersion)
+                    {
+                        if (apiMetadata.SingularName != null)
+                            _metadata[apiMetadata.SingularName] = apiMetadata;
+
+                        foreach (string shortName in apiMetadata.ShortNames)
+                            _metadata[shortName] = apiMetadata;
+                    }
+                }
             }
         }
 
