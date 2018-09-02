@@ -17,7 +17,7 @@ namespace KubeClient
         ///     The client configuration API version (should be "v1").
         /// </summary>
         [YamlMember(Alias = "apiVersion")]
-        public string ApiVersion { get; set ;} = "v1";
+        public string ApiVersion { get; set; } = "v1";
 
         /// <summary>
         ///     The client configuration kind (should be "Configuration").
@@ -50,6 +50,22 @@ namespace KubeClient
         public List<UserIdentity> UserIdentities { get; set; } = new List<UserIdentity>();
 
         /// <summary>
+        ///     Locate the full path of the configuration file ~/.kube/config.
+        /// </summary>
+        /// <returns>
+        ///     The full path of the config file.
+        /// </returns>
+        public static string Locate()
+        {
+            string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "HOME";
+            string homeDirectory = Environment.GetEnvironmentVariable(homeDirectoryVariableName);
+            if (String.IsNullOrWhiteSpace(homeDirectory))
+                throw new KubeClientException($"Cannot determine home directory for the current user (environment variable '{homeDirectoryVariableName}' is empty or not defined).");
+
+            return Path.Combine(homeDirectory, ".kube", "config");
+        }
+
+        /// <summary>
         ///     Load and parse configuration from ~/.kube/config.
         /// </summary>
         /// <returns>
@@ -57,14 +73,7 @@ namespace KubeClient
         /// </returns>
         public static K8sConfig Load()
         {
-            string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "HOME";
-            string homeDirectory = Environment.GetEnvironmentVariable(homeDirectoryVariableName);
-            if (String.IsNullOrWhiteSpace(homeDirectory))
-                throw new KubeClientException($"Cannot determine home directory for the current user (environment variable '{homeDirectoryVariableName}' is empty or not defined).");
-
-            return Load(
-                configFile: Path.Combine(homeDirectory, ".kube", "config")
-            );
+            return Load(configFile: Locate());
         }
 
         /// <summary>
@@ -91,7 +100,7 @@ namespace KubeClient
         {
             if (configFile == null)
                 throw new ArgumentNullException(nameof(configFile));
-            
+
             Deserializer deserializer = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .Build();
@@ -142,7 +151,7 @@ namespace KubeClient
         {
             if (kubeClientOptions == null)
                 throw new ArgumentNullException(nameof(kubeClientOptions));
-            
+
             string targetContextName = kubeContextName ?? CurrentContextName;
             if (String.IsNullOrWhiteSpace(targetContextName))
                 throw new InvalidOperationException("The kubeContextName parameter was not specified, and the Kubernetes client configuration does not specify a current context.");
