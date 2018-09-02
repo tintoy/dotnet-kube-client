@@ -9,6 +9,11 @@ namespace KubeClient.Models
     ///     ServiceAccount binds together: * a name, understood by users, and perhaps by peripheral systems, for an identity * a principal that can be authenticated and authorized * a set of secrets
     /// </summary>
     [KubeObject("ServiceAccount", "v1")]
+    [KubeApi("api/v1/namespaces/{namespace}/serviceaccounts", KubeAction.Create, KubeAction.DeleteCollection)]
+    [KubeApi("api/v1/namespaces/{namespace}/serviceaccounts/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/serviceaccounts", KubeAction.List)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/serviceaccounts/{name}", KubeAction.Watch)]
+    [KubeApi("api/v1/watch/serviceaccounts", KubeAction.WatchList)]
     public partial class ServiceAccountV1 : KubeResourceV1
     {
         /// <summary>

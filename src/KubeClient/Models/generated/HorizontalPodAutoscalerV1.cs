@@ -9,6 +9,11 @@ namespace KubeClient.Models
     ///     configuration of a horizontal pod autoscaler.
     /// </summary>
     [KubeObject("HorizontalPodAutoscaler", "v1")]
+    [KubeApi("apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers/{name}", KubeAction.Delete)]
+    [KubeApi("apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("apis/autoscaling/v1/watch/namespaces/{namespace}/horizontalpodautoscalers", KubeAction.WatchList)]
+    [KubeApi("apis/autoscaling/v1/watch/namespaces/{namespace}/horizontalpodautoscalers/{name}", KubeAction.Watch)]
     public partial class HorizontalPodAutoscalerV1 : KubeResourceV1
     {
         /// <summary>

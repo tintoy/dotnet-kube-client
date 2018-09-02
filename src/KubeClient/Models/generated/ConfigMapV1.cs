@@ -9,6 +9,10 @@ namespace KubeClient.Models
     ///     ConfigMap holds configuration data for pods to consume.
     /// </summary>
     [KubeObject("ConfigMap", "v1")]
+    [KubeApi("api/v1/namespaces/{namespace}/configmaps", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("api/v1/namespaces/{namespace}/configmaps/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/configmaps", KubeAction.WatchList)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/configmaps/{name}", KubeAction.Watch)]
     public partial class ConfigMapV1 : KubeResourceV1
     {
         /// <summary>

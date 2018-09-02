@@ -22,6 +22,17 @@ VALUE_TYPE_NAMES = [
     'int',
     'DateTime'
 ]
+KUBE_ACTIONS = {
+    'deletecollection': 'DeleteCollection',
+    'list': 'List',
+    'post': 'Create',
+    'delete': 'Delete',
+    'get': 'Get',
+    'patch': 'Patch',
+    'put': 'Update',
+    'watch': 'Watch',
+    'watchlist': 'WatchList',
+}
 LINE_ENDING = '\n'
 
 
@@ -419,6 +430,37 @@ def parse_properties(models, data_types, definitions):
         model = models[definition_name]
         model.update_properties(properties, data_types)
 
+def parse_apis(api_paths):
+    apis = {}
+
+    for api_path in sorted(api_paths.keys()):
+        api_verbs = api_paths[api_path]
+        for api_verb in sorted(api_verbs.keys()):
+            if api_verb == 'parameters':
+                continue
+
+            api_metadata = api_verbs[api_verb]
+
+            if 'x-kubernetes-action' not in api_metadata or 'x-kubernetes-group-version-kind' not in api_metadata:
+                continue
+
+            action = api_metadata['x-kubernetes-action']
+            resource_metadata = api_metadata['x-kubernetes-group-version-kind']
+            resource_group = resource_metadata['group']
+            resource_api_version = resource_metadata['version']
+            resource_kind = resource_metadata['kind']
+
+            api_key = '{}/{}/{}'.format(resource_group, resource_api_version, resource_kind)
+
+            api = apis.get(api_key)
+            if not api:
+                api = {}
+                apis[api_key] = api
+
+            api[action] = api_path
+
+    return apis
+
 def main():
     try:
         os.stat(BASE_DIRECTORY)
@@ -428,8 +470,10 @@ def main():
     with open('kube-swagger.yml') as kube_swagger_file:
         kube_swagger = yaml.load(kube_swagger_file)
 
-    definitions = kube_swagger["definitions"]
+    paths = kube_swagger["paths"]
+    apis = parse_apis(paths)
 
+    definitions = kube_swagger["definitions"]
     models = parse_models(definitions)
 
     data_types = get_data_types(models)
@@ -442,6 +486,9 @@ def main():
         model = models[definition_name]
         if model.kube_group == 'extensions':
             continue
+
+        resource_api_key = '{}/{}/{}'.format(model.kube_group, model.api_version, model.name)
+        resource_api = apis.get(resource_api_key)
 
         class_file_name = os.path.join(BASE_DIRECTORY, model.clr_name + '.cs')
         with open(class_file_name, 'w') as class_file:
@@ -474,6 +521,30 @@ def main():
                     model.api_version,
                     LINE_ENDING
                 ))
+
+            if model.is_resource() and resource_api:
+                path_actions = {}
+                for action in sorted(resource_api.keys()):
+                    api_path = resource_api[action]
+                    api_action = KUBE_ACTIONS.get(action,
+                        action.capitalize()  # Default
+                    )
+
+                    if api_path not in path_actions:
+                        path_actions[api_path] = []
+
+                    path_actions[api_path].append(
+                        'KubeAction.' + api_action
+                    )
+
+                for api_path in sorted(path_actions.keys()):
+                    api_actions = sorted(path_actions[api_path])
+
+                    class_file.write('    [KubeApi("{0}", {1})]{2}'.format(
+                        api_path.strip('/'),
+                        ', '.join(api_actions),
+                        LINE_ENDING
+                    ))
 
             class_file.write('    public partial class ' + model.clr_name)
             if model.is_resource():

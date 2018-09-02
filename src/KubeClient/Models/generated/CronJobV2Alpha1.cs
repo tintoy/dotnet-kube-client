@@ -9,6 +9,11 @@ namespace KubeClient.Models
     ///     CronJob represents the configuration of a single cron job.
     /// </summary>
     [KubeObject("CronJob", "v2alpha1")]
+    [KubeApi("apis/batch/v2alpha1/namespaces/{namespace}/cronjobs", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}", KubeAction.Delete)]
+    [KubeApi("apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("apis/batch/v2alpha1/watch/namespaces/{namespace}/cronjobs", KubeAction.WatchList)]
+    [KubeApi("apis/batch/v2alpha1/watch/namespaces/{namespace}/cronjobs/{name}", KubeAction.Watch)]
     public partial class CronJobV2Alpha1 : KubeResourceV1
     {
         /// <summary>

@@ -9,6 +9,11 @@ namespace KubeClient.Models
     ///     Secret holds secret data of a certain type. The total bytes of the values in the Data field must be less than MaxSecretSize bytes.
     /// </summary>
     [KubeObject("Secret", "v1")]
+    [KubeApi("api/v1/namespaces/{namespace}/secrets", KubeAction.Create, KubeAction.DeleteCollection)]
+    [KubeApi("api/v1/namespaces/{namespace}/secrets/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/secrets", KubeAction.List)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/secrets/{name}", KubeAction.Watch)]
+    [KubeApi("api/v1/watch/secrets", KubeAction.WatchList)]
     public partial class SecretV1 : KubeResourceV1
     {
         /// <summary>

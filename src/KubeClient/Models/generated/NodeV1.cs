@@ -9,6 +9,13 @@ namespace KubeClient.Models
     ///     Node is a worker node in Kubernetes. Each node will have a unique identifier in the cache (i.e. in etcd).
     /// </summary>
     [KubeObject("Node", "v1")]
+    [KubeApi("api/v1/nodes", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("api/v1/nodes/{name}", KubeAction.Delete)]
+    [KubeApi("api/v1/nodes/{name}/proxy/{path}", KubeAction.Connect)]
+    [KubeApi("api/v1/nodes/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/proxy/nodes/{name}/{path}", KubeAction.Proxy)]
+    [KubeApi("api/v1/watch/nodes", KubeAction.WatchList)]
+    [KubeApi("api/v1/watch/nodes/{name}", KubeAction.Watch)]
     public partial class NodeV1 : KubeResourceV1
     {
         /// <summary>

@@ -9,6 +9,12 @@ namespace KubeClient.Models
     ///     PersistentVolumeClaim is a user's request for and claim to a persistent volume
     /// </summary>
     [KubeObject("PersistentVolumeClaim", "v1")]
+    [KubeApi("api/v1/namespaces/{namespace}/persistentvolumeclaims", KubeAction.Create, KubeAction.DeleteCollection)]
+    [KubeApi("api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}", KubeAction.Delete)]
+    [KubeApi("api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("api/v1/persistentvolumeclaims", KubeAction.List)]
+    [KubeApi("api/v1/watch/namespaces/{namespace}/persistentvolumeclaims/{name}", KubeAction.Watch)]
+    [KubeApi("api/v1/watch/persistentvolumeclaims", KubeAction.WatchList)]
     public partial class PersistentVolumeClaimV1 : KubeResourceV1
     {
         /// <summary>

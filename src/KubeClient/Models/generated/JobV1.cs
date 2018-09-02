@@ -9,6 +9,11 @@ namespace KubeClient.Models
     ///     Job represents the configuration of a single job.
     /// </summary>
     [KubeObject("Job", "v1")]
+    [KubeApi("apis/batch/v1/namespaces/{namespace}/jobs", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/batch/v1/namespaces/{namespace}/jobs/{name}", KubeAction.Delete)]
+    [KubeApi("apis/batch/v1/namespaces/{namespace}/jobs/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("apis/batch/v1/watch/namespaces/{namespace}/jobs", KubeAction.WatchList)]
+    [KubeApi("apis/batch/v1/watch/namespaces/{namespace}/jobs/{name}", KubeAction.Watch)]
     public partial class JobV1 : KubeResourceV1
     {
         /// <summary>

@@ -9,6 +9,11 @@ namespace KubeClient.Models
     ///     Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
     [KubeObject("Deployment", "v1beta1")]
+    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/deployments", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
+    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}", KubeAction.Delete)]
+    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/deployments", KubeAction.WatchList)]
+    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/deployments/{name}", KubeAction.Watch)]
     public partial class DeploymentV1Beta1 : KubeResourceV1
     {
         /// <summary>

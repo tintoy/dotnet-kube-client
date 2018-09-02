@@ -12,6 +12,12 @@ namespace KubeClient.Models
     ///     The StatefulSet guarantees that a given network identity will always map to the same storage identity.
     /// </summary>
     [KubeObject("StatefulSet", "v1beta1")]
+    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/statefulsets", KubeAction.Create, KubeAction.DeleteCollection)]
+    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}", KubeAction.Delete)]
+    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi("apis/apps/v1beta1/statefulsets", KubeAction.List)]
+    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/statefulsets/{name}", KubeAction.Watch)]
+    [KubeApi("apis/apps/v1beta1/watch/statefulsets", KubeAction.WatchList)]
     public partial class StatefulSetV1Beta1 : KubeResourceV1
     {
         /// <summary>
