@@ -92,11 +92,11 @@ namespace KubeClient.ResourceClients
 
             Type modelType = GetModelType(kind, apiVersion);
 
-            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{Name}")
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}")
                 .WithTemplateParameters(new
                 {
-                    Name = name,
-                    Namespace = kubeNamespace
+                    name = name,
+                    @namespace = kubeNamespace
                 });
 
             using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken).ConfigureAwait(false))
@@ -158,7 +158,7 @@ namespace KubeClient.ResourceClients
             Type listModelType = GetListModelType(kind, apiVersion);
 
             HttpRequest request = KubeRequest.Create(apiPath)
-                .WithTemplateParameter("Namespace", kubeNamespace);
+                .WithTemplateParameter("namespace", kubeNamespace);
 
             using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken).ConfigureAwait(false))
             {
@@ -227,11 +227,11 @@ namespace KubeClient.ResourceClients
 
             Type modelType = GetModelType(kind, apiVersion);
 
-            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{Name}")
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}")
                 .WithTemplateParameters(new
                 {
-                    Name = name,
-                    Namespace = kubeNamespace
+                    name = name,
+                    @namespace = kubeNamespace
                 });
 
             using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody: patch, mediaType: PatchMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
@@ -299,6 +299,8 @@ namespace KubeClient.ResourceClients
         /// </returns>
         string GetApiPath(string kind, string apiVersion, bool namespaced)
         {
+            // TODO: Add KubeAction parameter to improve path resolution.
+
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
 

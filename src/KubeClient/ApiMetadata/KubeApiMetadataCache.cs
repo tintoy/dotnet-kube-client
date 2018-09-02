@@ -385,7 +385,7 @@ namespace KubeClient.ApiMetadata
 
                                 if (api.Namespaced)
                                 {
-                                    string namespacedApiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/namespaces/{{Namespace}}/{api.Name}";
+                                    string namespacedApiPath = $"{apiGroupPrefix}/{groupVersion.GroupVersion}/namespaces/{{namespace}}/{api.Name}";
 
                                     apiPaths.Add(
                                         new KubeApiPathMetadata(namespacedApiPath,
