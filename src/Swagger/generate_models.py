@@ -528,29 +528,32 @@ def main():
                 ))
 
             if model.is_resource() and resource_api:
-                path_actions = {}
+                added_annotations = set()
+                action_paths = {}
                 for action in sorted(resource_api.keys()):
                     api_paths = resource_api[action]
-                    api_action = KUBE_ACTIONS.get(action,
+                    api_action = 'KubeAction.' + KUBE_ACTIONS.get(action,
                         action.capitalize()  # Default
                     )
 
                     for api_path in api_paths:
-                        if api_path not in path_actions:
-                            path_actions[api_path] = []
+                        if api_action not in action_paths:
+                            action_paths[api_action] = []
 
-                        path_actions[api_path].append(
-                            'KubeAction.' + api_action
+                        action_paths[api_action].append(api_path)
+
+                for api_action in sorted(action_paths.keys()):
+                    for api_path in sorted(action_paths[api_action]):
+                        annotation = '    [KubeApi({0}, "{1}")]{2}'.format(
+                            api_action,
+                            api_path.strip('/'),
+                            LINE_ENDING
                         )
 
-                for api_path in sorted(path_actions.keys()):
-                    api_actions = sorted(path_actions[api_path])
-
-                    model_annotations.append('    [KubeApi("{0}", {1})]{2}'.format(
-                        api_path.strip('/'),
-                        ', '.join(api_actions),
-                        LINE_ENDING
-                    ))
+                        # Ignore duplicates.
+                        if annotation not in added_annotations:
+                            model_annotations.append(annotation)
+                            added_annotations.add(annotation)
 
             model_annotations.sort(key=len)  # Shorter attributes come first
             for model_annotation in model_annotations:

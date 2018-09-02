@@ -9,12 +9,18 @@ namespace KubeClient.Models
     ///     Namespace provides a scope for Names. Use of multiple namespaces is optional.
     /// </summary>
     [KubeObject("Namespace", "v1")]
-    [KubeApi("api/v1/watch/namespaces", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/namespaces/{name}/finalize", KubeAction.Update)]
-    [KubeApi("api/v1/namespaces", KubeAction.Create, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("api/v1/namespaces/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "api/v1/namespaces")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{name}/status")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{name}/status")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{name}/status")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{name}/finalize")]
     public partial class NamespaceV1 : KubeResourceV1
     {
         /// <summary>

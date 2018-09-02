@@ -12,13 +12,20 @@ namespace KubeClient.Models
     ///     The StatefulSet guarantees that a given network identity will always map to the same storage identity.
     /// </summary>
     [KubeObject("StatefulSet", "v1beta1")]
-    [KubeApi("apis/apps/v1beta1/statefulsets", KubeAction.List)]
-    [KubeApi("apis/apps/v1beta1/watch/statefulsets", KubeAction.WatchList)]
-    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/statefulsets", KubeAction.WatchList)]
-    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/statefulsets/{name}", KubeAction.Watch)]
-    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/statefulsets", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "apis/apps/v1beta1/statefulsets")]
+    [KubeApi(KubeAction.WatchList, "apis/apps/v1beta1/watch/statefulsets")]
+    [KubeApi(KubeAction.List, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets")]
+    [KubeApi(KubeAction.Create, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets")]
+    [KubeApi(KubeAction.Get, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}")]
+    [KubeApi(KubeAction.Update, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/apps/v1beta1/watch/namespaces/{namespace}/statefulsets")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets")]
+    [KubeApi(KubeAction.Get, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/apps/v1beta1/watch/namespaces/{namespace}/statefulsets/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/status")]
     public partial class StatefulSetV1Beta1 : KubeResourceV1
     {
         /// <summary>

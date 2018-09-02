@@ -9,13 +9,20 @@ namespace KubeClient.Models
     ///     Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
     [KubeObject("Deployment", "v1beta1")]
-    [KubeApi("apis/apps/v1beta1/deployments", KubeAction.List)]
-    [KubeApi("apis/apps/v1beta1/watch/deployments", KubeAction.WatchList)]
-    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/deployments", KubeAction.WatchList)]
-    [KubeApi("apis/apps/v1beta1/watch/namespaces/{namespace}/deployments/{name}", KubeAction.Watch)]
-    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/deployments", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "apis/apps/v1beta1/deployments")]
+    [KubeApi(KubeAction.WatchList, "apis/apps/v1beta1/watch/deployments")]
+    [KubeApi(KubeAction.List, "apis/apps/v1beta1/namespaces/{namespace}/deployments")]
+    [KubeApi(KubeAction.Create, "apis/apps/v1beta1/namespaces/{namespace}/deployments")]
+    [KubeApi(KubeAction.Get, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}")]
+    [KubeApi(KubeAction.Update, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/apps/v1beta1/watch/namespaces/{namespace}/deployments")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/apps/v1beta1/namespaces/{namespace}/deployments")]
+    [KubeApi(KubeAction.Get, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/apps/v1beta1/watch/namespaces/{namespace}/deployments/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/status")]
     public partial class DeploymentV1Beta1 : KubeResourceV1
     {
         /// <summary>

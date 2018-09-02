@@ -9,12 +9,17 @@ namespace KubeClient.Models
     ///     Describes a certificate signing request
     /// </summary>
     [KubeObject("CertificateSigningRequest", "v1beta1")]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/watch/certificatesigningrequests", KubeAction.WatchList)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/watch/certificatesigningrequests/{name}", KubeAction.Watch)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/status", KubeAction.Update)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/approval", KubeAction.Update)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests")]
+    [KubeApi(KubeAction.Create, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests")]
+    [KubeApi(KubeAction.Get, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}")]
+    [KubeApi(KubeAction.Update, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/certificates.k8s.io/v1beta1/watch/certificatesigningrequests")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests")]
+    [KubeApi(KubeAction.Watch, "apis/certificates.k8s.io/v1beta1/watch/certificatesigningrequests/{name}")]
+    [KubeApi(KubeAction.Update, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/approval")]
     public partial class CertificateSigningRequestV1Beta1 : KubeResourceV1
     {
         /// <summary>

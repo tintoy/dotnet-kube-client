@@ -9,13 +9,20 @@ namespace KubeClient.Models
     ///     Job represents the configuration of a single job.
     /// </summary>
     [KubeObject("Job", "v1")]
-    [KubeApi("apis/batch/v1/jobs", KubeAction.List)]
-    [KubeApi("apis/batch/v1/watch/jobs", KubeAction.WatchList)]
-    [KubeApi("apis/batch/v1/watch/namespaces/{namespace}/jobs", KubeAction.WatchList)]
-    [KubeApi("apis/batch/v1/watch/namespaces/{namespace}/jobs/{name}", KubeAction.Watch)]
-    [KubeApi("apis/batch/v1/namespaces/{namespace}/jobs", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/batch/v1/namespaces/{namespace}/jobs/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("apis/batch/v1/namespaces/{namespace}/jobs/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "apis/batch/v1/jobs")]
+    [KubeApi(KubeAction.WatchList, "apis/batch/v1/watch/jobs")]
+    [KubeApi(KubeAction.List, "apis/batch/v1/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.Create, "apis/batch/v1/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.Get, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Update, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/batch/v1/watch/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/batch/v1/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.Get, "apis/batch/v1/namespaces/{namespace}/jobs/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/batch/v1/watch/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/batch/v1/namespaces/{namespace}/jobs/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/batch/v1/namespaces/{namespace}/jobs/{name}/status")]
     public partial class JobV1 : KubeResourceV1
     {
         /// <summary>

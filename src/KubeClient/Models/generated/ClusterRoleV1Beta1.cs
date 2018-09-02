@@ -9,10 +9,15 @@ namespace KubeClient.Models
     ///     ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.
     /// </summary>
     [KubeObject("ClusterRole", "v1beta1")]
-    [KubeApi("apis/rbac.authorization.k8s.io/v1beta1/watch/clusterroles", KubeAction.WatchList)]
-    [KubeApi("apis/rbac.authorization.k8s.io/v1beta1/watch/clusterroles/{name}", KubeAction.Watch)]
-    [KubeApi("apis/rbac.authorization.k8s.io/v1beta1/clusterroles", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/rbac.authorization.k8s.io/v1beta1/clusterroles/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles")]
+    [KubeApi(KubeAction.Create, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles")]
+    [KubeApi(KubeAction.Get, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles/{name}")]
+    [KubeApi(KubeAction.Update, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/rbac.authorization.k8s.io/v1beta1/watch/clusterroles")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/rbac.authorization.k8s.io/v1beta1/clusterroles")]
+    [KubeApi(KubeAction.Watch, "apis/rbac.authorization.k8s.io/v1beta1/watch/clusterroles/{name}")]
     public partial class ClusterRoleV1Beta1 : KubeResourceV1
     {
         /// <summary>

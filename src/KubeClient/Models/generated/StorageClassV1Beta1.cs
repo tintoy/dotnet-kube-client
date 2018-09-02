@@ -11,10 +11,15 @@ namespace KubeClient.Models
     ///     StorageClasses are non-namespaced; the name of the storage class according to etcd is in ObjectMeta.Name.
     /// </summary>
     [KubeObject("StorageClass", "v1beta1")]
-    [KubeApi("apis/storage.k8s.io/v1beta1/watch/storageclasses", KubeAction.WatchList)]
-    [KubeApi("apis/storage.k8s.io/v1beta1/watch/storageclasses/{name}", KubeAction.Watch)]
-    [KubeApi("apis/storage.k8s.io/v1beta1/storageclasses", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("apis/storage.k8s.io/v1beta1/storageclasses/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "apis/storage.k8s.io/v1beta1/storageclasses")]
+    [KubeApi(KubeAction.Create, "apis/storage.k8s.io/v1beta1/storageclasses")]
+    [KubeApi(KubeAction.Get, "apis/storage.k8s.io/v1beta1/storageclasses/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/storage.k8s.io/v1beta1/storageclasses/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/storage.k8s.io/v1beta1/storageclasses/{name}")]
+    [KubeApi(KubeAction.Update, "apis/storage.k8s.io/v1beta1/storageclasses/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/storage.k8s.io/v1beta1/watch/storageclasses")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/storage.k8s.io/v1beta1/storageclasses")]
+    [KubeApi(KubeAction.Watch, "apis/storage.k8s.io/v1beta1/watch/storageclasses/{name}")]
     public partial class StorageClassV1Beta1 : KubeResourceV1
     {
         /// <summary>

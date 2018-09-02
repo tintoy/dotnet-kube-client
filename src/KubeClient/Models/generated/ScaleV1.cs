@@ -9,7 +9,9 @@ namespace KubeClient.Models
     ///     Scale represents a scaling request for a resource.
     /// </summary>
     [KubeObject("Scale", "v1")]
-    [KubeApi("api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale")]
     public partial class ScaleV1 : KubeResourceV1
     {
         /// <summary>

@@ -9,15 +9,22 @@ namespace KubeClient.Models
     ///     Node is a worker node in Kubernetes. Each node will have a unique identifier in the cache (i.e. in etcd).
     /// </summary>
     [KubeObject("Node", "v1")]
-    [KubeApi("api/v1/watch/nodes", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/nodes/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/nodes", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/nodes/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("api/v1/nodes/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("api/v1/proxy/nodes/{name}", KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy)]
-    [KubeApi("api/v1/proxy/nodes/{name}/{path}", KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy, KubeAction.Proxy)]
-    [KubeApi("api/v1/nodes/{name}/proxy", KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect)]
-    [KubeApi("api/v1/nodes/{name}/proxy/{path}", KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect, KubeAction.Connect)]
+    [KubeApi(KubeAction.List, "api/v1/nodes")]
+    [KubeApi(KubeAction.Create, "api/v1/nodes")]
+    [KubeApi(KubeAction.Get, "api/v1/nodes/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/nodes/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/nodes/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/nodes/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/nodes")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/nodes")]
+    [KubeApi(KubeAction.Get, "api/v1/nodes/{name}/status")]
+    [KubeApi(KubeAction.Proxy, "api/v1/proxy/nodes/{name}")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/nodes/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/nodes/{name}/status")]
+    [KubeApi(KubeAction.Connect, "api/v1/nodes/{name}/proxy")]
+    [KubeApi(KubeAction.Update, "api/v1/nodes/{name}/status")]
+    [KubeApi(KubeAction.Proxy, "api/v1/proxy/nodes/{name}/{path}")]
+    [KubeApi(KubeAction.Connect, "api/v1/nodes/{name}/proxy/{path}")]
     public partial class NodeV1 : KubeResourceV1
     {
         /// <summary>

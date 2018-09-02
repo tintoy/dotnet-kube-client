@@ -9,12 +9,17 @@ namespace KubeClient.Models
     ///     ConfigMap holds configuration data for pods to consume.
     /// </summary>
     [KubeObject("ConfigMap", "v1")]
-    [KubeApi("api/v1/configmaps", KubeAction.List)]
-    [KubeApi("api/v1/watch/configmaps", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/configmaps", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/configmaps/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/namespaces/{namespace}/configmaps", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{namespace}/configmaps/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "api/v1/configmaps")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/configmaps")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/configmaps")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/configmaps")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/configmaps/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/configmaps/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/configmaps/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/configmaps/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/configmaps")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/configmaps")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/configmaps/{name}")]
     public partial class ConfigMapV1 : KubeResourceV1
     {
         /// <summary>

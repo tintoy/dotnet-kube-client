@@ -20,12 +20,17 @@ namespace KubeClient.Models
     ///      ]
     /// </summary>
     [KubeObject("Endpoints", "v1")]
-    [KubeApi("api/v1/endpoints", KubeAction.List)]
-    [KubeApi("api/v1/watch/endpoints", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/endpoints", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/endpoints/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/namespaces/{namespace}/endpoints", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{namespace}/endpoints/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "api/v1/endpoints")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/endpoints")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/endpoints/{name}")]
     public partial class EndpointsV1 : KubeResourceV1
     {
         /// <summary>

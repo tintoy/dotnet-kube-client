@@ -9,13 +9,20 @@ namespace KubeClient.Models
     ///     ResourceQuota sets aggregate quota restrictions enforced per namespace
     /// </summary>
     [KubeObject("ResourceQuota", "v1")]
-    [KubeApi("api/v1/resourcequotas", KubeAction.List)]
-    [KubeApi("api/v1/watch/resourcequotas", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/resourcequotas", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/resourcequotas/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/namespaces/{namespace}/resourcequotas", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{namespace}/resourcequotas/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("api/v1/namespaces/{namespace}/resourcequotas/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "api/v1/resourcequotas")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/resourcequotas")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/resourcequotas/{name}/status")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/resourcequotas/{name}/status")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/resourcequotas/{name}/status")]
     public partial class ResourceQuotaV1 : KubeResourceV1
     {
         /// <summary>

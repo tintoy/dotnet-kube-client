@@ -9,12 +9,17 @@ namespace KubeClient.Models
     ///     ServiceAccount binds together: * a name, understood by users, and perhaps by peripheral systems, for an identity * a principal that can be authenticated and authorized * a set of secrets
     /// </summary>
     [KubeObject("ServiceAccount", "v1")]
-    [KubeApi("api/v1/serviceaccounts", KubeAction.List)]
-    [KubeApi("api/v1/watch/serviceaccounts", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/serviceaccounts", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/serviceaccounts/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/namespaces/{namespace}/serviceaccounts", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{namespace}/serviceaccounts/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "api/v1/serviceaccounts")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/serviceaccounts")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/serviceaccounts")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/serviceaccounts")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/serviceaccounts/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/serviceaccounts/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/serviceaccounts/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/serviceaccounts/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/serviceaccounts")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/serviceaccounts")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/serviceaccounts/{name}")]
     public partial class ServiceAccountV1 : KubeResourceV1
     {
         /// <summary>

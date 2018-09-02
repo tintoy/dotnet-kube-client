@@ -9,13 +9,20 @@ namespace KubeClient.Models
     ///     PersistentVolumeClaim is a user's request for and claim to a persistent volume
     /// </summary>
     [KubeObject("PersistentVolumeClaim", "v1")]
-    [KubeApi("api/v1/persistentvolumeclaims", KubeAction.List)]
-    [KubeApi("api/v1/watch/persistentvolumeclaims", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/persistentvolumeclaims", KubeAction.WatchList)]
-    [KubeApi("api/v1/watch/namespaces/{namespace}/persistentvolumeclaims/{name}", KubeAction.Watch)]
-    [KubeApi("api/v1/namespaces/{namespace}/persistentvolumeclaims", KubeAction.Create, KubeAction.DeleteCollection, KubeAction.List)]
-    [KubeApi("api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}/status", KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
-    [KubeApi("api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}", KubeAction.Delete, KubeAction.Get, KubeAction.Patch, KubeAction.Update)]
+    [KubeApi(KubeAction.List, "api/v1/persistentvolumeclaims")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/persistentvolumeclaims")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/persistentvolumeclaims")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/persistentvolumeclaims")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/persistentvolumeclaims")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/persistentvolumeclaims")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}/status")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/persistentvolumeclaims/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}/status")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}/status")]
     public partial class PersistentVolumeClaimV1 : KubeResourceV1
     {
         /// <summary>
