@@ -8,6 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     Status of all the conditions for the component as a list of ComponentStatus objects.
     /// </summary>
+    [KubeListItem("ComponentStatus", "v1")]
+    [KubeObject("ComponentStatusList", "v1")]
     public partial class ComponentStatusListV1 : KubeResourceListV1<ComponentStatusV1>
     {
         /// <summary>

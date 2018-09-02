@@ -8,6 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     list of horizontal pod autoscaler objects.
     /// </summary>
+    [KubeListItem("HorizontalPodAutoscaler", "v1")]
+    [KubeObject("HorizontalPodAutoscalerList", "v1")]
     public partial class HorizontalPodAutoscalerListV1 : KubeResourceListV1<HorizontalPodAutoscalerV1>
     {
         /// <summary>

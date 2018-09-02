@@ -8,6 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     JobList is a collection of jobs.
     /// </summary>
+    [KubeListItem("Job", "v1")]
+    [KubeObject("JobList", "v1")]
     public partial class JobListV1 : KubeResourceListV1<JobV1>
     {
         /// <summary>

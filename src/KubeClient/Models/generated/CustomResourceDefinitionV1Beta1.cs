@@ -8,6 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     CustomResourceDefinition represents a resource that should be exposed on the API server.  Its name MUST be in the format &lt;.spec.name&gt;.&lt;.spec.group&gt;.
     /// </summary>
+    [KubeObject("CustomResourceDefinition", "v1beta1")]
     public partial class CustomResourceDefinitionV1Beta1 : KubeResourceV1
     {
         /// <summary>

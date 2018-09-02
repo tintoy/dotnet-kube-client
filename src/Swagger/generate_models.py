@@ -552,9 +552,9 @@ def main():
                         LINE_ENDING
                     ))
 
-                model_annotations.sort(key=len)
-                for model_annotation in model_annotations:
-                    class_file.write(model_annotation)
+            model_annotations.sort(key=len)  # Shorter attributes come first
+            for model_annotation in model_annotations:
+                class_file.write(model_annotation)
 
             class_file.write('    public partial class ' + model.clr_name)
             if model.is_resource():
