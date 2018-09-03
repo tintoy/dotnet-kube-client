@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class ExternalMetricSourceV2Beta1
     {
         /// <summary>
-        ///     metricName is the name of the metric in question.
-        /// </summary>
-        [JsonProperty("metricName")]
-        [YamlMember(Alias = "metricName")]
-        public string MetricName { get; set; }
-
-        /// <summary>
         ///     targetAverageValue is the target per-pod value of global metric (as a quantity). Mutually exclusive with TargetValue.
         /// </summary>
         [JsonProperty("targetAverageValue")]
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [JsonProperty("metricSelector")]
         [YamlMember(Alias = "metricSelector")]
         public LabelSelectorV1 MetricSelector { get; set; }
+
+        /// <summary>
+        ///     metricName is the name of the metric in question.
+        /// </summary>
+        [JsonProperty("metricName")]
+        [YamlMember(Alias = "metricName")]
+        public string MetricName { get; set; }
     }
 }

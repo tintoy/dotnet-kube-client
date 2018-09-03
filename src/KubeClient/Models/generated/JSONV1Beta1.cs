@@ -10,5 +10,11 @@ namespace KubeClient.Models
     /// </summary>
     public partial class JSONV1Beta1
     {
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("Raw")]
+        [YamlMember(Alias = "Raw")]
+        public string Raw { get; set; }
     }
 }

@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class ReplicaSetSpecV1Beta1
     {
         /// <summary>
+        ///     Template is the object that describes the pod that will be created if insufficient replicas are detected. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template
+        /// </summary>
+        [JsonProperty("template")]
+        [YamlMember(Alias = "template")]
+        public PodTemplateSpecV1 Template { get; set; }
+
+        /// <summary>
         ///     Minimum number of seconds for which a newly created pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready)
         /// </summary>
         [JsonProperty("minReadySeconds")]
@@ -30,12 +37,5 @@ namespace KubeClient.Models
         [JsonProperty("replicas")]
         [YamlMember(Alias = "replicas")]
         public int Replicas { get; set; }
-
-        /// <summary>
-        ///     Template is the object that describes the pod that will be created if insufficient replicas are detected. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template
-        /// </summary>
-        [JsonProperty("template")]
-        [YamlMember(Alias = "template")]
-        public PodTemplateSpecV1 Template { get; set; }
     }
 }

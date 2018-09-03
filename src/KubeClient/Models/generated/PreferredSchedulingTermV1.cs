@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class PreferredSchedulingTermV1
     {
         /// <summary>
-        ///     Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
-        /// </summary>
-        [JsonProperty("weight")]
-        [YamlMember(Alias = "weight")]
-        public int Weight { get; set; }
-
-        /// <summary>
         ///     A node selector term, associated with the corresponding weight.
         /// </summary>
         [JsonProperty("preference")]
         [YamlMember(Alias = "preference")]
         public NodeSelectorTermV1 Preference { get; set; }
+
+        /// <summary>
+        ///     Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+        /// </summary>
+        [JsonProperty("weight")]
+        [YamlMember(Alias = "weight")]
+        public int Weight { get; set; }
     }
 }

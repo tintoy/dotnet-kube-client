@@ -18,11 +18,11 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
+        ///     Optional: points to a secret object containing parameters used to connect to OpenStack.
         /// </summary>
-        [JsonProperty("readOnly")]
-        [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public SecretReferenceV1 SecretRef { get; set; }
 
         /// <summary>
         ///     volume id used to identify the volume in cinder More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
@@ -32,10 +32,10 @@ namespace KubeClient.Models
         public string VolumeID { get; set; }
 
         /// <summary>
-        ///     Optional: points to a secret object containing parameters used to connect to OpenStack.
+        ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
         /// </summary>
-        [JsonProperty("secretRef")]
-        [YamlMember(Alias = "secretRef")]
-        public SecretReferenceV1 SecretRef { get; set; }
+        [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
+        public bool ReadOnly { get; set; }
     }
 }

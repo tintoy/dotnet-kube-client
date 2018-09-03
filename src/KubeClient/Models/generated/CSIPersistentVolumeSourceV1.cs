@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     NodeStageSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeStageVolume and NodeStageVolume and NodeUnstageVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
-        /// </summary>
-        [JsonProperty("nodeStageSecretRef")]
-        [YamlMember(Alias = "nodeStageSecretRef")]
-        public SecretReferenceV1 NodeStageSecretRef { get; set; }
-
-        /// <summary>
         ///     VolumeHandle is the unique volume name returned by the CSI volume plugin’s CreateVolume to refer to the volume on all subsequent calls. Required.
         /// </summary>
         [JsonProperty("volumeHandle")]
@@ -39,11 +32,11 @@ namespace KubeClient.Models
         public string Driver { get; set; }
 
         /// <summary>
-        ///     Attributes of the volume to publish.
+        ///     NodeStageSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeStageVolume and NodeStageVolume and NodeUnstageVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
         /// </summary>
-        [YamlMember(Alias = "volumeAttributes")]
-        [JsonProperty("volumeAttributes", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> VolumeAttributes { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("nodeStageSecretRef")]
+        [YamlMember(Alias = "nodeStageSecretRef")]
+        public SecretReferenceV1 NodeStageSecretRef { get; set; }
 
         /// <summary>
         ///     ControllerPublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and ControllerUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
@@ -51,6 +44,13 @@ namespace KubeClient.Models
         [JsonProperty("controllerPublishSecretRef")]
         [YamlMember(Alias = "controllerPublishSecretRef")]
         public SecretReferenceV1 ControllerPublishSecretRef { get; set; }
+
+        /// <summary>
+        ///     Attributes of the volume to publish.
+        /// </summary>
+        [YamlMember(Alias = "volumeAttributes")]
+        [JsonProperty("volumeAttributes", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> VolumeAttributes { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     Optional: The value to pass to ControllerPublishVolumeRequest. Defaults to false (read/write).

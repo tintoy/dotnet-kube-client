@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class NetworkPolicyPeerV1
     {
         /// <summary>
+        ///     IPBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+        /// </summary>
+        [JsonProperty("ipBlock")]
+        [YamlMember(Alias = "ipBlock")]
+        public IPBlockV1 IpBlock { get; set; }
+
+        /// <summary>
         ///     Selects Namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
         ///     
         ///     If PodSelector is also set, then the NetworkPolicyPeer as a whole selects the Pods matching PodSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects all Pods in the Namespaces selected by NamespaceSelector.
@@ -27,12 +34,5 @@ namespace KubeClient.Models
         [JsonProperty("podSelector")]
         [YamlMember(Alias = "podSelector")]
         public LabelSelectorV1 PodSelector { get; set; }
-
-        /// <summary>
-        ///     IPBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
-        /// </summary>
-        [JsonProperty("ipBlock")]
-        [YamlMember(Alias = "ipBlock")]
-        public IPBlockV1 IpBlock { get; set; }
     }
 }

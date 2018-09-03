@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class IngressBackendV1Beta1
     {
         /// <summary>
-        ///     Specifies the name of the referenced service.
-        /// </summary>
-        [JsonProperty("serviceName")]
-        [YamlMember(Alias = "serviceName")]
-        public string ServiceName { get; set; }
-
-        /// <summary>
         ///     Specifies the port of the referenced service.
         /// </summary>
         [JsonProperty("servicePort")]
         [YamlMember(Alias = "servicePort")]
         public string ServicePort { get; set; }
+
+        /// <summary>
+        ///     Specifies the name of the referenced service.
+        /// </summary>
+        [JsonProperty("serviceName")]
+        [YamlMember(Alias = "serviceName")]
+        public string ServiceName { get; set; }
     }
 }

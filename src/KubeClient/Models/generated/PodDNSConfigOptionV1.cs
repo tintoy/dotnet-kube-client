@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class PodDNSConfigOptionV1
     {
         /// <summary>
-        ///     Description not provided.
-        /// </summary>
-        [JsonProperty("value")]
-        [YamlMember(Alias = "value")]
-        public string Value { get; set; }
-
-        /// <summary>
         ///     Required.
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("value")]
+        [YamlMember(Alias = "value")]
+        public string Value { get; set; }
     }
 }

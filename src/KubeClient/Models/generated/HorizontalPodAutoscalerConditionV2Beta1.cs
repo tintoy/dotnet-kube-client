@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class HorizontalPodAutoscalerConditionV2Beta1
     {
         /// <summary>
+        ///     status is the status of the condition (True, False, Unknown)
+        /// </summary>
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
+
+        /// <summary>
         ///     lastTransitionTime is the last time the condition transitioned from one status to another
         /// </summary>
         [JsonProperty("lastTransitionTime")]
         [YamlMember(Alias = "lastTransitionTime")]
         public DateTime? LastTransitionTime { get; set; }
-
-        /// <summary>
-        ///     type describes the current condition
-        /// </summary>
-        [JsonProperty("type")]
-        [YamlMember(Alias = "type")]
-        public string Type { get; set; }
 
         /// <summary>
         ///     reason is the reason for the condition's last transition.
@@ -32,11 +32,11 @@ namespace KubeClient.Models
         public string Reason { get; set; }
 
         /// <summary>
-        ///     status is the status of the condition (True, False, Unknown)
+        ///     type describes the current condition
         /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
+        [JsonProperty("type")]
+        [YamlMember(Alias = "type")]
+        public string Type { get; set; }
 
         /// <summary>
         ///     message is a human-readable explanation containing details about the transition

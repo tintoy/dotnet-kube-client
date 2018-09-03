@@ -11,20 +11,6 @@ namespace KubeClient.Models
     public partial class ExternalMetricStatusV2Beta1
     {
         /// <summary>
-        ///     currentValue is the current value of the metric (as a quantity)
-        /// </summary>
-        [JsonProperty("currentValue")]
-        [YamlMember(Alias = "currentValue")]
-        public string CurrentValue { get; set; }
-
-        /// <summary>
-        ///     currentAverageValue is the current value of metric averaged over autoscaled pods.
-        /// </summary>
-        [JsonProperty("currentAverageValue")]
-        [YamlMember(Alias = "currentAverageValue")]
-        public string CurrentAverageValue { get; set; }
-
-        /// <summary>
         ///     metricName is the name of a metric used for autoscaling in metric system.
         /// </summary>
         [JsonProperty("metricName")]
@@ -37,5 +23,19 @@ namespace KubeClient.Models
         [JsonProperty("metricSelector")]
         [YamlMember(Alias = "metricSelector")]
         public LabelSelectorV1 MetricSelector { get; set; }
+
+        /// <summary>
+        ///     currentAverageValue is the current value of metric averaged over autoscaled pods.
+        /// </summary>
+        [JsonProperty("currentAverageValue")]
+        [YamlMember(Alias = "currentAverageValue")]
+        public string CurrentAverageValue { get; set; }
+
+        /// <summary>
+        ///     currentValue is the current value of the metric (as a quantity)
+        /// </summary>
+        [JsonProperty("currentValue")]
+        [YamlMember(Alias = "currentValue")]
+        public string CurrentValue { get; set; }
     }
 }

@@ -11,11 +11,25 @@ namespace KubeClient.Models
     public partial class ResourceAttributesV1
     {
         /// <summary>
+        ///     Resource is one of the existing resource types.  "*" means all.
+        /// </summary>
+        [JsonProperty("resource")]
+        [YamlMember(Alias = "resource")]
+        public string Resource { get; set; }
+
+        /// <summary>
         ///     Namespace is the namespace of the action being requested.  Currently, there is no distinction between no namespace and all namespaces "" (empty) is defaulted for LocalSubjectAccessReviews "" (empty) is empty for cluster-scoped resources "" (empty) means "all" for namespace scoped resources from a SubjectAccessReview or SelfSubjectAccessReview
         /// </summary>
         [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
         public string Namespace { get; set; }
+
+        /// <summary>
+        ///     Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
+        /// </summary>
+        [JsonProperty("verb")]
+        [YamlMember(Alias = "verb")]
+        public string Verb { get; set; }
 
         /// <summary>
         ///     Subresource is one of the existing resource types.  "" means none.
@@ -32,20 +46,6 @@ namespace KubeClient.Models
         public string Name { get; set; }
 
         /// <summary>
-        ///     Resource is one of the existing resource types.  "*" means all.
-        /// </summary>
-        [JsonProperty("resource")]
-        [YamlMember(Alias = "resource")]
-        public string Resource { get; set; }
-
-        /// <summary>
-        ///     Group is the API Group of the Resource.  "*" means all.
-        /// </summary>
-        [JsonProperty("group")]
-        [YamlMember(Alias = "group")]
-        public string Group { get; set; }
-
-        /// <summary>
         ///     Version is the API Version of the Resource.  "*" means all.
         /// </summary>
         [JsonProperty("version")]
@@ -53,10 +53,10 @@ namespace KubeClient.Models
         public string Version { get; set; }
 
         /// <summary>
-        ///     Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
+        ///     Group is the API Group of the Resource.  "*" means all.
         /// </summary>
-        [JsonProperty("verb")]
-        [YamlMember(Alias = "verb")]
-        public string Verb { get; set; }
+        [JsonProperty("group")]
+        [YamlMember(Alias = "group")]
+        public string Group { get; set; }
     }
 }

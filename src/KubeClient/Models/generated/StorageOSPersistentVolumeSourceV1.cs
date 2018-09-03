@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     VolumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
-        /// </summary>
-        [JsonProperty("volumeNamespace")]
-        [YamlMember(Alias = "volumeNamespace")]
-        public string VolumeNamespace { get; set; }
-
-        /// <summary>
         ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
         [JsonProperty("readOnly")]
@@ -32,11 +25,11 @@ namespace KubeClient.Models
         public bool ReadOnly { get; set; }
 
         /// <summary>
-        ///     SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+        ///     VolumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
         /// </summary>
-        [JsonProperty("secretRef")]
-        [YamlMember(Alias = "secretRef")]
-        public ObjectReferenceV1 SecretRef { get; set; }
+        [JsonProperty("volumeNamespace")]
+        [YamlMember(Alias = "volumeNamespace")]
+        public string VolumeNamespace { get; set; }
 
         /// <summary>
         ///     VolumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
@@ -44,5 +37,12 @@ namespace KubeClient.Models
         [JsonProperty("volumeName")]
         [YamlMember(Alias = "volumeName")]
         public string VolumeName { get; set; }
+
+        /// <summary>
+        ///     SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+        /// </summary>
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public ObjectReferenceV1 SecretRef { get; set; }
     }
 }

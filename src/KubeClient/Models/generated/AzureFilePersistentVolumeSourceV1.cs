@@ -11,18 +11,11 @@ namespace KubeClient.Models
     public partial class AzureFilePersistentVolumeSourceV1
     {
         /// <summary>
-        ///     the name of secret that contains Azure Storage Account Name and Key
+        ///     Share Name
         /// </summary>
-        [JsonProperty("secretName")]
-        [YamlMember(Alias = "secretName")]
-        public string SecretName { get; set; }
-
-        /// <summary>
-        ///     the namespace of the secret that contains Azure Storage Account Name and Key default is the same as the Pod
-        /// </summary>
-        [JsonProperty("secretNamespace")]
-        [YamlMember(Alias = "secretNamespace")]
-        public string SecretNamespace { get; set; }
+        [JsonProperty("shareName")]
+        [YamlMember(Alias = "shareName")]
+        public string ShareName { get; set; }
 
         /// <summary>
         ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
@@ -32,10 +25,17 @@ namespace KubeClient.Models
         public bool ReadOnly { get; set; }
 
         /// <summary>
-        ///     Share Name
+        ///     the namespace of the secret that contains Azure Storage Account Name and Key default is the same as the Pod
         /// </summary>
-        [JsonProperty("shareName")]
-        [YamlMember(Alias = "shareName")]
-        public string ShareName { get; set; }
+        [JsonProperty("secretNamespace")]
+        [YamlMember(Alias = "secretNamespace")]
+        public string SecretNamespace { get; set; }
+
+        /// <summary>
+        ///     the name of secret that contains Azure Storage Account Name and Key
+        /// </summary>
+        [JsonProperty("secretName")]
+        [YamlMember(Alias = "secretName")]
+        public string SecretName { get; set; }
     }
 }

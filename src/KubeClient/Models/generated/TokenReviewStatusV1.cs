@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class TokenReviewStatusV1
     {
         /// <summary>
-        ///     Error indicates that the token couldn't be checked
+        ///     Authenticated indicates that the token was associated with a known user.
         /// </summary>
-        [JsonProperty("error")]
-        [YamlMember(Alias = "error")]
-        public string Error { get; set; }
+        [JsonProperty("authenticated")]
+        [YamlMember(Alias = "authenticated")]
+        public bool Authenticated { get; set; }
 
         /// <summary>
         ///     User is the UserInfo associated with the provided token.
@@ -25,10 +25,10 @@ namespace KubeClient.Models
         public UserInfoV1 User { get; set; }
 
         /// <summary>
-        ///     Authenticated indicates that the token was associated with a known user.
+        ///     Error indicates that the token couldn't be checked
         /// </summary>
-        [JsonProperty("authenticated")]
-        [YamlMember(Alias = "authenticated")]
-        public bool Authenticated { get; set; }
+        [JsonProperty("error")]
+        [YamlMember(Alias = "error")]
+        public string Error { get; set; }
     }
 }

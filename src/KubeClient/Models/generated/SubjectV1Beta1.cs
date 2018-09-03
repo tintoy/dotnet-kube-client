@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class SubjectV1Beta1
     {
         /// <summary>
+        ///     Name of the object being referenced.
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
+
+        /// <summary>
         ///     Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
         /// </summary>
         [JsonProperty("namespace")]
@@ -30,12 +37,5 @@ namespace KubeClient.Models
         [JsonProperty("apiGroup")]
         [YamlMember(Alias = "apiGroup")]
         public string ApiGroup { get; set; }
-
-        /// <summary>
-        ///     Name of the object being referenced.
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
     }
 }

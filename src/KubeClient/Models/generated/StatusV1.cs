@@ -33,17 +33,17 @@ namespace KubeClient.Models
         public string Reason { get; set; }
 
         /// <summary>
-        ///     Suggested HTTP return code for this status, 0 if not set.
-        /// </summary>
-        [JsonProperty("code")]
-        [YamlMember(Alias = "code")]
-        public int Code { get; set; }
-
-        /// <summary>
         ///     A human-readable description of the status of this operation.
         /// </summary>
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
         public string Message { get; set; }
+
+        /// <summary>
+        ///     Suggested HTTP return code for this status, 0 if not set.
+        /// </summary>
+        [JsonProperty("code")]
+        [YamlMember(Alias = "code")]
+        public int Code { get; set; }
     }
 }

@@ -11,17 +11,24 @@ namespace KubeClient.Models
     public partial class ServiceReferenceV1Beta1
     {
         /// <summary>
-        ///     Namespace is the namespace of the service
+        ///     `path` is an optional URL path which will be sent in any request to this service.
         /// </summary>
-        [JsonProperty("namespace")]
-        [YamlMember(Alias = "namespace")]
-        public string Namespace { get; set; }
+        [JsonProperty("path")]
+        [YamlMember(Alias = "path")]
+        public string Path { get; set; }
 
         /// <summary>
-        ///     Name is the name of the service
+        ///     `name` is the name of the service. Required
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     `namespace` is the namespace of the service. Required
+        /// </summary>
+        [JsonProperty("namespace")]
+        [YamlMember(Alias = "namespace")]
+        public string Namespace { get; set; }
     }
 }

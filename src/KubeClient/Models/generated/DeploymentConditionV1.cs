@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     The last time this condition was updated.
-        /// </summary>
-        [JsonProperty("lastUpdateTime")]
-        [YamlMember(Alias = "lastUpdateTime")]
-        public DateTime? LastUpdateTime { get; set; }
-
-        /// <summary>
         ///     Type of deployment condition.
         /// </summary>
         [JsonProperty("type")]
@@ -32,11 +25,11 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     The reason for the condition's last transition.
+        ///     The last time this condition was updated.
         /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
+        [JsonProperty("lastUpdateTime")]
+        [YamlMember(Alias = "lastUpdateTime")]
+        public DateTime? LastUpdateTime { get; set; }
 
         /// <summary>
         ///     Status of the condition, one of True, False, Unknown.
@@ -44,6 +37,13 @@ namespace KubeClient.Models
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     The reason for the condition's last transition.
+        /// </summary>
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
 
         /// <summary>
         ///     A human readable message indicating details about the transition.

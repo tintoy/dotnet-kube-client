@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public string Effect { get; set; }
 
         /// <summary>
+        ///     Required. The taint key to be applied to a node.
+        /// </summary>
+        [JsonProperty("key")]
+        [YamlMember(Alias = "key")]
+        public string Key { get; set; }
+
+        /// <summary>
         ///     TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
         /// </summary>
         [JsonProperty("timeAdded")]
@@ -30,12 +37,5 @@ namespace KubeClient.Models
         [JsonProperty("value")]
         [YamlMember(Alias = "value")]
         public string Value { get; set; }
-
-        /// <summary>
-        ///     Required. The taint key to be applied to a node.
-        /// </summary>
-        [JsonProperty("key")]
-        [YamlMember(Alias = "key")]
-        public string Key { get; set; }
     }
 }

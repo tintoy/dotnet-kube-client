@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class VsphereVirtualDiskVolumeSourceV1
     {
         /// <summary>
-        ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-        /// </summary>
-        [JsonProperty("fsType")]
-        [YamlMember(Alias = "fsType")]
-        public string FsType { get; set; }
-
-        /// <summary>
         ///     Storage Policy Based Management (SPBM) profile name.
         /// </summary>
         [JsonProperty("storagePolicyName")]
@@ -25,11 +18,11 @@ namespace KubeClient.Models
         public string StoragePolicyName { get; set; }
 
         /// <summary>
-        ///     Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+        ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
         /// </summary>
-        [JsonProperty("storagePolicyID")]
-        [YamlMember(Alias = "storagePolicyID")]
-        public string StoragePolicyID { get; set; }
+        [JsonProperty("fsType")]
+        [YamlMember(Alias = "fsType")]
+        public string FsType { get; set; }
 
         /// <summary>
         ///     Path that identifies vSphere volume vmdk
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [JsonProperty("volumePath")]
         [YamlMember(Alias = "volumePath")]
         public string VolumePath { get; set; }
+
+        /// <summary>
+        ///     Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+        /// </summary>
+        [JsonProperty("storagePolicyID")]
+        [YamlMember(Alias = "storagePolicyID")]
+        public string StoragePolicyID { get; set; }
     }
 }

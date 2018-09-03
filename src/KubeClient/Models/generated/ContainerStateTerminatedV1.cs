@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class ContainerStateTerminatedV1
     {
         /// <summary>
-        ///     Exit status from the last termination of the container
-        /// </summary>
-        [JsonProperty("exitCode")]
-        [YamlMember(Alias = "exitCode")]
-        public int ExitCode { get; set; }
-
-        /// <summary>
         ///     Time at which the container last terminated
         /// </summary>
         [JsonProperty("finishedAt")]
@@ -25,18 +18,18 @@ namespace KubeClient.Models
         public DateTime? FinishedAt { get; set; }
 
         /// <summary>
+        ///     Exit status from the last termination of the container
+        /// </summary>
+        [JsonProperty("exitCode")]
+        [YamlMember(Alias = "exitCode")]
+        public int ExitCode { get; set; }
+
+        /// <summary>
         ///     Signal from the last termination of the container
         /// </summary>
         [JsonProperty("signal")]
         [YamlMember(Alias = "signal")]
         public int Signal { get; set; }
-
-        /// <summary>
-        ///     Time at which previous execution of the container started
-        /// </summary>
-        [JsonProperty("startedAt")]
-        [YamlMember(Alias = "startedAt")]
-        public DateTime? StartedAt { get; set; }
 
         /// <summary>
         ///     Container's ID in the format 'docker://&lt;container_id&gt;'
@@ -51,6 +44,13 @@ namespace KubeClient.Models
         [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
         public string Reason { get; set; }
+
+        /// <summary>
+        ///     Time at which previous execution of the container started
+        /// </summary>
+        [JsonProperty("startedAt")]
+        [YamlMember(Alias = "startedAt")]
+        public DateTime? StartedAt { get; set; }
 
         /// <summary>
         ///     Message regarding the last termination of the container

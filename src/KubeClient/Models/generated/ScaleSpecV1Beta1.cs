@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     ScaleSpec describes the attributes of a scale subresource
+    ///     describes the attributes of a scale subresource
     /// </summary>
     public partial class ScaleSpecV1Beta1
     {

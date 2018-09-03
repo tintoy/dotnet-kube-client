@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     Type of node condition.
-        /// </summary>
-        [JsonProperty("type")]
-        [YamlMember(Alias = "type")]
-        public string Type { get; set; }
-
-        /// <summary>
         ///     Last time we got an update on a given condition.
         /// </summary>
         [JsonProperty("lastHeartbeatTime")]
@@ -32,11 +25,11 @@ namespace KubeClient.Models
         public DateTime? LastHeartbeatTime { get; set; }
 
         /// <summary>
-        ///     (brief) reason for the condition's last transition.
+        ///     Type of node condition.
         /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
+        [JsonProperty("type")]
+        [YamlMember(Alias = "type")]
+        public string Type { get; set; }
 
         /// <summary>
         ///     Status of the condition, one of True, False, Unknown.
@@ -44,6 +37,13 @@ namespace KubeClient.Models
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     (brief) reason for the condition's last transition.
+        /// </summary>
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
 
         /// <summary>
         ///     Human readable message indicating details about last transition.

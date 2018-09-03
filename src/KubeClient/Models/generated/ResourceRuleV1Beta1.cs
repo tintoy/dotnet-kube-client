@@ -11,6 +11,20 @@ namespace KubeClient.Models
     public partial class ResourceRuleV1Beta1
     {
         /// <summary>
+        ///     Verb is a list of kubernetes resource API verbs, like: get, list, watch, create, update, delete, proxy.  "*" means all.
+        /// </summary>
+        [YamlMember(Alias = "verbs")]
+        [JsonProperty("verbs", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Verbs { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed.  "*" means all.
+        /// </summary>
+        [YamlMember(Alias = "apiGroups")]
+        [JsonProperty("apiGroups", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> ApiGroups { get; set; } = new List<string>();
+
+        /// <summary>
         ///     ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.  "*" means all.
         /// </summary>
         [YamlMember(Alias = "resourceNames")]
@@ -24,19 +38,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "resources")]
         [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Resources { get; set; } = new List<string>();
-
-        /// <summary>
-        ///     Verb is a list of kubernetes resource API verbs, like: get, list, watch, create, update, delete, proxy.  "*" means all.
-        /// </summary>
-        [YamlMember(Alias = "verbs")]
-        [JsonProperty("verbs", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Verbs { get; set; } = new List<string>();
-
-        /// <summary>
-        ///     APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed.  "*" means all.
-        /// </summary>
-        [YamlMember(Alias = "apiGroups")]
-        [JsonProperty("apiGroups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> ApiGroups { get; set; } = new List<string>();
     }
 }

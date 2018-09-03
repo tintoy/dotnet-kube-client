@@ -21,17 +21,17 @@ namespace KubeClient.Models
     public partial class ClusterRoleBindingV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Subjects holds references to the objects the role applies to.
-        /// </summary>
-        [YamlMember(Alias = "subjects")]
-        [JsonProperty("subjects", NullValueHandling = NullValueHandling.Ignore)]
-        public List<SubjectV1> Subjects { get; set; } = new List<SubjectV1>();
-
-        /// <summary>
         ///     RoleRef can only reference a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error.
         /// </summary>
         [JsonProperty("roleRef")]
         [YamlMember(Alias = "roleRef")]
         public RoleRefV1 RoleRef { get; set; }
+
+        /// <summary>
+        ///     Subjects holds references to the objects the role applies to.
+        /// </summary>
+        [YamlMember(Alias = "subjects")]
+        [JsonProperty("subjects", NullValueHandling = NullValueHandling.Ignore)]
+        public List<SubjectV1> Subjects { get; set; } = new List<SubjectV1>();
     }
 }

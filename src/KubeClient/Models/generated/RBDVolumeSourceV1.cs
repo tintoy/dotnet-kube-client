@@ -18,11 +18,11 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     A collection of Ceph monitors. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        ///     The rados pool name. Default is rbd. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
-        [YamlMember(Alias = "monitors")]
-        [JsonProperty("monitors", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Monitors { get; set; } = new List<string>();
+        [JsonProperty("pool")]
+        [YamlMember(Alias = "pool")]
+        public string Pool { get; set; }
 
         /// <summary>
         ///     Keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
@@ -30,6 +30,13 @@ namespace KubeClient.Models
         [JsonProperty("keyring")]
         [YamlMember(Alias = "keyring")]
         public string Keyring { get; set; }
+
+        /// <summary>
+        ///     SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        /// </summary>
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public LocalObjectReferenceV1 SecretRef { get; set; }
 
         /// <summary>
         ///     The rados image name. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
@@ -46,13 +53,6 @@ namespace KubeClient.Models
         public bool ReadOnly { get; set; }
 
         /// <summary>
-        ///     SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
-        /// </summary>
-        [JsonProperty("secretRef")]
-        [YamlMember(Alias = "secretRef")]
-        public LocalObjectReferenceV1 SecretRef { get; set; }
-
-        /// <summary>
         ///     The rados user name. Default is admin. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("user")]
@@ -60,10 +60,10 @@ namespace KubeClient.Models
         public string User { get; set; }
 
         /// <summary>
-        ///     The rados pool name. Default is rbd. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        ///     A collection of Ceph monitors. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("pool")]
-        [YamlMember(Alias = "pool")]
-        public string Pool { get; set; }
+        [YamlMember(Alias = "monitors")]
+        [JsonProperty("monitors", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Monitors { get; set; } = new List<string>();
     }
 }

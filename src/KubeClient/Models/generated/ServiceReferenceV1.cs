@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class ServiceReferenceV1
     {
         /// <summary>
-        ///     Namespace is the namespace of the service
-        /// </summary>
-        [JsonProperty("namespace")]
-        [YamlMember(Alias = "namespace")]
-        public string Namespace { get; set; }
-
-        /// <summary>
         ///     Name is the name of the service
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     Namespace is the namespace of the service
+        /// </summary>
+        [JsonProperty("namespace")]
+        [YamlMember(Alias = "namespace")]
+        public string Namespace { get; set; }
     }
 }

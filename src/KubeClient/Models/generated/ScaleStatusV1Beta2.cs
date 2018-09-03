@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string TargetSelector { get; set; }
 
         /// <summary>
-        ///     actual number of observed instances of the scaled object.
-        /// </summary>
-        [JsonProperty("replicas")]
-        [YamlMember(Alias = "replicas")]
-        public int Replicas { get; set; }
-
-        /// <summary>
         ///     label query over pods that should match the replicas count. More info: http://kubernetes.io/docs/user-guide/labels#label-selectors
         /// </summary>
         [YamlMember(Alias = "selector")]
         [JsonProperty("selector", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Selector { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     actual number of observed instances of the scaled object.
+        /// </summary>
+        [JsonProperty("replicas")]
+        [YamlMember(Alias = "replicas")]
+        public int Replicas { get; set; }
     }
 }

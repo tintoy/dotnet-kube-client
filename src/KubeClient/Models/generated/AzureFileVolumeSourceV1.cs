@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class AzureFileVolumeSourceV1
     {
         /// <summary>
-        ///     the name of secret that contains Azure Storage Account Name and Key
-        /// </summary>
-        [JsonProperty("secretName")]
-        [YamlMember(Alias = "secretName")]
-        public string SecretName { get; set; }
-
-        /// <summary>
         ///     Share Name
         /// </summary>
         [JsonProperty("shareName")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        ///     the name of secret that contains Azure Storage Account Name and Key
+        /// </summary>
+        [JsonProperty("secretName")]
+        [YamlMember(Alias = "secretName")]
+        public string SecretName { get; set; }
     }
 }

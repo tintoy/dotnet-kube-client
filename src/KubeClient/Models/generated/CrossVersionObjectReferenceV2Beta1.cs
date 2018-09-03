@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class CrossVersionObjectReferenceV2Beta1
     {
         /// <summary>
-        ///     Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds"
-        /// </summary>
-        [JsonProperty("kind")]
-        [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
-
-        /// <summary>
         ///     API version of the referent
         /// </summary>
         [JsonProperty("apiVersion")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds"
+        /// </summary>
+        [JsonProperty("kind")]
+        [YamlMember(Alias = "kind")]
+        public string Kind { get; set; }
     }
 }

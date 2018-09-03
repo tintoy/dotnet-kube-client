@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class APIServiceConditionV1
     {
         /// <summary>
+        ///     Status is the status of the condition. Can be True, False, Unknown.
+        /// </summary>
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
+
+        /// <summary>
         ///     Last time the condition transitioned from one status to another.
         /// </summary>
         [JsonProperty("lastTransitionTime")]
         [YamlMember(Alias = "lastTransitionTime")]
         public DateTime? LastTransitionTime { get; set; }
-
-        /// <summary>
-        ///     Type is the type of the condition.
-        /// </summary>
-        [JsonProperty("type")]
-        [YamlMember(Alias = "type")]
-        public string Type { get; set; }
 
         /// <summary>
         ///     Unique, one-word, CamelCase reason for the condition's last transition.
@@ -32,11 +32,11 @@ namespace KubeClient.Models
         public string Reason { get; set; }
 
         /// <summary>
-        ///     Status is the status of the condition. Can be True, False, Unknown.
+        ///     Type is the type of the condition.
         /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
+        [JsonProperty("type")]
+        [YamlMember(Alias = "type")]
+        public string Type { get; set; }
 
         /// <summary>
         ///     Human-readable message indicating details about last transition.

@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string Phase { get; set; }
 
         /// <summary>
-        ///     Reason is a brief CamelCase string that describes any failure and is meant for machine parsing and tidy display in the CLI.
-        /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
-
-        /// <summary>
         ///     A human-readable message indicating details about why the volume is in this state.
         /// </summary>
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
         public string Message { get; set; }
+
+        /// <summary>
+        ///     Reason is a brief CamelCase string that describes any failure and is meant for machine parsing and tidy display in the CLI.
+        /// </summary>
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
     }
 }

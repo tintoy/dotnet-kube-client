@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class VolumeAttachmentStatusV1Alpha1
     {
         /// <summary>
-        ///     The last error encountered during detach operation, if any. This field must only be set by the entity completing the detach operation, i.e. the external-attacher.
-        /// </summary>
-        [JsonProperty("detachError")]
-        [YamlMember(Alias = "detachError")]
-        public VolumeErrorV1Alpha1 DetachError { get; set; }
-
-        /// <summary>
         ///     Indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
         /// </summary>
         [JsonProperty("attached")]
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [JsonProperty("attachError")]
         [YamlMember(Alias = "attachError")]
         public VolumeErrorV1Alpha1 AttachError { get; set; }
+
+        /// <summary>
+        ///     The last error encountered during detach operation, if any. This field must only be set by the entity completing the detach operation, i.e. the external-attacher.
+        /// </summary>
+        [JsonProperty("detachError")]
+        [YamlMember(Alias = "detachError")]
+        public VolumeErrorV1Alpha1 DetachError { get; set; }
     }
 }

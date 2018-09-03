@@ -30,17 +30,17 @@ namespace KubeClient.Models
         public Dictionary<string, string> StringData { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
-        ///     Data contains the secret data. Each key must consist of alphanumeric characters, '-', '_' or '.'. The serialized form of the secret data is a base64 encoded string, representing the arbitrary (possibly non-string) data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
-        /// </summary>
-        [YamlMember(Alias = "data")]
-        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
-
-        /// <summary>
         ///     Used to facilitate programmatic handling of secret data.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        ///     Data contains the secret data. Each key must consist of alphanumeric characters, '-', '_' or '.'. The serialized form of the secret data is a base64 encoded string, representing the arbitrary (possibly non-string) data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
+        /// </summary>
+        [YamlMember(Alias = "data")]
+        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
     }
 }

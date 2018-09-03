@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class EnvFromSourceV1
     {
         /// <summary>
-        ///     An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
-        /// </summary>
-        [JsonProperty("prefix")]
-        [YamlMember(Alias = "prefix")]
-        public string Prefix { get; set; }
-
-        /// <summary>
         ///     The ConfigMap to select from
         /// </summary>
         [JsonProperty("configMapRef")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
         public SecretEnvSourceV1 SecretRef { get; set; }
+
+        /// <summary>
+        ///     An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+        /// </summary>
+        [JsonProperty("prefix")]
+        [YamlMember(Alias = "prefix")]
+        public string Prefix { get; set; }
     }
 }

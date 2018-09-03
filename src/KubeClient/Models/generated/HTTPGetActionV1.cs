@@ -11,18 +11,11 @@ namespace KubeClient.Models
     public partial class HTTPGetActionV1
     {
         /// <summary>
-        ///     Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+        ///     Path to access on the HTTP server.
         /// </summary>
-        [JsonProperty("host")]
-        [YamlMember(Alias = "host")]
-        public string Host { get; set; }
-
-        /// <summary>
-        ///     Scheme to use for connecting to the host. Defaults to HTTP.
-        /// </summary>
-        [JsonProperty("scheme")]
-        [YamlMember(Alias = "scheme")]
-        public string Scheme { get; set; }
+        [JsonProperty("path")]
+        [YamlMember(Alias = "path")]
+        public string Path { get; set; }
 
         /// <summary>
         ///     Custom headers to set in the request. HTTP allows repeated headers.
@@ -39,10 +32,17 @@ namespace KubeClient.Models
         public string Port { get; set; }
 
         /// <summary>
-        ///     Path to access on the HTTP server.
+        ///     Scheme to use for connecting to the host. Defaults to HTTP.
         /// </summary>
-        [JsonProperty("path")]
-        [YamlMember(Alias = "path")]
-        public string Path { get; set; }
+        [JsonProperty("scheme")]
+        [YamlMember(Alias = "scheme")]
+        public string Scheme { get; set; }
+
+        /// <summary>
+        ///     Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+        /// </summary>
+        [JsonProperty("host")]
+        [YamlMember(Alias = "host")]
+        public string Host { get; set; }
     }
 }

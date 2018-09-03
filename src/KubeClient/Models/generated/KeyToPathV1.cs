@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class KeyToPathV1
     {
         /// <summary>
+        ///     The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+        /// </summary>
+        [JsonProperty("path")]
+        [YamlMember(Alias = "path")]
+        public string Path { get; set; }
+
+        /// <summary>
         ///     The key to project.
         /// </summary>
         [JsonProperty("key")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("mode")]
         [YamlMember(Alias = "mode")]
         public int? Mode { get; set; }
-
-        /// <summary>
-        ///     The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
-        /// </summary>
-        [JsonProperty("path")]
-        [YamlMember(Alias = "path")]
-        public string Path { get; set; }
     }
 }

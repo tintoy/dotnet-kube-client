@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class FlexPersistentVolumeSourceV1
     {
         /// <summary>
+        ///     Optional: Extra command options if any.
+        /// </summary>
+        [YamlMember(Alias = "options")]
+        [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
         /// </summary>
         [JsonProperty("fsType")]
@@ -30,13 +37,6 @@ namespace KubeClient.Models
         [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
         public SecretReferenceV1 SecretRef { get; set; }
-
-        /// <summary>
-        ///     Optional: Extra command options if any.
-        /// </summary>
-        [YamlMember(Alias = "options")]
-        [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     Driver is the name of the driver to use for this volume.

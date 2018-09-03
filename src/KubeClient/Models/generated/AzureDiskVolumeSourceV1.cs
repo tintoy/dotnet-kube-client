@@ -18,20 +18,6 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Host Caching mode: None, Read Only, Read Write.
-        /// </summary>
-        [JsonProperty("cachingMode")]
-        [YamlMember(Alias = "cachingMode")]
-        public string CachingMode { get; set; }
-
-        /// <summary>
-        ///     Expected values Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
-        /// </summary>
-        [JsonProperty("kind")]
-        [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
-
-        /// <summary>
         ///     The URI the data disk in the blob storage
         /// </summary>
         [JsonProperty("diskURI")]
@@ -51,5 +37,19 @@ namespace KubeClient.Models
         [JsonProperty("diskName")]
         [YamlMember(Alias = "diskName")]
         public string DiskName { get; set; }
+
+        /// <summary>
+        ///     Host Caching mode: None, Read Only, Read Write.
+        /// </summary>
+        [JsonProperty("cachingMode")]
+        [YamlMember(Alias = "cachingMode")]
+        public string CachingMode { get; set; }
+
+        /// <summary>
+        ///     Expected values Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+        /// </summary>
+        [JsonProperty("kind")]
+        [YamlMember(Alias = "kind")]
+        public string Kind { get; set; }
     }
 }

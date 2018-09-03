@@ -25,18 +25,18 @@ namespace KubeClient.Models
         public string Phase { get; set; }
 
         /// <summary>
-        ///     Represents the actual resources of the underlying volume.
-        /// </summary>
-        [YamlMember(Alias = "capacity")]
-        [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
-
-        /// <summary>
         ///     Current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'.
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
         [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public List<PersistentVolumeClaimConditionV1> Conditions { get; set; } = new List<PersistentVolumeClaimConditionV1>();
+
+        /// <summary>
+        ///     Represents the actual resources of the underlying volume.
+        /// </summary>
+        [YamlMember(Alias = "capacity")]
+        [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
     }
 }

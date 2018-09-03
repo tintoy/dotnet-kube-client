@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class CustomResourceDefinitionVersionV1Beta1
     {
         /// <summary>
-        ///     Storage flags the version as storage version. There must be exactly one flagged as storage version.
-        /// </summary>
-        [JsonProperty("storage")]
-        [YamlMember(Alias = "storage")]
-        public bool Storage { get; set; }
-
-        /// <summary>
         ///     Served is a flag enabling/disabling this version from being served via REST APIs
         /// </summary>
         [JsonProperty("served")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     Storage flags the version as storage version. There must be exactly one flagged as storage version.
+        /// </summary>
+        [JsonProperty("storage")]
+        [YamlMember(Alias = "storage")]
+        public bool Storage { get; set; }
     }
 }

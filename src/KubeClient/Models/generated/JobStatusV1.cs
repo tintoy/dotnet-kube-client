@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class JobStatusV1
     {
         /// <summary>
-        ///     Represents time when the job was completed. It is not guaranteed to be set in happens-before order across separate operations. It is represented in RFC3339 form and is in UTC.
-        /// </summary>
-        [JsonProperty("completionTime")]
-        [YamlMember(Alias = "completionTime")]
-        public DateTime? CompletionTime { get; set; }
-
-        /// <summary>
         ///     Represents time when the job was acknowledged by the job controller. It is not guaranteed to be set in happens-before order across separate operations. It is represented in RFC3339 form and is in UTC.
         /// </summary>
         [JsonProperty("startTime")]
         [YamlMember(Alias = "startTime")]
         public DateTime? StartTime { get; set; }
+
+        /// <summary>
+        ///     The number of pods which reached phase Failed.
+        /// </summary>
+        [JsonProperty("failed")]
+        [YamlMember(Alias = "failed")]
+        public int Failed { get; set; }
 
         /// <summary>
         ///     The number of pods which reached phase Succeeded.
@@ -47,10 +47,10 @@ namespace KubeClient.Models
         public List<JobConditionV1> Conditions { get; set; } = new List<JobConditionV1>();
 
         /// <summary>
-        ///     The number of pods which reached phase Failed.
+        ///     Represents time when the job was completed. It is not guaranteed to be set in happens-before order across separate operations. It is represented in RFC3339 form and is in UTC.
         /// </summary>
-        [JsonProperty("failed")]
-        [YamlMember(Alias = "failed")]
-        public int Failed { get; set; }
+        [JsonProperty("completionTime")]
+        [YamlMember(Alias = "completionTime")]
+        public DateTime? CompletionTime { get; set; }
     }
 }

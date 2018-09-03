@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class NodeAddressV1
     {
         /// <summary>
-        ///     The node address.
-        /// </summary>
-        [JsonProperty("address")]
-        [YamlMember(Alias = "address")]
-        public string Address { get; set; }
-
-        /// <summary>
         ///     Node address type, one of Hostname, ExternalIP or InternalIP.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        ///     The node address.
+        /// </summary>
+        [JsonProperty("address")]
+        [YamlMember(Alias = "address")]
+        public string Address { get; set; }
     }
 }

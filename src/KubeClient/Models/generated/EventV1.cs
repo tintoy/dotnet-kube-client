@@ -23,11 +23,32 @@ namespace KubeClient.Models
     public partial class EventV1 : KubeResourceV1
     {
         /// <summary>
-        ///     The object that this event is about.
+        ///     ID of the controller instance, e.g. `kubelet-xyzf`.
         /// </summary>
-        [JsonProperty("involvedObject")]
-        [YamlMember(Alias = "involvedObject")]
-        public ObjectReferenceV1 InvolvedObject { get; set; }
+        [JsonProperty("reportingInstance")]
+        [YamlMember(Alias = "reportingInstance")]
+        public string ReportingInstance { get; set; }
+
+        /// <summary>
+        ///     Name of the controller that emitted this Event, e.g. `kubernetes.io/kubelet`.
+        /// </summary>
+        [JsonProperty("reportingComponent")]
+        [YamlMember(Alias = "reportingComponent")]
+        public string ReportingComponent { get; set; }
+
+        /// <summary>
+        ///     Type of this event (Normal, Warning), new types could be added in the future
+        /// </summary>
+        [JsonProperty("type")]
+        [YamlMember(Alias = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
+        ///     Optional secondary object for more complex actions.
+        /// </summary>
+        [JsonProperty("related")]
+        [YamlMember(Alias = "related")]
+        public ObjectReferenceV1 Related { get; set; }
 
         /// <summary>
         ///     The time at which the event was first recorded. (Time of server receipt is in TypeMeta.)
@@ -44,6 +65,20 @@ namespace KubeClient.Models
         public EventSeriesV1 Series { get; set; }
 
         /// <summary>
+        ///     What action was taken/failed regarding to the Regarding object.
+        /// </summary>
+        [JsonProperty("action")]
+        [YamlMember(Alias = "action")]
+        public string Action { get; set; }
+
+        /// <summary>
+        ///     The object that this event is about.
+        /// </summary>
+        [JsonProperty("involvedObject")]
+        [YamlMember(Alias = "involvedObject")]
+        public ObjectReferenceV1 InvolvedObject { get; set; }
+
+        /// <summary>
         ///     The time at which the most recent occurrence of this event was recorded.
         /// </summary>
         [JsonProperty("lastTimestamp")]
@@ -51,25 +86,11 @@ namespace KubeClient.Models
         public DateTime? LastTimestamp { get; set; }
 
         /// <summary>
-        ///     A human-readable description of the status of this operation.
+        ///     The component reporting this event. Should be a short machine understandable string.
         /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
-
-        /// <summary>
-        ///     Name of the controller that emitted this Event, e.g. `kubernetes.io/kubelet`.
-        /// </summary>
-        [JsonProperty("reportingComponent")]
-        [YamlMember(Alias = "reportingComponent")]
-        public string ReportingComponent { get; set; }
-
-        /// <summary>
-        ///     ID of the controller instance, e.g. `kubelet-xyzf`.
-        /// </summary>
-        [JsonProperty("reportingInstance")]
-        [YamlMember(Alias = "reportingInstance")]
-        public string ReportingInstance { get; set; }
+        [JsonProperty("source")]
+        [YamlMember(Alias = "source")]
+        public EventSourceV1 Source { get; set; }
 
         /// <summary>
         ///     Time when this Event was first observed.
@@ -79,25 +100,11 @@ namespace KubeClient.Models
         public MicroTimeV1 EventTime { get; set; }
 
         /// <summary>
-        ///     What action was taken/failed regarding to the Regarding object.
+        ///     This should be a short, machine understandable string that gives the reason for the transition into the object's current status.
         /// </summary>
-        [JsonProperty("action")]
-        [YamlMember(Alias = "action")]
-        public string Action { get; set; }
-
-        /// <summary>
-        ///     Type of this event (Normal, Warning), new types could be added in the future
-        /// </summary>
-        [JsonProperty("type")]
-        [YamlMember(Alias = "type")]
-        public string Type { get; set; }
-
-        /// <summary>
-        ///     Data about the Event series this event represents or nil if it's a singleton Event.
-        /// </summary>
-        [JsonProperty("series")]
-        [YamlMember(Alias = "series")]
-        public EventSeriesV1 Series { get; set; }
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
 
         /// <summary>
         ///     The number of times this event has occurred.
@@ -107,24 +114,10 @@ namespace KubeClient.Models
         public int Count { get; set; }
 
         /// <summary>
-        ///     Optional secondary object for more complex actions.
+        ///     A human-readable description of the status of this operation.
         /// </summary>
-        [JsonProperty("related")]
-        [YamlMember(Alias = "related")]
-        public ObjectReferenceV1 Related { get; set; }
-
-        /// <summary>
-        ///     This should be a short, machine understandable string that gives the reason for the transition into the object's current status.
-        /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
-
-        /// <summary>
-        ///     The component reporting this event. Should be a short machine understandable string.
-        /// </summary>
-        [JsonProperty("source")]
-        [YamlMember(Alias = "source")]
-        public EventSourceV1 Source { get; set; }
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
     }
 }

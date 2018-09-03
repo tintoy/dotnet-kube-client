@@ -25,17 +25,17 @@ namespace KubeClient.Models
         public SecretProjectionV1 Secret { get; set; }
 
         /// <summary>
-        ///     information about the configMap data to project
-        /// </summary>
-        [JsonProperty("configMap")]
-        [YamlMember(Alias = "configMap")]
-        public ConfigMapProjectionV1 ConfigMap { get; set; }
-
-        /// <summary>
         ///     information about the serviceAccountToken data to project
         /// </summary>
         [JsonProperty("serviceAccountToken")]
         [YamlMember(Alias = "serviceAccountToken")]
         public ServiceAccountTokenProjectionV1 ServiceAccountToken { get; set; }
+
+        /// <summary>
+        ///     information about the configMap data to project
+        /// </summary>
+        [JsonProperty("configMap")]
+        [YamlMember(Alias = "configMap")]
+        public ConfigMapProjectionV1 ConfigMap { get; set; }
     }
 }

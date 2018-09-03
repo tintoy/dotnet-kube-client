@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class EventSeriesV1
     {
         /// <summary>
-        ///     Time of the last occurrence observed
-        /// </summary>
-        [JsonProperty("lastObservedTime")]
-        [YamlMember(Alias = "lastObservedTime")]
-        public MicroTimeV1 LastObservedTime { get; set; }
-
-        /// <summary>
         ///     Number of occurrences in this series up to the last heartbeat time
         /// </summary>
         [JsonProperty("count")]
         [YamlMember(Alias = "count")]
         public int Count { get; set; }
+
+        /// <summary>
+        ///     Time of the last occurrence observed
+        /// </summary>
+        [JsonProperty("lastObservedTime")]
+        [YamlMember(Alias = "lastObservedTime")]
+        public MicroTimeV1 LastObservedTime { get; set; }
 
         /// <summary>
         ///     State of this Series: Ongoing or Finished

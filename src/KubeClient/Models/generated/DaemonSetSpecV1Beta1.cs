@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class DaemonSetSpecV1Beta1
     {
         /// <summary>
-        ///     The minimum number of seconds for which a newly created DaemonSet pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready).
+        ///     A label query over pods that are managed by the daemon set. Must match in order to be controlled. If empty, defaulted to labels on Pod template. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
         /// </summary>
-        [JsonProperty("minReadySeconds")]
-        [YamlMember(Alias = "minReadySeconds")]
-        public int MinReadySeconds { get; set; }
+        [JsonProperty("selector")]
+        [YamlMember(Alias = "selector")]
+        public LabelSelectorV1 Selector { get; set; }
 
         /// <summary>
         ///     The number of old history to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 10.
@@ -32,11 +32,11 @@ namespace KubeClient.Models
         public PodTemplateSpecV1 Template { get; set; }
 
         /// <summary>
-        ///     An update strategy to replace existing DaemonSet pods with new pods.
+        ///     The minimum number of seconds for which a newly created DaemonSet pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready).
         /// </summary>
-        [JsonProperty("updateStrategy")]
-        [YamlMember(Alias = "updateStrategy")]
-        public DaemonSetUpdateStrategyV1Beta1 UpdateStrategy { get; set; }
+        [JsonProperty("minReadySeconds")]
+        [YamlMember(Alias = "minReadySeconds")]
+        public int MinReadySeconds { get; set; }
 
         /// <summary>
         ///     DEPRECATED. A sequence number representing a specific generation of the template. Populated by the system. It can be set only during the creation.
@@ -46,10 +46,10 @@ namespace KubeClient.Models
         public int TemplateGeneration { get; set; }
 
         /// <summary>
-        ///     A label query over pods that are managed by the daemon set. Must match in order to be controlled. If empty, defaulted to labels on Pod template. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+        ///     An update strategy to replace existing DaemonSet pods with new pods.
         /// </summary>
-        [JsonProperty("selector")]
-        [YamlMember(Alias = "selector")]
-        public LabelSelectorV1 Selector { get; set; }
+        [JsonProperty("updateStrategy")]
+        [YamlMember(Alias = "updateStrategy")]
+        public DaemonSetUpdateStrategyV1Beta1 UpdateStrategy { get; set; }
     }
 }

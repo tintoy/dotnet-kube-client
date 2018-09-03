@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class HTTPHeaderV1
     {
         /// <summary>
-        ///     The header field value
-        /// </summary>
-        [JsonProperty("value")]
-        [YamlMember(Alias = "value")]
-        public string Value { get; set; }
-
-        /// <summary>
         ///     The header field name
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     The header field value
+        /// </summary>
+        [JsonProperty("value")]
+        [YamlMember(Alias = "value")]
+        public string Value { get; set; }
     }
 }

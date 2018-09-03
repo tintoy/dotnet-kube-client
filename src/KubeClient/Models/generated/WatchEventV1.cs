@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class WatchEventV1
     {
         /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("type")]
+        [YamlMember(Alias = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
         ///     Object is:
         ///      * If Type is Added or Modified: the new state of the object.
         ///      * If Type is Deleted: the state of the object immediately before deletion.
@@ -20,12 +27,5 @@ namespace KubeClient.Models
         [JsonProperty("object")]
         [YamlMember(Alias = "object")]
         public RawExtensionRuntime Object { get; set; }
-
-        /// <summary>
-        ///     Description not provided.
-        /// </summary>
-        [JsonProperty("type")]
-        [YamlMember(Alias = "type")]
-        public string Type { get; set; }
     }
 }

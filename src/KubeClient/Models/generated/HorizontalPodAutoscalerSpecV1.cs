@@ -18,11 +18,11 @@ namespace KubeClient.Models
         public CrossVersionObjectReferenceV1 ScaleTargetRef { get; set; }
 
         /// <summary>
-        ///     upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
+        ///     lower limit for the number of pods that can be set by the autoscaler, default 1.
         /// </summary>
-        [JsonProperty("maxReplicas")]
-        [YamlMember(Alias = "maxReplicas")]
-        public int MaxReplicas { get; set; }
+        [JsonProperty("minReplicas")]
+        [YamlMember(Alias = "minReplicas")]
+        public int MinReplicas { get; set; }
 
         /// <summary>
         ///     target average CPU utilization (represented as a percentage of requested CPU) over all the pods; if not specified the default autoscaling policy will be used.
@@ -32,10 +32,10 @@ namespace KubeClient.Models
         public int? TargetCPUUtilizationPercentage { get; set; }
 
         /// <summary>
-        ///     lower limit for the number of pods that can be set by the autoscaler, default 1.
+        ///     upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
         /// </summary>
-        [JsonProperty("minReplicas")]
-        [YamlMember(Alias = "minReplicas")]
-        public int MinReplicas { get; set; }
+        [JsonProperty("maxReplicas")]
+        [YamlMember(Alias = "maxReplicas")]
+        public int MaxReplicas { get; set; }
     }
 }

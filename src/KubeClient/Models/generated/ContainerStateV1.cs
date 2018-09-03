@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class ContainerStateV1
     {
         /// <summary>
-        ///     Details about a terminated container
-        /// </summary>
-        [JsonProperty("terminated")]
-        [YamlMember(Alias = "terminated")]
-        public ContainerStateTerminatedV1 Terminated { get; set; }
-
-        /// <summary>
         ///     Details about a waiting container
         /// </summary>
         [JsonProperty("waiting")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("running")]
         [YamlMember(Alias = "running")]
         public ContainerStateRunningV1 Running { get; set; }
+
+        /// <summary>
+        ///     Details about a terminated container
+        /// </summary>
+        [JsonProperty("terminated")]
+        [YamlMember(Alias = "terminated")]
+        public ContainerStateTerminatedV1 Terminated { get; set; }
     }
 }

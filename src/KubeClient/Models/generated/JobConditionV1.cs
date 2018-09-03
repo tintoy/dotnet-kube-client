@@ -25,13 +25,6 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     (brief) reason for the condition's last transition.
-        /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
-
-        /// <summary>
         ///     Last time the condition was checked.
         /// </summary>
         [JsonProperty("lastProbeTime")]
@@ -39,11 +32,11 @@ namespace KubeClient.Models
         public DateTime? LastProbeTime { get; set; }
 
         /// <summary>
-        ///     Status of the condition, one of True, False, Unknown.
+        ///     (brief) reason for the condition's last transition.
         /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
 
         /// <summary>
         ///     Human readable message indicating details about last transition.
@@ -51,5 +44,12 @@ namespace KubeClient.Models
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
         public string Message { get; set; }
+
+        /// <summary>
+        ///     Status of the condition, one of True, False, Unknown.
+        /// </summary>
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
     }
 }

@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public string Kind { get; set; }
 
         /// <summary>
-        ///     name is the name of the group.
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     a map of client CIDR to server address that is serving this group. This is to help clients reach servers in the most network-efficient way possible. Clients can use the appropriate server address as per the CIDR that they match. In case of multiple matches, clients should use the longest matching CIDR. The server returns only those CIDRs that it thinks that the client can match. For example: the master will return an internal IP CIDR only, if the client reaches the server using an internal IP. Server looks at X-Forwarded-For header or X-Real-Ip header or request.RemoteAddr (in that order) to get the client IP.
         /// </summary>
         [YamlMember(Alias = "serverAddressByClientCIDRs")]
@@ -39,17 +32,24 @@ namespace KubeClient.Models
         public List<GroupVersionForDiscoveryV1> Versions { get; set; } = new List<GroupVersionForDiscoveryV1>();
 
         /// <summary>
-        ///     preferredVersion is the version preferred by the API server, which probably is the storage version.
-        /// </summary>
-        [JsonProperty("preferredVersion")]
-        [YamlMember(Alias = "preferredVersion")]
-        public GroupVersionForDiscoveryV1 PreferredVersion { get; set; }
-
-        /// <summary>
         ///     APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources
         /// </summary>
         [JsonProperty("apiVersion")]
         [YamlMember(Alias = "apiVersion")]
         public string ApiVersion { get; set; }
+
+        /// <summary>
+        ///     name is the name of the group.
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        ///     preferredVersion is the version preferred by the API server, which probably is the storage version.
+        /// </summary>
+        [JsonProperty("preferredVersion")]
+        [YamlMember(Alias = "preferredVersion")]
+        public GroupVersionForDiscoveryV1 PreferredVersion { get; set; }
     }
 }

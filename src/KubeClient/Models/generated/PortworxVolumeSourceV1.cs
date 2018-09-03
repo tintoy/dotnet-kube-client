@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
-        /// </summary>
-        [JsonProperty("readOnly")]
-        [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
-
-        /// <summary>
         ///     VolumeID uniquely identifies a Portworx volume
         /// </summary>
         [JsonProperty("volumeID")]
         [YamlMember(Alias = "volumeID")]
         public string VolumeID { get; set; }
+
+        /// <summary>
+        ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+        /// </summary>
+        [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
+        public bool ReadOnly { get; set; }
     }
 }

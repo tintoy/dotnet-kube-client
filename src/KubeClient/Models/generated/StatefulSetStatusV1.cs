@@ -11,41 +11,6 @@ namespace KubeClient.Models
     public partial class StatefulSetStatusV1
     {
         /// <summary>
-        ///     updateRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)
-        /// </summary>
-        [JsonProperty("updateRevision")]
-        [YamlMember(Alias = "updateRevision")]
-        public string UpdateRevision { get; set; }
-
-        /// <summary>
-        ///     updatedReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by updateRevision.
-        /// </summary>
-        [JsonProperty("updatedReplicas")]
-        [YamlMember(Alias = "updatedReplicas")]
-        public int UpdatedReplicas { get; set; }
-
-        /// <summary>
-        ///     readyReplicas is the number of Pods created by the StatefulSet controller that have a Ready Condition.
-        /// </summary>
-        [JsonProperty("readyReplicas")]
-        [YamlMember(Alias = "readyReplicas")]
-        public int ReadyReplicas { get; set; }
-
-        /// <summary>
-        ///     currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
-        /// </summary>
-        [JsonProperty("currentReplicas")]
-        [YamlMember(Alias = "currentReplicas")]
-        public int CurrentReplicas { get; set; }
-
-        /// <summary>
-        ///     currentRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).
-        /// </summary>
-        [JsonProperty("currentRevision")]
-        [YamlMember(Alias = "currentRevision")]
-        public string CurrentRevision { get; set; }
-
-        /// <summary>
         ///     Represents the latest available observations of a statefulset's current state.
         /// </summary>
         [MergeStrategy(Key = "type")]
@@ -66,6 +31,41 @@ namespace KubeClient.Models
         [JsonProperty("observedGeneration")]
         [YamlMember(Alias = "observedGeneration")]
         public int ObservedGeneration { get; set; }
+
+        /// <summary>
+        ///     currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
+        /// </summary>
+        [JsonProperty("currentReplicas")]
+        [YamlMember(Alias = "currentReplicas")]
+        public int CurrentReplicas { get; set; }
+
+        /// <summary>
+        ///     updateRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)
+        /// </summary>
+        [JsonProperty("updateRevision")]
+        [YamlMember(Alias = "updateRevision")]
+        public string UpdateRevision { get; set; }
+
+        /// <summary>
+        ///     readyReplicas is the number of Pods created by the StatefulSet controller that have a Ready Condition.
+        /// </summary>
+        [JsonProperty("readyReplicas")]
+        [YamlMember(Alias = "readyReplicas")]
+        public int ReadyReplicas { get; set; }
+
+        /// <summary>
+        ///     updatedReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by updateRevision.
+        /// </summary>
+        [JsonProperty("updatedReplicas")]
+        [YamlMember(Alias = "updatedReplicas")]
+        public int UpdatedReplicas { get; set; }
+
+        /// <summary>
+        ///     currentRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).
+        /// </summary>
+        [JsonProperty("currentRevision")]
+        [YamlMember(Alias = "currentRevision")]
+        public string CurrentRevision { get; set; }
 
         /// <summary>
         ///     collisionCount is the count of hash collisions for the StatefulSet. The StatefulSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.

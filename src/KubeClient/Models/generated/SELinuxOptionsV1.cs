@@ -25,17 +25,17 @@ namespace KubeClient.Models
         public string Role { get; set; }
 
         /// <summary>
-        ///     Level is SELinux level label that applies to the container.
-        /// </summary>
-        [JsonProperty("level")]
-        [YamlMember(Alias = "level")]
-        public string Level { get; set; }
-
-        /// <summary>
         ///     Type is a SELinux type label that applies to the container.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        ///     Level is SELinux level label that applies to the container.
+        /// </summary>
+        [JsonProperty("level")]
+        [YamlMember(Alias = "level")]
+        public string Level { get; set; }
     }
 }

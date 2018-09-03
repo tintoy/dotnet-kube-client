@@ -25,13 +25,6 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     Unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports "ResizeStarted" that means the underlying persistent volume is being resized.
-        /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
-
-        /// <summary>
         ///     Last time we probed the condition.
         /// </summary>
         [JsonProperty("lastProbeTime")]
@@ -39,11 +32,11 @@ namespace KubeClient.Models
         public DateTime? LastProbeTime { get; set; }
 
         /// <summary>
-        ///     Description not provided.
+        ///     Unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports "ResizeStarted" that means the underlying persistent volume is being resized.
         /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
 
         /// <summary>
         ///     Human-readable message indicating details about last transition.
@@ -51,5 +44,12 @@ namespace KubeClient.Models
         [JsonProperty("message")]
         [YamlMember(Alias = "message")]
         public string Message { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
     }
 }
