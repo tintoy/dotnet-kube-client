@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class SELinuxOptionsV1
     {
         /// <summary>
-        ///     User is a SELinux user label that applies to the container.
-        /// </summary>
-        [JsonProperty("user")]
-        [YamlMember(Alias = "user")]
-        public string User { get; set; }
-
-        /// <summary>
         ///     Role is a SELinux role label that applies to the container.
         /// </summary>
         [JsonProperty("role")]
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [JsonProperty("level")]
         [YamlMember(Alias = "level")]
         public string Level { get; set; }
+
+        /// <summary>
+        ///     User is a SELinux user label that applies to the container.
+        /// </summary>
+        [JsonProperty("user")]
+        [YamlMember(Alias = "user")]
+        public string User { get; set; }
     }
 }

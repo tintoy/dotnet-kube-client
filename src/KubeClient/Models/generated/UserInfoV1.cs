@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class UserInfoV1
     {
         /// <summary>
-        ///     The names of groups this user is a part of.
-        /// </summary>
-        [YamlMember(Alias = "groups")]
-        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Groups { get; set; } = new List<string>();
-
-        /// <summary>
         ///     Any additional information provided by the authenticator.
         /// </summary>
         [YamlMember(Alias = "extra")]
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [JsonProperty("username")]
         [YamlMember(Alias = "username")]
         public string Username { get; set; }
+
+        /// <summary>
+        ///     The names of groups this user is a part of.
+        /// </summary>
+        [YamlMember(Alias = "groups")]
+        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Groups { get; set; } = new List<string>();
     }
 }

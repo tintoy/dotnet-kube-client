@@ -18,18 +18,25 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     VolumeHandle is the unique volume name returned by the CSI volume pluginâ€™s CreateVolume to refer to the volume on all subsequent calls. Required.
+        ///     VolumeHandle is the unique volume name returned by the CSI volume plugin’s CreateVolume to refer to the volume on all subsequent calls. Required.
         /// </summary>
         [JsonProperty("volumeHandle")]
         [YamlMember(Alias = "volumeHandle")]
         public string VolumeHandle { get; set; }
 
         /// <summary>
-        ///     Driver is the name of the driver to use for this volume. Required.
+        ///     ControllerPublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and ControllerUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
         /// </summary>
-        [JsonProperty("driver")]
-        [YamlMember(Alias = "driver")]
-        public string Driver { get; set; }
+        [JsonProperty("controllerPublishSecretRef")]
+        [YamlMember(Alias = "controllerPublishSecretRef")]
+        public SecretReferenceV1 ControllerPublishSecretRef { get; set; }
+
+        /// <summary>
+        ///     NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
+        /// </summary>
+        [JsonProperty("nodePublishSecretRef")]
+        [YamlMember(Alias = "nodePublishSecretRef")]
+        public SecretReferenceV1 NodePublishSecretRef { get; set; }
 
         /// <summary>
         ///     NodeStageSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodeStageVolume and NodeStageVolume and NodeUnstageVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
@@ -39,11 +46,11 @@ namespace KubeClient.Models
         public SecretReferenceV1 NodeStageSecretRef { get; set; }
 
         /// <summary>
-        ///     ControllerPublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI ControllerPublishVolume and ControllerUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
+        ///     Driver is the name of the driver to use for this volume. Required.
         /// </summary>
-        [JsonProperty("controllerPublishSecretRef")]
-        [YamlMember(Alias = "controllerPublishSecretRef")]
-        public SecretReferenceV1 ControllerPublishSecretRef { get; set; }
+        [JsonProperty("driver")]
+        [YamlMember(Alias = "driver")]
+        public string Driver { get; set; }
 
         /// <summary>
         ///     Attributes of the volume to publish.
@@ -58,12 +65,5 @@ namespace KubeClient.Models
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
-
-        /// <summary>
-        ///     NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secrets are passed.
-        /// </summary>
-        [JsonProperty("nodePublishSecretRef")]
-        [YamlMember(Alias = "nodePublishSecretRef")]
-        public SecretReferenceV1 NodePublishSecretRef { get; set; }
     }
 }

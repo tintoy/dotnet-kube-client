@@ -11,25 +11,18 @@ namespace KubeClient.Models
     public partial class ProbeV1
     {
         /// <summary>
-        ///     TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported
-        /// </summary>
-        [JsonProperty("tcpSocket")]
-        [YamlMember(Alias = "tcpSocket")]
-        public TCPSocketActionV1 TcpSocket { get; set; }
-
-        /// <summary>
-        ///     How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
-        /// </summary>
-        [JsonProperty("periodSeconds")]
-        [YamlMember(Alias = "periodSeconds")]
-        public int PeriodSeconds { get; set; }
-
-        /// <summary>
         ///     One and only one of the following should be specified. Exec specifies the action to take.
         /// </summary>
         [JsonProperty("exec")]
         [YamlMember(Alias = "exec")]
         public ExecActionV1 Exec { get; set; }
+
+        /// <summary>
+        ///     Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+        /// </summary>
+        [JsonProperty("failureThreshold")]
+        [YamlMember(Alias = "failureThreshold")]
+        public int FailureThreshold { get; set; }
 
         /// <summary>
         ///     Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
@@ -46,11 +39,18 @@ namespace KubeClient.Models
         public int InitialDelaySeconds { get; set; }
 
         /// <summary>
-        ///     Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+        ///     How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
         /// </summary>
-        [JsonProperty("failureThreshold")]
-        [YamlMember(Alias = "failureThreshold")]
-        public int FailureThreshold { get; set; }
+        [JsonProperty("periodSeconds")]
+        [YamlMember(Alias = "periodSeconds")]
+        public int PeriodSeconds { get; set; }
+
+        /// <summary>
+        ///     Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+        /// </summary>
+        [JsonProperty("timeoutSeconds")]
+        [YamlMember(Alias = "timeoutSeconds")]
+        public int TimeoutSeconds { get; set; }
 
         /// <summary>
         ///     HTTPGet specifies the http request to perform.
@@ -60,10 +60,10 @@ namespace KubeClient.Models
         public HTTPGetActionV1 HttpGet { get; set; }
 
         /// <summary>
-        ///     Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+        ///     TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported
         /// </summary>
-        [JsonProperty("timeoutSeconds")]
-        [YamlMember(Alias = "timeoutSeconds")]
-        public int TimeoutSeconds { get; set; }
+        [JsonProperty("tcpSocket")]
+        [YamlMember(Alias = "tcpSocket")]
+        public TCPSocketActionV1 TcpSocket { get; set; }
     }
 }

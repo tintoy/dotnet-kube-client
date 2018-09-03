@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class NodeConditionV1
     {
         /// <summary>
+        ///     Last time we got an update on a given condition.
+        /// </summary>
+        [JsonProperty("lastHeartbeatTime")]
+        [YamlMember(Alias = "lastHeartbeatTime")]
+        public DateTime? LastHeartbeatTime { get; set; }
+
+        /// <summary>
         ///     Last time the condition transit from one status to another.
         /// </summary>
         [JsonProperty("lastTransitionTime")]
@@ -18,11 +25,11 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     Last time we got an update on a given condition.
+        ///     Human readable message indicating details about last transition.
         /// </summary>
-        [JsonProperty("lastHeartbeatTime")]
-        [YamlMember(Alias = "lastHeartbeatTime")]
-        public DateTime? LastHeartbeatTime { get; set; }
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
 
         /// <summary>
         ///     Type of node condition.
@@ -32,13 +39,6 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     Status of the condition, one of True, False, Unknown.
-        /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
-
-        /// <summary>
         ///     (brief) reason for the condition's last transition.
         /// </summary>
         [JsonProperty("reason")]
@@ -46,10 +46,10 @@ namespace KubeClient.Models
         public string Reason { get; set; }
 
         /// <summary>
-        ///     Human readable message indicating details about last transition.
+        ///     Status of the condition, one of True, False, Unknown.
         /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
     }
 }

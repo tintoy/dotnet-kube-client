@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     AllowedFlexVolume represents a single Flexvolume that is allowed to be used. Deprecated: use AllowedFlexVolume from policy API Group instead.
+    ///     AllowedFlexVolume represents a single Flexvolume that is allowed to be used.
     /// </summary>
     public partial class AllowedFlexVolumeV1Beta1
     {

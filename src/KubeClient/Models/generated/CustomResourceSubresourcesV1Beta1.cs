@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class CustomResourceSubresourcesV1Beta1
     {
         /// <summary>
-        ///     Status denotes the status subresource for CustomResources
-        /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public CustomResourceSubresourceStatusV1Beta1 Status { get; set; }
-
-        /// <summary>
         ///     Scale denotes the scale subresource for CustomResources
         /// </summary>
         [JsonProperty("scale")]
         [YamlMember(Alias = "scale")]
         public CustomResourceSubresourceScaleV1Beta1 Scale { get; set; }
+
+        /// <summary>
+        ///     Status denotes the status subresource for CustomResources
+        /// </summary>
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public CustomResourceSubresourceStatusV1Beta1 Status { get; set; }
     }
 }

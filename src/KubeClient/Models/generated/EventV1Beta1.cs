@@ -23,11 +23,32 @@ namespace KubeClient.Models
     public partial class EventV1Beta1 : KubeResourceV1
     {
         /// <summary>
+        ///     Optional secondary object for more complex actions. E.g. when regarding object triggers a creation or deletion of related object.
+        /// </summary>
+        [JsonProperty("related")]
+        [YamlMember(Alias = "related")]
+        public ObjectReferenceV1 Related { get; set; }
+
+        /// <summary>
         ///     Deprecated field assuring backward compatibility with core.v1 Event type
         /// </summary>
-        [JsonProperty("deprecatedCount")]
-        [YamlMember(Alias = "deprecatedCount")]
-        public int DeprecatedCount { get; set; }
+        [JsonProperty("deprecatedSource")]
+        [YamlMember(Alias = "deprecatedSource")]
+        public EventSourceV1 DeprecatedSource { get; set; }
+
+        /// <summary>
+        ///     Required. Time when this Event was first observed.
+        /// </summary>
+        [JsonProperty("eventTime")]
+        [YamlMember(Alias = "eventTime")]
+        public MicroTimeV1 EventTime { get; set; }
+
+        /// <summary>
+        ///     Optional. A human-readable description of the status of this operation. Maximal length of the note is 1kB, but libraries should be prepared to handle values up to 64kB.
+        /// </summary>
+        [JsonProperty("note")]
+        [YamlMember(Alias = "note")]
+        public string Note { get; set; }
 
         /// <summary>
         ///     ID of the controller instance, e.g. `kubelet-xyzf`.
@@ -44,25 +65,11 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     Optional secondary object for more complex actions. E.g. when regarding object triggers a creation or deletion of related object.
+        ///     The object this Event is about. In most cases it's an Object reporting controller implements. E.g. ReplicaSetController implements ReplicaSets and this event is emitted because it acts on some changes in a ReplicaSet object.
         /// </summary>
-        [JsonProperty("related")]
-        [YamlMember(Alias = "related")]
-        public ObjectReferenceV1 Related { get; set; }
-
-        /// <summary>
-        ///     Name of the controller that emitted this Event, e.g. `kubernetes.io/kubelet`.
-        /// </summary>
-        [JsonProperty("reportingController")]
-        [YamlMember(Alias = "reportingController")]
-        public string ReportingController { get; set; }
-
-        /// <summary>
-        ///     Optional. A human-readable description of the status of this operation. Maximal length of the note is 1kB, but libraries should be prepared to handle values up to 64kB.
-        /// </summary>
-        [JsonProperty("note")]
-        [YamlMember(Alias = "note")]
-        public string Note { get; set; }
+        [JsonProperty("regarding")]
+        [YamlMember(Alias = "regarding")]
+        public ObjectReferenceV1 Regarding { get; set; }
 
         /// <summary>
         ///     What action was taken/failed regarding to the regarding object.
@@ -72,11 +79,11 @@ namespace KubeClient.Models
         public string Action { get; set; }
 
         /// <summary>
-        ///     Data about the Event series this event represents or nil if it's a singleton Event.
+        ///     Why the action was taken.
         /// </summary>
-        [JsonProperty("series")]
-        [YamlMember(Alias = "series")]
-        public EventSeriesV1Beta1 Series { get; set; }
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
 
         /// <summary>
         ///     Deprecated field assuring backward compatibility with core.v1 Event type
@@ -93,31 +100,24 @@ namespace KubeClient.Models
         public DateTime? DeprecatedLastTimestamp { get; set; }
 
         /// <summary>
-        ///     Required. Time when this Event was first observed.
+        ///     Name of the controller that emitted this Event, e.g. `kubernetes.io/kubelet`.
         /// </summary>
-        [JsonProperty("eventTime")]
-        [YamlMember(Alias = "eventTime")]
-        public MicroTimeV1 EventTime { get; set; }
+        [JsonProperty("reportingController")]
+        [YamlMember(Alias = "reportingController")]
+        public string ReportingController { get; set; }
 
         /// <summary>
-        ///     Why the action was taken.
+        ///     Data about the Event series this event represents or nil if it's a singleton Event.
         /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
-
-        /// <summary>
-        ///     The object this Event is about. In most cases it's an Object reporting controller implements. E.g. ReplicaSetController implements ReplicaSets and this event is emitted because it acts on some changes in a ReplicaSet object.
-        /// </summary>
-        [JsonProperty("regarding")]
-        [YamlMember(Alias = "regarding")]
-        public ObjectReferenceV1 Regarding { get; set; }
+        [JsonProperty("series")]
+        [YamlMember(Alias = "series")]
+        public EventSeriesV1Beta1 Series { get; set; }
 
         /// <summary>
         ///     Deprecated field assuring backward compatibility with core.v1 Event type
         /// </summary>
-        [JsonProperty("deprecatedSource")]
-        [YamlMember(Alias = "deprecatedSource")]
-        public EventSourceV1 DeprecatedSource { get; set; }
+        [JsonProperty("deprecatedCount")]
+        [YamlMember(Alias = "deprecatedCount")]
+        public int DeprecatedCount { get; set; }
     }
 }

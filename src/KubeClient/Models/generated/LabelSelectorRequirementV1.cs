@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class LabelSelectorRequirementV1
     {
         /// <summary>
+        ///     operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+        /// </summary>
+        [JsonProperty("operator")]
+        [YamlMember(Alias = "operator")]
+        public string Operator { get; set; }
+
+        /// <summary>
         ///     values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
         /// </summary>
         [YamlMember(Alias = "values")]
@@ -24,12 +31,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "key")]
         [MergeStrategy(Key = "key")]
         public string Key { get; set; }
-
-        /// <summary>
-        ///     operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
-        /// </summary>
-        [JsonProperty("operator")]
-        [YamlMember(Alias = "operator")]
-        public string Operator { get; set; }
     }
 }

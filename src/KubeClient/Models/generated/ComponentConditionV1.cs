@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class ComponentConditionV1
     {
         /// <summary>
-        ///     Status of the condition for a component. Valid values for "Healthy": "True", "False", or "Unknown".
+        ///     Message about the condition for a component. For example, information about a health check.
         /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
 
         /// <summary>
         ///     Type of condition for a component. Valid value: "Healthy"
@@ -32,10 +32,10 @@ namespace KubeClient.Models
         public string Error { get; set; }
 
         /// <summary>
-        ///     Message about the condition for a component. For example, information about a health check.
+        ///     Status of the condition for a component. Valid values for "Healthy": "True", "False", or "Unknown".
         /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
     }
 }

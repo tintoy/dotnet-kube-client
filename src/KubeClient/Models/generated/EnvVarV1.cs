@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class EnvVarV1
     {
         /// <summary>
-        ///     Source for the environment variable's value. Cannot be used if value is not empty.
-        /// </summary>
-        [JsonProperty("valueFrom")]
-        [YamlMember(Alias = "valueFrom")]
-        public EnvVarSourceV1 ValueFrom { get; set; }
-
-        /// <summary>
         ///     Name of the environment variable. Must be a C_IDENTIFIER.
         /// </summary>
         [JsonProperty("name")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("value")]
         [YamlMember(Alias = "value")]
         public string Value { get; set; }
+
+        /// <summary>
+        ///     Source for the environment variable's value. Cannot be used if value is not empty.
+        /// </summary>
+        [JsonProperty("valueFrom")]
+        [YamlMember(Alias = "valueFrom")]
+        public EnvVarSourceV1 ValueFrom { get; set; }
     }
 }

@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class HorizontalPodAutoscalerStatusV1
     {
         /// <summary>
-        ///     most recent generation observed by this autoscaler.
-        /// </summary>
-        [JsonProperty("observedGeneration")]
-        [YamlMember(Alias = "observedGeneration")]
-        public int ObservedGeneration { get; set; }
-
-        /// <summary>
         ///     current average CPU utilization over all pods, represented as a percentage of requested CPU, e.g. 70 means that an average pod is using now 70% of its requested CPU.
         /// </summary>
         [JsonProperty("currentCPUUtilizationPercentage")]
@@ -25,11 +18,18 @@ namespace KubeClient.Models
         public int CurrentCPUUtilizationPercentage { get; set; }
 
         /// <summary>
-        ///     desired number of replicas of pods managed by this autoscaler.
+        ///     last time the HorizontalPodAutoscaler scaled the number of pods; used by the autoscaler to control how often the number of pods is changed.
         /// </summary>
-        [JsonProperty("desiredReplicas")]
-        [YamlMember(Alias = "desiredReplicas")]
-        public int DesiredReplicas { get; set; }
+        [JsonProperty("lastScaleTime")]
+        [YamlMember(Alias = "lastScaleTime")]
+        public DateTime? LastScaleTime { get; set; }
+
+        /// <summary>
+        ///     most recent generation observed by this autoscaler.
+        /// </summary>
+        [JsonProperty("observedGeneration")]
+        [YamlMember(Alias = "observedGeneration")]
+        public int ObservedGeneration { get; set; }
 
         /// <summary>
         ///     current number of replicas of pods managed by this autoscaler.
@@ -39,10 +39,10 @@ namespace KubeClient.Models
         public int CurrentReplicas { get; set; }
 
         /// <summary>
-        ///     last time the HorizontalPodAutoscaler scaled the number of pods; used by the autoscaler to control how often the number of pods is changed.
+        ///     desired number of replicas of pods managed by this autoscaler.
         /// </summary>
-        [JsonProperty("lastScaleTime")]
-        [YamlMember(Alias = "lastScaleTime")]
-        public DateTime? LastScaleTime { get; set; }
+        [JsonProperty("desiredReplicas")]
+        [YamlMember(Alias = "desiredReplicas")]
+        public int DesiredReplicas { get; set; }
     }
 }

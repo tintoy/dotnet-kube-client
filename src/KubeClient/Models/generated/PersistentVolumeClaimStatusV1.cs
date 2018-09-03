@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class PersistentVolumeClaimStatusV1
     {
         /// <summary>
-        ///     AccessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-        /// </summary>
-        [YamlMember(Alias = "accessModes")]
-        [JsonProperty("accessModes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> AccessModes { get; set; } = new List<string>();
-
-        /// <summary>
         ///     Phase represents the current phase of PersistentVolumeClaim.
         /// </summary>
         [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
         public string Phase { get; set; }
+
+        /// <summary>
+        ///     AccessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+        /// </summary>
+        [YamlMember(Alias = "accessModes")]
+        [JsonProperty("accessModes", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> AccessModes { get; set; } = new List<string>();
 
         /// <summary>
         ///     Current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'.

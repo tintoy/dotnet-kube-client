@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class HTTPGetActionV1
     {
         /// <summary>
+        ///     Scheme to use for connecting to the host. Defaults to HTTP.
+        /// </summary>
+        [JsonProperty("scheme")]
+        [YamlMember(Alias = "scheme")]
+        public string Scheme { get; set; }
+
+        /// <summary>
         ///     Path to access on the HTTP server.
         /// </summary>
         [JsonProperty("path")]
@@ -25,24 +32,17 @@ namespace KubeClient.Models
         public List<HTTPHeaderV1> HttpHeaders { get; set; } = new List<HTTPHeaderV1>();
 
         /// <summary>
-        ///     Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
-        /// </summary>
-        [JsonProperty("port")]
-        [YamlMember(Alias = "port")]
-        public string Port { get; set; }
-
-        /// <summary>
-        ///     Scheme to use for connecting to the host. Defaults to HTTP.
-        /// </summary>
-        [JsonProperty("scheme")]
-        [YamlMember(Alias = "scheme")]
-        public string Scheme { get; set; }
-
-        /// <summary>
         ///     Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
         /// </summary>
         [JsonProperty("host")]
         [YamlMember(Alias = "host")]
         public string Host { get; set; }
+
+        /// <summary>
+        ///     Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+        /// </summary>
+        [JsonProperty("port")]
+        [YamlMember(Alias = "port")]
+        public string Port { get; set; }
     }
 }

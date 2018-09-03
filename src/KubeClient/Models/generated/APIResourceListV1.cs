@@ -8,14 +8,14 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.
     /// </summary>
-    public partial class APIResourceListV1
+    public partial class APIResourceListV1 : KubeObjectV1
     {
         /// <summary>
-        ///     APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources
+        ///     groupVersion is the group and version this APIResourceList is for.
         /// </summary>
-        [JsonProperty("apiVersion")]
-        [YamlMember(Alias = "apiVersion")]
-        public string ApiVersion { get; set; }
+        [JsonProperty("groupVersion")]
+        [YamlMember(Alias = "groupVersion")]
+        public string GroupVersion { get; set; }
 
         /// <summary>
         ///     resources contains the name of the resources and if they are namespaced.
@@ -23,19 +23,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "resources")]
         [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
         public List<APIResourceV1> Resources { get; set; } = new List<APIResourceV1>();
-
-        /// <summary>
-        ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
-        /// </summary>
-        [JsonProperty("kind")]
-        [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
-
-        /// <summary>
-        ///     groupVersion is the group and version this APIResourceList is for.
-        /// </summary>
-        [JsonProperty("groupVersion")]
-        [YamlMember(Alias = "groupVersion")]
-        public string GroupVersion { get; set; }
     }
 }

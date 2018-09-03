@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class RoleRefV1Alpha1
     {
         /// <summary>
-        ///     Name is the name of resource being referenced
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     Kind is the type of resource being referenced
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
         public string Kind { get; set; }
+
+        /// <summary>
+        ///     Name is the name of resource being referenced
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     APIGroup is the group for the resource being referenced

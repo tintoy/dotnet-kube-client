@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string NodeName { get; set; }
 
         /// <summary>
-        ///     Attacher indicates the name of the volume driver that MUST handle this request. This is the name returned by GetPluginName().
-        /// </summary>
-        [JsonProperty("attacher")]
-        [YamlMember(Alias = "attacher")]
-        public string Attacher { get; set; }
-
-        /// <summary>
         ///     Source represents the volume that should be attached.
         /// </summary>
         [JsonProperty("source")]
         [YamlMember(Alias = "source")]
         public VolumeAttachmentSourceV1Alpha1 Source { get; set; }
+
+        /// <summary>
+        ///     Attacher indicates the name of the volume driver that MUST handle this request. This is the name returned by GetPluginName().
+        /// </summary>
+        [JsonProperty("attacher")]
+        [YamlMember(Alias = "attacher")]
+        public string Attacher { get; set; }
     }
 }

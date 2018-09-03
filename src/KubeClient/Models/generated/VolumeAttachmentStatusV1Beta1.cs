@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class VolumeAttachmentStatusV1Beta1
     {
         /// <summary>
-        ///     Indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
-        /// </summary>
-        [JsonProperty("attached")]
-        [YamlMember(Alias = "attached")]
-        public bool Attached { get; set; }
-
-        /// <summary>
         ///     Upon successful attach, this field is populated with any information returned by the attach operation that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
         /// </summary>
         [YamlMember(Alias = "attachmentMetadata")]
         [JsonProperty("attachmentMetadata", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> AttachmentMetadata { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
+        /// </summary>
+        [JsonProperty("attached")]
+        [YamlMember(Alias = "attached")]
+        public bool Attached { get; set; }
 
         /// <summary>
         ///     The last error encountered during attach operation, if any. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.

@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class NodeStatusV1
     {
         /// <summary>
+        ///     List of volumes that are attached to the node.
+        /// </summary>
+        [YamlMember(Alias = "volumesAttached")]
+        [JsonProperty("volumesAttached", NullValueHandling = NullValueHandling.Ignore)]
+        public List<AttachedVolumeV1> VolumesAttached { get; set; } = new List<AttachedVolumeV1>();
+
+        /// <summary>
         ///     Allocatable represents the resources of a node that are available for scheduling. Defaults to Capacity.
         /// </summary>
         [YamlMember(Alias = "allocatable")]
@@ -25,12 +32,18 @@ namespace KubeClient.Models
         public string Phase { get; set; }
 
         /// <summary>
-        ///     Conditions is an array of current observed node conditions. More info: https://kubernetes.io/docs/concepts/nodes/node/#condition
+        ///     List of attachable volumes in use (mounted) by the node.
         /// </summary>
-        [MergeStrategy(Key = "type")]
-        [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NodeConditionV1> Conditions { get; set; } = new List<NodeConditionV1>();
+        [YamlMember(Alias = "volumesInUse")]
+        [JsonProperty("volumesInUse", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> VolumesInUse { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     Status of the config assigned to the node via the dynamic Kubelet config feature.
+        /// </summary>
+        [JsonProperty("config")]
+        [YamlMember(Alias = "config")]
+        public NodeConfigStatusV1 Config { get; set; }
 
         /// <summary>
         ///     Set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
@@ -48,6 +61,14 @@ namespace KubeClient.Models
         public List<NodeAddressV1> Addresses { get; set; } = new List<NodeAddressV1>();
 
         /// <summary>
+        ///     Conditions is an array of current observed node conditions. More info: https://kubernetes.io/docs/concepts/nodes/node/#condition
+        /// </summary>
+        [MergeStrategy(Key = "type")]
+        [YamlMember(Alias = "conditions")]
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<NodeConditionV1> Conditions { get; set; } = new List<NodeConditionV1>();
+
+        /// <summary>
         ///     Endpoints of daemons running on the Node.
         /// </summary>
         [JsonProperty("daemonEndpoints")]
@@ -62,31 +83,10 @@ namespace KubeClient.Models
         public List<ContainerImageV1> Images { get; set; } = new List<ContainerImageV1>();
 
         /// <summary>
-        ///     List of attachable volumes in use (mounted) by the node.
-        /// </summary>
-        [YamlMember(Alias = "volumesInUse")]
-        [JsonProperty("volumesInUse", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> VolumesInUse { get; set; } = new List<string>();
-
-        /// <summary>
         ///     Capacity represents the total resources of a node. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity
         /// </summary>
         [YamlMember(Alias = "capacity")]
         [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
-
-        /// <summary>
-        ///     List of volumes that are attached to the node.
-        /// </summary>
-        [YamlMember(Alias = "volumesAttached")]
-        [JsonProperty("volumesAttached", NullValueHandling = NullValueHandling.Ignore)]
-        public List<AttachedVolumeV1> VolumesAttached { get; set; } = new List<AttachedVolumeV1>();
-
-        /// <summary>
-        ///     Status of the config assigned to the node via the dynamic Kubelet config feature.
-        /// </summary>
-        [JsonProperty("config")]
-        [YamlMember(Alias = "config")]
-        public NodeConfigStatusV1 Config { get; set; }
     }
 }

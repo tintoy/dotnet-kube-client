@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class ResourceFieldSelectorV1
     {
         /// <summary>
+        ///     Container name: required for volumes, optional for env vars
+        /// </summary>
+        [JsonProperty("containerName")]
+        [YamlMember(Alias = "containerName")]
+        public string ContainerName { get; set; }
+
+        /// <summary>
         ///     Required: resource to select
         /// </summary>
         [JsonProperty("resource")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("divisor")]
         [YamlMember(Alias = "divisor")]
         public string Divisor { get; set; }
-
-        /// <summary>
-        ///     Container name: required for volumes, optional for env vars
-        /// </summary>
-        [JsonProperty("containerName")]
-        [YamlMember(Alias = "containerName")]
-        public string ContainerName { get; set; }
     }
 }

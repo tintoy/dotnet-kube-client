@@ -11,11 +11,25 @@ namespace KubeClient.Models
     public partial class PodConditionV1
     {
         /// <summary>
+        ///     Last time we probed the condition.
+        /// </summary>
+        [JsonProperty("lastProbeTime")]
+        [YamlMember(Alias = "lastProbeTime")]
+        public DateTime? LastProbeTime { get; set; }
+
+        /// <summary>
         ///     Last time the condition transitioned from one status to another.
         /// </summary>
         [JsonProperty("lastTransitionTime")]
         [YamlMember(Alias = "lastTransitionTime")]
         public DateTime? LastTransitionTime { get; set; }
+
+        /// <summary>
+        ///     Human-readable message indicating details about last transition.
+        /// </summary>
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
 
         /// <summary>
         ///     Type is the type of the condition. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
@@ -25,25 +39,11 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     Last time we probed the condition.
-        /// </summary>
-        [JsonProperty("lastProbeTime")]
-        [YamlMember(Alias = "lastProbeTime")]
-        public DateTime? LastProbeTime { get; set; }
-
-        /// <summary>
         ///     Unique, one-word, CamelCase reason for the condition's last transition.
         /// </summary>
         [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
         public string Reason { get; set; }
-
-        /// <summary>
-        ///     Human-readable message indicating details about last transition.
-        /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
 
         /// <summary>
         ///     Status is the status of the condition. Can be True, False, Unknown. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions

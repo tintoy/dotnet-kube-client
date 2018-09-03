@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class EndpointAddressV1
     {
         /// <summary>
+        ///     The Hostname of this endpoint
+        /// </summary>
+        [JsonProperty("hostname")]
+        [YamlMember(Alias = "hostname")]
+        public string Hostname { get; set; }
+
+        /// <summary>
         ///     Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node.
         /// </summary>
         [JsonProperty("nodeName")]
@@ -30,12 +37,5 @@ namespace KubeClient.Models
         [JsonProperty("ip")]
         [YamlMember(Alias = "ip")]
         public string Ip { get; set; }
-
-        /// <summary>
-        ///     The Hostname of this endpoint
-        /// </summary>
-        [JsonProperty("hostname")]
-        [YamlMember(Alias = "hostname")]
-        public string Hostname { get; set; }
     }
 }

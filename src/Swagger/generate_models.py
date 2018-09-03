@@ -70,7 +70,7 @@ class KubeModel(object):
                 data_types
             )
 
-    def is_resource(self):
+    def is_kube_object(self):
         kind_property = self.properties.get('kind')
         if not kind_property or kind_property.data_type.name != 'string':
             return False
@@ -79,9 +79,12 @@ class KubeModel(object):
         if not api_version_property or api_version_property.data_type.name != 'string':
             return False
 
-        return self.has_metadata()
+        return True
 
-    def is_resource_list(self):
+    def is_kube_resource(self):
+        return self.is_kube_object() and self.has_kube_metadata()
+
+    def is_kube_resource_list(self):
         kind_property = self.properties.get('kind')
         if not kind_property or kind_property.data_type.name != 'string':
             return False
@@ -90,9 +93,9 @@ class KubeModel(object):
         if not api_version_property or api_version_property.data_type.name != 'string':
             return False
 
-        return self.has_list_metadata()
+        return self.has_kube_list_metadata()
 
-    def has_metadata(self):
+    def has_kube_metadata(self):
         metadata_property = self.properties.get('metadata')
         if not metadata_property:
             return False
@@ -102,7 +105,7 @@ class KubeModel(object):
 
         return True
 
-    def has_list_metadata(self):
+    def has_kube_list_metadata(self):
         metadata_property = self.properties.get('metadata')
         if not metadata_property:
             return False
@@ -520,7 +523,7 @@ def main():
                     LINE_ENDING
                 ))
 
-            if model.is_resource() or model.is_resource_list():
+            if model.is_kube_resource() or model.is_kube_resource_list():
                 model_annotations.append('    [KubeObject("{0}", "{1}")]{2}'.format(
                     model.name,
                     model.api_version,
@@ -529,7 +532,7 @@ def main():
 
             # TODO: Add KubeResourceAliasAttribute, but how do we infer singularName and shortNames? These are only available via the API.
 
-            if model.is_resource() and resource_api:
+            if model.is_kube_resource() and resource_api:
                 added_annotations = set()
                 action_paths = {}
                 for action in sorted(resource_api.keys()):
@@ -562,15 +565,18 @@ def main():
                 class_file.write(model_annotation)
 
             class_file.write('    public partial class ' + model.clr_name)
-            if model.is_resource():
+            if model.is_kube_resource():
                 class_file.write(' : KubeResourceV1')
-            elif model.is_resource_list():
+            elif model.is_kube_resource_list():
                 if model.has_list_items():
                     class_file.write(' : KubeResourceListV1<{0}>'.format(
                         model.list_item_data_type().to_clr_type_name()
                     ))
                 else:
                     class_file.write(' : KubeResourceListV1')
+            elif model.is_kube_object():
+                class_file.write(' : KubeObjectV1')
+
             class_file.write(LINE_ENDING)
 
             class_file.write('    {' + LINE_ENDING)
@@ -578,14 +584,14 @@ def main():
             properties = model.properties
             property_names = [name for name in properties.keys()]
 
-            if model.is_resource() or model.is_resource_list():
+            if model.is_kube_object():
                 property_names.remove('apiVersion')
                 property_names.remove('kind')
 
-                if model.has_metadata() or model.has_list_metadata():
+                if model.has_kube_metadata() or model.has_kube_list_metadata():
                     property_names.remove('metadata')
 
-                if model.is_resource_list() and model.has_list_items():
+                if model.is_kube_resource_list() and model.has_list_items():
                     property_names.remove('items')
 
             for property_index in range(0, len(property_names)):
@@ -651,7 +657,7 @@ def main():
                     class_file.write(LINE_ENDING)
 
             # Special case for Items property (we override the base class's property, adding the JsonProperty attribute).
-            if model.is_resource_list() and model.has_list_items():
+            if model.is_kube_resource_list() and model.has_list_items():
                 model_property = model.properties['items']
 
                 class_file.write('        /// <summary>' + LINE_ENDING)

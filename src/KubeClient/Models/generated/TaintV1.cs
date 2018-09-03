@@ -11,20 +11,6 @@ namespace KubeClient.Models
     public partial class TaintV1
     {
         /// <summary>
-        ///     Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
-        /// </summary>
-        [JsonProperty("effect")]
-        [YamlMember(Alias = "effect")]
-        public string Effect { get; set; }
-
-        /// <summary>
-        ///     Required. The taint key to be applied to a node.
-        /// </summary>
-        [JsonProperty("key")]
-        [YamlMember(Alias = "key")]
-        public string Key { get; set; }
-
-        /// <summary>
         ///     TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
         /// </summary>
         [JsonProperty("timeAdded")]
@@ -37,5 +23,19 @@ namespace KubeClient.Models
         [JsonProperty("value")]
         [YamlMember(Alias = "value")]
         public string Value { get; set; }
+
+        /// <summary>
+        ///     Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+        /// </summary>
+        [JsonProperty("effect")]
+        [YamlMember(Alias = "effect")]
+        public string Effect { get; set; }
+
+        /// <summary>
+        ///     Required. The taint key to be applied to a node.
+        /// </summary>
+        [JsonProperty("key")]
+        [YamlMember(Alias = "key")]
+        public string Key { get; set; }
     }
 }

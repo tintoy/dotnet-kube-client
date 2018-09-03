@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class FCVolumeSourceV1
     {
         /// <summary>
-        ///     Optional: FC target lun number
-        /// </summary>
-        [JsonProperty("lun")]
-        [YamlMember(Alias = "lun")]
-        public int? Lun { get; set; }
-
-        /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
         /// </summary>
         [JsonProperty("fsType")]
@@ -25,11 +18,11 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+        ///     Optional: FC target lun number
         /// </summary>
-        [YamlMember(Alias = "wwids")]
-        [JsonProperty("wwids", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Wwids { get; set; } = new List<string>();
+        [JsonProperty("lun")]
+        [YamlMember(Alias = "lun")]
+        public int? Lun { get; set; }
 
         /// <summary>
         ///     Optional: FC target worldwide names (WWNs)
@@ -37,6 +30,13 @@ namespace KubeClient.Models
         [YamlMember(Alias = "targetWWNs")]
         [JsonProperty("targetWWNs", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> TargetWWNs { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+        /// </summary>
+        [YamlMember(Alias = "wwids")]
+        [JsonProperty("wwids", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Wwids { get; set; } = new List<string>();
 
         /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.

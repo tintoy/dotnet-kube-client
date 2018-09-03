@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class ContainerStatusV1
     {
         /// <summary>
-        ///     The image the container is running. More info: https://kubernetes.io/docs/concepts/containers/images
+        ///     Container's ID in the format 'docker://&lt;container_id&gt;'.
         /// </summary>
-        [JsonProperty("image")]
-        [YamlMember(Alias = "image")]
-        public string Image { get; set; }
+        [JsonProperty("containerID")]
+        [YamlMember(Alias = "containerID")]
+        public string ContainerID { get; set; }
 
         /// <summary>
         ///     ImageID of the container's image.
@@ -25,25 +25,11 @@ namespace KubeClient.Models
         public string ImageID { get; set; }
 
         /// <summary>
-        ///     Container's ID in the format 'docker://&lt;container_id&gt;'.
+        ///     The image the container is running. More info: https://kubernetes.io/docs/concepts/containers/images
         /// </summary>
-        [JsonProperty("containerID")]
-        [YamlMember(Alias = "containerID")]
-        public string ContainerID { get; set; }
-
-        /// <summary>
-        ///     Specifies whether the container has passed its readiness probe.
-        /// </summary>
-        [JsonProperty("ready")]
-        [YamlMember(Alias = "ready")]
-        public bool Ready { get; set; }
-
-        /// <summary>
-        ///     This must be a DNS_LABEL. Each container in a pod must have a unique name. Cannot be updated.
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        [JsonProperty("image")]
+        [YamlMember(Alias = "image")]
+        public string Image { get; set; }
 
         /// <summary>
         ///     Details about the container's last termination condition.
@@ -51,6 +37,13 @@ namespace KubeClient.Models
         [JsonProperty("lastState")]
         [YamlMember(Alias = "lastState")]
         public ContainerStateV1 LastState { get; set; }
+
+        /// <summary>
+        ///     This must be a DNS_LABEL. Each container in a pod must have a unique name. Cannot be updated.
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     Details about the container's current condition.
@@ -65,5 +58,12 @@ namespace KubeClient.Models
         [JsonProperty("restartCount")]
         [YamlMember(Alias = "restartCount")]
         public int RestartCount { get; set; }
+
+        /// <summary>
+        ///     Specifies whether the container has passed its readiness probe.
+        /// </summary>
+        [JsonProperty("ready")]
+        [YamlMember(Alias = "ready")]
+        public bool Ready { get; set; }
     }
 }

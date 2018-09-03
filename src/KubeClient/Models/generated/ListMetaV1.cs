@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class ListMetaV1
     {
         /// <summary>
+        ///     continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response.
+        /// </summary>
+        [JsonProperty("continue")]
+        [YamlMember(Alias = "continue")]
+        public string Continue { get; set; }
+
+        /// <summary>
         ///     selfLink is a URL representing this object. Populated by the system. Read-only.
         /// </summary>
         [JsonProperty("selfLink")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("resourceVersion")]
         [YamlMember(Alias = "resourceVersion")]
         public string ResourceVersion { get; set; }
-
-        /// <summary>
-        ///     continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response.
-        /// </summary>
-        [JsonProperty("continue")]
-        [YamlMember(Alias = "continue")]
-        public string Continue { get; set; }
     }
 }

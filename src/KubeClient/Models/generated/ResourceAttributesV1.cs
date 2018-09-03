@@ -11,11 +11,18 @@ namespace KubeClient.Models
     public partial class ResourceAttributesV1
     {
         /// <summary>
-        ///     Resource is one of the existing resource types.  "*" means all.
+        ///     Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
         /// </summary>
-        [JsonProperty("resource")]
-        [YamlMember(Alias = "resource")]
-        public string Resource { get; set; }
+        [JsonProperty("verb")]
+        [YamlMember(Alias = "verb")]
+        public string Verb { get; set; }
+
+        /// <summary>
+        ///     Name is the name of the resource being requested for a "get" or deleted for a "delete". "" (empty) means all.
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     Namespace is the namespace of the action being requested.  Currently, there is no distinction between no namespace and all namespaces "" (empty) is defaulted for LocalSubjectAccessReviews "" (empty) is empty for cluster-scoped resources "" (empty) means "all" for namespace scoped resources from a SubjectAccessReview or SelfSubjectAccessReview
@@ -25,11 +32,11 @@ namespace KubeClient.Models
         public string Namespace { get; set; }
 
         /// <summary>
-        ///     Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
+        ///     Resource is one of the existing resource types.  "*" means all.
         /// </summary>
-        [JsonProperty("verb")]
-        [YamlMember(Alias = "verb")]
-        public string Verb { get; set; }
+        [JsonProperty("resource")]
+        [YamlMember(Alias = "resource")]
+        public string Resource { get; set; }
 
         /// <summary>
         ///     Subresource is one of the existing resource types.  "" means none.
@@ -37,13 +44,6 @@ namespace KubeClient.Models
         [JsonProperty("subresource")]
         [YamlMember(Alias = "subresource")]
         public string Subresource { get; set; }
-
-        /// <summary>
-        ///     Name is the name of the resource being requested for a "get" or deleted for a "delete". "" (empty) means all.
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
 
         /// <summary>
         ///     Version is the API Version of the Resource.  "*" means all.

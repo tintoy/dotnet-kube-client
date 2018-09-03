@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class IDRangeV1Beta1
     {
         /// <summary>
-        ///     max is the end of the range, inclusive.
-        /// </summary>
-        [JsonProperty("max")]
-        [YamlMember(Alias = "max")]
-        public int Max { get; set; }
-
-        /// <summary>
         ///     min is the start of the range, inclusive.
         /// </summary>
         [JsonProperty("min")]
         [YamlMember(Alias = "min")]
         public int Min { get; set; }
+
+        /// <summary>
+        ///     max is the end of the range, inclusive.
+        /// </summary>
+        [JsonProperty("max")]
+        [YamlMember(Alias = "max")]
+        public int Max { get; set; }
     }
 }

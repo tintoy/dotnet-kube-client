@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class PodsMetricSourceV2Beta1
     {
         /// <summary>
-        ///     targetAverageValue is the target value of the average of the metric across all relevant pods (as a quantity)
-        /// </summary>
-        [JsonProperty("targetAverageValue")]
-        [YamlMember(Alias = "targetAverageValue")]
-        public string TargetAverageValue { get; set; }
-
-        /// <summary>
         ///     metricName is the name of the metric in question
         /// </summary>
         [JsonProperty("metricName")]
         [YamlMember(Alias = "metricName")]
         public string MetricName { get; set; }
+
+        /// <summary>
+        ///     targetAverageValue is the target value of the average of the metric across all relevant pods (as a quantity)
+        /// </summary>
+        [JsonProperty("targetAverageValue")]
+        [YamlMember(Alias = "targetAverageValue")]
+        public string TargetAverageValue { get; set; }
     }
 }

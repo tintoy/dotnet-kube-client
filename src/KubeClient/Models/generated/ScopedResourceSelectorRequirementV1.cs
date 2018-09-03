@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string ScopeName { get; set; }
 
         /// <summary>
-        ///     An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
-        /// </summary>
-        [YamlMember(Alias = "values")]
-        [JsonProperty("values", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Values { get; set; } = new List<string>();
-
-        /// <summary>
         ///     Represents a scope's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist.
         /// </summary>
         [JsonProperty("operator")]
         [YamlMember(Alias = "operator")]
         public string Operator { get; set; }
+
+        /// <summary>
+        ///     An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+        /// </summary>
+        [YamlMember(Alias = "values")]
+        [JsonProperty("values", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Values { get; set; } = new List<string>();
     }
 }

@@ -18,11 +18,11 @@ namespace KubeClient.Models
     public partial class EndpointSubsetV1
     {
         /// <summary>
-        ///     Port numbers available on the related IP addresses.
+        ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
         /// </summary>
-        [YamlMember(Alias = "ports")]
-        [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointPortV1> Ports { get; set; } = new List<EndpointPortV1>();
+        [YamlMember(Alias = "addresses")]
+        [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
+        public List<EndpointAddressV1> Addresses { get; set; } = new List<EndpointAddressV1>();
 
         /// <summary>
         ///     IP addresses which offer the related ports but are not currently marked as ready because they have not yet finished starting, have recently failed a readiness check, or have recently failed a liveness check.
@@ -32,10 +32,10 @@ namespace KubeClient.Models
         public List<EndpointAddressV1> NotReadyAddresses { get; set; } = new List<EndpointAddressV1>();
 
         /// <summary>
-        ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
+        ///     Port numbers available on the related IP addresses.
         /// </summary>
-        [YamlMember(Alias = "addresses")]
-        [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointAddressV1> Addresses { get; set; } = new List<EndpointAddressV1>();
+        [YamlMember(Alias = "ports")]
+        [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
+        public List<EndpointPortV1> Ports { get; set; } = new List<EndpointPortV1>();
     }
 }

@@ -11,17 +11,17 @@ namespace KubeClient.Models
     public partial class GroupVersionForDiscoveryV1
     {
         /// <summary>
-        ///     version specifies the version in the form of "version". This is to save the clients the trouble of splitting the GroupVersion.
-        /// </summary>
-        [JsonProperty("version")]
-        [YamlMember(Alias = "version")]
-        public string Version { get; set; }
-
-        /// <summary>
         ///     groupVersion specifies the API group and version in the form "group/version"
         /// </summary>
         [JsonProperty("groupVersion")]
         [YamlMember(Alias = "groupVersion")]
         public string GroupVersion { get; set; }
+
+        /// <summary>
+        ///     version specifies the version in the form of "version". This is to save the clients the trouble of splitting the GroupVersion.
+        /// </summary>
+        [JsonProperty("version")]
+        [YamlMember(Alias = "version")]
+        public string Version { get; set; }
     }
 }

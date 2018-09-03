@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class ObjectMetricSourceV2Beta1
     {
         /// <summary>
-        ///     target is the described Kubernetes object.
+        ///     metricName is the name of the metric in question.
         /// </summary>
-        [JsonProperty("target")]
-        [YamlMember(Alias = "target")]
-        public CrossVersionObjectReferenceV2Beta1 Target { get; set; }
+        [JsonProperty("metricName")]
+        [YamlMember(Alias = "metricName")]
+        public string MetricName { get; set; }
 
         /// <summary>
         ///     targetValue is the target value of the metric (as a quantity).
@@ -25,10 +25,10 @@ namespace KubeClient.Models
         public string TargetValue { get; set; }
 
         /// <summary>
-        ///     metricName is the name of the metric in question.
+        ///     target is the described Kubernetes object.
         /// </summary>
-        [JsonProperty("metricName")]
-        [YamlMember(Alias = "metricName")]
-        public string MetricName { get; set; }
+        [JsonProperty("target")]
+        [YamlMember(Alias = "target")]
+        public CrossVersionObjectReferenceV2Beta1 Target { get; set; }
     }
 }

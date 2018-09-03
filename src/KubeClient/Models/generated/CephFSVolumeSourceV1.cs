@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class CephFSVolumeSourceV1
     {
         /// <summary>
+        ///     Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
+        /// </summary>
+        [JsonProperty("secretFile")]
+        [YamlMember(Alias = "secretFile")]
+        public string SecretFile { get; set; }
+
+        /// <summary>
         ///     Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
         [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
         public LocalObjectReferenceV1 SecretRef { get; set; }
-
-        /// <summary>
-        ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
-        /// </summary>
-        [JsonProperty("readOnly")]
-        [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
 
         /// <summary>
         ///     Optional: Used as the mounted root, rather than the full Ceph tree, default is /
@@ -46,10 +46,10 @@ namespace KubeClient.Models
         public List<string> Monitors { get; set; } = new List<string>();
 
         /// <summary>
-        ///     Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
+        ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("secretFile")]
-        [YamlMember(Alias = "secretFile")]
-        public string SecretFile { get; set; }
+        [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
+        public bool ReadOnly { get; set; }
     }
 }

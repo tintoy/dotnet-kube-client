@@ -18,7 +18,7 @@ namespace KubeClient.Models
         public bool Served { get; set; }
 
         /// <summary>
-        ///     Name is the version name, e.g. â€œv1â€, â€œv2beta1â€, etc.
+        ///     Name is the version name, e.g. “v1”, “v2beta1”, etc.
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]

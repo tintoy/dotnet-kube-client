@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class ObjectMetricStatusV2Beta1
     {
         /// <summary>
+        ///     currentValue is the current value of the metric (as a quantity).
+        /// </summary>
+        [JsonProperty("currentValue")]
+        [YamlMember(Alias = "currentValue")]
+        public string CurrentValue { get; set; }
+
+        /// <summary>
         ///     metricName is the name of the metric in question.
         /// </summary>
         [JsonProperty("metricName")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("target")]
         [YamlMember(Alias = "target")]
         public CrossVersionObjectReferenceV2Beta1 Target { get; set; }
-
-        /// <summary>
-        ///     currentValue is the current value of the metric (as a quantity).
-        /// </summary>
-        [JsonProperty("currentValue")]
-        [YamlMember(Alias = "currentValue")]
-        public string CurrentValue { get; set; }
     }
 }

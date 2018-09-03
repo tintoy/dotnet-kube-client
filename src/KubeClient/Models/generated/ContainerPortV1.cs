@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class ContainerPortV1
     {
         /// <summary>
-        ///     Number of port to expose on the host. If specified, this must be a valid port number, 0 &lt; x &lt; 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
-        /// </summary>
-        [JsonProperty("hostPort")]
-        [YamlMember(Alias = "hostPort")]
-        public int HostPort { get; set; }
-
-        /// <summary>
         ///     What host IP to bind the external port to.
         /// </summary>
         [JsonProperty("hostIP")]
@@ -44,5 +37,12 @@ namespace KubeClient.Models
         [JsonProperty("containerPort")]
         [YamlMember(Alias = "containerPort")]
         public int ContainerPort { get; set; }
+
+        /// <summary>
+        ///     Number of port to expose on the host. If specified, this must be a valid port number, 0 &lt; x &lt; 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+        /// </summary>
+        [JsonProperty("hostPort")]
+        [YamlMember(Alias = "hostPort")]
+        public int HostPort { get; set; }
     }
 }

@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public bool Incomplete { get; set; }
 
         /// <summary>
-        ///     ResourceRules is the list of actions the subject is allowed to perform on resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
-        /// </summary>
-        [YamlMember(Alias = "resourceRules")]
-        [JsonProperty("resourceRules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ResourceRuleV1Beta1> ResourceRules { get; set; } = new List<ResourceRuleV1Beta1>();
-
-        /// <summary>
         ///     EvaluationError can appear in combination with Rules. It indicates an error occurred during rule evaluation, such as an authorizer that doesn't support rule evaluation, and that ResourceRules and/or NonResourceRules may be incomplete.
         /// </summary>
         [JsonProperty("evaluationError")]
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [YamlMember(Alias = "nonResourceRules")]
         [JsonProperty("nonResourceRules", NullValueHandling = NullValueHandling.Ignore)]
         public List<NonResourceRuleV1Beta1> NonResourceRules { get; set; } = new List<NonResourceRuleV1Beta1>();
+
+        /// <summary>
+        ///     ResourceRules is the list of actions the subject is allowed to perform on resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
+        /// </summary>
+        [YamlMember(Alias = "resourceRules")]
+        [JsonProperty("resourceRules", NullValueHandling = NullValueHandling.Ignore)]
+        public List<ResourceRuleV1Beta1> ResourceRules { get; set; } = new List<ResourceRuleV1Beta1>();
     }
 }

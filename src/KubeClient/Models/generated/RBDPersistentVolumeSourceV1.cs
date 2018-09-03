@@ -18,18 +18,11 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     The rados pool name. Default is rbd. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        ///     The rados image name. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("pool")]
-        [YamlMember(Alias = "pool")]
-        public string Pool { get; set; }
-
-        /// <summary>
-        ///     Keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
-        /// </summary>
-        [JsonProperty("keyring")]
-        [YamlMember(Alias = "keyring")]
-        public string Keyring { get; set; }
+        [JsonProperty("image")]
+        [YamlMember(Alias = "image")]
+        public string Image { get; set; }
 
         /// <summary>
         ///     SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
@@ -39,18 +32,18 @@ namespace KubeClient.Models
         public SecretReferenceV1 SecretRef { get; set; }
 
         /// <summary>
-        ///     The rados image name. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        ///     Keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("image")]
-        [YamlMember(Alias = "image")]
-        public string Image { get; set; }
+        [JsonProperty("keyring")]
+        [YamlMember(Alias = "keyring")]
+        public string Keyring { get; set; }
 
         /// <summary>
-        ///     ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        ///     The rados pool name. Default is rbd. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("readOnly")]
-        [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("pool")]
+        [YamlMember(Alias = "pool")]
+        public string Pool { get; set; }
 
         /// <summary>
         ///     The rados user name. Default is admin. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
@@ -65,5 +58,12 @@ namespace KubeClient.Models
         [YamlMember(Alias = "monitors")]
         [JsonProperty("monitors", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Monitors { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://releases.k8s.io/HEAD/examples/volumes/rbd/README.md#how-to-use-it
+        /// </summary>
+        [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
+        public bool ReadOnly { get; set; }
     }
 }

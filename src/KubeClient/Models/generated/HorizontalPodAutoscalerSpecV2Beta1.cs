@@ -18,11 +18,11 @@ namespace KubeClient.Models
         public CrossVersionObjectReferenceV2Beta1 ScaleTargetRef { get; set; }
 
         /// <summary>
-        ///     minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 1 pod.
+        ///     maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas.
         /// </summary>
-        [JsonProperty("minReplicas")]
-        [YamlMember(Alias = "minReplicas")]
-        public int MinReplicas { get; set; }
+        [JsonProperty("maxReplicas")]
+        [YamlMember(Alias = "maxReplicas")]
+        public int MaxReplicas { get; set; }
 
         /// <summary>
         ///     metrics contains the specifications for which to use to calculate the desired replica count (the maximum replica count across all metrics will be used).  The desired replica count is calculated multiplying the ratio between the target value and the current value by the current number of pods.  Ergo, metrics used must decrease as the pod count is increased, and vice-versa.  See the individual metric source types for more information about how each type of metric must respond.
@@ -32,10 +32,10 @@ namespace KubeClient.Models
         public List<MetricSpecV2Beta1> Metrics { get; set; } = new List<MetricSpecV2Beta1>();
 
         /// <summary>
-        ///     maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas.
+        ///     minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 1 pod.
         /// </summary>
-        [JsonProperty("maxReplicas")]
-        [YamlMember(Alias = "maxReplicas")]
-        public int MaxReplicas { get; set; }
+        [JsonProperty("minReplicas")]
+        [YamlMember(Alias = "minReplicas")]
+        public int MinReplicas { get; set; }
     }
 }

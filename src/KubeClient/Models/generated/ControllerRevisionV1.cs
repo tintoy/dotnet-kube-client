@@ -23,17 +23,17 @@ namespace KubeClient.Models
     public partial class ControllerRevisionV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Revision indicates the revision of the state represented by Data.
-        /// </summary>
-        [JsonProperty("revision")]
-        [YamlMember(Alias = "revision")]
-        public int Revision { get; set; }
-
-        /// <summary>
         ///     Data is the serialized representation of the state.
         /// </summary>
         [JsonProperty("data")]
         [YamlMember(Alias = "data")]
         public RawExtensionRuntime Data { get; set; }
+
+        /// <summary>
+        ///     Revision indicates the revision of the state represented by Data.
+        /// </summary>
+        [JsonProperty("revision")]
+        [YamlMember(Alias = "revision")]
+        public int Revision { get; set; }
     }
 }

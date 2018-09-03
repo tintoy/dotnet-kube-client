@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ObjectReference contains enough information to let you inspect or modify the referred object.
     /// </summary>
-    public partial class ObjectReferenceV1
+    public partial class ObjectReferenceV1 : KubeObjectV1
     {
         /// <summary>
         ///     UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -18,11 +18,11 @@ namespace KubeClient.Models
         public string Uid { get; set; }
 
         /// <summary>
-        ///     Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
+        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
         /// </summary>
-        [JsonProperty("resourceVersion")]
-        [YamlMember(Alias = "resourceVersion")]
-        public string ResourceVersion { get; set; }
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
@@ -39,24 +39,10 @@ namespace KubeClient.Models
         public string FieldPath { get; set; }
 
         /// <summary>
-        ///     API version of the referent.
+        ///     Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
         /// </summary>
-        [JsonProperty("apiVersion")]
-        [YamlMember(Alias = "apiVersion")]
-        public string ApiVersion { get; set; }
-
-        /// <summary>
-        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
-        ///     Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
-        /// </summary>
-        [JsonProperty("kind")]
-        [YamlMember(Alias = "kind")]
-        public string Kind { get; set; }
+        [JsonProperty("resourceVersion")]
+        [YamlMember(Alias = "resourceVersion")]
+        public string ResourceVersion { get; set; }
     }
 }

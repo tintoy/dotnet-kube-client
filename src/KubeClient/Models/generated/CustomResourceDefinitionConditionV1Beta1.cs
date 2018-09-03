@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class CustomResourceDefinitionConditionV1Beta1
     {
         /// <summary>
-        ///     Status is the status of the condition. Can be True, False, Unknown.
-        /// </summary>
-        [JsonProperty("status")]
-        [YamlMember(Alias = "status")]
-        public string Status { get; set; }
-
-        /// <summary>
         ///     Last time the condition transitioned from one status to another.
         /// </summary>
         [JsonProperty("lastTransitionTime")]
@@ -25,11 +18,11 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     Unique, one-word, CamelCase reason for the condition's last transition.
+        ///     Human-readable message indicating details about last transition.
         /// </summary>
-        [JsonProperty("reason")]
-        [YamlMember(Alias = "reason")]
-        public string Reason { get; set; }
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
 
         /// <summary>
         ///     Type is the type of the condition.
@@ -39,10 +32,17 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     Human-readable message indicating details about last transition.
+        ///     Unique, one-word, CamelCase reason for the condition's last transition.
         /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
+        [JsonProperty("reason")]
+        [YamlMember(Alias = "reason")]
+        public string Reason { get; set; }
+
+        /// <summary>
+        ///     Status is the status of the condition. Can be True, False, Unknown.
+        /// </summary>
+        [JsonProperty("status")]
+        [YamlMember(Alias = "status")]
+        public string Status { get; set; }
     }
 }
