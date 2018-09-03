@@ -93,6 +93,13 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
+        ///     Data about the Event series this event represents or nil if it's a singleton Event.
+        /// </summary>
+        [JsonProperty("series")]
+        [YamlMember(Alias = "series")]
+        public EventSeriesV1 Series { get; set; }
+
+        /// <summary>
         ///     The number of times this event has occurred.
         /// </summary>
         [JsonProperty("count")]

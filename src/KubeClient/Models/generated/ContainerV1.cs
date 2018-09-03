@@ -90,6 +90,14 @@ namespace KubeClient.Models
         public string TerminationMessagePolicy { get; set; }
 
         /// <summary>
+        ///     volumeDevices is the list of block devices to be used by the container. This is an alpha feature and may change in the future.
+        /// </summary>
+        [MergeStrategy(Key = "devicePath")]
+        [YamlMember(Alias = "volumeDevices")]
+        [JsonProperty("volumeDevices", NullValueHandling = NullValueHandling.Ignore)]
+        public List<VolumeDeviceV1> VolumeDevices { get; set; } = new List<VolumeDeviceV1>();
+
+        /// <summary>
         ///     Pod volumes to mount into the container's filesystem. Cannot be updated.
         /// </summary>
         [MergeStrategy(Key = "mountPath")]

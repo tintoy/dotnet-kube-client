@@ -62,6 +62,20 @@ namespace KubeClient.Models
         public bool HostPID { get; set; }
 
         /// <summary>
+        ///     Share a single process namespace between all of the containers in a pod. When this is set containers will be able to view and signal processes from other containers in the same pod, and the first process in each container will not be assigned PID 1. HostPID and ShareProcessNamespace cannot both be set. Optional: Default to false. This field is alpha-level and is honored only by servers that enable the PodShareProcessNamespace feature.
+        /// </summary>
+        [JsonProperty("shareProcessNamespace")]
+        [YamlMember(Alias = "shareProcessNamespace")]
+        public bool ShareProcessNamespace { get; set; }
+
+        /// <summary>
+        ///     Specifies the DNS parameters of a pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
+        /// </summary>
+        [JsonProperty("dnsConfig")]
+        [YamlMember(Alias = "dnsConfig")]
+        public PodDNSConfigV1 DnsConfig { get; set; }
+
+        /// <summary>
         ///     Host networking requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
         /// </summary>
         [JsonProperty("hostNetwork")]

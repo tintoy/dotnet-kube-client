@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     FSGroupStrategyOptions defines the strategy type and options used to create the strategy.
+    ///     FSGroupStrategyOptions defines the strategy type and options used to create the strategy. Deprecated: use FSGroupStrategyOptions from policy API Group instead.
     /// </summary>
     public partial class FSGroupStrategyOptionsV1Beta1
     {

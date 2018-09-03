@@ -25,6 +25,13 @@ namespace KubeClient.Models
         public List<string> TargetWWNs { get; set; } = new List<string>();
 
         /// <summary>
+        ///     Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+        /// </summary>
+        [YamlMember(Alias = "wwids")]
+        [JsonProperty("wwids", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Wwids { get; set; } = new List<string>();
+
+        /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
         [JsonProperty("readOnly")]

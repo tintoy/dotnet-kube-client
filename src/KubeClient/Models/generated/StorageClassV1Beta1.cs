@@ -70,5 +70,12 @@ namespace KubeClient.Models
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Dynamically provisioned PersistentVolumes of this storage class are created with this reclaimPolicy. Defaults to Delete.
+        /// </summary>
+        [JsonProperty("reclaimPolicy")]
+        [YamlMember(Alias = "reclaimPolicy")]
+        public string ReclaimPolicy { get; set; }
     }
 }

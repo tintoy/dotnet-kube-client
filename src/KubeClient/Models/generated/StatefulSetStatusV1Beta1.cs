@@ -32,6 +32,14 @@ namespace KubeClient.Models
         public int ReadyReplicas { get; set; }
 
         /// <summary>
+        ///     Represents the latest available observations of a statefulset's current state.
+        /// </summary>
+        [MergeStrategy(Key = "type")]
+        [YamlMember(Alias = "conditions")]
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<StatefulSetConditionV1Beta1> Conditions { get; set; } = new List<StatefulSetConditionV1Beta1>();
+
+        /// <summary>
         ///     currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
         /// </summary>
         [JsonProperty("currentReplicas")]

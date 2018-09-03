@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
+        ///     Optional: points to a secret object containing parameters used to connect to OpenStack.
+        /// </summary>
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public LocalObjectReferenceV1 SecretRef { get; set; }
+
+        /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
         /// </summary>
         [JsonProperty("readOnly")]

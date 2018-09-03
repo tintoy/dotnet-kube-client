@@ -74,6 +74,15 @@ namespace KubeClient.Models
         public List<string> DefaultAddCapabilities { get; set; } = new List<string>();
 
         /// <summary>
+        ///     forbiddenSysctls is a list of explicitly forbidden sysctls, defaults to none. Each entry is either a plain sysctl name or ends in "*" in which case it is considered as a prefix of forbidden sysctls. Single * means all sysctls are forbidden.
+        ///     
+        ///     Examples: e.g. "foo/*" forbids "foo/bar", "foo/baz", etc. e.g. "foo.*" forbids "foo.bar", "foo.baz", etc.
+        /// </summary>
+        [YamlMember(Alias = "forbiddenSysctls")]
+        [JsonProperty("forbiddenSysctls", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> ForbiddenSysctls { get; set; } = new List<string>();
+
+        /// <summary>
         ///     hostPorts determines which host port ranges are allowed to be exposed.
         /// </summary>
         [YamlMember(Alias = "hostPorts")]

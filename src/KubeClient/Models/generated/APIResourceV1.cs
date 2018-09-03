@@ -53,6 +53,20 @@ namespace KubeClient.Models
         public string Group { get; set; }
 
         /// <summary>
+        ///     version is the preferred version of the resource.  Empty implies the version of the containing resource list For subresources, this may have a different value, for example: v1 (while inside a v1beta1 version of the core resource's group)".
+        /// </summary>
+        [JsonProperty("version")]
+        [YamlMember(Alias = "version")]
+        public string Version { get; set; }
+
+        /// <summary>
+        ///     group is the preferred group of the resource.  Empty implies the group of the containing resource list. For subresources, this may have a different value, for example: Scale".
+        /// </summary>
+        [JsonProperty("group")]
+        [YamlMember(Alias = "group")]
+        public string Group { get; set; }
+
+        /// <summary>
         ///     categories is a list of the grouped resources this resource belongs to (e.g. 'all')
         /// </summary>
         [YamlMember(Alias = "categories")]
