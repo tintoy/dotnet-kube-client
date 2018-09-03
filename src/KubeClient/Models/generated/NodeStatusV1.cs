@@ -39,6 +39,13 @@ namespace KubeClient.Models
         public List<string> VolumesInUse { get; set; } = new List<string>();
 
         /// <summary>
+        ///     Status of the config assigned to the node via the dynamic Kubelet config feature.
+        /// </summary>
+        [JsonProperty("config")]
+        [YamlMember(Alias = "config")]
+        public NodeConfigStatusV1 Config { get; set; }
+
+        /// <summary>
         ///     Set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
         /// </summary>
         [JsonProperty("nodeInfo")]

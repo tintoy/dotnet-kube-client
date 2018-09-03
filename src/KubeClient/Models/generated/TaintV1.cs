@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     The node this Taint is attached to has the effect "effect" on any pod that that does not tolerate the Taint.
+    ///     The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
     /// </summary>
     public partial class TaintV1
     {
@@ -36,7 +36,6 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("key")]
         [YamlMember(Alias = "key")]
-        [MergeStrategy(Key = "key")]
         public string Key { get; set; }
     }
 }

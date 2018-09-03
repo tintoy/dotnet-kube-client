@@ -6,16 +6,9 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     ControllerRevisionList is a resource containing a list of ControllerRevision objects.
+    ///     Deprecated. Please use io.k8s.api.apps.v1beta1.ControllerRevisionList instead.
     /// </summary>
-    [KubeListItem("ControllerRevision", "v1beta1")]
-    [KubeObject("ControllerRevisionList", "v1beta1")]
-    public partial class ControllerRevisionListV1Beta1 : KubeResourceListV1<ControllerRevisionV1Beta1>
+    public partial class ControllerRevisionListV1Beta1
     {
-        /// <summary>
-        ///     Items is the list of ControllerRevisions
-        /// </summary>
-        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public override List<ControllerRevisionV1Beta1> Items { get; } = new List<ControllerRevisionV1Beta1>();
     }
 }

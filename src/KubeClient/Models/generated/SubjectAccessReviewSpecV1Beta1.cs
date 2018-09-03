@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
 
         /// <summary>
+        ///     UID information about the requesting user.
+        /// </summary>
+        [JsonProperty("uid")]
+        [YamlMember(Alias = "uid")]
+        public string Uid { get; set; }
+
+        /// <summary>
         ///     Groups is the groups you're testing for.
         /// </summary>
         [YamlMember(Alias = "group")]

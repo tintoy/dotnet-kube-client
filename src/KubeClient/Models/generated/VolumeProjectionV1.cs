@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public DownwardAPIProjectionV1 DownwardAPI { get; set; }
 
         /// <summary>
+        ///     information about the serviceAccountToken data to project
+        /// </summary>
+        [JsonProperty("serviceAccountToken")]
+        [YamlMember(Alias = "serviceAccountToken")]
+        public ServiceAccountTokenProjectionV1 ServiceAccountToken { get; set; }
+
+        /// <summary>
         ///     information about the configMap data to project
         /// </summary>
         [JsonProperty("configMap")]

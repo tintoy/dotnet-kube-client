@@ -32,6 +32,13 @@ namespace KubeClient.Models
         public string SubPath { get; set; }
 
         /// <summary>
+        ///     mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+        /// </summary>
+        [JsonProperty("mountPropagation")]
+        [YamlMember(Alias = "mountPropagation")]
+        public string MountPropagation { get; set; }
+
+        /// <summary>
         ///     Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
         /// </summary>
         [JsonProperty("readOnly")]

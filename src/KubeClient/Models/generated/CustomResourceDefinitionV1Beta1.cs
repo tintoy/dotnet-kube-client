@@ -9,6 +9,18 @@ namespace KubeClient.Models
     ///     CustomResourceDefinition represents a resource that should be exposed on the API server.  Its name MUST be in the format &lt;.spec.name&gt;.&lt;.spec.group&gt;.
     /// </summary>
     [KubeObject("CustomResourceDefinition", "v1beta1")]
+    [KubeApi(KubeAction.List, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions")]
+    [KubeApi(KubeAction.Create, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions")]
+    [KubeApi(KubeAction.Get, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}")]
+    [KubeApi(KubeAction.Update, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions")]
+    [KubeApi(KubeAction.Get, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}/status")]
     public partial class CustomResourceDefinitionV1Beta1 : KubeResourceV1
     {
         /// <summary>

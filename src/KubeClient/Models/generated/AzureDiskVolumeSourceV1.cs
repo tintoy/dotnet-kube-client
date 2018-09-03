@@ -18,7 +18,7 @@ namespace KubeClient.Models
         public string DiskURI { get; set; }
 
         /// <summary>
-        ///     Expected values Shared: mulitple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+        ///     Expected values Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
         /// </summary>
         [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]

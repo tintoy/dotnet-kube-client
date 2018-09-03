@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class LabelSelectorRequirementV1
     {
         /// <summary>
-        ///     operator represents a key's relationship to a set of values. Valid operators ard In, NotIn, Exists and DoesNotExist.
+        ///     operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
         /// </summary>
         [JsonProperty("operator")]
         [YamlMember(Alias = "operator")]

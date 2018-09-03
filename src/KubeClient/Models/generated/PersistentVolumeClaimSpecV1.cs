@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public string StorageClassName { get; set; }
 
         /// <summary>
+        ///     volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec. This is an alpha feature and may change in the future.
+        /// </summary>
+        [JsonProperty("volumeMode")]
+        [YamlMember(Alias = "volumeMode")]
+        public string VolumeMode { get; set; }
+
+        /// <summary>
         ///     VolumeName is the binding reference to the PersistentVolume backing this claim.
         /// </summary>
         [JsonProperty("volumeName")]

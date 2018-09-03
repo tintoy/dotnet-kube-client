@@ -32,7 +32,7 @@ namespace KubeClient.Models
         public List<string> ResourceNames { get; set; } = new List<string>();
 
         /// <summary>
-        ///     Resources is a list of resources this rule applies to.  ResourceAll represents all resources.
+        ///     Resources is a list of resources this rule applies to.  '*' represents all resources in the specified apiGroups. '*/foo' represents the subresource 'foo' for all resources in the specified apiGroups.
         /// </summary>
         [YamlMember(Alias = "resources")]
         [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]

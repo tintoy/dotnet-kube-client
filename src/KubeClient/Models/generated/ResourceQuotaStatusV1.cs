@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class ResourceQuotaStatusV1
     {
         /// <summary>
-        ///     Hard is the set of enforced hard limits for each named resource. More info: https://git.k8s.io/community/contributors/design-proposals/admission_control_resource_quota.md
+        ///     Hard is the set of enforced hard limits for each named resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
         /// </summary>
         [YamlMember(Alias = "hard")]
         [JsonProperty("hard", NullValueHandling = NullValueHandling.Ignore)]

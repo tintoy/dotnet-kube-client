@@ -18,12 +18,10 @@ namespace KubeClient.Models
     [KubeApi(KubeAction.WatchList, "api/v1/watch/nodes")]
     [KubeApi(KubeAction.DeleteCollection, "api/v1/nodes")]
     [KubeApi(KubeAction.Get, "api/v1/nodes/{name}/status")]
-    [KubeApi(KubeAction.Proxy, "api/v1/proxy/nodes/{name}")]
     [KubeApi(KubeAction.Watch, "api/v1/watch/nodes/{name}")]
     [KubeApi(KubeAction.Patch, "api/v1/nodes/{name}/status")]
     [KubeApi(KubeAction.Connect, "api/v1/nodes/{name}/proxy")]
     [KubeApi(KubeAction.Update, "api/v1/nodes/{name}/status")]
-    [KubeApi(KubeAction.Proxy, "api/v1/proxy/nodes/{name}/{path}")]
     [KubeApi(KubeAction.Connect, "api/v1/nodes/{name}/proxy/{path}")]
     public partial class NodeV1 : KubeResourceV1
     {

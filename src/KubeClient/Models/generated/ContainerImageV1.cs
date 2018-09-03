@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class ContainerImageV1
     {
         /// <summary>
-        ///     Names by which this image is known. e.g. ["gcr.io/google_containers/hyperkube:v1.0.7", "dockerhub.io/google_containers/hyperkube:v1.0.7"]
+        ///     Names by which this image is known. e.g. ["k8s.gcr.io/hyperkube:v1.0.7", "dockerhub.io/google_containers/hyperkube:v1.0.7"]
         /// </summary>
         [YamlMember(Alias = "names")]
         [JsonProperty("names", NullValueHandling = NullValueHandling.Ignore)]

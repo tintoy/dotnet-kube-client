@@ -6,19 +6,30 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     No description provided.
+    ///     DEPRECATED 1.9 - This group version of NetworkPolicyPeer is deprecated by networking/v1/NetworkPolicyPeer.
     /// </summary>
     public partial class NetworkPolicyPeerV1Beta1
     {
         /// <summary>
-        ///     Selects Namespaces using cluster scoped-labels.  This matches all pods in all namespaces selected by this label selector. This field follows standard label selector semantics. If present but empty, this selector selects all namespaces.
+        ///     IPBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+        /// </summary>
+        [JsonProperty("ipBlock")]
+        [YamlMember(Alias = "ipBlock")]
+        public IPBlockV1Beta1 IpBlock { get; set; }
+
+        /// <summary>
+        ///     Selects Namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
+        ///     
+        ///     If PodSelector is also set, then the NetworkPolicyPeer as a whole selects the Pods matching PodSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects all Pods in the Namespaces selected by NamespaceSelector.
         /// </summary>
         [JsonProperty("namespaceSelector")]
         [YamlMember(Alias = "namespaceSelector")]
         public LabelSelectorV1 NamespaceSelector { get; set; }
 
         /// <summary>
-        ///     This is a label selector which selects Pods in this namespace. This field follows standard label selector semantics. If present but empty, this selector selects all pods in this namespace.
+        ///     This is a label selector which selects Pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
+        ///     
+        ///     If NamespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the Pods matching PodSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the Pods matching PodSelector in the policy's own Namespace.
         /// </summary>
         [JsonProperty("podSelector")]
         [YamlMember(Alias = "podSelector")]

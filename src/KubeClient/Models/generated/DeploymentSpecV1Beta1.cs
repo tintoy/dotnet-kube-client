@@ -25,7 +25,7 @@ namespace KubeClient.Models
         public PodTemplateSpecV1 Template { get; set; }
 
         /// <summary>
-        ///     The config this deployment is rolling back to. Will be cleared after rollback is done.
+        ///     DEPRECATED. The config this deployment is rolling back to. Will be cleared after rollback is done.
         /// </summary>
         [JsonProperty("rollbackTo")]
         [YamlMember(Alias = "rollbackTo")]
@@ -46,7 +46,7 @@ namespace KubeClient.Models
         public int MinReadySeconds { get; set; }
 
         /// <summary>
-        ///     The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Once autoRollback is implemented, the deployment controller will automatically rollback failed deployments. Note that progress will not be estimated during the time a deployment is paused. This is not set by default.
+        ///     The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. This is not set by default.
         /// </summary>
         [JsonProperty("progressDeadlineSeconds")]
         [YamlMember(Alias = "progressDeadlineSeconds")]
@@ -69,6 +69,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     The deployment strategy to use to replace existing pods with new ones.
         /// </summary>
+        [RetainKeysStrategy]
         [JsonProperty("strategy")]
         [YamlMember(Alias = "strategy")]
         public DeploymentStrategyV1Beta1 Strategy { get; set; }

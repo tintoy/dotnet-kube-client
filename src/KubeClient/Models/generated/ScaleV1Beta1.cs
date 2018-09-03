@@ -10,8 +10,11 @@ namespace KubeClient.Models
     /// </summary>
     [KubeObject("Scale", "v1beta1")]
     [KubeApi(KubeAction.Get, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/scale")]
+    [KubeApi(KubeAction.Get, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/scale")]
     [KubeApi(KubeAction.Patch, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/scale")]
+    [KubeApi(KubeAction.Patch, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/scale")]
     [KubeApi(KubeAction.Update, "apis/apps/v1beta1/namespaces/{namespace}/deployments/{name}/scale")]
+    [KubeApi(KubeAction.Update, "apis/apps/v1beta1/namespaces/{namespace}/statefulsets/{name}/scale")]
     public partial class ScaleV1Beta1 : KubeResourceV1
     {
         /// <summary>

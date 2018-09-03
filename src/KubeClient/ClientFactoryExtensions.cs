@@ -22,7 +22,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new NamespaceClientV1(client)
             );
@@ -41,7 +41,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new ConfigMapClientV1(client)
             );
@@ -63,6 +63,25 @@ namespace KubeClient
 
             return kubeClient.ResourceClient(
                 client => new DeploymentClientV1Beta1(client)
+            );
+        }
+
+        /// <summary>
+        ///     Get the Kubernetes Deployments (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static DeploymentClientV1 DeploymentsV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient(
+                client => new DeploymentClientV1(client)
             );
         }
 
@@ -98,7 +117,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new PersistentVolumeClientV1(client)
             );
@@ -117,7 +136,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new PersistentVolumeClaimClientV1(client)
             );
@@ -136,7 +155,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new PodClientV1(client)
             );
@@ -174,7 +193,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new ServiceClientV1(client)
             );
@@ -193,7 +212,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new ReplicationControllerClientV1(client)
             );
@@ -212,7 +231,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new ReplicaSetClientV1Beta1(client)
             );
@@ -231,7 +250,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new APIGroupClientV1(client)
             );
@@ -250,7 +269,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new APIResourceClientV1(client)
             );
@@ -269,7 +288,7 @@ namespace KubeClient
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
-            
+
             return kubeClient.ResourceClient(
                 client => new DynamicResourceClient(client)
             );

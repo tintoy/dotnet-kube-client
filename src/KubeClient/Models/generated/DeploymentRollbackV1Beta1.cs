@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     DeploymentRollback stores the information required to rollback a deployment.
+    ///     DEPRECATED. DeploymentRollback stores the information required to rollback a deployment.
     /// </summary>
     public partial class DeploymentRollbackV1Beta1
     {

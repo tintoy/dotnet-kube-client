@@ -46,7 +46,7 @@ namespace KubeClient.Models
         public List<StatusCauseV1> Causes { get; set; } = new List<StatusCauseV1>();
 
         /// <summary>
-        ///     If specified, the time in seconds before the operation should be retried.
+        ///     If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
         /// </summary>
         [JsonProperty("retryAfterSeconds")]
         [YamlMember(Alias = "retryAfterSeconds")]

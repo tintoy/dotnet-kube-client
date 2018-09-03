@@ -190,7 +190,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("items")]
         [YamlMember(Alias = "items")]
-        public JSONSchemaPropsV1Beta1 Items { get; set; }
+        public JSONSchemaPropsOrArrayV1Beta1 Items { get; set; }
 
         /// <summary>
         ///     Description not provided.

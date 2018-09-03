@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class NodeSpecV1
     {
         /// <summary>
-        ///     External ID of the node assigned by some machine database (e.g. a cloud provider). Deprecated.
+        ///     Deprecated. Not all kubelets will set this field. Remove field after 1.13. see: https://issues.k8s.io/61966
         /// </summary>
         [JsonProperty("externalID")]
         [YamlMember(Alias = "externalID")]
@@ -30,6 +30,13 @@ namespace KubeClient.Models
         [JsonProperty("podCIDR")]
         [YamlMember(Alias = "podCIDR")]
         public string PodCIDR { get; set; }
+
+        /// <summary>
+        ///     If specified, the source to get node configuration from The DynamicKubeletConfig feature gate must be enabled for the Kubelet to use this field
+        /// </summary>
+        [JsonProperty("configSource")]
+        [YamlMember(Alias = "configSource")]
+        public NodeConfigSourceV1 ConfigSource { get; set; }
 
         /// <summary>
         ///     Unschedulable controls node schedulability of new pods. By default, node is schedulable. More info: https://kubernetes.io/docs/concepts/nodes/node/#manual-node-administration

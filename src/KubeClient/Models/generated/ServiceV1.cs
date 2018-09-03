@@ -19,12 +19,10 @@ namespace KubeClient.Models
     [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/services/{name}")]
     [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/services")]
     [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/services/{name}/status")]
-    [KubeApi(KubeAction.Proxy, "api/v1/proxy/namespaces/{namespace}/services/{name}")]
     [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/services/{name}")]
     [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/services/{name}/status")]
     [KubeApi(KubeAction.Connect, "api/v1/namespaces/{namespace}/services/{name}/proxy")]
     [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/services/{name}/status")]
-    [KubeApi(KubeAction.Proxy, "api/v1/proxy/namespaces/{namespace}/services/{name}/{path}")]
     [KubeApi(KubeAction.Connect, "api/v1/namespaces/{namespace}/services/{name}/proxy/{path}")]
     public partial class ServiceV1 : KubeResourceV1
     {
