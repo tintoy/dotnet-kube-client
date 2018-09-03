@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     A human readable message indicating details about the transition.
-        /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
-
-        /// <summary>
         ///     Type of replication controller condition.
         /// </summary>
         [JsonProperty("type")]
@@ -44,5 +37,12 @@ namespace KubeClient.Models
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     A human readable message indicating details about the transition.
+        /// </summary>
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
     }
 }

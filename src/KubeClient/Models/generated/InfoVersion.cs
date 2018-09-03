@@ -13,16 +13,16 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("buildDate")]
-        [YamlMember(Alias = "buildDate")]
-        public string BuildDate { get; set; }
+        [JsonProperty("gitCommit")]
+        [YamlMember(Alias = "gitCommit")]
+        public string GitCommit { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("gitTreeState")]
-        [YamlMember(Alias = "gitTreeState")]
-        public string GitTreeState { get; set; }
+        [JsonProperty("major")]
+        [YamlMember(Alias = "major")]
+        public string Major { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -34,9 +34,23 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
+        [JsonProperty("buildDate")]
+        [YamlMember(Alias = "buildDate")]
+        public string BuildDate { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
         [JsonProperty("gitVersion")]
         [YamlMember(Alias = "gitVersion")]
         public string GitVersion { get; set; }
+
+        /// <summary>
+        ///     Description not provided.
+        /// </summary>
+        [JsonProperty("gitTreeState")]
+        [YamlMember(Alias = "gitTreeState")]
+        public string GitTreeState { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -55,22 +69,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("major")]
-        [YamlMember(Alias = "major")]
-        public string Major { get; set; }
-
-        /// <summary>
-        ///     Description not provided.
-        /// </summary>
         [JsonProperty("minor")]
         [YamlMember(Alias = "minor")]
         public string Minor { get; set; }
-
-        /// <summary>
-        ///     Description not provided.
-        /// </summary>
-        [JsonProperty("gitCommit")]
-        [YamlMember(Alias = "gitCommit")]
-        public string GitCommit { get; set; }
     }
 }

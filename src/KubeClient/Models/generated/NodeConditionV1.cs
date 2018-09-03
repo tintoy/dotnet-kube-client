@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class NodeConditionV1
     {
         /// <summary>
-        ///     Last time we got an update on a given condition.
-        /// </summary>
-        [JsonProperty("lastHeartbeatTime")]
-        [YamlMember(Alias = "lastHeartbeatTime")]
-        public DateTime? LastHeartbeatTime { get; set; }
-
-        /// <summary>
         ///     Last time the condition transit from one status to another.
         /// </summary>
         [JsonProperty("lastTransitionTime")]
@@ -25,18 +18,18 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     Human readable message indicating details about last transition.
-        /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
-
-        /// <summary>
         ///     Type of node condition.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        ///     Last time we got an update on a given condition.
+        /// </summary>
+        [JsonProperty("lastHeartbeatTime")]
+        [YamlMember(Alias = "lastHeartbeatTime")]
+        public DateTime? LastHeartbeatTime { get; set; }
 
         /// <summary>
         ///     (brief) reason for the condition's last transition.
@@ -51,5 +44,12 @@ namespace KubeClient.Models
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Human readable message indicating details about last transition.
+        /// </summary>
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
     }
 }

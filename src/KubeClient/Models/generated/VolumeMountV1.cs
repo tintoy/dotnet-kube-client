@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class VolumeMountV1
     {
         /// <summary>
-        ///     This must match the Name of a Volume.
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     Path within the container at which the volume should be mounted.  Must not contain ':'.
         /// </summary>
         [JsonProperty("mountPath")]
         [YamlMember(Alias = "mountPath")]
         public string MountPath { get; set; }
+
+        /// <summary>
+        ///     Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+        /// </summary>
+        [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
+        public bool ReadOnly { get; set; }
 
         /// <summary>
         ///     Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
@@ -32,10 +32,17 @@ namespace KubeClient.Models
         public string SubPath { get; set; }
 
         /// <summary>
-        ///     Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+        ///     This must match the Name of a Volume.
         /// </summary>
-        [JsonProperty("readOnly")]
-        [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        ///     mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+        /// </summary>
+        [JsonProperty("mountPropagation")]
+        [YamlMember(Alias = "mountPropagation")]
+        public string MountPropagation { get; set; }
     }
 }

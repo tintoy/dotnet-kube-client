@@ -23,6 +23,14 @@ namespace KubeClient.Models
     public partial class ServiceAccountV1 : KubeResourceV1
     {
         /// <summary>
+        ///     Secrets is the list of secrets allowed to be used by pods running using this ServiceAccount. More info: https://kubernetes.io/docs/concepts/configuration/secret
+        /// </summary>
+        [MergeStrategy(Key = "name")]
+        [YamlMember(Alias = "secrets")]
+        [JsonProperty("secrets", NullValueHandling = NullValueHandling.Ignore)]
+        public List<ObjectReferenceV1> Secrets { get; set; } = new List<ObjectReferenceV1>();
+
+        /// <summary>
         ///     AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted. Can be overridden at the pod level.
         /// </summary>
         [JsonProperty("automountServiceAccountToken")]
@@ -35,13 +43,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "imagePullSecrets")]
         [JsonProperty("imagePullSecrets", NullValueHandling = NullValueHandling.Ignore)]
         public List<LocalObjectReferenceV1> ImagePullSecrets { get; set; } = new List<LocalObjectReferenceV1>();
-
-        /// <summary>
-        ///     Secrets is the list of secrets allowed to be used by pods running using this ServiceAccount. More info: https://kubernetes.io/docs/concepts/configuration/secret
-        /// </summary>
-        [MergeStrategy(Key = "name")]
-        [YamlMember(Alias = "secrets")]
-        [JsonProperty("secrets", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ObjectReferenceV1> Secrets { get; set; } = new List<ObjectReferenceV1>();
     }
 }

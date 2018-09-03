@@ -21,6 +21,13 @@ namespace KubeClient.Models
     public partial class ClusterRoleV1Alpha1 : KubeResourceV1
     {
         /// <summary>
+        ///     AggregationRule is an optional field that describes how to build the Rules for this ClusterRole. If AggregationRule is set, then the Rules are controller managed and direct changes to Rules will be stomped by the controller.
+        /// </summary>
+        [JsonProperty("aggregationRule")]
+        [YamlMember(Alias = "aggregationRule")]
+        public AggregationRuleV1Alpha1 AggregationRule { get; set; }
+
+        /// <summary>
         ///     Rules holds all the PolicyRules for this ClusterRole
         /// </summary>
         [YamlMember(Alias = "rules")]

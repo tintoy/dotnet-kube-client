@@ -18,14 +18,7 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Required: FC target lun number
-        /// </summary>
-        [JsonProperty("lun")]
-        [YamlMember(Alias = "lun")]
-        public int Lun { get; set; }
-
-        /// <summary>
-        ///     Required: FC target worldwide names (WWNs)
+        ///     Optional: FC target worldwide names (WWNs)
         /// </summary>
         [YamlMember(Alias = "targetWWNs")]
         [JsonProperty("targetWWNs", NullValueHandling = NullValueHandling.Ignore)]
@@ -37,5 +30,19 @@ namespace KubeClient.Models
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        ///     Optional: FC target lun number
+        /// </summary>
+        [JsonProperty("lun")]
+        [YamlMember(Alias = "lun")]
+        public int? Lun { get; set; }
+
+        /// <summary>
+        ///     Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+        /// </summary>
+        [YamlMember(Alias = "wwids")]
+        [JsonProperty("wwids", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Wwids { get; set; } = new List<string>();
     }
 }

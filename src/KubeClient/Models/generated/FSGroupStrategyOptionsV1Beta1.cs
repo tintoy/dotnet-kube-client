@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class FSGroupStrategyOptionsV1Beta1
     {
         /// <summary>
-        ///     Rule is the strategy that will dictate what FSGroup is used in the SecurityContext.
+        ///     rule is the strategy that will dictate what FSGroup is used in the SecurityContext.
         /// </summary>
         [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
         public string Rule { get; set; }
 
         /// <summary>
-        ///     Ranges are the allowed ranges of fs groups.  If you would like to force a single fs group then supply a single range with the same start and end.
+        ///     ranges are the allowed ranges of fs groups.  If you would like to force a single fs group then supply a single range with the same start and end. Required for MustRunAs.
         /// </summary>
         [YamlMember(Alias = "ranges")]
         [JsonProperty("ranges", NullValueHandling = NullValueHandling.Ignore)]

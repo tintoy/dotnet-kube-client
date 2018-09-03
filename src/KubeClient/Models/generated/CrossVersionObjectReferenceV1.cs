@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string Kind { get; set; }
 
         /// <summary>
-        ///     Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     API version of the referent
         /// </summary>
         [JsonProperty("apiVersion")]
         [YamlMember(Alias = "apiVersion")]
         public string ApiVersion { get; set; }
+
+        /// <summary>
+        ///     Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
     }
 }

@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class KeyToPathV1
     {
         /// <summary>
+        ///     The key to project.
+        /// </summary>
+        [JsonProperty("key")]
+        [YamlMember(Alias = "key")]
+        public string Key { get; set; }
+
+        /// <summary>
         ///     Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
         /// </summary>
         [JsonProperty("mode")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("path")]
         [YamlMember(Alias = "path")]
         public string Path { get; set; }
-
-        /// <summary>
-        ///     The key to project.
-        /// </summary>
-        [JsonProperty("key")]
-        [YamlMember(Alias = "key")]
-        public string Key { get; set; }
     }
 }

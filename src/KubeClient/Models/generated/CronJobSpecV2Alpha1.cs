@@ -18,11 +18,25 @@ namespace KubeClient.Models
         public bool Suspend { get; set; }
 
         /// <summary>
-        ///     Specifies the job that will be created when executing a CronJob.
+        ///     The number of failed finished jobs to retain. This is a pointer to distinguish between explicit zero and not specified.
         /// </summary>
-        [JsonProperty("jobTemplate")]
-        [YamlMember(Alias = "jobTemplate")]
-        public JobTemplateSpecV2Alpha1 JobTemplate { get; set; }
+        [JsonProperty("failedJobsHistoryLimit")]
+        [YamlMember(Alias = "failedJobsHistoryLimit")]
+        public int FailedJobsHistoryLimit { get; set; }
+
+        /// <summary>
+        ///     Specifies how to treat concurrent executions of a Job. Valid values are: - "Allow" (default): allows CronJobs to run concurrently; - "Forbid": forbids concurrent runs, skipping next run if previous run hasn't finished yet; - "Replace": cancels currently running job and replaces it with a new one
+        /// </summary>
+        [JsonProperty("concurrencyPolicy")]
+        [YamlMember(Alias = "concurrencyPolicy")]
+        public string ConcurrencyPolicy { get; set; }
+
+        /// <summary>
+        ///     The number of successful finished jobs to retain. This is a pointer to distinguish between explicit zero and not specified.
+        /// </summary>
+        [JsonProperty("successfulJobsHistoryLimit")]
+        [YamlMember(Alias = "successfulJobsHistoryLimit")]
+        public int SuccessfulJobsHistoryLimit { get; set; }
 
         /// <summary>
         ///     The schedule in Cron format, see https://en.wikipedia.org/wiki/Cron.
@@ -39,24 +53,10 @@ namespace KubeClient.Models
         public int? StartingDeadlineSeconds { get; set; }
 
         /// <summary>
-        ///     The number of failed finished jobs to retain. This is a pointer to distinguish between explicit zero and not specified.
+        ///     Specifies the job that will be created when executing a CronJob.
         /// </summary>
-        [JsonProperty("failedJobsHistoryLimit")]
-        [YamlMember(Alias = "failedJobsHistoryLimit")]
-        public int FailedJobsHistoryLimit { get; set; }
-
-        /// <summary>
-        ///     The number of successful finished jobs to retain. This is a pointer to distinguish between explicit zero and not specified.
-        /// </summary>
-        [JsonProperty("successfulJobsHistoryLimit")]
-        [YamlMember(Alias = "successfulJobsHistoryLimit")]
-        public int SuccessfulJobsHistoryLimit { get; set; }
-
-        /// <summary>
-        ///     Specifies how to treat concurrent executions of a Job. Defaults to Allow.
-        /// </summary>
-        [JsonProperty("concurrencyPolicy")]
-        [YamlMember(Alias = "concurrencyPolicy")]
-        public string ConcurrencyPolicy { get; set; }
+        [JsonProperty("jobTemplate")]
+        [YamlMember(Alias = "jobTemplate")]
+        public JobTemplateSpecV2Alpha1 JobTemplate { get; set; }
     }
 }

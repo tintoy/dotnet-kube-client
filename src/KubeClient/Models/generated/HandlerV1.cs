@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class HandlerV1
     {
         /// <summary>
-        ///     One and only one of the following should be specified. Exec specifies the action to take.
+        ///     TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported
         /// </summary>
-        [JsonProperty("exec")]
-        [YamlMember(Alias = "exec")]
-        public ExecActionV1 Exec { get; set; }
+        [JsonProperty("tcpSocket")]
+        [YamlMember(Alias = "tcpSocket")]
+        public TCPSocketActionV1 TcpSocket { get; set; }
 
         /// <summary>
         ///     HTTPGet specifies the http request to perform.
@@ -25,10 +25,10 @@ namespace KubeClient.Models
         public HTTPGetActionV1 HttpGet { get; set; }
 
         /// <summary>
-        ///     TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported
+        ///     One and only one of the following should be specified. Exec specifies the action to take.
         /// </summary>
-        [JsonProperty("tcpSocket")]
-        [YamlMember(Alias = "tcpSocket")]
-        public TCPSocketActionV1 TcpSocket { get; set; }
+        [JsonProperty("exec")]
+        [YamlMember(Alias = "exec")]
+        public ExecActionV1 Exec { get; set; }
     }
 }

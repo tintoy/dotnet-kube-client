@@ -11,11 +11,11 @@ namespace KubeClient.Models
     public partial class UserInfoV1Beta1
     {
         /// <summary>
-        ///     Any additional information provided by the authenticator.
+        ///     The names of groups this user is a part of.
         /// </summary>
-        [YamlMember(Alias = "extra")]
-        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        [YamlMember(Alias = "groups")]
+        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Groups { get; set; } = new List<string>();
 
         /// <summary>
         ///     A unique value that identifies this user across time. If this user is deleted and another user by the same name is added, they will have different UIDs.
@@ -32,10 +32,10 @@ namespace KubeClient.Models
         public string Username { get; set; }
 
         /// <summary>
-        ///     The names of groups this user is a part of.
+        ///     Any additional information provided by the authenticator.
         /// </summary>
-        [YamlMember(Alias = "groups")]
-        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Groups { get; set; } = new List<string>();
+        [YamlMember(Alias = "extra")]
+        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
     }
 }

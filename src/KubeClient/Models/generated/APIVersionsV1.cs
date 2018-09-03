@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class APIVersionsV1
     {
         /// <summary>
+        ///     versions are the api versions that are available.
+        /// </summary>
+        [YamlMember(Alias = "versions")]
+        [JsonProperty("versions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Versions { get; set; } = new List<string>();
+
+        /// <summary>
         ///     Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
         /// </summary>
         [JsonProperty("kind")]
@@ -30,12 +37,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "serverAddressByClientCIDRs")]
         [JsonProperty("serverAddressByClientCIDRs", NullValueHandling = NullValueHandling.Ignore)]
         public List<ServerAddressByClientCIDRV1> ServerAddressByClientCIDRs { get; set; } = new List<ServerAddressByClientCIDRV1>();
-
-        /// <summary>
-        ///     versions are the api versions that are available.
-        /// </summary>
-        [YamlMember(Alias = "versions")]
-        [JsonProperty("versions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Versions { get; set; } = new List<string>();
     }
 }

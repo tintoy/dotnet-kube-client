@@ -11,18 +11,18 @@ namespace KubeClient.Models
     public partial class ConfigMapKeySelectorV1
     {
         /// <summary>
-        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     Specify whether the ConfigMap or it's key must be defined
         /// </summary>
         [JsonProperty("optional")]
         [YamlMember(Alias = "optional")]
         public bool Optional { get; set; }
+
+        /// <summary>
+        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     The key to select.

@@ -18,25 +18,39 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Optional: Defaults to 'default' (tcp). iSCSI interface name that uses an iSCSI transport.
+        ///     Target iSCSI Qualified Name.
         /// </summary>
-        [JsonProperty("iscsiInterface")]
-        [YamlMember(Alias = "iscsiInterface")]
-        public string IscsiInterface { get; set; }
+        [JsonProperty("iqn")]
+        [YamlMember(Alias = "iqn")]
+        public string Iqn { get; set; }
 
         /// <summary>
-        ///     CHAP secret for iSCSI target and initiator authentication
-        /// </summary>
-        [JsonProperty("secretRef")]
-        [YamlMember(Alias = "secretRef")]
-        public LocalObjectReferenceV1 SecretRef { get; set; }
-
-        /// <summary>
-        ///     iSCSI target portal. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+        ///     iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
         /// </summary>
         [JsonProperty("targetPortal")]
         [YamlMember(Alias = "targetPortal")]
         public string TargetPortal { get; set; }
+
+        /// <summary>
+        ///     Custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface &lt;target portal&gt;:&lt;volume name&gt; will be created for the connection.
+        /// </summary>
+        [JsonProperty("initiatorName")]
+        [YamlMember(Alias = "initiatorName")]
+        public string InitiatorName { get; set; }
+
+        /// <summary>
+        ///     iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+        /// </summary>
+        [YamlMember(Alias = "portals")]
+        [JsonProperty("portals", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Portals { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     iSCSI Interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+        /// </summary>
+        [JsonProperty("iscsiInterface")]
+        [YamlMember(Alias = "iscsiInterface")]
+        public string IscsiInterface { get; set; }
 
         /// <summary>
         ///     whether support iSCSI Session CHAP authentication
@@ -46,25 +60,25 @@ namespace KubeClient.Models
         public bool ChapAuthSession { get; set; }
 
         /// <summary>
-        ///     Target iSCSI Qualified Name.
+        ///     ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
         /// </summary>
-        [JsonProperty("iqn")]
-        [YamlMember(Alias = "iqn")]
-        public string Iqn { get; set; }
+        [JsonProperty("readOnly")]
+        [YamlMember(Alias = "readOnly")]
+        public bool ReadOnly { get; set; }
 
         /// <summary>
-        ///     iSCSI target lun number.
+        ///     CHAP Secret for iSCSI target and initiator authentication
+        /// </summary>
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public LocalObjectReferenceV1 SecretRef { get; set; }
+
+        /// <summary>
+        ///     iSCSI Target Lun number.
         /// </summary>
         [JsonProperty("lun")]
         [YamlMember(Alias = "lun")]
         public int Lun { get; set; }
-
-        /// <summary>
-        ///     iSCSI target portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
-        /// </summary>
-        [YamlMember(Alias = "portals")]
-        [JsonProperty("portals", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Portals { get; set; } = new List<string>();
 
         /// <summary>
         ///     whether support iSCSI Discovery CHAP authentication
@@ -72,12 +86,5 @@ namespace KubeClient.Models
         [JsonProperty("chapAuthDiscovery")]
         [YamlMember(Alias = "chapAuthDiscovery")]
         public bool ChapAuthDiscovery { get; set; }
-
-        /// <summary>
-        ///     ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
-        /// </summary>
-        [JsonProperty("readOnly")]
-        [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
     }
 }

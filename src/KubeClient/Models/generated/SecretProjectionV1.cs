@@ -14,11 +14,11 @@ namespace KubeClient.Models
     public partial class SecretProjectionV1
     {
         /// <summary>
-        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+        ///     If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
         /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        [YamlMember(Alias = "items")]
+        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
+        public List<KeyToPathV1> Items { get; set; } = new List<KeyToPathV1>();
 
         /// <summary>
         ///     Specify whether the Secret or its key must be defined
@@ -28,10 +28,10 @@ namespace KubeClient.Models
         public bool Optional { get; set; }
 
         /// <summary>
-        ///     If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
         /// </summary>
-        [YamlMember(Alias = "items")]
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<KeyToPathV1> Items { get; set; } = new List<KeyToPathV1>();
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
     }
 }

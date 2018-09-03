@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class PersistentVolumeStatusV1
     {
         /// <summary>
-        ///     A human-readable message indicating details about why the volume is in this state.
-        /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
-
-        /// <summary>
         ///     Phase indicates if a volume is available, bound to a claim, or released by a claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#phase
         /// </summary>
         [JsonProperty("phase")]
@@ -30,5 +23,12 @@ namespace KubeClient.Models
         [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
         public string Reason { get; set; }
+
+        /// <summary>
+        ///     A human-readable message indicating details about why the volume is in this state.
+        /// </summary>
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
     }
 }

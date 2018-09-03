@@ -18,13 +18,6 @@ namespace KubeClient.Models
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     Human-readable message indicating details about last transition.
-        /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
-
-        /// <summary>
         ///     Type is the type of the condition.
         /// </summary>
         [JsonProperty("type")]
@@ -44,5 +37,12 @@ namespace KubeClient.Models
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Human-readable message indicating details about last transition.
+        /// </summary>
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
     }
 }

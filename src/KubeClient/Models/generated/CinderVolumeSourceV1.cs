@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class CinderVolumeSourceV1
     {
         /// <summary>
-        ///     volume id used to identify the volume in cinder More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
-        /// </summary>
-        [JsonProperty("volumeID")]
-        [YamlMember(Alias = "volumeID")]
-        public string VolumeID { get; set; }
-
-        /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
         /// </summary>
         [JsonProperty("fsType")]
@@ -30,5 +23,19 @@ namespace KubeClient.Models
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        ///     volume id used to identify the volume in cinder More info: https://releases.k8s.io/HEAD/examples/mysql-cinder-pd/README.md
+        /// </summary>
+        [JsonProperty("volumeID")]
+        [YamlMember(Alias = "volumeID")]
+        public string VolumeID { get; set; }
+
+        /// <summary>
+        ///     Optional: points to a secret object containing parameters used to connect to OpenStack.
+        /// </summary>
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public LocalObjectReferenceV1 SecretRef { get; set; }
     }
 }

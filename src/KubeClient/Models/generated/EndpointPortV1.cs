@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class EndpointPortV1
     {
         /// <summary>
+        ///     The port number of the endpoint.
+        /// </summary>
+        [JsonProperty("port")]
+        [YamlMember(Alias = "port")]
+        public int Port { get; set; }
+
+        /// <summary>
         ///     The name of this port (corresponds to ServicePort.Name). Must be a DNS_LABEL. Optional only if one port is defined.
         /// </summary>
         [JsonProperty("name")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("protocol")]
         [YamlMember(Alias = "protocol")]
         public string Protocol { get; set; }
-
-        /// <summary>
-        ///     The port number of the endpoint.
-        /// </summary>
-        [JsonProperty("port")]
-        [YamlMember(Alias = "port")]
-        public int Port { get; set; }
     }
 }

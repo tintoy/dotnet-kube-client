@@ -18,18 +18,25 @@ namespace KubeClient.Models
         public string Kind { get; set; }
 
         /// <summary>
-        ///     UID of the resource. (when there is a single resource which can be described). More info: http://kubernetes.io/docs/user-guide/identifiers#uids
-        /// </summary>
-        [JsonProperty("uid")]
-        [YamlMember(Alias = "uid")]
-        public string Uid { get; set; }
-
-        /// <summary>
         ///     The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).
         /// </summary>
         [JsonProperty("name")]
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        ///     If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
+        /// </summary>
+        [JsonProperty("retryAfterSeconds")]
+        [YamlMember(Alias = "retryAfterSeconds")]
+        public int RetryAfterSeconds { get; set; }
+
+        /// <summary>
+        ///     UID of the resource. (when there is a single resource which can be described). More info: http://kubernetes.io/docs/user-guide/identifiers#uids
+        /// </summary>
+        [JsonProperty("uid")]
+        [YamlMember(Alias = "uid")]
+        public string Uid { get; set; }
 
         /// <summary>
         ///     The group attribute of the resource associated with the status StatusReason.
@@ -44,12 +51,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "causes")]
         [JsonProperty("causes", NullValueHandling = NullValueHandling.Ignore)]
         public List<StatusCauseV1> Causes { get; set; } = new List<StatusCauseV1>();
-
-        /// <summary>
-        ///     If specified, the time in seconds before the operation should be retried.
-        /// </summary>
-        [JsonProperty("retryAfterSeconds")]
-        [YamlMember(Alias = "retryAfterSeconds")]
-        public int RetryAfterSeconds { get; set; }
     }
 }

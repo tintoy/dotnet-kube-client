@@ -42096,6 +42096,347 @@ paths:
       - https
       tags:
       - extensions_v1beta1
+  /apis/extensions/v1beta1/thirdpartyresources:
+    delete:
+      consumes:
+      - '*/*'
+      description: delete collection of ThirdPartyResource
+      operationId: deleteExtensionsV1beta1CollectionThirdPartyResource
+      parameters:
+      - description: A selector to restrict the list of returned objects by their
+          fields. Defaults to everything.
+        in: query
+        name: fieldSelector
+        type: string
+        uniqueItems: true
+      - description: If true, partially initialized resources are included in the
+          response.
+        in: query
+        name: includeUninitialized
+        type: boolean
+        uniqueItems: true
+      - description: A selector to restrict the list of returned objects by their
+          labels. Defaults to everything.
+        in: query
+        name: labelSelector
+        type: string
+        uniqueItems: true
+      - description: 'When specified with a watch call, shows changes that occur after
+          that particular version of a resource. Defaults to changes from the beginning
+          of history. When specified for list: - if unset, then the result is returned
+          from remote storage based on quorum-read flag; - if it''s 0, then we simply
+          return what we currently have in cache, no guarantee; - if set to non zero,
+          then the result is at least as fresh as given rv.'
+        in: query
+        name: resourceVersion
+        type: string
+        uniqueItems: true
+      - description: Timeout for the list/watch call.
+        in: query
+        name: timeoutSeconds
+        type: integer
+        uniqueItems: true
+      - description: Watch for changes to the described resources and return them
+          as a stream of add, update, and remove notifications. Specify resourceVersion.
+        in: query
+        name: watch
+        type: boolean
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Status'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: deletecollection
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
+    get:
+      consumes:
+      - '*/*'
+      description: list or watch objects of kind ThirdPartyResource
+      operationId: listExtensionsV1beta1ThirdPartyResource
+      parameters:
+      - description: A selector to restrict the list of returned objects by their
+          fields. Defaults to everything.
+        in: query
+        name: fieldSelector
+        type: string
+        uniqueItems: true
+      - description: If true, partially initialized resources are included in the
+          response.
+        in: query
+        name: includeUninitialized
+        type: boolean
+        uniqueItems: true
+      - description: A selector to restrict the list of returned objects by their
+          labels. Defaults to everything.
+        in: query
+        name: labelSelector
+        type: string
+        uniqueItems: true
+      - description: 'When specified with a watch call, shows changes that occur after
+          that particular version of a resource. Defaults to changes from the beginning
+          of history. When specified for list: - if unset, then the result is returned
+          from remote storage based on quorum-read flag; - if it''s 0, then we simply
+          return what we currently have in cache, no guarantee; - if set to non zero,
+          then the result is at least as fresh as given rv.'
+        in: query
+        name: resourceVersion
+        type: string
+        uniqueItems: true
+      - description: Timeout for the list/watch call.
+        in: query
+        name: timeoutSeconds
+        type: integer
+        uniqueItems: true
+      - description: Watch for changes to the described resources and return them
+          as a stream of add, update, and remove notifications. Specify resourceVersion.
+        in: query
+        name: watch
+        type: boolean
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      - application/json;stream=watch
+      - application/vnd.kubernetes.protobuf;stream=watch
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResourceList'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: list
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
+    parameters:
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    post:
+      consumes:
+      - '*/*'
+      description: create a ThirdPartyResource
+      operationId: createExtensionsV1beta1ThirdPartyResource
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: post
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
+  /apis/extensions/v1beta1/thirdpartyresources/{name}:
+    delete:
+      consumes:
+      - '*/*'
+      description: delete a ThirdPartyResource
+      operationId: deleteExtensionsV1beta1ThirdPartyResource
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions'
+      - description: The duration in seconds before the object should be deleted.
+          Value must be non-negative integer. The value zero indicates delete immediately.
+          If this value is nil, the default grace period for the specified type will
+          be used. Defaults to a per object value if not specified. zero means delete
+          immediately.
+        in: query
+        name: gracePeriodSeconds
+        type: integer
+        uniqueItems: true
+      - description: 'Deprecated: please use the PropagationPolicy, this field will
+          be deprecated in 1.7. Should the dependent objects be orphaned. If true/false,
+          the "orphan" finalizer will be added to/removed from the object''s finalizers
+          list. Either this field or PropagationPolicy may be set, but not both.'
+        in: query
+        name: orphanDependents
+        type: boolean
+        uniqueItems: true
+      - description: Whether and how garbage collection will be performed. Either
+          this field or OrphanDependents may be set, but not both. The default policy
+          is decided by the existing finalizer set in the metadata.finalizers and
+          the resource-specific default policy.
+        in: query
+        name: propagationPolicy
+        type: string
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Status'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: delete
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
+    get:
+      consumes:
+      - '*/*'
+      description: read the specified ThirdPartyResource
+      operationId: readExtensionsV1beta1ThirdPartyResource
+      parameters:
+      - description: Should the export be exact.  Exact export maintains cluster-specific
+          fields like 'Namespace'.
+        in: query
+        name: exact
+        type: boolean
+        uniqueItems: true
+      - description: Should this value be exported.  Export strips fields that a user
+          can not specify.
+        in: query
+        name: export
+        type: boolean
+        uniqueItems: true
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: get
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
+    parameters:
+    - description: name of the ThirdPartyResource
+      in: path
+      name: name
+      required: true
+      type: string
+      uniqueItems: true
+    - description: If 'true', then the output is pretty printed.
+      in: query
+      name: pretty
+      type: string
+      uniqueItems: true
+    patch:
+      consumes:
+      - application/json-patch+json
+      - application/merge-patch+json
+      - application/strategic-merge-patch+json
+      description: partially update the specified ThirdPartyResource
+      operationId: patchExtensionsV1beta1ThirdPartyResource
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Patch'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: patch
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
+    put:
+      consumes:
+      - '*/*'
+      description: replace the specified ThirdPartyResource
+      operationId: replaceExtensionsV1beta1ThirdPartyResource
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+      produces:
+      - application/json
+      - application/yaml
+      - application/vnd.kubernetes.protobuf
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+        '401':
+          description: Unauthorized
+      schemes:
+      - https
+      tags:
+      - extensions_v1beta1
+      x-kubernetes-action: put
+      x-kubernetes-group-version-kind:
+        group: extensions
+        kind: ThirdPartyResource
+        version: v1beta1
   /apis/extensions/v1beta1/daemonsets:
     get:
       consumes:
@@ -70155,6 +70496,12 @@ definitions:
         type: string
     required:
     - request
+  io.k8s.kubernetes.pkg.apis.extensions.v1beta1.APIVersion:
+    description: An APIVersion represents a single concrete version of an object model.
+    properties:
+      name:
+        description: Name of this version (e.g. 'v1').
+        type: string
   io.k8s.api.certificates.v1beta1.CertificateSigningRequestStatus:
     properties:
       certificate:
@@ -79041,6 +79388,12 @@ definitions:
   io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSON:
     description: 'JSON represents any valid JSON value. These types are supported:
       bool, int64, float64, string, []interface{}, map[string]interface{} and nil.'
+    properties:
+      Raw:
+        format: byte
+        type: string
+    required:
+    - Raw
   io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps:
     description: JSONSchemaProps is a JSON-Schema following Specification Draft 4
       (http://json-schema.org/).
@@ -79090,7 +79443,7 @@ definitions:
       id:
         type: string
       items:
-        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrArray'
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
       maxItems:
         format: int64
         type: integer
@@ -79144,15 +79497,30 @@ definitions:
         type: string
       uniqueItems:
         type: boolean
-  io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrArray:
-    description: JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps
-      or an array of JSONSchemaProps. Mainly here for serialization purposes.
   io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrBool:
     description: JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value.
       Defaults to true for the boolean property.
+    properties:
+      Allows:
+        type: boolean
+      Schema:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+    required:
+    - Allows
+    - Schema
   io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaPropsOrStringArray:
     description: JSONSchemaPropsOrStringArray represents a JSONSchemaProps or a string
       array.
+    properties:
+      Property:
+        items:
+          type: string
+        type: array
+      Schema:
+        $ref: '#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1beta1.JSONSchemaProps'
+    required:
+    - Schema
+    - Property
   io.k8s.apimachinery.pkg.api.resource.Quantity:
     description: "Quantity is a fixed-point representation of a number. It provides\
       \ convenient marshaling/unmarshaling in JSON and YAML, in addition to String()\
@@ -81486,6 +81854,63 @@ definitions:
     $ref: '#/definitions/io.k8s.api.storage.v1beta1.StorageClassList'
     description: Deprecated. Please use io.k8s.api.storage.v1beta1.StorageClassList
       instead.
+  io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource:
+    description: A ThirdPartyResource is a generic representation of a resource, it
+      is used by add-ons and plugins to add new resource types to the API.  It consists
+      of one or more Versions of the api.
+    properties:
+      apiVersion:
+        description: 'APIVersion defines the versioned schema of this representation
+          of an object. Servers should convert recognized schemas to the latest internal
+          value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+        type: string
+      description:
+        description: Description is the description of this object.
+        type: string
+      kind:
+        description: 'Kind is a string value representing the REST resource this object
+          represents. Servers may infer this from the endpoint the client submits
+          requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+        type: string
+      metadata:
+        $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta'
+        description: Standard object metadata
+      versions:
+        description: Versions are versions for this third party object
+        items:
+          $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.APIVersion'
+        type: array
+    x-kubernetes-group-version-kind:
+    - group: extensions
+      kind: ThirdPartyResource
+      version: v1beta1
+  io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResourceList:
+    description: ThirdPartyResourceList is a list of ThirdPartyResources.
+    properties:
+      apiVersion:
+        description: 'APIVersion defines the versioned schema of this representation
+          of an object. Servers should convert recognized schemas to the latest internal
+          value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+        type: string
+      items:
+        description: Items is the list of ThirdPartyResources.
+        items:
+          $ref: '#/definitions/io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource'
+        type: array
+      kind:
+        description: 'Kind is a string value representing the REST resource this object
+          represents. Servers may infer this from the endpoint the client submits
+          requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+        type: string
+      metadata:
+        $ref: '#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta'
+        description: Standard list metadata.
+    required:
+    - items
+    x-kubernetes-group-version-kind:
+    - group: extensions
+      kind: ThirdPartyResourceList
+      version: v1beta1
 security:
 - BearerToken: []
 securityDefinitions:

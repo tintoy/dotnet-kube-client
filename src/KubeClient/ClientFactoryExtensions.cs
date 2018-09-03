@@ -48,6 +48,25 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes Deployments (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static DeploymentClientV1 DeploymentsV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient(
+                client => new DeploymentClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes Deployments (v1beta1) resource client.
         /// </summary>
         /// <param name="kubeClient">
@@ -208,13 +227,13 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static IReplicaSetClientV1Beta1 ReplicaSetsV1Beta1(this IKubeApiClient kubeClient)
+        public static IReplicaSetClientV1 ReplicaSetsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
             
             return kubeClient.ResourceClient(
-                client => new ReplicaSetClientV1Beta1(client)
+                client => new ReplicaSetClientV1(client)
             );
         }
 

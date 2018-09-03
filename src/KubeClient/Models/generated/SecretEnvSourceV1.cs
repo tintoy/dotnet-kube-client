@@ -13,17 +13,17 @@ namespace KubeClient.Models
     public partial class SecretEnvSourceV1
     {
         /// <summary>
-        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-        /// </summary>
-        [JsonProperty("name")]
-        [YamlMember(Alias = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
         ///     Specify whether the Secret must be defined
         /// </summary>
         [JsonProperty("optional")]
         [YamlMember(Alias = "optional")]
         public bool Optional { get; set; }
+
+        /// <summary>
+        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+        /// </summary>
+        [JsonProperty("name")]
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
     }
 }

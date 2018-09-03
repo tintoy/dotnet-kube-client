@@ -11,13 +11,6 @@ namespace KubeClient.Models
     public partial class ComponentConditionV1
     {
         /// <summary>
-        ///     Message about the condition for a component. For example, information about a health check.
-        /// </summary>
-        [JsonProperty("message")]
-        [YamlMember(Alias = "message")]
-        public string Message { get; set; }
-
-        /// <summary>
         ///     Type of condition for a component. Valid value: "Healthy"
         /// </summary>
         [JsonProperty("type")]
@@ -37,5 +30,12 @@ namespace KubeClient.Models
         [JsonProperty("status")]
         [YamlMember(Alias = "status")]
         public string Status { get; set; }
+
+        /// <summary>
+        ///     Message about the condition for a component. For example, information about a health check.
+        /// </summary>
+        [JsonProperty("message")]
+        [YamlMember(Alias = "message")]
+        public string Message { get; set; }
     }
 }

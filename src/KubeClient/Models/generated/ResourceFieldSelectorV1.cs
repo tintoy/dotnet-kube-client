@@ -18,17 +18,17 @@ namespace KubeClient.Models
         public string ContainerName { get; set; }
 
         /// <summary>
-        ///     Required: resource to select
-        /// </summary>
-        [JsonProperty("resource")]
-        [YamlMember(Alias = "resource")]
-        public string Resource { get; set; }
-
-        /// <summary>
         ///     Specifies the output format of the exposed resources, defaults to "1"
         /// </summary>
         [JsonProperty("divisor")]
         [YamlMember(Alias = "divisor")]
         public string Divisor { get; set; }
+
+        /// <summary>
+        ///     Required: resource to select
+        /// </summary>
+        [JsonProperty("resource")]
+        [YamlMember(Alias = "resource")]
+        public string Resource { get; set; }
     }
 }

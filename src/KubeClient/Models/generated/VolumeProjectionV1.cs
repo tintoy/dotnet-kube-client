@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public DownwardAPIProjectionV1 DownwardAPI { get; set; }
 
         /// <summary>
+        ///     information about the secret data to project
+        /// </summary>
+        [JsonProperty("secret")]
+        [YamlMember(Alias = "secret")]
+        public SecretProjectionV1 Secret { get; set; }
+
+        /// <summary>
         ///     information about the configMap data to project
         /// </summary>
         [JsonProperty("configMap")]
@@ -25,10 +32,10 @@ namespace KubeClient.Models
         public ConfigMapProjectionV1 ConfigMap { get; set; }
 
         /// <summary>
-        ///     information about the secret data to project
+        ///     information about the serviceAccountToken data to project
         /// </summary>
-        [JsonProperty("secret")]
-        [YamlMember(Alias = "secret")]
-        public SecretProjectionV1 Secret { get; set; }
+        [JsonProperty("serviceAccountToken")]
+        [YamlMember(Alias = "serviceAccountToken")]
+        public ServiceAccountTokenProjectionV1 ServiceAccountToken { get; set; }
     }
 }

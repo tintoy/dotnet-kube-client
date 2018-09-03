@@ -13,13 +13,6 @@ namespace KubeClient.Models
     public partial class AWSElasticBlockStoreVolumeSourceV1
     {
         /// <summary>
-        ///     Unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-        /// </summary>
-        [JsonProperty("volumeID")]
-        [YamlMember(Alias = "volumeID")]
-        public string VolumeID { get; set; }
-
-        /// <summary>
         ///     Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
         /// </summary>
         [JsonProperty("fsType")]
@@ -39,5 +32,12 @@ namespace KubeClient.Models
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        ///     Unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+        /// </summary>
+        [JsonProperty("volumeID")]
+        [YamlMember(Alias = "volumeID")]
+        public string VolumeID { get; set; }
     }
 }

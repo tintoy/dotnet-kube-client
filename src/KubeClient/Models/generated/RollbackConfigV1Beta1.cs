@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     No description provided.
+    ///     DEPRECATED.
     /// </summary>
     public partial class RollbackConfigV1Beta1
     {

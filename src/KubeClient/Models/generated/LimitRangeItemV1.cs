@@ -11,11 +11,25 @@ namespace KubeClient.Models
     public partial class LimitRangeItemV1
     {
         /// <summary>
+        ///     Max usage constraints on this kind by resource name.
+        /// </summary>
+        [YamlMember(Alias = "max")]
+        [JsonProperty("max", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> Max { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
         ///     Type of resource that this limit applies to.
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        ///     DefaultRequest is the default resource requirement request value by resource name if resource request is omitted.
+        /// </summary>
+        [YamlMember(Alias = "defaultRequest")]
+        [JsonProperty("defaultRequest", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> DefaultRequest { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         ///     Min usage constraints on this kind by resource name.
@@ -37,19 +51,5 @@ namespace KubeClient.Models
         [YamlMember(Alias = "default")]
         [JsonProperty("default", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Default { get; set; } = new Dictionary<string, string>();
-
-        /// <summary>
-        ///     DefaultRequest is the default resource requirement request value by resource name if resource request is omitted.
-        /// </summary>
-        [YamlMember(Alias = "defaultRequest")]
-        [JsonProperty("defaultRequest", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> DefaultRequest { get; set; } = new Dictionary<string, string>();
-
-        /// <summary>
-        ///     Max usage constraints on this kind by resource name.
-        /// </summary>
-        [YamlMember(Alias = "max")]
-        [JsonProperty("max", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Max { get; set; } = new Dictionary<string, string>();
     }
 }

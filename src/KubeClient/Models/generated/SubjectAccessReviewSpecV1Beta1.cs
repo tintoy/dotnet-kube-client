@@ -11,11 +11,18 @@ namespace KubeClient.Models
     public partial class SubjectAccessReviewSpecV1Beta1
     {
         /// <summary>
-        ///     Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
+        ///     NonResourceAttributes describes information for a non-resource access request
         /// </summary>
-        [YamlMember(Alias = "extra")]
-        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        [JsonProperty("nonResourceAttributes")]
+        [YamlMember(Alias = "nonResourceAttributes")]
+        public NonResourceAttributesV1Beta1 NonResourceAttributes { get; set; }
+
+        /// <summary>
+        ///     UID information about the requesting user.
+        /// </summary>
+        [JsonProperty("uid")]
+        [YamlMember(Alias = "uid")]
+        public string Uid { get; set; }
 
         /// <summary>
         ///     Groups is the groups you're testing for.
@@ -25,18 +32,11 @@ namespace KubeClient.Models
         public List<string> Group { get; set; } = new List<string>();
 
         /// <summary>
-        ///     User is the user you're testing for. If you specify "User" but not "Group", then is it interpreted as "What if User were not a member of any groups
+        ///     Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
         /// </summary>
-        [JsonProperty("user")]
-        [YamlMember(Alias = "user")]
-        public string User { get; set; }
-
-        /// <summary>
-        ///     NonResourceAttributes describes information for a non-resource access request
-        /// </summary>
-        [JsonProperty("nonResourceAttributes")]
-        [YamlMember(Alias = "nonResourceAttributes")]
-        public NonResourceAttributesV1Beta1 NonResourceAttributes { get; set; }
+        [YamlMember(Alias = "extra")]
+        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
 
         /// <summary>
         ///     ResourceAuthorizationAttributes describes information for a resource access request
@@ -44,5 +44,12 @@ namespace KubeClient.Models
         [JsonProperty("resourceAttributes")]
         [YamlMember(Alias = "resourceAttributes")]
         public ResourceAttributesV1Beta1 ResourceAttributes { get; set; }
+
+        /// <summary>
+        ///     User is the user you're testing for. If you specify "User" but not "Group", then is it interpreted as "What if User were not a member of any groups
+        /// </summary>
+        [JsonProperty("user")]
+        [YamlMember(Alias = "user")]
+        public string User { get; set; }
     }
 }

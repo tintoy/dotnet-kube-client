@@ -23,7 +23,14 @@ namespace KubeClient.Models
     public partial class ConfigMapV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'.
+        ///     BinaryData contains the binary data. Each key must consist of alphanumeric characters, '-', '_' or '.'. BinaryData can contain byte sequences that are not in the UTF-8 range. The keys stored in BinaryData must not overlap with the ones in the Data field, this is enforced during validation process. Using this field will require 1.10+ apiserver and kubelet.
+        /// </summary>
+        [YamlMember(Alias = "binaryData")]
+        [JsonProperty("binaryData", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> BinaryData { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'. Values with non-UTF-8 byte sequences must use the BinaryData field. The keys stored in Data must not overlap with the keys in the BinaryData field, this is enforced during validation process.
         /// </summary>
         [YamlMember(Alias = "data")]
         [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]

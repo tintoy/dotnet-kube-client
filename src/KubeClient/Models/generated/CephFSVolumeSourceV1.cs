@@ -11,20 +11,6 @@ namespace KubeClient.Models
     public partial class CephFSVolumeSourceV1
     {
         /// <summary>
-        ///     Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
-        /// </summary>
-        [JsonProperty("secretFile")]
-        [YamlMember(Alias = "secretFile")]
-        public string SecretFile { get; set; }
-
-        /// <summary>
-        ///     Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
-        /// </summary>
-        [JsonProperty("secretRef")]
-        [YamlMember(Alias = "secretRef")]
-        public LocalObjectReferenceV1 SecretRef { get; set; }
-
-        /// <summary>
         ///     Optional: Used as the mounted root, rather than the full Ceph tree, default is /
         /// </summary>
         [JsonProperty("path")]
@@ -32,11 +18,11 @@ namespace KubeClient.Models
         public string Path { get; set; }
 
         /// <summary>
-        ///     Optional: User is the rados user name, default is admin More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
+        ///     Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("user")]
-        [YamlMember(Alias = "user")]
-        public string User { get; set; }
+        [JsonProperty("secretFile")]
+        [YamlMember(Alias = "secretFile")]
+        public string SecretFile { get; set; }
 
         /// <summary>
         ///     Required: Monitors is a collection of Ceph monitors More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
@@ -51,5 +37,19 @@ namespace KubeClient.Models
         [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        ///     Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
+        /// </summary>
+        [JsonProperty("secretRef")]
+        [YamlMember(Alias = "secretRef")]
+        public LocalObjectReferenceV1 SecretRef { get; set; }
+
+        /// <summary>
+        ///     Optional: User is the rados user name, default is admin More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
+        /// </summary>
+        [JsonProperty("user")]
+        [YamlMember(Alias = "user")]
+        public string User { get; set; }
     }
 }

@@ -11,6 +11,13 @@ namespace KubeClient.Models
     public partial class AffinityV1
     {
         /// <summary>
+        ///     Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+        /// </summary>
+        [JsonProperty("podAntiAffinity")]
+        [YamlMember(Alias = "podAntiAffinity")]
+        public PodAntiAffinityV1 PodAntiAffinity { get; set; }
+
+        /// <summary>
         ///     Describes node affinity scheduling rules for the pod.
         /// </summary>
         [JsonProperty("nodeAffinity")]
@@ -23,12 +30,5 @@ namespace KubeClient.Models
         [JsonProperty("podAffinity")]
         [YamlMember(Alias = "podAffinity")]
         public PodAffinityV1 PodAffinity { get; set; }
-
-        /// <summary>
-        ///     Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-        /// </summary>
-        [JsonProperty("podAntiAffinity")]
-        [YamlMember(Alias = "podAntiAffinity")]
-        public PodAntiAffinityV1 PodAntiAffinity { get; set; }
     }
 }
