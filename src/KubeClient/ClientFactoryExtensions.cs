@@ -10,6 +10,25 @@ namespace KubeClient
     public static class ClientFactoryExtensions
     {
         /// <summary>
+        ///     Get the Kubernetes Namespaces (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static INamespaceClientV1 NamespacesV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+            
+            return kubeClient.ResourceClient(
+                client => new NamespaceClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes ConfigMaps (v1) resource client.
         /// </summary>
         /// <param name="kubeClient">
