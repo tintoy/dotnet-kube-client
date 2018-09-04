@@ -157,7 +157,7 @@ namespace KubeClient.ResourceClients
                     postBody: newJob,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<JobV1, StatusV1>();
+                .ReadContentAsObjectV1Async<JobV1>("create v1/Job resource");
         }
 
         /// <summary>
@@ -194,9 +194,9 @@ namespace KubeClient.ResourceClients
             );
             
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<JobV1>(HttpStatusCode.OK);
+                return await request.ReadContentAsObjectV1Async<JobV1>("delete v1/Job resource", HttpStatusCode.OK);
             
-            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await request.ReadContentAsObjectV1Async<StatusV1>("delete v1/Job resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

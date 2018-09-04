@@ -133,7 +133,9 @@ namespace KubeClient.ResourceClients
                     postBody: newReplicaSet,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<ReplicaSetV1, StatusV1>();
+                .ReadContentAsObjectV1Async<ReplicaSetV1>(
+                    operationDescription: $"create v1/ReplicaSet in namespace '{newReplicaSet?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}'"
+                );
         }
 
         /// <summary>
@@ -206,9 +208,9 @@ namespace KubeClient.ResourceClients
             );
 
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<ReplicaSetV1>(HttpStatusCode.OK);
+                return await request.ReadContentAsObjectV1Async<ReplicaSetV1>($"delete v1/ReplicaSet resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'", HttpStatusCode.OK);
             
-            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await request.ReadContentAsObjectV1Async<StatusV1>($"delete v1/ReplicaSet resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

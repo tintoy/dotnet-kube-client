@@ -135,7 +135,9 @@ namespace KubeClient.ResourceClients
                     postBody: newSecret,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<SecretV1, StatusV1>();
+                .ReadContentAsObjectV1Async<SecretV1>(
+                    operationDescription: $"create v1/Secret resource in namespace '{newSecret?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}'"
+                );
         }
 
         /// <summary>
@@ -200,7 +202,10 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>(
+                    $"delete v1/Secret resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
+                    HttpStatusCode.OK, HttpStatusCode.NotFound
+                );
         }
 
         /// <summary>

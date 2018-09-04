@@ -159,7 +159,9 @@ namespace KubeClient.ResourceClients
                     postBody: newService,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<ServiceV1, StatusV1>();
+                .ReadContentAsObjectV1Async<ServiceV1>(
+                    operationDescription: $"create v1/Service resource in namespace '{newService?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}'"
+                );
         }
 
         /// <summary>
@@ -224,7 +226,10 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>(
+                    $"delete v1/Service resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
+                    HttpStatusCode.OK, HttpStatusCode.NotFound
+                );
         }
 
         /// <summary>

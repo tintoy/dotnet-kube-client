@@ -133,7 +133,7 @@ namespace KubeClient.ResourceClients
                     postBody: newDeployment,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<DeploymentV1, StatusV1>();
+                .ReadContentAsObjectV1Async<DeploymentV1>("create v1/Deployment resource");
         }
 
         /// <summary>
@@ -206,9 +206,9 @@ namespace KubeClient.ResourceClients
             );
 
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<DeploymentV1>(HttpStatusCode.OK);
+                return await request.ReadContentAsObjectV1Async<DeploymentV1>("delete v1/Deployment", HttpStatusCode.OK);
             
-            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await request.ReadContentAsObjectV1Async<StatusV1>("delete v1/Deployment", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

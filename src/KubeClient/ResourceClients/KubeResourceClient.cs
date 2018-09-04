@@ -213,6 +213,9 @@ namespace KubeClient.ResourceClients
             
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
+
+            // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             
             var patch = new JsonPatchDocument<TResource>();
             patchAction(patch);
@@ -223,7 +226,9 @@ namespace KubeClient.ResourceClients
                     mediaType: PatchMediaType,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<TResource, StatusV1>()
+                .ReadContentAsObjectV1Async<TResource>(
+                    operationDescription: $"patch {apiVersion}/{kind} resource"
+                )
                 .ConfigureAwait(false);
         }
 
@@ -253,6 +258,9 @@ namespace KubeClient.ResourceClients
             
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
+
+            // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             
             var patch = new JsonPatchDocument();
             patchAction(patch);
@@ -263,7 +271,9 @@ namespace KubeClient.ResourceClients
                     mediaType: PatchMediaType,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<TResource, StatusV1>()
+                .ReadContentAsObjectV1Async<TResource>(
+                    operationDescription: $"patch {apiVersion}/{kind} resource"
+                )
                 .ConfigureAwait(false);
         }
 
@@ -400,6 +410,15 @@ namespace KubeClient.ResourceClients
                 {
                     if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
                         subscriber.OnError(operationCanceled);
+                }
+                catch (HttpRequestException<StatusV1> requestError)
+                {
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        subscriber.OnError(
+                            new KubeClientException($"Request failed (unexpected error while streaming from the Kubernetes API).", requestError)
+                        );
+                    }
                 }
                 catch (Exception exception)
                 {

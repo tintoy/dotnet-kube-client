@@ -119,7 +119,7 @@ namespace KubeClient.ResourceClients
                     postBody: newNamespace,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<NamespaceV1, StatusV1>();
+                .ReadContentAsObjectV1Async<NamespaceV1>("create v1/Namespace resource");
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>("delete v1/Namespace resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

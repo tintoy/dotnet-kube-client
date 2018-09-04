@@ -132,7 +132,7 @@ namespace KubeClient.ResourceClients
                     postBody: newPersistentVolume,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<PersistentVolumeV1, StatusV1>();
+                .ReadContentAsObjectV1Async<PersistentVolumeV1>("create v1/PersistentVolume resource");
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>("delete v1/PersistentVolume resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>
