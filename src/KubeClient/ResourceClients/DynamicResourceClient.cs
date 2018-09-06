@@ -118,7 +118,7 @@ namespace KubeClient.ResourceClients
                 if (status.Reason == "NotFound")
                     return null;
 
-                throw new KubeClientException($"Failed to retrieve {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to retrieve {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
                 );
             }
@@ -176,7 +176,7 @@ namespace KubeClient.ResourceClients
 
                 StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
 
-                throw new KubeClientException($"Failed to list {apiVersion}/{kind} resources (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to list {apiVersion}/{kind} resources (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
                 );
             }
@@ -253,15 +253,14 @@ namespace KubeClient.ResourceClients
                 if (status.Reason == "NotFound")
                 {
                     string errorMessage = isNamespaced ?
-                        $"Failed to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' (resource not found)."
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' (resource not found)."
                         :
-                        $"Failed to patch {apiVersion}/{kind} resource '{name}' (resource not found).";
-
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' (resource not found).";
 
                     throw new KubeClientException(errorMessage);
                 }
 
-                throw new KubeClientException($"Failed to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
                 );
             }

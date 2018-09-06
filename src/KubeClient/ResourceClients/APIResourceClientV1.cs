@@ -59,7 +59,7 @@ namespace KubeClient.ResourceClients
                 if (responseMessage.IsSuccessStatusCode)
                     return await responseMessage.ReadContentAsAsync<APIResourceListV1>().ConfigureAwait(false);
 
-                throw new KubeClientException($"Failed to list API resource types for '{prefix}/{groupVersion}' (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to list API resource types for '{prefix}/{groupVersion}' (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
                     )

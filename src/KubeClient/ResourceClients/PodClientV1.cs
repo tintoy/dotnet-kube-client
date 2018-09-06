@@ -151,7 +151,7 @@ namespace KubeClient.ResourceClients
                 if (responseMessage.IsSuccessStatusCode)
                     return await responseMessage.Content.ReadAsStringAsync();
 
-                throw new KubeClientException($"Failed to retrieve logs for container '{containerName ?? "(default)"}' of pod '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'.",
+                throw new KubeClientException($"Unable to retrieve logs for container '{containerName ?? "<default>"}' of v1/Pod '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'.",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                     response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
                 ));

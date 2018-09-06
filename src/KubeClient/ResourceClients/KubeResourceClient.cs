@@ -138,7 +138,7 @@ namespace KubeClient.ResourceClients
                         ? $"{itemKind} ({itemApiVersion}) resource"
                         : typeof(TResource).Name;
 
-                throw new KubeClientException($"Failed to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
                     )
@@ -179,7 +179,7 @@ namespace KubeClient.ResourceClients
                         ? $"{itemKind} ({itemApiVersion}) resources"
                         : typeof(TResourceList).Name;
 
-                throw new KubeClientException($"Failed to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
                     )
@@ -350,7 +350,7 @@ namespace KubeClient.ResourceClients
 
                         MediaTypeHeaderValue contentTypeHeader = responseMessage.Content.Headers.ContentType;
                         if (contentTypeHeader == null)
-                            throw new KubeClientException($"Failed to {operationDescription} (response is missing 'Content-Type' header).");
+                            throw new KubeClientException($"Unable to {operationDescription} (response is missing 'Content-Type' header).");
 
                         Encoding encoding =
                             !String.IsNullOrWhiteSpace(contentTypeHeader.CharSet)
@@ -430,7 +430,7 @@ namespace KubeClient.ResourceClients
                     if (!cancellationToken.IsCancellationRequested)
                     {
                         subscriber.OnError(
-                            new KubeClientException($"Failed to {operationDescription} (unexpected error while streaming from the Kubernetes API).", requestError)
+                            new KubeClientException($"Unable to {operationDescription} (unexpected error while streaming from the Kubernetes API).", requestError)
                         );
                     }
                 }
@@ -464,7 +464,7 @@ namespace KubeClient.ResourceClients
 
             StatusV1 status = watchEvent.SelectToken("object").ToObject<StatusV1>();
 
-            throw new KubeClientException($"Failed to {operationDescription}.", status);
+            throw new KubeClientException($"Unable to {operationDescription}.", status);
         }
     }
 }
