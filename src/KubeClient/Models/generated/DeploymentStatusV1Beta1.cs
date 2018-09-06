@@ -47,7 +47,7 @@ namespace KubeClient.Models
         public int Replicas { get; set; }
 
         /// <summary>
-        ///     Total number of unavailable pods targeted by this deployment.
+        ///     Total number of unavailable pods targeted by this deployment. This is the total number of pods that are still required for the deployment to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created.
         /// </summary>
         [JsonProperty("unavailableReplicas")]
         [YamlMember(Alias = "unavailableReplicas")]

@@ -25,6 +25,14 @@ namespace KubeClient.Models
         public ListMetaV1 Metadata { get; set; }
 
         /// <summary>
+        ///     Enumerate the list's items.
+        /// </summary>
+        /// <returns>
+        ///     The list's items.
+        /// </returns>
+        public abstract IEnumerable<KubeResourceV1> EnumerateItems();
+
+        /// <summary>
         ///     Get Kubernetes Kind / ApiVersion metadata for the items contained by the specified list type.
         /// </summary>
         /// <typeparam name="TResourceList">
@@ -36,7 +44,23 @@ namespace KubeClient.Models
         public static (string kind, string apiVersion) GetListItemKubeKind<TResourceList>()
             where TResourceList : KubeResourceListV1
         {
-            (string kind, string apiVersion) = ItemModelMetadata.GetOrAdd(typeof(TResourceList), modelType =>
+            return GetListItemKubeKind(
+                typeof(TResourceList)
+            );
+        }
+
+        /// <summary>
+        ///     Get Kubernetes Kind / ApiVersion metadata for the items contained by the specified list type.
+        /// </summary>
+        /// <param name="resourceListType">
+        ///     The target resource-list type.
+        /// </param>
+        /// <returns>
+        ///     A tuple containing the item Kind and ApiVersion metadata (or <c>null</c> and <c>null</c>, if no item metadata is available for the resource-list type).
+        /// </returns>
+        public static (string kind, string apiVersion) GetListItemKubeKind(Type resourceListType)
+        {
+            (string kind, string apiVersion) = ItemModelMetadata.GetOrAdd(resourceListType, modelType =>
             {
                 var kubeListItemAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeListItemAttribute>();
                 if (kubeListItemAttribute != null)
@@ -58,11 +82,24 @@ namespace KubeClient.Models
     [JsonObject]
     public abstract class KubeResourceListV1<TResource>
         : KubeResourceListV1, IEnumerable<TResource>
+        where TResource : KubeResourceV1
     {
         /// <summary>
         ///     The list's resources.
         /// </summary>
         public abstract List<TResource> Items { get; }
+
+        /// <summary>
+        ///     Enumerate the list's items.
+        /// </summary>
+        /// <returns>
+        ///     The list's items.
+        /// </returns>
+        public override IEnumerable<KubeResourceV1> EnumerateItems()
+        {
+            foreach (TResource resource in Items)
+                yield return (KubeResourceV1)resource;
+        }
 
         /// <summary>
         ///     Get a typed enumerator for the list's resources.

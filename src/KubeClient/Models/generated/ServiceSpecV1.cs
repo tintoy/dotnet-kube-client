@@ -25,18 +25,25 @@ namespace KubeClient.Models
         public string LoadBalancerIP { get; set; }
 
         /// <summary>
-        ///     externalName is the external reference that kubedns or equivalent will return as a CNAME record for this service. No proxying will be involved. Must be a valid DNS name and requires Type to be ExternalName.
+        ///     externalName is the external reference that kubedns or equivalent will return as a CNAME record for this service. No proxying will be involved. Must be a valid RFC-1123 hostname (https://tools.ietf.org/html/rfc1123) and requires Type to be ExternalName.
         /// </summary>
         [JsonProperty("externalName")]
         [YamlMember(Alias = "externalName")]
         public string ExternalName { get; set; }
 
         /// <summary>
-        ///     type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ExternalName" maps to the specified externalName. "ClusterIP" allocates a cluster IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a stable IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+        ///     type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ExternalName" maps to the specified externalName. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a stable IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
         /// </summary>
         [JsonProperty("type")]
         [YamlMember(Alias = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        ///     sessionAffinityConfig contains the configurations of session affinity.
+        /// </summary>
+        [JsonProperty("sessionAffinityConfig")]
+        [YamlMember(Alias = "sessionAffinityConfig")]
+        public SessionAffinityConfigV1 SessionAffinityConfig { get; set; }
 
         /// <summary>
         ///     Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
@@ -66,6 +73,13 @@ namespace KubeClient.Models
         [YamlMember(Alias = "ports")]
         [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
         public List<ServicePortV1> Ports { get; set; } = new List<ServicePortV1>();
+
+        /// <summary>
+        ///     publishNotReadyAddresses, when set to true, indicates that DNS implementations must publish the notReadyAddresses of subsets for the Endpoints associated with the Service. The default value is false. The primary use case for setting this field is to use a StatefulSet's Headless Service to propagate SRV records for its Pods without respect to their readiness for purpose of peer discovery.
+        /// </summary>
+        [JsonProperty("publishNotReadyAddresses")]
+        [YamlMember(Alias = "publishNotReadyAddresses")]
+        public bool PublishNotReadyAddresses { get; set; }
 
         /// <summary>
         ///     healthCheckNodePort specifies the healthcheck nodePort for the service. If not specified, HealthCheckNodePort is created by the service api backend with the allocated nodePort. Will use user-specified nodePort value if specified by the client. Only effects when Type is set to LoadBalancer and ExternalTrafficPolicy is set to Local.

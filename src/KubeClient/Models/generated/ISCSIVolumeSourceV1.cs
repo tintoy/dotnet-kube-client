@@ -18,21 +18,28 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Optional: Defaults to 'default' (tcp). iSCSI interface name that uses an iSCSI transport.
+        ///     Custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface &lt;target portal&gt;:&lt;volume name&gt; will be created for the connection.
+        /// </summary>
+        [JsonProperty("initiatorName")]
+        [YamlMember(Alias = "initiatorName")]
+        public string InitiatorName { get; set; }
+
+        /// <summary>
+        ///     iSCSI Interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
         /// </summary>
         [JsonProperty("iscsiInterface")]
         [YamlMember(Alias = "iscsiInterface")]
         public string IscsiInterface { get; set; }
 
         /// <summary>
-        ///     CHAP secret for iSCSI target and initiator authentication
+        ///     CHAP Secret for iSCSI target and initiator authentication
         /// </summary>
         [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
         public LocalObjectReferenceV1 SecretRef { get; set; }
 
         /// <summary>
-        ///     iSCSI target portal. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+        ///     iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
         /// </summary>
         [JsonProperty("targetPortal")]
         [YamlMember(Alias = "targetPortal")]
@@ -53,14 +60,14 @@ namespace KubeClient.Models
         public string Iqn { get; set; }
 
         /// <summary>
-        ///     iSCSI target lun number.
+        ///     iSCSI Target Lun number.
         /// </summary>
         [JsonProperty("lun")]
         [YamlMember(Alias = "lun")]
         public int Lun { get; set; }
 
         /// <summary>
-        ///     iSCSI target portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+        ///     iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
         /// </summary>
         [YamlMember(Alias = "portals")]
         [JsonProperty("portals", NullValueHandling = NullValueHandling.Ignore)]

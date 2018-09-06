@@ -10,18 +10,18 @@ namespace KubeClient.ResourceClients
     using Models;
 
     /// <summary>
-    ///     A client for the Kubernetes ReplicaSets (v1beta1) API.
+    ///     A client for the Kubernetes ReplicaSets (v1) API.
     /// </summary>
-    public class ReplicaSetClientV1Beta1
-        : KubeResourceClient, IReplicaSetClientV1Beta1
+    public class ReplicaSetClientV1
+        : KubeResourceClient, IReplicaSetClientV1
     {
         /// <summary>
-        ///     Create a new <see cref="ReplicaSetClientV1Beta1"/>.
+        ///     Create a new <see cref="ReplicaSetClientV1"/>.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public ReplicaSetClientV1Beta1(IKubeApiClient client)
+        public ReplicaSetClientV1(IKubeApiClient client)
             : base(client)
         {
         }
@@ -39,14 +39,14 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the ReplicaSet, or <c>null</c> if no ReplicaSet was found with the specified name and namespace.
+        ///     A <see cref="ReplicaSetV1"/> representing the current state for the ReplicaSet, or <c>null</c> if no ReplicaSet was found with the specified name and namespace.
         /// </returns>
-        public async Task<ReplicaSetV1Beta1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<ReplicaSetV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            return await GetSingleResource<ReplicaSetV1Beta1>(
+            return await GetSingleResource<ReplicaSetV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
@@ -69,11 +69,11 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetListV1Beta1"/> containing the ReplicaSets.
+        ///     A <see cref="ReplicaSetListV1"/> containing the ReplicaSets.
         /// </returns>
-        public async Task<ReplicaSetListV1Beta1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<ReplicaSetListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            return await GetResourceList<ReplicaSetListV1Beta1>(
+            return await GetResourceList<ReplicaSetListV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
@@ -95,31 +95,32 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<IResourceEventV1<ReplicaSetV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<ReplicaSetV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
         {
-            return ObserveEvents<ReplicaSetV1Beta1>(
+            return ObserveEvents<ReplicaSetV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1/ReplicaSets with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="ReplicaSetV1Beta1"/>.
+        ///     Request creation of a <see cref="ReplicaSetV1"/>.
         /// </summary>
         /// <param name="newReplicaSet">
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the ReplicaSet to create.
+        ///     A <see cref="ReplicaSetV1"/> representing the ReplicaSet to create.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the newly-created ReplicaSet.
+        ///     A <see cref="ReplicaSetV1"/> representing the current state for the newly-created ReplicaSet.
         /// </returns>
-        public async Task<ReplicaSetV1Beta1> Create(ReplicaSetV1Beta1 newReplicaSet, CancellationToken cancellationToken = default)
+        public async Task<ReplicaSetV1> Create(ReplicaSetV1 newReplicaSet, CancellationToken cancellationToken = default)
         {
             if (newReplicaSet == null)
                 throw new ArgumentNullException(nameof(newReplicaSet));
@@ -133,11 +134,13 @@ namespace KubeClient.ResourceClients
                     postBody: newReplicaSet,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<ReplicaSetV1Beta1, StatusV1>();
+                .ReadContentAsObjectV1Async<ReplicaSetV1>(
+                    operationDescription: $"create v1/ReplicaSet in namespace '{newReplicaSet?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}'"
+                );
         }
 
         /// <summary>
-        ///     Request update (PATCH) of a <see cref="ReplicaSetV1Beta1"/>.
+        ///     Request update (PATCH) of a <see cref="ReplicaSetV1"/>.
         /// </summary>
         /// <param name="name">
         ///     The name of the target ReplicaSet.
@@ -152,9 +155,9 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the updated ReplicaSet.
+        ///     A <see cref="ReplicaSetV1"/> representing the current state for the updated ReplicaSet.
         /// </returns>
-        public async Task<ReplicaSetV1Beta1> Update(string name, Action<JsonPatchDocument<ReplicaSetV1Beta1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<ReplicaSetV1> Update(string name, Action<JsonPatchDocument<ReplicaSetV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -206,9 +209,9 @@ namespace KubeClient.ResourceClients
             );
 
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<ReplicaSetV1Beta1>(HttpStatusCode.OK);
+                return await request.ReadContentAsObjectV1Async<ReplicaSetV1>($"delete v1/ReplicaSet resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'", HttpStatusCode.OK);
             
-            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await request.ReadContentAsObjectV1Async<StatusV1>($"delete v1/ReplicaSet resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>
@@ -231,7 +234,7 @@ namespace KubeClient.ResourceClients
     /// <summary>
     ///     A client for the Kubernetes ReplicaSets (v1beta1) API.
     /// </summary>
-    public interface IReplicaSetClientV1Beta1
+    public interface IReplicaSetClientV1
         : IKubeResourceClient
     {
         /// <summary>
@@ -247,9 +250,9 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the ReplicaSet, or <c>null</c> if no ReplicaSet was found with the specified name and namespace.
+        ///     A <see cref="ReplicaSetV1"/> representing the current state for the ReplicaSet, or <c>null</c> if no ReplicaSet was found with the specified name and namespace.
         /// </returns>
-        Task<ReplicaSetV1Beta1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<ReplicaSetV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Get all ReplicaSets in the specified namespace, optionally matching a label selector.
@@ -264,9 +267,9 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetListV1Beta1"/> containing the ReplicaSets.
+        ///     A <see cref="ReplicaSetListV1"/> containing the ReplicaSets.
         /// </returns>
-        Task<ReplicaSetListV1Beta1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<ReplicaSetListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
         
         /// <summary>
         ///     Watch for events relating to ReplicaSets.
@@ -280,24 +283,24 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        IObservable<IResourceEventV1<ReplicaSetV1Beta1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
+        IObservable<IResourceEventV1<ReplicaSetV1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
 
         /// <summary>
-        ///     Request creation of a <see cref="ReplicaSetV1Beta1"/>.
+        ///     Request creation of a <see cref="ReplicaSetV1"/>.
         /// </summary>
         /// <param name="newReplicaSet">
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the ReplicaSet to create.
+        ///     A <see cref="ReplicaSetV1"/> representing the ReplicaSet to create.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the newly-created ReplicaSet.
+        ///     A <see cref="ReplicaSetV1"/> representing the current state for the newly-created ReplicaSet.
         /// </returns>
-        Task<ReplicaSetV1Beta1> Create(ReplicaSetV1Beta1 newReplicaSet, CancellationToken cancellationToken = default);
+        Task<ReplicaSetV1> Create(ReplicaSetV1 newReplicaSet, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Request update (PATCH) of a <see cref="ReplicaSetV1Beta1"/>.
+        ///     Request update (PATCH) of a <see cref="ReplicaSetV1"/>.
         /// </summary>
         /// <param name="name">
         ///     The name of the target ReplicaSet.
@@ -312,9 +315,9 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="ReplicaSetV1Beta1"/> representing the current state for the updated ReplicaSet.
+        ///     A <see cref="ReplicaSetV1"/> representing the current state for the updated ReplicaSet.
         /// </returns>
-        Task<ReplicaSetV1Beta1> Update(string name, Action<JsonPatchDocument<ReplicaSetV1Beta1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<ReplicaSetV1> Update(string name, Action<JsonPatchDocument<ReplicaSetV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Request deletion of the specified ReplicaSet.

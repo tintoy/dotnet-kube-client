@@ -32,6 +32,14 @@ namespace KubeClient.Models
         public string UpdateRevision { get; set; }
 
         /// <summary>
+        ///     Represents the latest available observations of a statefulset's current state.
+        /// </summary>
+        [MergeStrategy(Key = "type")]
+        [YamlMember(Alias = "conditions")]
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<StatefulSetConditionV1Beta1> Conditions { get; set; } = new List<StatefulSetConditionV1Beta1>();
+
+        /// <summary>
         ///     currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
         /// </summary>
         [JsonProperty("currentReplicas")]
@@ -58,5 +66,12 @@ namespace KubeClient.Models
         [JsonProperty("updatedReplicas")]
         [YamlMember(Alias = "updatedReplicas")]
         public int UpdatedReplicas { get; set; }
+
+        /// <summary>
+        ///     collisionCount is the count of hash collisions for the StatefulSet. The StatefulSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
+        /// </summary>
+        [JsonProperty("collisionCount")]
+        [YamlMember(Alias = "collisionCount")]
+        public int CollisionCount { get; set; }
     }
 }

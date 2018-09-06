@@ -9,6 +9,18 @@ namespace KubeClient.Models
     ///     APIService represents a server for a particular GroupVersion. Name must be "version.group".
     /// </summary>
     [KubeObject("APIService", "v1beta1")]
+    [KubeApi(KubeAction.List, "apis/apiregistration.k8s.io/v1beta1/apiservices")]
+    [KubeApi(KubeAction.Create, "apis/apiregistration.k8s.io/v1beta1/apiservices")]
+    [KubeApi(KubeAction.Get, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}")]
+    [KubeApi(KubeAction.Update, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/apiregistration.k8s.io/v1beta1/watch/apiservices")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/apiregistration.k8s.io/v1beta1/apiservices")]
+    [KubeApi(KubeAction.Get, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/apiregistration.k8s.io/v1beta1/watch/apiservices/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/apiregistration.k8s.io/v1beta1/apiservices/{name}/status")]
     public partial class APIServiceV1Beta1 : KubeResourceV1
     {
         /// <summary>

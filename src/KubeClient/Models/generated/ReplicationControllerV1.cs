@@ -9,6 +9,20 @@ namespace KubeClient.Models
     ///     ReplicationController represents the configuration of a replication controller.
     /// </summary>
     [KubeObject("ReplicationController", "v1")]
+    [KubeApi(KubeAction.List, "api/v1/replicationcontrollers")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/replicationcontrollers")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/replicationcontrollers")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/replicationcontrollers")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/replicationcontrollers")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/replicationcontrollers")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}/status")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/replicationcontrollers/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}/status")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/replicationcontrollers/{name}/status")]
     public partial class ReplicationControllerV1 : KubeResourceV1
     {
         /// <summary>

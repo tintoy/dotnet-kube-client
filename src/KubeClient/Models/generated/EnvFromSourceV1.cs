@@ -25,7 +25,7 @@ namespace KubeClient.Models
         public SecretEnvSourceV1 SecretRef { get; set; }
 
         /// <summary>
-        ///     An optional identifer to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+        ///     An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
         /// </summary>
         [JsonProperty("prefix")]
         [YamlMember(Alias = "prefix")]

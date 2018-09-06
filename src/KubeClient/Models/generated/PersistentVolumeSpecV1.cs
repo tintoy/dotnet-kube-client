@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("scaleIO")]
         [YamlMember(Alias = "scaleIO")]
-        public ScaleIOVolumeSourceV1 ScaleIO { get; set; }
+        public ScaleIOPersistentVolumeSourceV1 ScaleIO { get; set; }
 
         /// <summary>
         ///     FC represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
@@ -29,7 +29,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("rbd")]
         [YamlMember(Alias = "rbd")]
-        public RBDVolumeSourceV1 Rbd { get; set; }
+        public RBDPersistentVolumeSourceV1 Rbd { get; set; }
 
         /// <summary>
         ///     AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
@@ -43,14 +43,14 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("azureFile")]
         [YamlMember(Alias = "azureFile")]
-        public AzureFileVolumeSourceV1 AzureFile { get; set; }
+        public AzureFilePersistentVolumeSourceV1 AzureFile { get; set; }
 
         /// <summary>
-        ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. This is an alpha feature and may change in future.
+        ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
         /// </summary>
         [JsonProperty("flexVolume")]
         [YamlMember(Alias = "flexVolume")]
-        public FlexVolumeSourceV1 FlexVolume { get; set; }
+        public FlexPersistentVolumeSourceV1 FlexVolume { get; set; }
 
         /// <summary>
         ///     PortworxVolume represents a portworx volume attached and mounted on kubelets host machine
@@ -74,6 +74,13 @@ namespace KubeClient.Models
         public string StorageClassName { get; set; }
 
         /// <summary>
+        ///     volumeMode defines if a volume is intended to be used with a formatted filesystem or to remain in raw block state. Value of Filesystem is implied when not included in spec. This is an alpha feature and may change in the future.
+        /// </summary>
+        [JsonProperty("volumeMode")]
+        [YamlMember(Alias = "volumeMode")]
+        public string VolumeMode { get; set; }
+
+        /// <summary>
         ///     VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
         /// </summary>
         [JsonProperty("vsphereVolume")]
@@ -95,11 +102,18 @@ namespace KubeClient.Models
         public HostPathVolumeSourceV1 HostPath { get; set; }
 
         /// <summary>
+        ///     CSI represents storage that handled by an external CSI driver (Beta feature).
+        /// </summary>
+        [JsonProperty("csi")]
+        [YamlMember(Alias = "csi")]
+        public CSIPersistentVolumeSourceV1 Csi { get; set; }
+
+        /// <summary>
         ///     ISCSI represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin.
         /// </summary>
         [JsonProperty("iscsi")]
         [YamlMember(Alias = "iscsi")]
-        public ISCSIVolumeSourceV1 Iscsi { get; set; }
+        public ISCSIPersistentVolumeSourceV1 Iscsi { get; set; }
 
         /// <summary>
         ///     AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -134,7 +148,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("cinder")]
         [YamlMember(Alias = "cinder")]
-        public CinderVolumeSourceV1 Cinder { get; set; }
+        public CinderPersistentVolumeSourceV1 Cinder { get; set; }
 
         /// <summary>
         ///     Flocker represents a Flocker volume attached to a kubelet's host machine and exposed to the pod for its usage. This depends on the Flocker control service being running
@@ -155,7 +169,7 @@ namespace KubeClient.Models
         /// </summary>
         [JsonProperty("cephfs")]
         [YamlMember(Alias = "cephfs")]
-        public CephFSVolumeSourceV1 Cephfs { get; set; }
+        public CephFSPersistentVolumeSourceV1 Cephfs { get; set; }
 
         /// <summary>
         ///     Glusterfs represents a Glusterfs volume that is attached to a host and exposed to the pod. Provisioned by an admin. More info: https://releases.k8s.io/HEAD/examples/volumes/glusterfs/README.md
@@ -163,6 +177,13 @@ namespace KubeClient.Models
         [JsonProperty("glusterfs")]
         [YamlMember(Alias = "glusterfs")]
         public GlusterfsVolumeSourceV1 Glusterfs { get; set; }
+
+        /// <summary>
+        ///     A list of mount options, e.g. ["ro", "soft"]. Not validated - mount will simply fail if one is invalid. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#mount-options
+        /// </summary>
+        [YamlMember(Alias = "mountOptions")]
+        [JsonProperty("mountOptions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> MountOptions { get; set; } = new List<string>();
 
         /// <summary>
         ///     NFS represents an NFS mount on the host. Provisioned by an admin. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
@@ -186,7 +207,14 @@ namespace KubeClient.Models
         public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
-        ///     What happens to a persistent volume when released from its claim. Valid options are Retain (default) and Recycle. Recycling must be supported by the volume plugin underlying this persistent volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#reclaiming
+        ///     NodeAffinity defines constraints that limit what nodes this volume can be accessed from. This field influences the scheduling of pods that use this volume.
+        /// </summary>
+        [JsonProperty("nodeAffinity")]
+        [YamlMember(Alias = "nodeAffinity")]
+        public VolumeNodeAffinityV1 NodeAffinity { get; set; }
+
+        /// <summary>
+        ///     What happens to a persistent volume when released from its claim. Valid options are Retain (default for manually created PersistentVolumes), Delete (default for dynamically provisioned PersistentVolumes), and Recycle (deprecated). Recycle must be supported by the volume plugin underlying this PersistentVolume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#reclaiming
         /// </summary>
         [JsonProperty("persistentVolumeReclaimPolicy")]
         [YamlMember(Alias = "persistentVolumeReclaimPolicy")]

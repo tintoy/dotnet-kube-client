@@ -39,6 +39,13 @@ namespace KubeClient.Models
         public string NodeName { get; set; }
 
         /// <summary>
+        ///     If specified, indicates the pod's priority. "system-node-critical" and "system-cluster-critical" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default.
+        /// </summary>
+        [JsonProperty("priorityClassName")]
+        [YamlMember(Alias = "priorityClassName")]
+        public string PriorityClassName { get; set; }
+
+        /// <summary>
         ///     If specified, the pod will be dispatched by specified scheduler. If not specified, the pod will be dispatched by default scheduler.
         /// </summary>
         [JsonProperty("schedulerName")]
@@ -51,6 +58,20 @@ namespace KubeClient.Models
         [JsonProperty("serviceAccountName")]
         [YamlMember(Alias = "serviceAccountName")]
         public string ServiceAccountName { get; set; }
+
+        /// <summary>
+        ///     Share a single process namespace between all of the containers in a pod. When this is set containers will be able to view and signal processes from other containers in the same pod, and the first process in each container will not be assigned PID 1. HostPID and ShareProcessNamespace cannot both be set. Optional: Default to false. This field is alpha-level and is honored only by servers that enable the PodShareProcessNamespace feature.
+        /// </summary>
+        [JsonProperty("shareProcessNamespace")]
+        [YamlMember(Alias = "shareProcessNamespace")]
+        public bool ShareProcessNamespace { get; set; }
+
+        /// <summary>
+        ///     Specifies the DNS parameters of a pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
+        /// </summary>
+        [JsonProperty("dnsConfig")]
+        [YamlMember(Alias = "dnsConfig")]
+        public PodDNSConfigV1 DnsConfig { get; set; }
 
         /// <summary>
         ///     Host networking requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
@@ -120,6 +141,13 @@ namespace KubeClient.Models
         public List<ContainerV1> InitContainers { get; set; } = new List<ContainerV1>();
 
         /// <summary>
+        ///     If specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to "True" More info: https://github.com/kubernetes/community/blob/master/keps/sig-network/0007-pod-ready%2B%2B.md
+        /// </summary>
+        [YamlMember(Alias = "readinessGates")]
+        [JsonProperty("readinessGates", NullValueHandling = NullValueHandling.Ignore)]
+        public List<PodReadinessGateV1> ReadinessGates { get; set; } = new List<PodReadinessGateV1>();
+
+        /// <summary>
         ///     Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 30 seconds.
         /// </summary>
         [JsonProperty("terminationGracePeriodSeconds")]
@@ -136,6 +164,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     List of volumes that can be mounted by containers belonging to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes
         /// </summary>
+        [RetainKeysStrategy]
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "volumes")]
         [JsonProperty("volumes", NullValueHandling = NullValueHandling.Ignore)]
@@ -163,11 +192,18 @@ namespace KubeClient.Models
         public AffinityV1 Affinity { get; set; }
 
         /// <summary>
-        ///     Set DNS policy for containers within the pod. One of 'ClusterFirstWithHostNet', 'ClusterFirst' or 'Default'. Defaults to "ClusterFirst". To have DNS options set along with hostNetwork, you have to specify DNS policy explicitly to 'ClusterFirstWithHostNet'.
+        ///     Set DNS policy for the pod. Defaults to "ClusterFirst". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. DNS parameters given in DNSConfig will be merged with the policy selected with DNSPolicy. To have DNS options set along with hostNetwork, you have to specify DNS policy explicitly to 'ClusterFirstWithHostNet'.
         /// </summary>
         [JsonProperty("dnsPolicy")]
         [YamlMember(Alias = "dnsPolicy")]
         public string DnsPolicy { get; set; }
+
+        /// <summary>
+        ///     The priority value. Various system components use this field to find the priority of the pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority.
+        /// </summary>
+        [JsonProperty("priority")]
+        [YamlMember(Alias = "priority")]
+        public int Priority { get; set; }
 
         /// <summary>
         ///     Restart policy for all containers within the pod. One of Always, OnFailure, Never. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy

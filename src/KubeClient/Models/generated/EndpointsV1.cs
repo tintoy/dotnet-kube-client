@@ -20,6 +20,17 @@ namespace KubeClient.Models
     ///      ]
     /// </summary>
     [KubeObject("Endpoints", "v1")]
+    [KubeApi(KubeAction.List, "api/v1/endpoints")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/endpoints")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/endpoints/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/endpoints")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/endpoints/{name}")]
     public partial class EndpointsV1 : KubeResourceV1
     {
         /// <summary>

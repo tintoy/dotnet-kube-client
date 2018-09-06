@@ -39,6 +39,13 @@ namespace KubeClient.Models
         public string Singular { get; set; }
 
         /// <summary>
+        ///     Categories is a list of grouped resources custom resources belong to (e.g. 'all')
+        /// </summary>
+        [YamlMember(Alias = "categories")]
+        [JsonProperty("categories", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Categories { get; set; } = new List<string>();
+
+        /// <summary>
         ///     ShortNames are short names for the resource.  It must be all lowercase.
         /// </summary>
         [YamlMember(Alias = "shortNames")]

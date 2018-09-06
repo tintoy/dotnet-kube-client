@@ -60,6 +60,14 @@ namespace KubeClient.Models
         public int ObservedGeneration { get; set; }
 
         /// <summary>
+        ///     Represents the latest available observations of a DaemonSet's current state.
+        /// </summary>
+        [MergeStrategy(Key = "type")]
+        [YamlMember(Alias = "conditions")]
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
+        public List<DaemonSetConditionV1Beta1> Conditions { get; set; } = new List<DaemonSetConditionV1Beta1>();
+
+        /// <summary>
         ///     Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
         /// </summary>
         [JsonProperty("collisionCount")]

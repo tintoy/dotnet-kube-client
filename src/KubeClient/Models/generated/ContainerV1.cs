@@ -18,7 +18,7 @@ namespace KubeClient.Models
         public List<string> Command { get; set; } = new List<string>();
 
         /// <summary>
-        ///     Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images
+        ///     Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.
         /// </summary>
         [JsonProperty("image")]
         [YamlMember(Alias = "image")]
@@ -110,6 +110,14 @@ namespace KubeClient.Models
         public ResourceRequirementsV1 Resources { get; set; }
 
         /// <summary>
+        ///     volumeDevices is the list of block devices to be used by the container. This is an alpha feature and may change in the future.
+        /// </summary>
+        [MergeStrategy(Key = "devicePath")]
+        [YamlMember(Alias = "volumeDevices")]
+        [JsonProperty("volumeDevices", NullValueHandling = NullValueHandling.Ignore)]
+        public List<VolumeDeviceV1> VolumeDevices { get; set; } = new List<VolumeDeviceV1>();
+
+        /// <summary>
         ///     Pod volumes to mount into the container's filesystem. Cannot be updated.
         /// </summary>
         [MergeStrategy(Key = "mountPath")]
@@ -118,7 +126,7 @@ namespace KubeClient.Models
         public List<VolumeMountV1> VolumeMounts { get; set; } = new List<VolumeMountV1>();
 
         /// <summary>
-        ///     Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://git.k8s.io/community/contributors/design-proposals/security_context.md
+        ///     Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
         /// </summary>
         [JsonProperty("securityContext")]
         [YamlMember(Alias = "securityContext")]

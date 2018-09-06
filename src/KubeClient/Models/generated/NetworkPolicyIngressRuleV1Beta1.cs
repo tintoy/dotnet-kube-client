@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     This NetworkPolicyIngressRule matches traffic if and only if the traffic matches both ports AND from.
+    ///     DEPRECATED 1.9 - This group version of NetworkPolicyIngressRule is deprecated by networking/v1/NetworkPolicyIngressRule. This NetworkPolicyIngressRule matches traffic if and only if the traffic matches both ports AND from.
     /// </summary>
     public partial class NetworkPolicyIngressRuleV1Beta1
     {

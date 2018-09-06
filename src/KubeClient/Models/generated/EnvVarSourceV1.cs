@@ -25,7 +25,7 @@ namespace KubeClient.Models
         public ObjectFieldSelectorV1 FieldRef { get; set; }
 
         /// <summary>
-        ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+        ///     Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
         /// </summary>
         [JsonProperty("resourceFieldRef")]
         [YamlMember(Alias = "resourceFieldRef")]

@@ -138,7 +138,7 @@ namespace KubeClient.ResourceClients
                         ? $"{itemKind} ({itemApiVersion}) resource"
                         : typeof(TResource).Name;
 
-                throw new KubeClientException($"Failed to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
                     )
@@ -179,7 +179,7 @@ namespace KubeClient.ResourceClients
                         ? $"{itemKind} ({itemApiVersion}) resources"
                         : typeof(TResourceList).Name;
 
-                throw new KubeClientException($"Failed to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeClientException($"Unable to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                         response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
                     )
@@ -213,6 +213,9 @@ namespace KubeClient.ResourceClients
             
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
+
+            // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             
             var patch = new JsonPatchDocument<TResource>();
             patchAction(patch);
@@ -223,7 +226,9 @@ namespace KubeClient.ResourceClients
                     mediaType: PatchMediaType,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<TResource, StatusV1>()
+                .ReadContentAsObjectV1Async<TResource>(
+                    operationDescription: $"patch {apiVersion}/{kind} resource"
+                )
                 .ConfigureAwait(false);
         }
 
@@ -253,6 +258,9 @@ namespace KubeClient.ResourceClients
             
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
+
+            // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             
             var patch = new JsonPatchDocument();
             patchAction(patch);
@@ -263,7 +271,9 @@ namespace KubeClient.ResourceClients
                     mediaType: PatchMediaType,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<TResource, StatusV1>()
+                .ReadContentAsObjectV1Async<TResource>(
+                    operationDescription: $"patch {apiVersion}/{kind} resource"
+                )
                 .ConfigureAwait(false);
         }
 
@@ -276,20 +286,28 @@ namespace KubeClient.ResourceClients
         /// <param name="request">
         ///     The <see cref="HttpRequest"/> to execute.
         /// </param>
+        /// <param name="operationDescription">
+        ///     A short description of the operation (used in error messages if the request fails).
+        /// </param>
         /// <returns>
         ///     The <see cref="IObservable{T}"/>.
         /// </returns>
-        protected IObservable<IResourceEventV1<TResource>> ObserveEvents<TResource>(HttpRequest request)
+        protected IObservable<IResourceEventV1<TResource>> ObserveEvents<TResource>(HttpRequest request, string operationDescription)
             where TResource : KubeResourceV1
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
-            return ObserveLines(request)
-                   .Do(CheckForEventError)
-                   .Select(
-                       line => (IResourceEventV1<TResource>) JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
-                   );
+            if (String.IsNullOrWhiteSpace(operationDescription))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
+
+            return ObserveLines(request, operationDescription)
+                .Do(
+                    line => CheckForEventError(line, operationDescription)
+                )
+                .Select(
+                    line => (IResourceEventV1<TResource>) JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
+                );
         }
 
         /// <summary>
@@ -297,6 +315,9 @@ namespace KubeClient.ResourceClients
         /// </summary>
         /// <param name="request">
         ///     The <see cref="HttpRequest"/> to execute.
+        /// </param>
+        /// <param name="operationDescription">
+        ///     A short description of the operation (used in error messages if the request fails).
         /// </param>
         /// <param name="bufferSize">
         ///     The buffer size to use when streaming data.
@@ -306,10 +327,13 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     The <see cref="IObservable{T}"/>.
         /// </returns>
-        protected IObservable<string> ObserveLines(HttpRequest request, int bufferSize = DefaultStreamingBufferSize)
+        protected IObservable<string> ObserveLines(HttpRequest request, string operationDescription, int bufferSize = DefaultStreamingBufferSize)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
+
+            if (String.IsNullOrWhiteSpace(operationDescription))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
             
             return Observable.Create<string>(async (subscriber, cancellationToken) =>
             {
@@ -326,7 +350,7 @@ namespace KubeClient.ResourceClients
 
                         MediaTypeHeaderValue contentTypeHeader = responseMessage.Content.Headers.ContentType;
                         if (contentTypeHeader == null)
-                            throw new KubeClientException("Response is missing 'Content-Type' header.");
+                            throw new KubeClientException($"Unable to {operationDescription} (response is missing 'Content-Type' header).");
 
                         Encoding encoding =
                             !String.IsNullOrWhiteSpace(contentTypeHeader.CharSet)
@@ -401,6 +425,15 @@ namespace KubeClient.ResourceClients
                     if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
                         subscriber.OnError(operationCanceled);
                 }
+                catch (HttpRequestException<StatusV1> requestError)
+                {
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        subscriber.OnError(
+                            new KubeClientException($"Unable to {operationDescription} (unexpected error while streaming from the Kubernetes API).", requestError)
+                        );
+                    }
+                }
                 catch (Exception exception)
                 {
                     if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
@@ -420,7 +453,10 @@ namespace KubeClient.ResourceClients
         /// <param name="line">
         ///     The current line in the event stream.
         /// </param>
-        static void CheckForEventError(string line)
+        /// <param name="operationDescription">
+        ///     A short description of the operation being performed (used in exception message if an error is encountered).
+        /// </param>
+        static void CheckForEventError(string line, string operationDescription)
         {
             JToken watchEvent = JToken.Parse(line);
             if (!watchEvent.SelectToken("type").Value<string>().Equals("error", StringComparison.OrdinalIgnoreCase))
@@ -428,7 +464,7 @@ namespace KubeClient.ResourceClients
 
             StatusV1 status = watchEvent.SelectToken("object").ToObject<StatusV1>();
 
-            throw new HttpRequestException<StatusV1>((HttpStatusCode) status.Code, status);
+            throw new KubeClientException($"Unable to {operationDescription}.", status);
         }
     }
 }

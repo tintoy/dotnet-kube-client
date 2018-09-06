@@ -8,7 +8,21 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJob represents the configuration of a single cron job.
     /// </summary>
-    [KubeObject("CronJob", "batch/v2alpha1")]
+    [KubeObject("CronJob", "v2alpha1")]
+    [KubeApi(KubeAction.List, "apis/batch/v2alpha1/cronjobs")]
+    [KubeApi(KubeAction.WatchList, "apis/batch/v2alpha1/watch/cronjobs")]
+    [KubeApi(KubeAction.List, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs")]
+    [KubeApi(KubeAction.Create, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs")]
+    [KubeApi(KubeAction.Get, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}")]
+    [KubeApi(KubeAction.Update, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/batch/v2alpha1/watch/namespaces/{namespace}/cronjobs")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs")]
+    [KubeApi(KubeAction.Get, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/batch/v2alpha1/watch/namespaces/{namespace}/cronjobs/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/batch/v2alpha1/namespaces/{namespace}/cronjobs/{name}/status")]
     public partial class CronJobV2Alpha1 : KubeResourceV1
     {
         /// <summary>

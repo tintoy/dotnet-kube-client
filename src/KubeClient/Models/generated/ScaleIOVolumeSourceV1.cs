@@ -25,7 +25,7 @@ namespace KubeClient.Models
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Indicates whether the storage for a volume should be thick or thin (defaults to "thin").
+        ///     Indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
         /// </summary>
         [JsonProperty("storageMode")]
         [YamlMember(Alias = "storageMode")]
@@ -46,7 +46,7 @@ namespace KubeClient.Models
         public LocalObjectReferenceV1 SecretRef { get; set; }
 
         /// <summary>
-        ///     The Storage Pool associated with the protection domain (defaults to "default").
+        ///     The ScaleIO Storage Pool associated with the protection domain.
         /// </summary>
         [JsonProperty("storagePool")]
         [YamlMember(Alias = "storagePool")]
@@ -60,7 +60,7 @@ namespace KubeClient.Models
         public string System { get; set; }
 
         /// <summary>
-        ///     The name of the Protection Domain for the configured storage (defaults to "default").
+        ///     The name of the ScaleIO Protection Domain for the configured storage.
         /// </summary>
         [JsonProperty("protectionDomain")]
         [YamlMember(Alias = "protectionDomain")]

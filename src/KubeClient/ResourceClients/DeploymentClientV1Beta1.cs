@@ -103,7 +103,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1beta1/Deployments with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -133,7 +134,7 @@ namespace KubeClient.ResourceClients
                     postBody: newDeployment,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<DeploymentV1Beta1, StatusV1>();
+                .ReadContentAsObjectV1Async<DeploymentV1Beta1>("create v1beta1/Deployment resource");
         }
 
         /// <summary>
@@ -206,9 +207,9 @@ namespace KubeClient.ResourceClients
             );
 
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<DeploymentV1Beta1>(HttpStatusCode.OK);
+                return await request.ReadContentAsObjectV1Async<DeploymentV1Beta1>("delete v1beta1/Deployment", HttpStatusCode.OK);
             
-            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await request.ReadContentAsObjectV1Async<StatusV1>("delete v1beta1/Deployment", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

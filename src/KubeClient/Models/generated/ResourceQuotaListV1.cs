@@ -13,7 +13,7 @@ namespace KubeClient.Models
     public partial class ResourceQuotaListV1 : KubeResourceListV1<ResourceQuotaV1>
     {
         /// <summary>
-        ///     Items is a list of ResourceQuota objects. More info: https://git.k8s.io/community/contributors/design-proposals/admission_control_resource_quota.md
+        ///     Items is a list of ResourceQuota objects. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public override List<ResourceQuotaV1> Items { get; } = new List<ResourceQuotaV1>();

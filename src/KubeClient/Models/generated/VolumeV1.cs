@@ -60,7 +60,7 @@ namespace KubeClient.Models
         public AzureFileVolumeSourceV1 AzureFile { get; set; }
 
         /// <summary>
-        ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. This is an alpha feature and may change in future.
+        ///     FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
         /// </summary>
         [JsonProperty("flexVolume")]
         [YamlMember(Alias = "flexVolume")]
@@ -137,7 +137,7 @@ namespace KubeClient.Models
         public PersistentVolumeClaimVolumeSourceV1 PersistentVolumeClaim { get; set; }
 
         /// <summary>
-        ///     GitRepo represents a git repository at a particular revision.
+        ///     GitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
         /// </summary>
         [JsonProperty("gitRepo")]
         [YamlMember(Alias = "gitRepo")]

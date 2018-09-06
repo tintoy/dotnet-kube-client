@@ -9,6 +9,17 @@ namespace KubeClient.Models
     ///     LimitRange sets resource usage limits for each kind of resource in a Namespace.
     /// </summary>
     [KubeObject("LimitRange", "v1")]
+    [KubeApi(KubeAction.List, "api/v1/limitranges")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/limitranges")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/limitranges")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/limitranges")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/limitranges/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/limitranges/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/limitranges/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/limitranges/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/limitranges")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/limitranges")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/limitranges/{name}")]
     public partial class LimitRangeV1 : KubeResourceV1
     {
         /// <summary>

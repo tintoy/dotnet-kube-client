@@ -103,7 +103,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1/Pods with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -150,9 +151,10 @@ namespace KubeClient.ResourceClients
                 if (responseMessage.IsSuccessStatusCode)
                     return await responseMessage.Content.ReadAsStringAsync();
 
-                throw new HttpRequestException<StatusV1>(responseMessage.StatusCode,
+                throw new KubeClientException($"Unable to retrieve logs for container '{containerName ?? "<default>"}' of v1/Pod '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'.",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
                     response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
-                );
+                ));
             }
         }
 
@@ -189,7 +191,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes,
                     Follow = "true"
-                })
+                }),
+                operationDescription: $"stream logs for v1/Pod '{name}' (container '{containerName ?? "<default>"}') in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -219,7 +222,9 @@ namespace KubeClient.ResourceClients
                     postBody: newPod,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<PodV1, StatusV1>();
+                .ReadContentAsObjectV1Async<PodV1>(
+                    operationDescription: $"create v1/Pod resource in namespace {newPod?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}"
+                );
         }
 
         /// <summary>
@@ -248,7 +253,10 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>(
+                    $"delete v1/Pod resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
+                    HttpStatusCode.OK, HttpStatusCode.NotFound
+                );
         }
 
         /// <summary>

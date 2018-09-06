@@ -9,6 +9,17 @@ namespace KubeClient.Models
     ///     PodTemplate describes a template for creating copies of a predefined pod.
     /// </summary>
     [KubeObject("PodTemplate", "v1")]
+    [KubeApi(KubeAction.List, "api/v1/podtemplates")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/podtemplates")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/podtemplates")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/podtemplates")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/podtemplates/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/podtemplates/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/podtemplates/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/podtemplates/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/podtemplates")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/podtemplates")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/podtemplates/{name}")]
     public partial class PodTemplateV1 : KubeResourceV1
     {
         /// <summary>

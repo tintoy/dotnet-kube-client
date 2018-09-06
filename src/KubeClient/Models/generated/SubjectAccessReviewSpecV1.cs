@@ -18,6 +18,13 @@ namespace KubeClient.Models
         public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
 
         /// <summary>
+        ///     UID information about the requesting user.
+        /// </summary>
+        [JsonProperty("uid")]
+        [YamlMember(Alias = "uid")]
+        public string Uid { get; set; }
+
+        /// <summary>
         ///     User is the user you're testing for. If you specify "User" but not "Groups", then is it interpreted as "What if User were not a member of any groups
         /// </summary>
         [JsonProperty("user")]

@@ -8,7 +8,21 @@ namespace KubeClient.Models
     /// <summary>
     ///     Job represents the configuration of a single job.
     /// </summary>
-    [KubeObject("Job", "batch/v1")]
+    [KubeObject("Job", "v1")]
+    [KubeApi(KubeAction.List, "apis/batch/v1/jobs")]
+    [KubeApi(KubeAction.WatchList, "apis/batch/v1/watch/jobs")]
+    [KubeApi(KubeAction.List, "apis/batch/v1/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.Create, "apis/batch/v1/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.Get, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Delete, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Update, "apis/batch/v1/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.WatchList, "apis/batch/v1/watch/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.DeleteCollection, "apis/batch/v1/namespaces/{namespace}/jobs")]
+    [KubeApi(KubeAction.Get, "apis/batch/v1/namespaces/{namespace}/jobs/{name}/status")]
+    [KubeApi(KubeAction.Watch, "apis/batch/v1/watch/namespaces/{namespace}/jobs/{name}")]
+    [KubeApi(KubeAction.Patch, "apis/batch/v1/namespaces/{namespace}/jobs/{name}/status")]
+    [KubeApi(KubeAction.Update, "apis/batch/v1/namespaces/{namespace}/jobs/{name}/status")]
     public partial class JobV1 : KubeResourceV1
     {
         /// <summary>

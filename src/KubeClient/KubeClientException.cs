@@ -59,6 +59,21 @@ namespace KubeClient
         /// <summary>
         ///     Create a new <see cref="KubeClientException"/> using the information contained in a Kubernetes status model.
         /// </summary>
+        /// <param name="message">
+        ///     The exception message.
+        /// </param>
+        /// <param name="status">
+        ///     The Kubernetes <see ref="StatusV1"/> model.
+        /// </param>
+        public KubeClientException(string message, StatusV1 status)
+            : base(message + Environment.NewLine + GetExceptionMessage(status))
+        {
+            Status = status;
+        }
+
+        /// <summary>
+        ///     Create a new <see cref="KubeClientException"/> using the information contained in a Kubernetes status model.
+        /// </summary>
         /// <param name="status">
         ///     The Kubernetes <see ref="StatusV1"/> model.
         /// </param>
@@ -87,7 +102,7 @@ namespace KubeClient
         ///     The exception that caused the current exception to be raised.
         /// </param>
         public KubeClientException(string message, HttpRequestException<StatusV1> innerException)
-            : base(message, innerException)
+            : base(message + Environment.NewLine + GetExceptionMessage(innerException?.Response), innerException)
         {
             if (String.IsNullOrWhiteSpace(message))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'message'.", nameof(message));
@@ -96,6 +111,21 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(innerException));
 
             Status = innerException.Response;
+        }
+
+        /// <summary>
+        ///     Create a new <see cref="KubeClientException"/> from an <see cref="HttpRequestException{TResponse}"/>.
+        /// </summary>
+        /// <param name="requestException">
+        ///     The exception that caused the current exception to be raised.
+        /// </param>
+        public KubeClientException(HttpRequestException<StatusV1> requestException)
+            : base(GetExceptionMessage(requestException?.Response), requestException)
+        {
+            if (requestException == null)
+                throw new ArgumentNullException(nameof(requestException));
+
+            Status = requestException.Response;
         }
 
 #if NETSTANDARD2_0   

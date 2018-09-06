@@ -9,6 +9,20 @@ namespace KubeClient.Models
     ///     ResourceQuota sets aggregate quota restrictions enforced per namespace
     /// </summary>
     [KubeObject("ResourceQuota", "v1")]
+    [KubeApi(KubeAction.List, "api/v1/resourcequotas")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/resourcequotas")]
+    [KubeApi(KubeAction.List, "api/v1/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.Create, "api/v1/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Delete, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.WatchList, "api/v1/watch/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.DeleteCollection, "api/v1/namespaces/{namespace}/resourcequotas")]
+    [KubeApi(KubeAction.Get, "api/v1/namespaces/{namespace}/resourcequotas/{name}/status")]
+    [KubeApi(KubeAction.Watch, "api/v1/watch/namespaces/{namespace}/resourcequotas/{name}")]
+    [KubeApi(KubeAction.Patch, "api/v1/namespaces/{namespace}/resourcequotas/{name}/status")]
+    [KubeApi(KubeAction.Update, "api/v1/namespaces/{namespace}/resourcequotas/{name}/status")]
     public partial class ResourceQuotaV1 : KubeResourceV1
     {
         /// <summary>

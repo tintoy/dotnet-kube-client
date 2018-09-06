@@ -11,11 +11,18 @@ namespace KubeClient.Models
     public partial class SubjectAccessReviewStatusV1
     {
         /// <summary>
-        ///     Allowed is required.  True if the action would be allowed, false otherwise.
+        ///     Allowed is required. True if the action would be allowed, false otherwise.
         /// </summary>
         [JsonProperty("allowed")]
         [YamlMember(Alias = "allowed")]
         public bool Allowed { get; set; }
+
+        /// <summary>
+        ///     Denied is optional. True if the action would be denied, otherwise false. If both allowed is false and denied is false, then the authorizer has no opinion on whether to authorize the action. Denied may not be true if Allowed is true.
+        /// </summary>
+        [JsonProperty("denied")]
+        [YamlMember(Alias = "denied")]
+        public bool Denied { get; set; }
 
         /// <summary>
         ///     Reason is optional.  It indicates why a request was allowed or denied.

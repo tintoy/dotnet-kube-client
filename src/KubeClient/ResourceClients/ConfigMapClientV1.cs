@@ -105,7 +105,8 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                })
+                }),
+                operationDescription: $"watch v1/ConfigMap '{name}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -135,7 +136,9 @@ namespace KubeClient.ResourceClients
                     postBody: newConfigMap,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<ConfigMapV1, StatusV1>();
+                .ReadContentAsObjectV1Async<ConfigMapV1>(
+                    operationDescription: "create v1/ConfigMap resource"
+                );
         }
 
         /// <summary>
@@ -200,7 +203,7 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>("delete v1/ConfigMap resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>
