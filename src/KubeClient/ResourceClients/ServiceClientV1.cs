@@ -105,7 +105,8 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                })
+                }),
+                operationDescription: $"watch v1/Service '{name}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -129,7 +130,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1/Services with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 

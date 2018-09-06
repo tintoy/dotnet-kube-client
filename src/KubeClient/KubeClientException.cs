@@ -59,6 +59,21 @@ namespace KubeClient
         /// <summary>
         ///     Create a new <see cref="KubeClientException"/> using the information contained in a Kubernetes status model.
         /// </summary>
+        /// <param name="message">
+        ///     The exception message.
+        /// </param>
+        /// <param name="status">
+        ///     The Kubernetes <see ref="StatusV1"/> model.
+        /// </param>
+        public KubeClientException(string message, StatusV1 status)
+            : base(message + Environment.NewLine + GetExceptionMessage(status))
+        {
+            Status = status;
+        }
+
+        /// <summary>
+        ///     Create a new <see cref="KubeClientException"/> using the information contained in a Kubernetes status model.
+        /// </summary>
         /// <param name="status">
         ///     The Kubernetes <see ref="StatusV1"/> model.
         /// </param>

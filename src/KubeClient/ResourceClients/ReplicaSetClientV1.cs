@@ -103,7 +103,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1/ReplicaSets with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 

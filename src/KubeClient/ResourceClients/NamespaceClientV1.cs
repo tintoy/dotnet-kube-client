@@ -93,7 +93,8 @@ namespace KubeClient.ResourceClients
                 Requests.WatchByName.WithTemplateParameters(new
                 {
                     Name = name
-                })
+                }),
+                operationDescription: $"watch v1/Namespace '{name}'"
             );
         }
 

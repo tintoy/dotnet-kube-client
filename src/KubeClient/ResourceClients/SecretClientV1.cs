@@ -105,7 +105,8 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                })
+                }),
+                operationDescription: $"watch v1/Secret '{name}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 

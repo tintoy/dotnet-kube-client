@@ -103,7 +103,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1/Pods with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -190,7 +191,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes,
                     Follow = "true"
-                })
+                }),
+                operationDescription: $"stream logs for v1/Pod '{name}' (container '{containerName ?? "<default>"}') in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 

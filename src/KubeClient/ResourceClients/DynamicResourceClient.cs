@@ -286,8 +286,8 @@ namespace KubeClient.ResourceClients
                     typeof(KubeObjectV1).GetTypeInfo().Assembly
                 );
 
-                // TODO: Don't preload cache; instead, make it read-through.
-                // await ApiMetadata.Load(KubeClient, cancellationToken: cancellationToken);
+                if (ApiMetadata.IsEmpty) // Never happens (consider async preload *as a configurable option* and otherwise implement as a read-through cache)
+                    await ApiMetadata.Load(KubeClient, cancellationToken: cancellationToken);
             }
         }
 
