@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
@@ -71,6 +73,11 @@ namespace KubeClient
         public bool LogPayloads { get; set; }
 
         /// <summary>
+        ///     Additional assemblies (if any) that contain model types used by the client.
+        /// </summary>
+        public List<Assembly> ModelTypeAssemblies { get; } = new List<Assembly>();
+
+        /// <summary>
         ///     Ensure that the <see cref="KubeClientOptions"/> are valid.
         /// </summary>
         /// <returns>
@@ -98,7 +105,7 @@ namespace KubeClient
         /// </returns>
         public KubeClientOptions Clone()
         {
-            return new KubeClientOptions
+            var clonedOptions = new KubeClientOptions
             {
                 ApiEndPoint = ApiEndPoint,
                 AccessToken = AccessToken,
@@ -109,6 +116,9 @@ namespace KubeClient
                 LogHeaders = LogHeaders,
                 LogPayloads = LogPayloads
             };
+            clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
+
+            return clonedOptions;
         }
 
         /// <summary>

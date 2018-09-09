@@ -46,6 +46,17 @@ namespace KubeClient.ResourceClients
         public DynamicResourceClient(IKubeApiClient client)
             : base(client)
         {
+            // Register metadata for additional model types (if any).
+            foreach (Assembly modelTypeAssembly in KubeClient.GetClientOptions().ModelTypeAssemblies)
+            {
+                var assemblyModelTypeLookup = ModelMetadata.KubeObject.BuildKindToTypeLookup(modelTypeAssembly);
+                foreach (var key in assemblyModelTypeLookup.Keys)
+                    _modelTypeLookup[key] = assemblyModelTypeLookup[key];
+
+                var assemblyListModelTypeLookup = ModelMetadata.KubeObject.BuildKindToListTypeLookup(modelTypeAssembly);
+                foreach (var key in assemblyListModelTypeLookup.Keys)
+                    _modelTypeLookup[key] = assemblyListModelTypeLookup[key];
+            }
         }
 
         /// <summary>
@@ -284,6 +295,9 @@ namespace KubeClient.ResourceClients
                 ApiMetadata.LoadFromMetadata(
                     typeof(KubeObjectV1).GetTypeInfo().Assembly
                 );
+
+                foreach (Assembly modelTypeAssembly in KubeClient.GetClientOptions().ModelTypeAssemblies)
+                    ApiMetadata.LoadFromMetadata(modelTypeAssembly);
 
                 if (ApiMetadata.IsEmpty) // Never happens (consider async preload *as a configurable option* and otherwise implement as a read-through cache)
                     await ApiMetadata.Load(KubeClient, cancellationToken: cancellationToken);
