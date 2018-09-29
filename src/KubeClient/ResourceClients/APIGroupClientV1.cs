@@ -53,7 +53,7 @@ namespace KubeClient.ResourceClients
 
                 throw new KubeClientException($"Unable to list API groups (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
-                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
+                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(responseMessage.StatusCode).ConfigureAwait(false)
                     )
                 );
             }

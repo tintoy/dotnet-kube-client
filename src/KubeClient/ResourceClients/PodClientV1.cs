@@ -153,7 +153,7 @@ namespace KubeClient.ResourceClients
 
                 throw new KubeClientException($"Unable to retrieve logs for container '{containerName ?? "<default>"}' of v1/Pod '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'.",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
-                    response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>()
+                    response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(responseMessage.StatusCode).ConfigureAwait(false)
                 ));
             }
         }
