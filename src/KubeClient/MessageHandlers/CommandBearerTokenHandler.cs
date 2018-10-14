@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 
 namespace KubeClient.MessageHandlers
 {
+    using Utilities;
+
     // TODO: Add support for supplying initial token and token-expiry (supplied if present in auth-provider section of configuration).
 
     /// <summary>
@@ -126,92 +128,62 @@ namespace KubeClient.MessageHandlers
 
             using (Process accessTokenCommand = Process.Start(accessTokenCommandInfo))
             {
+                int exitCode = await accessTokenCommand.WaitForExitAsync(cancellationToken, killIfCancelled: true);
+                if (exitCode != 0)
+                {
+                    // We omit the command's STDOUT / STDERR from this exception message because they may contain sensitive information!
+
+                    throw new KubeClientException(
+                        $"Failed to execute access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}' (process exited with code {exitCode})."
+                    );
+                }
+
+                string standardOutput = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // Ensure command output is JSON
+                JObject outputJson;
                 try
                 {
-                    // Don't block waiting for program to exit.
-                    while (!accessTokenCommand.HasExited)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        await Task.Delay(CommandSpinWaitDelay, cancellationToken).ConfigureAwait(false);
-                    }
-
-                    string standardOutput = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (accessTokenCommand.ExitCode != 0)
-                    {
-                        // Different implementations may write to STDOUT and/or STDERR so we have to concatenate them.
-                        string standardError = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-                        
-                        // TODO: Consider omitting the command's STDOUT from this exception message because it may contain sensitive information!
-
-                        throw new KubeClientException(
-                            $"Failed to execute access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}'."
-                                + Environment.NewLine
-                                + Environment.NewLine
-                                + "STDOUT:" + Environment.NewLine
-                                + standardOutput + Environment.NewLine
-                                + Environment.NewLine
-                                + "STDERR:" + Environment.NewLine
-                                + standardError
-                        );
-                    }
-
-                    standardOutput = standardOutput.Trim();
-
-                    // Ensure command output is JSON
-                    JObject outputJson;
-                    try
-                    {
-                        outputJson = JObject.Parse(standardOutput);
-                    }
-                    catch (JsonReaderException invalidJson)
-                    {
-                        throw new KubeClientException($"Failed to parse output of access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}' (not valid JSON).",
-                            innerException: invalidJson
-                        );
-                    }
-
-                    accessToken = outputJson.SelectToken(_accessTokenSelector)?.Value<string>();
-                    if (accessToken == null)
-                    {
-                        throw new KubeClientException(
-                            $"Failed to find access-token in output of command '{_accessTokenCommand} {_accessTokenCommandArguments}' using JPath selector '{_accessTokenSelector}'."
-                                + Environment.NewLine
-                                + standardOutput
-                        );
-                    }
-
-                    string accessTokenExpiresUtcValue = outputJson.SelectToken(_accessTokenExpirySelector)?.Value<string>();
-                    if (accessTokenExpiresUtcValue == null)
-                    {
-                        throw new KubeClientException(
-                            $"Failed to find access-token lifetime in output of command '{_accessTokenCommand} {_accessTokenCommandArguments}' using JPath selector '{_accessTokenExpirySelector}'."
-                                + Environment.NewLine
-                                + standardOutput
-                        );
-                    }
-
-                    accessTokenExpiresUtc = DateTime.Parse(accessTokenExpiresUtcValue,
-                        provider: CultureInfo.InvariantCulture,
-                        styles: DateTimeStyles.AssumeUniversal
-                    );
-
-                    // OK, both access token and expiry are good; update atomically.
-                    lock (_stateLock)
-                    {
-                        _accessToken = accessToken;
-                        _accessTokenExpiresUtc = accessTokenExpiresUtc;
-                    }
+                    outputJson = JObject.Parse(standardOutput);
                 }
-                catch (OperationCanceledException)
+                catch (JsonReaderException invalidJson)
                 {
-                    // Ensure we don't leave the command running if the caller cancels.
-                    if (!accessTokenCommand.HasExited)
-                        accessTokenCommand.Kill();
+                    throw new KubeClientException($"Failed to parse output of access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}' (not valid JSON).",
+                        innerException: invalidJson
+                    );
+                }
 
-                    throw;
+                accessToken = outputJson.SelectToken(_accessTokenSelector)?.Value<string>();
+                if (accessToken == null)
+                {
+                    throw new KubeClientException(
+                        $"Failed to find access-token in output of command '{_accessTokenCommand} {_accessTokenCommandArguments}' using JPath selector '{_accessTokenSelector}'."
+                            + Environment.NewLine
+                            + standardOutput
+                    );
+                }
+
+                string accessTokenExpiresUtcValue = outputJson.SelectToken(_accessTokenExpirySelector)?.Value<string>();
+                if (accessTokenExpiresUtcValue == null)
+                {
+                    throw new KubeClientException(
+                        $"Failed to find access-token lifetime in output of command '{_accessTokenCommand} {_accessTokenCommandArguments}' using JPath selector '{_accessTokenExpirySelector}'."
+                            + Environment.NewLine
+                            + standardOutput
+                    );
+                }
+
+                accessTokenExpiresUtc = DateTime.Parse(accessTokenExpiresUtcValue,
+                    provider: CultureInfo.InvariantCulture,
+                    styles: DateTimeStyles.AssumeUniversal
+                );
+
+                // OK, both access token and expiry are good; update atomically.
+                lock (_stateLock)
+                {
+                    _accessToken = accessToken;
+                    _accessTokenExpiresUtc = accessTokenExpiresUtc;
                 }
 
                 return accessToken;
