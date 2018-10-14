@@ -21,11 +21,6 @@ namespace KubeClient.MessageHandlers
         : BearerTokenHandler
     {
         /// <summary>
-        ///     The span of time to wait between checks to see if the command's process has terminated.
-        /// </summary>
-        static readonly TimeSpan CommandSpinWaitDelay = TimeSpan.FromMilliseconds(200);
-
-        /// <summary>
         ///     An object used to synchronise access to handler state.
         /// </summary>
         readonly object _stateLock = new object();
