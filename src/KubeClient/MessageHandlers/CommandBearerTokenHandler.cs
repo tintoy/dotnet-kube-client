@@ -21,7 +21,7 @@ namespace KubeClient.MessageHandlers
         /// <summary>
         ///     The span of time to wait between checks to see if the command's process has terminated.
         /// </summary>
-        static readonly TimeSpan CommandWaitSpinDelay = TimeSpan.FromMilliseconds(200);
+        static readonly TimeSpan CommandSpinWaitDelay = TimeSpan.FromMilliseconds(200);
 
         /// <summary>
         ///     The command to execute in order to obtain the access token for outgoing requests.
@@ -118,7 +118,7 @@ namespace KubeClient.MessageHandlers
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        await Task.Delay(CommandWaitSpinDelay).ConfigureAwait(false);
+                        await Task.Delay(CommandSpinWaitDelay, cancellationToken).ConfigureAwait(false);
                     }
 
                     string standardOutput = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
@@ -126,13 +126,17 @@ namespace KubeClient.MessageHandlers
 
                     if (accessTokenCommand.ExitCode != 0)
                     {
+                        // Different implementations may write to STDOUT and/or STDERR so we have to concatenate them.
                         string standardError = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                         
                         throw new KubeClientException(
                             $"Failed to execute access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}'."
                                 + Environment.NewLine
-                                + standardOutput
                                 + Environment.NewLine
+                                + "STDOUT:" + Environment.NewLine
+                                + standardOutput + Environment.NewLine
+                                + Environment.NewLine
+                                + "STDERR:" + Environment.NewLine
                                 + standardError
                         );
                     }
