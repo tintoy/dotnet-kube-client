@@ -17,6 +17,11 @@ namespace KubeClient.MessageHandlers
         : BearerTokenHandler
     {
         /// <summary>
+        ///     The span of time to wait between checks to see if the command's process has terminated.
+        /// </summary>
+        static readonly TimeSpan CommandWaitSpinDelay = TimeSpan.FromMilliseconds(200);
+
+        /// <summary>
         ///     The command to execute in order to obtain the access token for outgoing requests.
         /// </summary>
         readonly string _accessTokenCommand;
@@ -111,17 +116,15 @@ namespace KubeClient.MessageHandlers
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        await Task.Delay(
-                            TimeSpan.FromMilliseconds(200)
-                        );
+                        await Task.Delay(CommandWaitSpinDelay).ConfigureAwait(false);
                     }
 
-                    string standardOutput = await accessTokenCommand.StandardOutput.ReadToEndAsync();
+                    string standardOutput = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (accessTokenCommand.ExitCode != 1)
                     {
-                        string standardError = await accessTokenCommand.StandardOutput.ReadToEndAsync();
+                        string standardError = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                         
                         throw new KubeClientException(
                             $"Failed to execute access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}'."

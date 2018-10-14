@@ -47,11 +47,11 @@ namespace KubeClient.MessageHandlers
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
             
-            string token = await GetTokenAsync(cancellationToken);
+            string token = await GetTokenAsync(cancellationToken).ConfigureAwait(false);
 
             request.Headers.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
-            return await base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }
