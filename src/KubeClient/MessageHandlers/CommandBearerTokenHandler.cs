@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 
 namespace KubeClient.MessageHandlers
 {
+    // TODO: Add support for supplying initial token and token-expiry (supplied if present in auth-provider section of configuration).
+
     /// <summary>
     ///     HTTP message handler that runs a command to obtain a bearer token and adds it to outgoing requests.
     /// </summary>
@@ -79,8 +81,8 @@ namespace KubeClient.MessageHandlers
             
             _accessTokenCommand = accessTokenCommand;
             _accessTokenCommandArguments = accessTokenCommandArguments ?? String.Empty;
-            _accessTokenSelector = JPathFromGoSelector(_accessTokenSelector);
-            _accessTokenExpirySelector = JPathFromGoSelector(_accessTokenExpirySelector);
+            _accessTokenSelector = JPathFromGoSelector(accessTokenSelector);
+            _accessTokenExpirySelector = JPathFromGoSelector(accessTokenExpirySelector);
         }
 
         /// <summary>
@@ -122,7 +124,7 @@ namespace KubeClient.MessageHandlers
                     string standardOutput = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (accessTokenCommand.ExitCode != 1)
+                    if (accessTokenCommand.ExitCode != 0)
                     {
                         string standardError = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                         
@@ -171,10 +173,9 @@ namespace KubeClient.MessageHandlers
                     }
 
                     _accessToken = accessToken;
-                    _accessTokenExpiresUtc = DateTime.ParseExact(tokenExpiresUtc,
-                        format: "yyyy-MM-ddThh:mm:ssZ",
+                    _accessTokenExpiresUtc = DateTime.Parse(tokenExpiresUtc,
                         provider: CultureInfo.InvariantCulture,
-                        style: DateTimeStyles.AssumeUniversal
+                        styles: DateTimeStyles.AssumeUniversal
                     );
                 }
                 catch (OperationCanceledException)
@@ -204,15 +205,15 @@ namespace KubeClient.MessageHandlers
             if (String.IsNullOrWhiteSpace(goSelector))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'goSelector'.", nameof(goSelector));
 
-            string jpath = goSelector;
+            string jpathSelector = goSelector;
             
-            if (jpath[0] == '{' && jpath[jpath.Length - 1] == '}')
-                jpath = jpath.Substring(1, jpath.Length - 2);
+            if (jpathSelector[0] == '{' && jpathSelector[jpathSelector.Length - 1] == '}')
+                jpathSelector = jpathSelector.Substring(1, jpathSelector.Length - 2);
             
-            if (jpath[0] == '.')
-                jpath = '$' + jpath;
+            if (jpathSelector[0] == '.')
+                jpathSelector = '$' + jpathSelector;
 
-            return goSelector;
+            return jpathSelector;
         }
     }
 }
