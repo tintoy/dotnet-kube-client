@@ -24,6 +24,11 @@ namespace KubeClient.MessageHandlers
         static readonly TimeSpan CommandSpinWaitDelay = TimeSpan.FromMilliseconds(200);
 
         /// <summary>
+        ///     An object used to synchronise access to handler state.
+        /// </summary>
+        readonly object _stateLock = new object();
+
+        /// <summary>
         ///     The command to execute in order to obtain the access token for outgoing requests.
         /// </summary>
         readonly string _accessTokenCommand;
@@ -96,8 +101,18 @@ namespace KubeClient.MessageHandlers
         /// </returns>
         protected override async Task<string> GetTokenAsync(CancellationToken cancellationToken)
         {
-            if (!String.IsNullOrWhiteSpace(_accessToken) && _accessTokenExpiresUtc > DateTime.UtcNow)
-                return _accessToken;
+            string accessToken;
+            DateTime accessTokenExpiresUtc;
+
+            // Capture snapshot of access token / expiry.
+            lock (_stateLock)
+            {
+                accessToken = _accessToken;
+                accessTokenExpiresUtc = _accessTokenExpiresUtc;
+            }
+
+            if (!String.IsNullOrWhiteSpace(accessToken) && accessTokenExpiresUtc > DateTime.UtcNow)
+                return accessToken;
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -129,6 +144,8 @@ namespace KubeClient.MessageHandlers
                         // Different implementations may write to STDOUT and/or STDERR so we have to concatenate them.
                         string standardError = await accessTokenCommand.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                         
+                        // TODO: Consider omitting the command's STDOUT from this exception message because it may contain sensitive information!
+
                         throw new KubeClientException(
                             $"Failed to execute access-token command '{_accessTokenCommand} {_accessTokenCommandArguments}'."
                                 + Environment.NewLine
@@ -156,7 +173,7 @@ namespace KubeClient.MessageHandlers
                         );
                     }
 
-                    string accessToken = outputJson.SelectToken(_accessTokenSelector)?.Value<string>();
+                    accessToken = outputJson.SelectToken(_accessTokenSelector)?.Value<string>();
                     if (accessToken == null)
                     {
                         throw new KubeClientException(
@@ -166,8 +183,8 @@ namespace KubeClient.MessageHandlers
                         );
                     }
 
-                    string tokenExpiresUtc = outputJson.SelectToken(_accessTokenExpirySelector)?.Value<string>();
-                    if (tokenExpiresUtc == null)
+                    string accessTokenExpiresUtcValue = outputJson.SelectToken(_accessTokenExpirySelector)?.Value<string>();
+                    if (accessTokenExpiresUtcValue == null)
                     {
                         throw new KubeClientException(
                             $"Failed to find access-token lifetime in output of command '{_accessTokenCommand} {_accessTokenCommandArguments}' using JPath selector '{_accessTokenExpirySelector}'."
@@ -176,11 +193,17 @@ namespace KubeClient.MessageHandlers
                         );
                     }
 
-                    _accessToken = accessToken;
-                    _accessTokenExpiresUtc = DateTime.Parse(tokenExpiresUtc,
+                    accessTokenExpiresUtc = DateTime.Parse(accessTokenExpiresUtcValue,
                         provider: CultureInfo.InvariantCulture,
                         styles: DateTimeStyles.AssumeUniversal
                     );
+
+                    // OK, both access token and expiry are good; update atomically.
+                    lock (_stateLock)
+                    {
+                        _accessToken = accessToken;
+                        _accessTokenExpiresUtc = accessTokenExpiresUtc;
+                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -191,7 +214,7 @@ namespace KubeClient.MessageHandlers
                     throw;
                 }
 
-                return _accessToken;
+                return accessToken;
             }
         }
 
