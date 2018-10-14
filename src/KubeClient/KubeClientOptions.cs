@@ -48,6 +48,26 @@ namespace KubeClient
         public string AccessToken { get; set; }
 
         /// <summary>
+        ///     The command used to generate an access token for authenticating to the Kubernetes API.
+        /// </summary>
+        public string AccessTokenCommand { get; set; }
+
+        /// <summary>
+        ///     The command arguments used to generate an access token for authenticating to the Kubernetes API.
+        /// </summary>
+        public string AccessTokenCommandArguments { get; set; }
+
+        /// <summary>
+        ///     The Go-style selector used to retrieve the access token from the command output.
+        /// </summary>
+        public string AccessTokenSelector { get; set; }
+
+        /// <summary>
+        ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
+        /// </summary>
+        public string AccessTokenExpirySelector { get; set; }
+
+        /// <summary>
         ///     The client certificate used to authenticate to the Kubernetes API.
         /// </summary>
         public X509Certificate2 ClientCertificate { get; set; }

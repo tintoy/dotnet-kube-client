@@ -136,7 +136,18 @@ namespace KubeClient
             if (!String.IsNullOrWhiteSpace(options.AccessToken))
             {
                 clientBuilder = clientBuilder.AddHandler(
-                    () => new BearerTokenHandler(options.AccessToken)
+                    () => new StaticBearerTokenHandler(options.AccessToken)
+                );
+            }
+            else if (!String.IsNullOrWhiteSpace(options.AccessTokenCommand))
+            {
+                clientBuilder = clientBuilder.AddHandler(
+                    () => new CommandBearerTokenHandler(
+                        accessTokenCommand: options.AccessTokenCommand,
+                        accessTokenCommandArguments: options.AccessTokenCommandArguments,
+                        accessTokenSelector: options.AccessTokenSelector,
+                        accessTokenExpirySelector: options.AccessTokenExpirySelector
+                    )
                 );
             }
 
