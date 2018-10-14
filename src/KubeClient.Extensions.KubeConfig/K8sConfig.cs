@@ -174,6 +174,22 @@ namespace KubeClient
             kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
             kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
             kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+            
+            AuthProviderConfig authProvider = targetUser.Config.AuthProvider;
+            if (authProvider != null)
+            {
+                if (authProvider.Config.TryGetValue("cmd-path", out object accessTokenCommand))
+                    kubeClientOptions.AccessTokenCommand = (string)accessTokenCommand;
+
+                if (authProvider.Config.TryGetValue("cmd-args", out object accessTokenCommandArguments))
+                    kubeClientOptions.AccessTokenCommandArguments = (string)accessTokenCommandArguments;
+
+                if (authProvider.Config.TryGetValue("token-key", out object accessTokenSelector))
+                    kubeClientOptions.AccessTokenSelector = (string)accessTokenSelector;
+
+                if (authProvider.Config.TryGetValue("expiry-key", out object accessTokenExpirySelector))
+                    kubeClientOptions.AccessTokenExpirySelector = (string)accessTokenExpirySelector;
+            }
 
             return kubeClientOptions;
         }
