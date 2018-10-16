@@ -94,7 +94,8 @@ namespace KubeClient.ResourceClients
                 Requests.WatchByName.WithTemplateParameters(new
                 {
                     Name = name
-                })
+                }),
+                operationDescription: $"watch v1beta1/CustomResourceDefintion '{name}'"
             );
         }
 
@@ -113,7 +114,8 @@ namespace KubeClient.ResourceClients
                 Requests.WatchCollection.WithTemplateParameters(new
                 {
                     LabelSelector = labelSelector
-                })
+                }),
+                operationDescription: $"watch all v1beta1/CustomResourceDefintions with label selector '{labelSelector ?? "<none>"}'"
             );
         }
 

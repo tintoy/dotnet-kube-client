@@ -102,7 +102,8 @@ namespace KubeClient.ResourceClients
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
-                })
+                }),
+                operationDescription: $"watch all v1/PersistentVolumes with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -132,7 +133,7 @@ namespace KubeClient.ResourceClients
                     postBody: newPersistentVolume,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<PersistentVolumeV1, StatusV1>();
+                .ReadContentAsObjectV1Async<PersistentVolumeV1>("create v1/PersistentVolume resource");
         }
 
         /// <summary>
@@ -161,7 +162,7 @@ namespace KubeClient.ResourceClients
                     }),
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+                .ReadContentAsObjectV1Async<StatusV1>("delete v1/PersistentVolume resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

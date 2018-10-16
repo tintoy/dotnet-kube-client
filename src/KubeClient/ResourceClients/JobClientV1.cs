@@ -104,7 +104,8 @@ namespace KubeClient.ResourceClients
                 {
                     Name = name,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                })
+                }),
+                operationDescription: $"watch v1/Job '{name}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -127,7 +128,8 @@ namespace KubeClient.ResourceClients
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector
-                })
+                }),
+                operationDescription: $"watch all v1/Jobs with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -157,7 +159,7 @@ namespace KubeClient.ResourceClients
                     postBody: newJob,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<JobV1, StatusV1>();
+                .ReadContentAsObjectV1Async<JobV1>("create v1/Job resource");
         }
 
         /// <summary>
@@ -194,9 +196,9 @@ namespace KubeClient.ResourceClients
             );
             
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<JobV1>(HttpStatusCode.OK);
+                return await request.ReadContentAsObjectV1Async<JobV1>("delete v1/Job resource", HttpStatusCode.OK);
             
-            return await request.ReadContentAsObjectV1Async<StatusV1>(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await request.ReadContentAsObjectV1Async<StatusV1>("delete v1/Job resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>

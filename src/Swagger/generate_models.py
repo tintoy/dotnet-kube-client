@@ -6,7 +6,7 @@ import os.path
 import pprint
 import yaml
 
-BASE_DIRECTORY = os.path.abspath('../KubeClient/Models')
+BASE_DIRECTORY = os.path.abspath('../KubeClient/Models/generated')
 ROOT_NAMESPACE = 'KubeClient.Models'
 IGNORE_MODELS = [
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
@@ -16,12 +16,23 @@ IGNORE_MODELS = [
     'io.k8s.api.apps.v1beta1.ControllerRevision',
     'io.k8s.api.apps.v1beta1.ControllerRevisionList',
     'io.k8s.api.apps.v1beta2.ControllerRevision',
-    'io.k8s.api.apps.v1beta2.ControllerRevisionList'
+    'io.k8s.api.apps.v1beta2.ControllerRevisionList',
 ]
 VALUE_TYPE_NAMES = [
     'int',
     'DateTime'
 ]
+KUBE_ACTIONS = {
+    'deletecollection': 'DeleteCollection',
+    'list': 'List',
+    'post': 'Create',
+    'delete': 'Delete',
+    'get': 'Get',
+    'patch': 'Patch',
+    'put': 'Update',
+    'watch': 'Watch',
+    'watchlist': 'WatchList',
+}
 LINE_ENDING = '\n'
 
 
@@ -59,7 +70,7 @@ class KubeModel(object):
                 data_types
             )
 
-    def is_resource(self):
+    def is_kube_object(self):
         kind_property = self.properties.get('kind')
         if not kind_property or kind_property.data_type.name != 'string':
             return False
@@ -68,9 +79,12 @@ class KubeModel(object):
         if not api_version_property or api_version_property.data_type.name != 'string':
             return False
 
-        return self.has_metadata()
+        return True
 
-    def is_resource_list(self):
+    def is_kube_resource(self):
+        return self.is_kube_object() and self.has_kube_metadata()
+
+    def is_kube_resource_list(self):
         kind_property = self.properties.get('kind')
         if not kind_property or kind_property.data_type.name != 'string':
             return False
@@ -79,9 +93,9 @@ class KubeModel(object):
         if not api_version_property or api_version_property.data_type.name != 'string':
             return False
 
-        return self.has_list_metadata()
+        return self.has_kube_list_metadata()
 
-    def has_metadata(self):
+    def has_kube_metadata(self):
         metadata_property = self.properties.get('metadata')
         if not metadata_property:
             return False
@@ -91,7 +105,7 @@ class KubeModel(object):
 
         return True
 
-    def has_list_metadata(self):
+    def has_kube_list_metadata(self):
         metadata_property = self.properties.get('metadata')
         if not metadata_property:
             return False
@@ -129,19 +143,14 @@ class KubeModel(object):
         )
 
         # Override model metadata with Kubernetes-specific values, if available.
-        kube_group = None
+        kube_group = ''
         if 'x-kubernetes-group-version-kind' in definition:
             kube_metadata = definition['x-kubernetes-group-version-kind'][0]
             kube_group = kube_metadata.get('group', '')
             kube_kind = kube_metadata['kind']
-            kube_api_version = kube_metadata['version']
+            api_version = kube_metadata['version']
 
             name = kube_kind
-
-            if kube_group:
-                api_version = kube_group + '/' + kube_api_version
-            else:
-                api_version = kube_api_version
 
         return KubeModel(name, summary, api_version, pretty_api_version, kube_group)
 
@@ -174,7 +183,7 @@ class KubeModel(object):
 
 
 class KubeModelProperty(object):
-    def __init__(self, name, json_name, summary, data_type, is_optional):
+    def __init__(self, name, json_name, summary, data_type, is_optional, is_merge, is_retain_keys, merge_key):
         self.name = capitalize_name(name)
         self.json_name = json_name
         self.summary = summary or 'No summary provided'
@@ -187,6 +196,9 @@ class KubeModelProperty(object):
         )
         self.data_type = data_type
         self.is_optional = is_optional
+        self.is_merge = is_merge
+        self.is_retain_keys = is_retain_keys
+        self.merge_key = merge_key
 
     def __repr__(self):
         return 'KubeModelProperty(name="{}",type={})'.format(
@@ -200,7 +212,20 @@ class KubeModelProperty(object):
         is_optional = summary.startswith('Optional') or 'if not specified' in summary
         data_type = KubeDataType.from_definition(property_definition, data_types)
 
-        return KubeModelProperty(name, json_name, summary, data_type, is_optional)
+        is_merge = False
+        is_retain_keys = False
+
+        if property_definition.get('x-kubernetes-patch-strategy') == 'merge':
+            is_merge = True
+        elif property_definition.get('x-kubernetes-patch-strategy') == 'merge,retainKeys':
+            is_merge = True
+            is_retain_keys = True
+        elif property_definition.get('x-kubernetes-patch-strategy') == 'retainKeys':
+            is_retain_keys = True
+
+        merge_key = property_definition.get('x-kubernetes-patch-merge-key')
+
+        return KubeModelProperty(name, json_name, summary, data_type, is_optional, is_merge, is_retain_keys, merge_key)
 
 
 class KubeDataType(object):
@@ -408,6 +433,40 @@ def parse_properties(models, data_types, definitions):
         model = models[definition_name]
         model.update_properties(properties, data_types)
 
+def parse_apis(api_paths):
+    apis = {}
+
+    for api_path in sorted(api_paths.keys()):
+        api_verbs = api_paths[api_path]
+        for api_verb in sorted(api_verbs.keys()):
+            if api_verb == 'parameters':
+                continue
+
+            api_metadata = api_verbs[api_verb]
+
+            if 'x-kubernetes-action' not in api_metadata or 'x-kubernetes-group-version-kind' not in api_metadata:
+                continue
+
+            action = api_metadata['x-kubernetes-action']
+            resource_metadata = api_metadata['x-kubernetes-group-version-kind']
+            resource_group = resource_metadata['group']
+            resource_api_version = resource_metadata['version']
+            resource_kind = resource_metadata['kind']
+
+            api_key = '{}/{}/{}'.format(resource_group, resource_api_version, resource_kind)
+
+            api = apis.get(api_key)
+            if not api:
+                api = {}
+                apis[api_key] = api
+
+            if action not in api:
+                api[action] = []
+
+            api[action].append(api_path)
+
+    return apis
+
 def main():
     try:
         os.stat(BASE_DIRECTORY)
@@ -417,8 +476,10 @@ def main():
     with open('kube-swagger.yml') as kube_swagger_file:
         kube_swagger = yaml.load(kube_swagger_file)
 
-    definitions = kube_swagger["definitions"]
+    paths = kube_swagger["paths"]
+    apis = parse_apis(paths)
 
+    definitions = kube_swagger["definitions"]
     models = parse_models(definitions)
 
     data_types = get_data_types(models)
@@ -432,11 +493,15 @@ def main():
         if model.kube_group == 'extensions':
             continue
 
+        resource_api_key = '{}/{}/{}'.format(model.kube_group, model.api_version, model.name)
+        resource_api = apis.get(resource_api_key)
+
         class_file_name = os.path.join(BASE_DIRECTORY, model.clr_name + '.cs')
         with open(class_file_name, 'w') as class_file:
             class_file.write('using Newtonsoft.Json;' + LINE_ENDING)
             class_file.write('using System;' + LINE_ENDING)
             class_file.write('using System.Collections.Generic;' + LINE_ENDING)
+            class_file.write('using YamlDotNet.Serialization;' + LINE_ENDING)
             class_file.write(LINE_ENDING)
             class_file.write('namespace ' + ROOT_NAMESPACE + LINE_ENDING)
             class_file.write('{' + LINE_ENDING)
@@ -447,32 +512,71 @@ def main():
                 class_file.write('    ///     ' + model_summary_line + LINE_ENDING)
             class_file.write('    /// </summary>' + LINE_ENDING)
 
+            model_annotations = []
+
             if model.has_list_items():
                 list_item_model = model.list_item_data_type().model
 
-                class_file.write('    [KubeListItem("{0}", "{1}")]{2}'.format(
+                model_annotations.append('    [KubeListItem("{0}", "{1}")]{2}'.format(
                     list_item_model.name,
                     list_item_model.api_version,
                     LINE_ENDING
                 ))
 
-            if model.is_resource() or model.is_resource_list():
-                class_file.write('    [KubeObject("{0}", "{1}")]{2}'.format(
+            if model.is_kube_resource() or model.is_kube_resource_list():
+                model_annotations.append('    [KubeObject("{0}", "{1}")]{2}'.format(
                     model.name,
                     model.api_version,
                     LINE_ENDING
                 ))
 
+            # TODO: Add KubeResourceAliasAttribute, but how do we infer singularName and shortNames? These are only available via the API.
+
+            if model.is_kube_resource() and resource_api:
+                added_annotations = set()
+                action_paths = {}
+                for action in sorted(resource_api.keys()):
+                    api_paths = resource_api[action]
+                    api_action = 'KubeAction.' + KUBE_ACTIONS.get(action,
+                        action.capitalize()  # Default
+                    )
+
+                    for api_path in api_paths:
+                        if api_action not in action_paths:
+                            action_paths[api_action] = []
+
+                        action_paths[api_action].append(api_path)
+
+                for api_action in sorted(action_paths.keys()):
+                    for api_path in sorted(action_paths[api_action]):
+                        annotation = '    [KubeApi({0}, "{1}")]{2}'.format(
+                            api_action,
+                            api_path.strip('/'),
+                            LINE_ENDING
+                        )
+
+                        # Ignore duplicates.
+                        if annotation not in added_annotations:
+                            model_annotations.append(annotation)
+                            added_annotations.add(annotation)
+
+            model_annotations.sort(key=len)  # Shorter attributes come first
+            for model_annotation in model_annotations:
+                class_file.write(model_annotation)
+
             class_file.write('    public partial class ' + model.clr_name)
-            if model.is_resource():
+            if model.is_kube_resource():
                 class_file.write(' : KubeResourceV1')
-            elif model.is_resource_list():
+            elif model.is_kube_resource_list():
                 if model.has_list_items():
                     class_file.write(' : KubeResourceListV1<{0}>'.format(
                         model.list_item_data_type().to_clr_type_name()
                     ))
                 else:
                     class_file.write(' : KubeResourceListV1')
+            elif model.is_kube_object():
+                class_file.write(' : KubeObjectV1')
+
             class_file.write(LINE_ENDING)
 
             class_file.write('    {' + LINE_ENDING)
@@ -480,14 +584,14 @@ def main():
             properties = model.properties
             property_names = [name for name in properties.keys()]
 
-            if model.is_resource() or model.is_resource_list():
+            if model.is_kube_object():
                 property_names.remove('apiVersion')
                 property_names.remove('kind')
 
-                if model.has_metadata() or model.has_list_metadata():
+                if model.has_kube_metadata() or model.has_kube_list_metadata():
                     property_names.remove('metadata')
 
-                if model.is_resource_list() and model.has_list_items():
+                if model.is_kube_resource_list() and model.has_list_items():
                     property_names.remove('items')
 
             for property_index in range(0, len(property_names)):
@@ -500,7 +604,25 @@ def main():
                 class_file.write('        /// </summary>' + LINE_ENDING)
 
                 if model_property.data_type.is_collection():
+                    if model_property.is_retain_keys:
+                        class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
+
+                    # Shorter attribute comes before [YamlMember]...
+                    if model_property.is_merge:
+                        if not model_property.merge_key:
+                            class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
+                        elif len(model_property.merge_key) <= len(model_property.json_name):
+                            class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))  
+
+                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
+
+                    # ...but longer attribute comes after [YamlMember].
+                    if model_property.is_merge:
+                        if model_property.merge_key and len(model_property.merge_key) > len(model_property.json_name):
+                            class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
+
                     class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
+
                     class_file.write('        public %s %s { get; set; } = new %s();%s' % (
                         model_property.data_type.to_clr_type_name(),
                         model_property.name,
@@ -508,7 +630,23 @@ def main():
                         LINE_ENDING
                     ))
                 else:
+                    if model_property.is_retain_keys:
+                        class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
+
+                    # Shorter attribute comes before [JsonProperty]...
+                    if model_property.is_merge:
+                        if not model_property.merge_key:
+                            class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
+
                     class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
+
+                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
+
+                    # ...but longer attribute comes after [YamlMember].
+                    if model_property.is_merge:
+                        if model_property.merge_key:
+                            class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
+
                     class_file.write('        public %s %s { get; set; }%s' % (
                         model_property.data_type.to_clr_type_name(is_nullable=model_property.is_optional),
                         model_property.name,
@@ -519,7 +657,7 @@ def main():
                     class_file.write(LINE_ENDING)
 
             # Special case for Items property (we override the base class's property, adding the JsonProperty attribute).
-            if model.is_resource_list() and model.has_list_items():
+            if model.is_kube_resource_list() and model.has_list_items():
                 model_property = model.properties['items']
 
                 class_file.write('        /// <summary>' + LINE_ENDING)
