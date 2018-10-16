@@ -56,7 +56,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static DeploymentClientV1 DeploymentsV1(this IKubeApiClient kubeClient)
+        public static IDeploymentClientV1 DeploymentsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -75,7 +75,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static DeploymentClientV1Beta1 DeploymentsV1Beta1(this IKubeApiClient kubeClient)
+        public static IDeploymentClientV1Beta1 DeploymentsV1Beta1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -113,7 +113,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static PersistentVolumeClientV1 PersistentVolumesV1(this IKubeApiClient kubeClient)
+        public static IPersistentVolumeClientV1 PersistentVolumesV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
@@ -132,7 +132,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static PersistentVolumeClaimClientV1 PersistentVolumeClaimsV1(this IKubeApiClient kubeClient)
+        public static IPersistentVolumeClaimClientV1 PersistentVolumeClaimsV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));

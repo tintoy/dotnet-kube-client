@@ -13,7 +13,7 @@ namespace KubeClient.ResourceClients
     ///     A client for the Kubernetes Deployments (v1beta2) API.
     /// </summary>
     public class DeploymentClientV1Beta1
-        : KubeResourceClient
+        : KubeResourceClient, IDeploymentClientV1Beta1
     {
         /// <summary>
         ///     Create a new <see cref="DeploymentClientV1Beta1"/>.
