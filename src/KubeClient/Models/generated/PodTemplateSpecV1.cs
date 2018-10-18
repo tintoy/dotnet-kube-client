@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
-        [JsonProperty("metadata")]
         [YamlMember(Alias = "metadata")]
+        [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
         public ObjectMetaV1 Metadata { get; set; }
 
         /// <summary>
         ///     Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public PodSpecV1 Spec { get; set; }
     }
 }

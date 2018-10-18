@@ -26,15 +26,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec describes how the user wants the resources to appear
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public CustomResourceDefinitionSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Status indicates the actual state of the CustomResourceDefinition
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public CustomResourceDefinitionStatusV1Beta1 Status { get; set; }
     }
 }

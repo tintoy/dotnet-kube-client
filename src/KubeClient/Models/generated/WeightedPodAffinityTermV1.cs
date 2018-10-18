@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Required. A pod affinity term, associated with the corresponding weight.
         /// </summary>
-        [JsonProperty("podAffinityTerm")]
         [YamlMember(Alias = "podAffinityTerm")]
+        [JsonProperty("podAffinityTerm", NullValueHandling = NullValueHandling.Include)]
         public PodAffinityTermV1 PodAffinityTerm { get; set; }
 
         /// <summary>
         ///     weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
         /// </summary>
-        [JsonProperty("weight")]
         [YamlMember(Alias = "weight")]
+        [JsonProperty("weight", NullValueHandling = NullValueHandling.Include)]
         public int Weight { get; set; }
     }
 }

@@ -17,29 +17,29 @@ namespace KubeClient.Models
         ///     
         ///     If unset, the Kubelet will not modify the ownership and permissions of any volume.
         /// </summary>
-        [JsonProperty("fsGroup")]
         [YamlMember(Alias = "fsGroup")]
-        public int FsGroup { get; set; }
+        [JsonProperty("fsGroup", NullValueHandling = NullValueHandling.Ignore)]
+        public int? FsGroup { get; set; }
 
         /// <summary>
         ///     The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
         /// </summary>
-        [JsonProperty("runAsGroup")]
         [YamlMember(Alias = "runAsGroup")]
-        public int RunAsGroup { get; set; }
+        [JsonProperty("runAsGroup", NullValueHandling = NullValueHandling.Ignore)]
+        public int? RunAsGroup { get; set; }
 
         /// <summary>
         ///     The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
         /// </summary>
-        [JsonProperty("runAsUser")]
         [YamlMember(Alias = "runAsUser")]
-        public int RunAsUser { get; set; }
+        [JsonProperty("runAsUser", NullValueHandling = NullValueHandling.Ignore)]
+        public int? RunAsUser { get; set; }
 
         /// <summary>
         ///     The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
         /// </summary>
-        [JsonProperty("seLinuxOptions")]
         [YamlMember(Alias = "seLinuxOptions")]
+        [JsonProperty("seLinuxOptions", NullValueHandling = NullValueHandling.Ignore)]
         public SELinuxOptionsV1 SeLinuxOptions { get; set; }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
         /// </summary>
-        [JsonProperty("runAsNonRoot")]
         [YamlMember(Alias = "runAsNonRoot")]
-        public bool RunAsNonRoot { get; set; }
+        [JsonProperty("runAsNonRoot", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? RunAsNonRoot { get; set; }
     }
 }

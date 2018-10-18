@@ -14,36 +14,36 @@ namespace KubeClient.Models
         /// <summary>
         ///     Suggested HTTP return code for this status, 0 if not set.
         /// </summary>
-        [JsonProperty("code")]
         [YamlMember(Alias = "code")]
-        public int Code { get; set; }
+        [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Code { get; set; }
 
         /// <summary>
         ///     A human-readable description of the status of this operation.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     A machine-readable description of why this operation is in the "Failure" status. If this value is empty there is no information available. A Reason clarifies an HTTP status code but does not override it.
         /// </summary>
-        [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
         public string Reason { get; set; }
 
         /// <summary>
         ///     Extended data associated with the reason.  Each reason may define its own extended details. This field is optional and the data returned is not guaranteed to conform to any schema except that defined by the reason type.
         /// </summary>
-        [JsonProperty("details")]
         [YamlMember(Alias = "details")]
+        [JsonProperty("details", NullValueHandling = NullValueHandling.Ignore)]
         public StatusDetailsV1 Details { get; set; }
 
         /// <summary>
         ///     Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public string Status { get; set; }
     }
 }

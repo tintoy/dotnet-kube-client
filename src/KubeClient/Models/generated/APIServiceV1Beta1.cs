@@ -26,15 +26,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec contains information for locating and communicating with a server
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public APIServiceSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Status contains derived information about an API server
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public APIServiceStatusV1Beta1 Status { get; set; }
     }
 }

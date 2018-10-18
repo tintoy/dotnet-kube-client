@@ -20,8 +20,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The size of the image in bytes.
         /// </summary>
-        [JsonProperty("sizeBytes")]
         [YamlMember(Alias = "sizeBytes")]
-        public int SizeBytes { get; set; }
+        [JsonProperty("sizeBytes", NullValueHandling = NullValueHandling.Ignore)]
+        public int? SizeBytes { get; set; }
     }
 }

@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     A node selector term, associated with the corresponding weight.
         /// </summary>
-        [JsonProperty("preference")]
         [YamlMember(Alias = "preference")]
+        [JsonProperty("preference", NullValueHandling = NullValueHandling.Include)]
         public NodeSelectorTermV1 Preference { get; set; }
 
         /// <summary>
         ///     Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
         /// </summary>
-        [JsonProperty("weight")]
         [YamlMember(Alias = "weight")]
+        [JsonProperty("weight", NullValueHandling = NullValueHandling.Include)]
         public int Weight { get; set; }
     }
 }

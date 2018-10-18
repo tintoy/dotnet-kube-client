@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
         /// </summary>
-        [JsonProperty("rollingUpdate")]
         [YamlMember(Alias = "rollingUpdate")]
+        [JsonProperty("rollingUpdate", NullValueHandling = NullValueHandling.Ignore)]
         public RollingUpdateStatefulSetStrategyV1Beta1 RollingUpdate { get; set; }
 
         /// <summary>
         ///     Type indicates the type of the StatefulSetUpdateStrategy.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
     }
 }

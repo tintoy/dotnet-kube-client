@@ -20,15 +20,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     UID information about the requesting user.
         /// </summary>
-        [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid", NullValueHandling = NullValueHandling.Ignore)]
         public string Uid { get; set; }
 
         /// <summary>
         ///     User is the user you're testing for. If you specify "User" but not "Groups", then is it interpreted as "What if User were not a member of any groups
         /// </summary>
-        [JsonProperty("user")]
         [YamlMember(Alias = "user")]
+        [JsonProperty("user", NullValueHandling = NullValueHandling.Ignore)]
         public string User { get; set; }
 
         /// <summary>
@@ -41,15 +41,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     NonResourceAttributes describes information for a non-resource access request
         /// </summary>
-        [JsonProperty("nonResourceAttributes")]
         [YamlMember(Alias = "nonResourceAttributes")]
+        [JsonProperty("nonResourceAttributes", NullValueHandling = NullValueHandling.Ignore)]
         public NonResourceAttributesV1 NonResourceAttributes { get; set; }
 
         /// <summary>
         ///     ResourceAuthorizationAttributes describes information for a resource access request
         /// </summary>
-        [JsonProperty("resourceAttributes")]
         [YamlMember(Alias = "resourceAttributes")]
+        [JsonProperty("resourceAttributes", NullValueHandling = NullValueHandling.Ignore)]
         public ResourceAttributesV1 ResourceAttributes { get; set; }
     }
 }

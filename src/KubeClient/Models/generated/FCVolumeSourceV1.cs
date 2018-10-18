@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
         /// </summary>
-        [JsonProperty("fsType")]
         [YamlMember(Alias = "fsType")]
+        [JsonProperty("fsType", NullValueHandling = NullValueHandling.Ignore)]
         public string FsType { get; set; }
 
         /// <summary>
         ///     Optional: FC target lun number
         /// </summary>
-        [JsonProperty("lun")]
         [YamlMember(Alias = "lun")]
+        [JsonProperty("lun", NullValueHandling = NullValueHandling.Ignore)]
         public int? Lun { get; set; }
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
-        [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ReadOnly { get; set; }
     }
 }

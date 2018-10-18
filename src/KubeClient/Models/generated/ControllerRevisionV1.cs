@@ -25,15 +25,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Data is the serialized representation of the state.
         /// </summary>
-        [JsonProperty("data")]
         [YamlMember(Alias = "data")]
+        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
         public RawExtensionRuntime Data { get; set; }
 
         /// <summary>
         ///     Revision indicates the revision of the state represented by Data.
         /// </summary>
-        [JsonProperty("revision")]
         [YamlMember(Alias = "revision")]
+        [JsonProperty("revision", NullValueHandling = NullValueHandling.Include)]
         public int Revision { get; set; }
     }
 }

@@ -23,8 +23,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     spec defines the policy enforced.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public PodSecurityPolicySpecV1Beta1 Spec { get; set; }
     }
 }

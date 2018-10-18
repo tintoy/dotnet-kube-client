@@ -23,8 +23,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     RoleRef can only reference a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error.
         /// </summary>
-        [JsonProperty("roleRef")]
         [YamlMember(Alias = "roleRef")]
+        [JsonProperty("roleRef", NullValueHandling = NullValueHandling.Include)]
         public RoleRefV1Beta1 RoleRef { get; set; }
 
         /// <summary>

@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Rolling update config params. Present only if type = "RollingUpdate".
         /// </summary>
-        [JsonProperty("rollingUpdate")]
         [YamlMember(Alias = "rollingUpdate")]
+        [JsonProperty("rollingUpdate", NullValueHandling = NullValueHandling.Ignore)]
         public RollingUpdateDaemonSetV1Beta2 RollingUpdate { get; set; }
 
         /// <summary>
         ///     Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
     }
 }

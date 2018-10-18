@@ -20,15 +20,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     A unique value that identifies this user across time. If this user is deleted and another user by the same name is added, they will have different UIDs.
         /// </summary>
-        [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid", NullValueHandling = NullValueHandling.Ignore)]
         public string Uid { get; set; }
 
         /// <summary>
         ///     The name that uniquely identifies this user among all active users.
         /// </summary>
-        [JsonProperty("username")]
         [YamlMember(Alias = "username")]
+        [JsonProperty("username", NullValueHandling = NullValueHandling.Ignore)]
         public string Username { get; set; }
 
         /// <summary>

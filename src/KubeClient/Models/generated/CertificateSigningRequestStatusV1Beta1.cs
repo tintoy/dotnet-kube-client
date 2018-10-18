@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     If request was approved, the controller will place the issued certificate here.
         /// </summary>
-        [JsonProperty("certificate")]
         [YamlMember(Alias = "certificate")]
+        [JsonProperty("certificate", NullValueHandling = NullValueHandling.Ignore)]
         public string Certificate { get; set; }
 
         /// <summary>

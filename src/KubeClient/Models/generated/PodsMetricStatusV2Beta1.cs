@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     currentAverageValue is the current value of the average of the metric across all relevant pods (as a quantity)
         /// </summary>
-        [JsonProperty("currentAverageValue")]
         [YamlMember(Alias = "currentAverageValue")]
+        [JsonProperty("currentAverageValue", NullValueHandling = NullValueHandling.Include)]
         public string CurrentAverageValue { get; set; }
 
         /// <summary>
         ///     metricName is the name of the metric in question
         /// </summary>
-        [JsonProperty("metricName")]
         [YamlMember(Alias = "metricName")]
+        [JsonProperty("metricName", NullValueHandling = NullValueHandling.Include)]
         public string MetricName { get; set; }
     }
 }

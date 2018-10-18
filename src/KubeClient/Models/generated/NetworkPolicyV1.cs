@@ -25,8 +25,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Specification of the desired behavior for this NetworkPolicy.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public NetworkPolicySpecV1 Spec { get; set; }
     }
 }

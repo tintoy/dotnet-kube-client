@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     A label query over a set of resources, in this case pods.
         /// </summary>
-        [JsonProperty("labelSelector")]
         [YamlMember(Alias = "labelSelector")]
+        [JsonProperty("labelSelector", NullValueHandling = NullValueHandling.Ignore)]
         public LabelSelectorV1 LabelSelector { get; set; }
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
         /// </summary>
-        [JsonProperty("topologyKey")]
         [YamlMember(Alias = "topologyKey")]
+        [JsonProperty("topologyKey", NullValueHandling = NullValueHandling.Include)]
         public string TopologyKey { get; set; }
     }
 }

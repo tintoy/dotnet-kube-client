@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     name is the name of the resource in question.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     targetAverageValue is the target value of the average of the resource metric across all relevant pods, as a raw value (instead of as a percentage of the request), similar to the "pods" metric source type.
         /// </summary>
-        [JsonProperty("targetAverageValue")]
         [YamlMember(Alias = "targetAverageValue")]
+        [JsonProperty("targetAverageValue", NullValueHandling = NullValueHandling.Ignore)]
         public string TargetAverageValue { get; set; }
 
         /// <summary>
         ///     targetAverageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods.
         /// </summary>
-        [JsonProperty("targetAverageUtilization")]
         [YamlMember(Alias = "targetAverageUtilization")]
-        public int TargetAverageUtilization { get; set; }
+        [JsonProperty("targetAverageUtilization", NullValueHandling = NullValueHandling.Ignore)]
+        public int? TargetAverageUtilization { get; set; }
     }
 }

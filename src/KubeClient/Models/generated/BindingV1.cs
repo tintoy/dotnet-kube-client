@@ -16,8 +16,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The target object that you want to bind to the standard object.
         /// </summary>
-        [JsonProperty("target")]
         [YamlMember(Alias = "target")]
+        [JsonProperty("target", NullValueHandling = NullValueHandling.Include)]
         public ObjectReferenceV1 Target { get; set; }
     }
 }

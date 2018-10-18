@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional.  The protocol (TCP or UDP) which traffic must match. If not specified, this field defaults to TCP.
         /// </summary>
-        [JsonProperty("protocol")]
         [YamlMember(Alias = "protocol")]
+        [JsonProperty("protocol", NullValueHandling = NullValueHandling.Ignore)]
         public string Protocol { get; set; }
 
         /// <summary>
         ///     If specified, the port on the given protocol.  This can either be a numerical or named port on a pod.  If this field is not provided, this matches all port names and numbers. If present, only traffic on the specified protocol AND port will be matched.
         /// </summary>
-        [JsonProperty("port")]
         [YamlMember(Alias = "port")]
+        [JsonProperty("port", NullValueHandling = NullValueHandling.Ignore)]
         public string Port { get; set; }
     }
 }

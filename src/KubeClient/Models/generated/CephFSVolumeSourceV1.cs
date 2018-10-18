@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("secretFile")]
         [YamlMember(Alias = "secretFile")]
+        [JsonProperty("secretFile", NullValueHandling = NullValueHandling.Ignore)]
         public string SecretFile { get; set; }
 
         /// <summary>
         ///     Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
+        [JsonProperty("secretRef", NullValueHandling = NullValueHandling.Ignore)]
         public LocalObjectReferenceV1 SecretRef { get; set; }
 
         /// <summary>
         ///     Optional: Used as the mounted root, rather than the full Ceph tree, default is /
         /// </summary>
-        [JsonProperty("path")]
         [YamlMember(Alias = "path")]
+        [JsonProperty("path", NullValueHandling = NullValueHandling.Ignore)]
         public string Path { get; set; }
 
         /// <summary>
         ///     Optional: User is the rados user name, default is admin More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("user")]
         [YamlMember(Alias = "user")]
+        [JsonProperty("user", NullValueHandling = NullValueHandling.Ignore)]
         public string User { get; set; }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
-        [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ReadOnly { get; set; }
     }
 }

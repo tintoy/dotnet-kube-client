@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     groupVersion is the group and version this APIResourceList is for.
         /// </summary>
-        [JsonProperty("groupVersion")]
         [YamlMember(Alias = "groupVersion")]
+        [JsonProperty("groupVersion", NullValueHandling = NullValueHandling.Include)]
         public string GroupVersion { get; set; }
 
         /// <summary>

@@ -39,8 +39,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Used to facilitate programmatic handling of secret data.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
     }
 }

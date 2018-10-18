@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     rule is the strategy that will dictate the allowable RunAsUser values that may be set.
         /// </summary>
-        [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
+        [JsonProperty("rule", NullValueHandling = NullValueHandling.Include)]
         public string Rule { get; set; }
 
         /// <summary>

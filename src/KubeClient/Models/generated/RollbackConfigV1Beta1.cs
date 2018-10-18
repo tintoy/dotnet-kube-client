@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The revision to rollback to. If set to 0, rollback to the last revision.
         /// </summary>
-        [JsonProperty("revision")]
         [YamlMember(Alias = "revision")]
-        public int Revision { get; set; }
+        [JsonProperty("revision", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Revision { get; set; }
     }
 }

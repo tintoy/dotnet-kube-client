@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
         /// </summary>
-        [JsonProperty("operator")]
         [YamlMember(Alias = "operator")]
+        [JsonProperty("operator", NullValueHandling = NullValueHandling.Include)]
         public string Operator { get; set; }
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The label key that the selector applies to.
         /// </summary>
-        [JsonProperty("key")]
         [YamlMember(Alias = "key")]
+        [JsonProperty("key", NullValueHandling = NullValueHandling.Include)]
         public string Key { get; set; }
     }
 }

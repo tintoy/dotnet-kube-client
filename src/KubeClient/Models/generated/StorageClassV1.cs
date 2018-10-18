@@ -25,22 +25,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     VolumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.  When unset, VolumeBindingImmediate is used. This field is alpha-level and is only honored by servers that enable the VolumeScheduling feature.
         /// </summary>
-        [JsonProperty("volumeBindingMode")]
         [YamlMember(Alias = "volumeBindingMode")]
+        [JsonProperty("volumeBindingMode", NullValueHandling = NullValueHandling.Ignore)]
         public string VolumeBindingMode { get; set; }
 
         /// <summary>
         ///     AllowVolumeExpansion shows whether the storage class allow volume expand
         /// </summary>
-        [JsonProperty("allowVolumeExpansion")]
         [YamlMember(Alias = "allowVolumeExpansion")]
-        public bool AllowVolumeExpansion { get; set; }
+        [JsonProperty("allowVolumeExpansion", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AllowVolumeExpansion { get; set; }
 
         /// <summary>
         ///     Provisioner indicates the type of the provisioner.
         /// </summary>
-        [JsonProperty("provisioner")]
         [YamlMember(Alias = "provisioner")]
+        [JsonProperty("provisioner", NullValueHandling = NullValueHandling.Include)]
         public string Provisioner { get; set; }
 
         /// <summary>
@@ -67,8 +67,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Dynamically provisioned PersistentVolumes of this storage class are created with this reclaimPolicy. Defaults to Delete.
         /// </summary>
-        [JsonProperty("reclaimPolicy")]
         [YamlMember(Alias = "reclaimPolicy")]
+        [JsonProperty("reclaimPolicy", NullValueHandling = NullValueHandling.Ignore)]
         public string ReclaimPolicy { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Phase represents the current phase of PersistentVolumeClaim.
         /// </summary>
-        [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
+        [JsonProperty("phase", NullValueHandling = NullValueHandling.Ignore)]
         public string Phase { get; set; }
 
         /// <summary>

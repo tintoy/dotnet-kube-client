@@ -20,8 +20,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The label key that the selector applies to.
         /// </summary>
-        [JsonProperty("key")]
         [YamlMember(Alias = "key")]
+        [JsonProperty("key", NullValueHandling = NullValueHandling.Include)]
         public string Key { get; set; }
     }
 }

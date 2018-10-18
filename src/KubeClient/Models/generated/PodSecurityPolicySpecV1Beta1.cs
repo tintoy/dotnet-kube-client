@@ -13,64 +13,64 @@ namespace KubeClient.Models
         /// <summary>
         ///     hostIPC determines if the policy allows the use of HostIPC in the pod spec.
         /// </summary>
-        [JsonProperty("hostIPC")]
         [YamlMember(Alias = "hostIPC")]
-        public bool HostIPC { get; set; }
+        [JsonProperty("hostIPC", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HostIPC { get; set; }
 
         /// <summary>
         ///     hostPID determines if the policy allows the use of HostPID in the pod spec.
         /// </summary>
-        [JsonProperty("hostPID")]
         [YamlMember(Alias = "hostPID")]
-        public bool HostPID { get; set; }
+        [JsonProperty("hostPID", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HostPID { get; set; }
 
         /// <summary>
         ///     privileged determines if a pod can request to be run as privileged.
         /// </summary>
-        [JsonProperty("privileged")]
         [YamlMember(Alias = "privileged")]
-        public bool Privileged { get; set; }
+        [JsonProperty("privileged", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Privileged { get; set; }
 
         /// <summary>
         ///     hostNetwork determines if the policy allows the use of HostNetwork in the pod spec.
         /// </summary>
-        [JsonProperty("hostNetwork")]
         [YamlMember(Alias = "hostNetwork")]
-        public bool HostNetwork { get; set; }
+        [JsonProperty("hostNetwork", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HostNetwork { get; set; }
 
         /// <summary>
         ///     readOnlyRootFilesystem when set to true will force containers to run with a read only root file system.  If the container specifically requests to run with a non-read only root file system the PSP should deny the pod. If set to false the container may run with a read only root file system if it wishes but it will not be forced to.
         /// </summary>
-        [JsonProperty("readOnlyRootFilesystem")]
         [YamlMember(Alias = "readOnlyRootFilesystem")]
-        public bool ReadOnlyRootFilesystem { get; set; }
+        [JsonProperty("readOnlyRootFilesystem", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ReadOnlyRootFilesystem { get; set; }
 
         /// <summary>
         ///     allowPrivilegeEscalation determines if a pod can request to allow privilege escalation. If unspecified, defaults to true.
         /// </summary>
-        [JsonProperty("allowPrivilegeEscalation")]
         [YamlMember(Alias = "allowPrivilegeEscalation")]
-        public bool AllowPrivilegeEscalation { get; set; }
+        [JsonProperty("allowPrivilegeEscalation", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AllowPrivilegeEscalation { get; set; }
 
         /// <summary>
         ///     defaultAllowPrivilegeEscalation controls the default setting for whether a process can gain more privileges than its parent process.
         /// </summary>
-        [JsonProperty("defaultAllowPrivilegeEscalation")]
         [YamlMember(Alias = "defaultAllowPrivilegeEscalation")]
-        public bool DefaultAllowPrivilegeEscalation { get; set; }
+        [JsonProperty("defaultAllowPrivilegeEscalation", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? DefaultAllowPrivilegeEscalation { get; set; }
 
         /// <summary>
         ///     fsGroup is the strategy that will dictate what fs group is used by the SecurityContext.
         /// </summary>
-        [JsonProperty("fsGroup")]
         [YamlMember(Alias = "fsGroup")]
+        [JsonProperty("fsGroup", NullValueHandling = NullValueHandling.Include)]
         public FSGroupStrategyOptionsV1Beta1 FsGroup { get; set; }
 
         /// <summary>
         ///     runAsUser is the strategy that will dictate the allowable RunAsUser values that may be set.
         /// </summary>
-        [JsonProperty("runAsUser")]
         [YamlMember(Alias = "runAsUser")]
+        [JsonProperty("runAsUser", NullValueHandling = NullValueHandling.Include)]
         public RunAsUserStrategyOptionsV1Beta1 RunAsUser { get; set; }
 
         /// <summary>
@@ -136,8 +136,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     supplementalGroups is the strategy that will dictate what supplemental groups are used by the SecurityContext.
         /// </summary>
-        [JsonProperty("supplementalGroups")]
         [YamlMember(Alias = "supplementalGroups")]
+        [JsonProperty("supplementalGroups", NullValueHandling = NullValueHandling.Include)]
         public SupplementalGroupsStrategyOptionsV1Beta1 SupplementalGroups { get; set; }
 
         /// <summary>
@@ -150,8 +150,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     seLinux is the strategy that will dictate the allowable labels that may be set.
         /// </summary>
-        [JsonProperty("seLinux")]
         [YamlMember(Alias = "seLinux")]
+        [JsonProperty("seLinux", NullValueHandling = NullValueHandling.Include)]
         public SELinuxStrategyOptionsV1Beta1 SeLinux { get; set; }
     }
 }

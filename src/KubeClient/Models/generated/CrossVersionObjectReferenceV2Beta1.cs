@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     desired number of instances for the scaled object.
         /// </summary>
-        [JsonProperty("replicas")]
         [YamlMember(Alias = "replicas")]
-        public int Replicas { get; set; }
+        [JsonProperty("replicas", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Replicas { get; set; }
     }
 }

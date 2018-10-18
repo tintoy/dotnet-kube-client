@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     clientIP contains the configurations of Client IP based session affinity.
         /// </summary>
-        [JsonProperty("clientIP")]
         [YamlMember(Alias = "clientIP")]
+        [JsonProperty("clientIP", NullValueHandling = NullValueHandling.Ignore)]
         public ClientIPConfigV1 ClientIP { get; set; }
     }
 }

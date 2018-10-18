@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Container name: required for volumes, optional for env vars
         /// </summary>
-        [JsonProperty("containerName")]
         [YamlMember(Alias = "containerName")]
+        [JsonProperty("containerName", NullValueHandling = NullValueHandling.Ignore)]
         public string ContainerName { get; set; }
 
         /// <summary>
         ///     Required: resource to select
         /// </summary>
-        [JsonProperty("resource")]
         [YamlMember(Alias = "resource")]
+        [JsonProperty("resource", NullValueHandling = NullValueHandling.Include)]
         public string Resource { get; set; }
 
         /// <summary>
         ///     Specifies the output format of the exposed resources, defaults to "1"
         /// </summary>
-        [JsonProperty("divisor")]
         [YamlMember(Alias = "divisor")]
+        [JsonProperty("divisor", NullValueHandling = NullValueHandling.Ignore)]
         public string Divisor { get; set; }
     }
 }

@@ -28,15 +28,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     behaviour of autoscaler. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public HorizontalPodAutoscalerSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     current information about the autoscaler.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public HorizontalPodAutoscalerStatusV1 Status { get; set; }
     }
 }

@@ -25,15 +25,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Specification of the desired attach/detach volume behavior. Populated by the Kubernetes system.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Include)]
         public VolumeAttachmentSpecV1Alpha1 Spec { get; set; }
 
         /// <summary>
         ///     Status of the VolumeAttachment request. Populated by the entity completing the attach or detach operation, i.e. the external-attacher.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public VolumeAttachmentStatusV1Alpha1 Status { get; set; }
     }
 }

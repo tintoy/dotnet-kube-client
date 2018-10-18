@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Template is the object that describes the pod that will be created if insufficient replicas are detected. This takes precedence over a TemplateRef. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template
         /// </summary>
-        [JsonProperty("template")]
         [YamlMember(Alias = "template")]
+        [JsonProperty("template", NullValueHandling = NullValueHandling.Ignore)]
         public PodTemplateSpecV1 Template { get; set; }
 
         /// <summary>
@@ -27,15 +27,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Minimum number of seconds for which a newly created pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready)
         /// </summary>
-        [JsonProperty("minReadySeconds")]
         [YamlMember(Alias = "minReadySeconds")]
-        public int MinReadySeconds { get; set; }
+        [JsonProperty("minReadySeconds", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MinReadySeconds { get; set; }
 
         /// <summary>
         ///     Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#what-is-a-replicationcontroller
         /// </summary>
-        [JsonProperty("replicas")]
         [YamlMember(Alias = "replicas")]
-        public int Replicas { get; set; }
+        [JsonProperty("replicas", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Replicas { get; set; }
     }
 }

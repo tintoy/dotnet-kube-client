@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     name must match the name of a persistentVolumeClaim in the pod
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     devicePath is the path inside of the container that the device will be mapped to.
         /// </summary>
-        [JsonProperty("devicePath")]
         [YamlMember(Alias = "devicePath")]
+        [JsonProperty("devicePath", NullValueHandling = NullValueHandling.Include)]
         public string DevicePath { get; set; }
     }
 }

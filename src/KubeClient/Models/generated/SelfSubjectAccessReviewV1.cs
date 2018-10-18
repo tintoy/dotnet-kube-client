@@ -15,15 +15,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec holds information about the request being evaluated.  user and groups must be empty
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Include)]
         public SelfSubjectAccessReviewSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status is filled in by the server and indicates whether the request is allowed or not
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public SubjectAccessReviewStatusV1 Status { get; set; }
     }
 }

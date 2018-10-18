@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("Schema")]
         [YamlMember(Alias = "Schema")]
+        [JsonProperty("Schema", NullValueHandling = NullValueHandling.Include)]
         public JSONSchemaPropsV1Beta1 Schema { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("Allows")]
         [YamlMember(Alias = "Allows")]
+        [JsonProperty("Allows", NullValueHandling = NullValueHandling.Include)]
         public bool Allows { get; set; }
     }
 }

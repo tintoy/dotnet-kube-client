@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name of this version (e.g. 'v1').
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
     }
 }

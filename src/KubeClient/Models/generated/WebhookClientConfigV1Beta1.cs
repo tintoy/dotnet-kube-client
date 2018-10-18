@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     `caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate. Required.
         /// </summary>
-        [JsonProperty("caBundle")]
         [YamlMember(Alias = "caBundle")]
+        [JsonProperty("caBundle", NullValueHandling = NullValueHandling.Include)]
         public string CaBundle { get; set; }
 
         /// <summary>
@@ -24,8 +24,8 @@ namespace KubeClient.Models
         ///     
         ///     Port 443 will be used if it is open, otherwise it is an error.
         /// </summary>
-        [JsonProperty("service")]
         [YamlMember(Alias = "service")]
+        [JsonProperty("service", NullValueHandling = NullValueHandling.Ignore)]
         public ServiceReferenceV1Beta1 Service { get; set; }
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace KubeClient.Models
         ///     
         ///     Attempting to use a user or basic auth e.g. "user:password@" is not allowed. Fragments ("#...") and query parameters ("?...") are not allowed, either.
         /// </summary>
-        [JsonProperty("url")]
         [YamlMember(Alias = "url")]
+        [JsonProperty("url", NullValueHandling = NullValueHandling.Ignore)]
         public string Url { get; set; }
     }
 }

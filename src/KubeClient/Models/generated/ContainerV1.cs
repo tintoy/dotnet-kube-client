@@ -20,50 +20,50 @@ namespace KubeClient.Models
         /// <summary>
         ///     Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.
         /// </summary>
-        [JsonProperty("image")]
         [YamlMember(Alias = "image")]
+        [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
         public string Image { get; set; }
 
         /// <summary>
         ///     Actions that the management system should take in response to container lifecycle events. Cannot be updated.
         /// </summary>
-        [JsonProperty("lifecycle")]
         [YamlMember(Alias = "lifecycle")]
+        [JsonProperty("lifecycle", NullValueHandling = NullValueHandling.Ignore)]
         public LifecycleV1 Lifecycle { get; set; }
 
         /// <summary>
         ///     Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
         /// </summary>
-        [JsonProperty("livenessProbe")]
         [YamlMember(Alias = "livenessProbe")]
+        [JsonProperty("livenessProbe", NullValueHandling = NullValueHandling.Ignore)]
         public ProbeV1 LivenessProbe { get; set; }
 
         /// <summary>
         ///     Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
         /// </summary>
-        [JsonProperty("readinessProbe")]
         [YamlMember(Alias = "readinessProbe")]
+        [JsonProperty("readinessProbe", NullValueHandling = NullValueHandling.Ignore)]
         public ProbeV1 ReadinessProbe { get; set; }
 
         /// <summary>
         ///     Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false
         /// </summary>
-        [JsonProperty("stdinOnce")]
         [YamlMember(Alias = "stdinOnce")]
-        public bool StdinOnce { get; set; }
+        [JsonProperty("stdinOnce", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? StdinOnce { get; set; }
 
         /// <summary>
         ///     Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
         /// </summary>
-        [JsonProperty("terminationMessagePath")]
         [YamlMember(Alias = "terminationMessagePath")]
+        [JsonProperty("terminationMessagePath", NullValueHandling = NullValueHandling.Ignore)]
         public string TerminationMessagePath { get; set; }
 
         /// <summary>
@@ -76,15 +76,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
         /// </summary>
-        [JsonProperty("stdin")]
         [YamlMember(Alias = "stdin")]
-        public bool Stdin { get; set; }
+        [JsonProperty("stdin", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Stdin { get; set; }
 
         /// <summary>
         ///     Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
         /// </summary>
-        [JsonProperty("workingDir")]
         [YamlMember(Alias = "workingDir")]
+        [JsonProperty("workingDir", NullValueHandling = NullValueHandling.Ignore)]
         public string WorkingDir { get; set; }
 
         /// <summary>
@@ -105,8 +105,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
         /// </summary>
-        [JsonProperty("resources")]
         [YamlMember(Alias = "resources")]
+        [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
         public ResourceRequirementsV1 Resources { get; set; }
 
         /// <summary>
@@ -128,8 +128,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
         /// </summary>
-        [JsonProperty("securityContext")]
         [YamlMember(Alias = "securityContext")]
+        [JsonProperty("securityContext", NullValueHandling = NullValueHandling.Ignore)]
         public SecurityContextV1 SecurityContext { get; set; }
 
         /// <summary>
@@ -143,22 +143,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
         /// </summary>
-        [JsonProperty("imagePullPolicy")]
         [YamlMember(Alias = "imagePullPolicy")]
+        [JsonProperty("imagePullPolicy", NullValueHandling = NullValueHandling.Ignore)]
         public string ImagePullPolicy { get; set; }
 
         /// <summary>
         ///     Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
         /// </summary>
-        [JsonProperty("terminationMessagePolicy")]
         [YamlMember(Alias = "terminationMessagePolicy")]
+        [JsonProperty("terminationMessagePolicy", NullValueHandling = NullValueHandling.Ignore)]
         public string TerminationMessagePolicy { get; set; }
 
         /// <summary>
         ///     Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
         /// </summary>
-        [JsonProperty("tty")]
         [YamlMember(Alias = "tty")]
-        public bool Tty { get; set; }
+        [JsonProperty("tty", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Tty { get; set; }
     }
 }

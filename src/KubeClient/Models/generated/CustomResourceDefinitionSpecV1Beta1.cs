@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     Scope indicates whether this resource is cluster or namespace scoped.  Default is namespaced
         /// </summary>
-        [JsonProperty("scope")]
         [YamlMember(Alias = "scope")]
+        [JsonProperty("scope", NullValueHandling = NullValueHandling.Include)]
         public string Scope { get; set; }
 
         /// <summary>
         ///     Validation describes the validation methods for CustomResources
         /// </summary>
-        [JsonProperty("validation")]
         [YamlMember(Alias = "validation")]
+        [JsonProperty("validation", NullValueHandling = NullValueHandling.Ignore)]
         public CustomResourceValidationV1Beta1 Validation { get; set; }
 
         /// <summary>
         ///     Version is the version this resource belongs in Should be always first item in Versions field if provided. Optional, but at least one of Version or Versions must be set. Deprecated: Please use `Versions`.
         /// </summary>
-        [JsonProperty("version")]
         [YamlMember(Alias = "version")]
+        [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
         public string Version { get; set; }
 
         /// <summary>
         ///     Group is the group this resource belongs in
         /// </summary>
-        [JsonProperty("group")]
         [YamlMember(Alias = "group")]
+        [JsonProperty("group", NullValueHandling = NullValueHandling.Include)]
         public string Group { get; set; }
 
         /// <summary>
@@ -48,15 +48,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Names are the names used to describe this custom resource
         /// </summary>
-        [JsonProperty("names")]
         [YamlMember(Alias = "names")]
+        [JsonProperty("names", NullValueHandling = NullValueHandling.Include)]
         public CustomResourceDefinitionNamesV1Beta1 Names { get; set; }
 
         /// <summary>
         ///     Subresources describes the subresources for CustomResources
         /// </summary>
-        [JsonProperty("subresources")]
         [YamlMember(Alias = "subresources")]
+        [JsonProperty("subresources", NullValueHandling = NullValueHandling.Ignore)]
         public CustomResourceSubresourcesV1Beta1 Subresources { get; set; }
 
         /// <summary>

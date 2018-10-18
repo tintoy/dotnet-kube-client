@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name is unique within a namespace to reference a secret resource.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
         ///     Namespace defines the space within which the secret name must be unique.
         /// </summary>
-        [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
+        [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]
         public string Namespace { get; set; }
     }
 }

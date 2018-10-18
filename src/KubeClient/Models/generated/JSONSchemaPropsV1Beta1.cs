@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("$schema")]
         [YamlMember(Alias = "$schema")]
+        [JsonProperty("$schema", NullValueHandling = NullValueHandling.Ignore)]
         public string Schema { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("id")]
         [YamlMember(Alias = "id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
 
         /// <summary>
@@ -34,29 +34,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("example")]
         [YamlMember(Alias = "example")]
+        [JsonProperty("example", NullValueHandling = NullValueHandling.Ignore)]
         public JSONV1Beta1 Example { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("title")]
         [YamlMember(Alias = "title")]
+        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("$ref")]
         [YamlMember(Alias = "$ref")]
+        [JsonProperty("$ref", NullValueHandling = NullValueHandling.Ignore)]
         public string Ref { get; set; }
 
         /// <summary>
@@ -76,8 +76,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("multipleOf")]
         [YamlMember(Alias = "multipleOf")]
+        [JsonProperty("multipleOf", NullValueHandling = NullValueHandling.Ignore)]
         public double MultipleOf { get; set; }
 
         /// <summary>
@@ -90,16 +90,16 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("maxLength")]
         [YamlMember(Alias = "maxLength")]
-        public int MaxLength { get; set; }
+        [JsonProperty("maxLength", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MaxLength { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("minLength")]
         [YamlMember(Alias = "minLength")]
-        public int MinLength { get; set; }
+        [JsonProperty("minLength", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MinLength { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -111,57 +111,57 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("exclusiveMaximum")]
         [YamlMember(Alias = "exclusiveMaximum")]
-        public bool ExclusiveMaximum { get; set; }
+        [JsonProperty("exclusiveMaximum", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ExclusiveMaximum { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("exclusiveMinimum")]
         [YamlMember(Alias = "exclusiveMinimum")]
-        public bool ExclusiveMinimum { get; set; }
+        [JsonProperty("exclusiveMinimum", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ExclusiveMinimum { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("maximum")]
         [YamlMember(Alias = "maximum")]
+        [JsonProperty("maximum", NullValueHandling = NullValueHandling.Ignore)]
         public double Maximum { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("minimum")]
         [YamlMember(Alias = "minimum")]
+        [JsonProperty("minimum", NullValueHandling = NullValueHandling.Ignore)]
         public double Minimum { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("description")]
         [YamlMember(Alias = "description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("pattern")]
         [YamlMember(Alias = "pattern")]
+        [JsonProperty("pattern", NullValueHandling = NullValueHandling.Ignore)]
         public string Pattern { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("additionalItems")]
         [YamlMember(Alias = "additionalItems")]
+        [JsonProperty("additionalItems", NullValueHandling = NullValueHandling.Ignore)]
         public JSONSchemaPropsOrBoolV1Beta1 AdditionalItems { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("additionalProperties")]
         [YamlMember(Alias = "additionalProperties")]
+        [JsonProperty("additionalProperties", NullValueHandling = NullValueHandling.Ignore)]
         public JSONSchemaPropsOrBoolV1Beta1 AdditionalProperties { get; set; }
 
         /// <summary>
@@ -181,44 +181,44 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("externalDocs")]
         [YamlMember(Alias = "externalDocs")]
+        [JsonProperty("externalDocs", NullValueHandling = NullValueHandling.Ignore)]
         public ExternalDocumentationV1Beta1 ExternalDocs { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("items")]
         [YamlMember(Alias = "items")]
+        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
         public JSONSchemaPropsV1Beta1 Items { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("maxItems")]
         [YamlMember(Alias = "maxItems")]
-        public int MaxItems { get; set; }
+        [JsonProperty("maxItems", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MaxItems { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("maxProperties")]
         [YamlMember(Alias = "maxProperties")]
-        public int MaxProperties { get; set; }
+        [JsonProperty("maxProperties", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MaxProperties { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("minItems")]
         [YamlMember(Alias = "minItems")]
-        public int MinItems { get; set; }
+        [JsonProperty("minItems", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MinItems { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("minProperties")]
         [YamlMember(Alias = "minProperties")]
-        public int MinProperties { get; set; }
+        [JsonProperty("minProperties", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MinProperties { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -237,29 +237,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("uniqueItems")]
         [YamlMember(Alias = "uniqueItems")]
-        public bool UniqueItems { get; set; }
+        [JsonProperty("uniqueItems", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? UniqueItems { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("default")]
         [YamlMember(Alias = "default")]
+        [JsonProperty("default", NullValueHandling = NullValueHandling.Ignore)]
         public JSONV1Beta1 Default { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("format")]
         [YamlMember(Alias = "format")]
+        [JsonProperty("format", NullValueHandling = NullValueHandling.Ignore)]
         public string Format { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("not")]
         [YamlMember(Alias = "not")]
+        [JsonProperty("not", NullValueHandling = NullValueHandling.Ignore)]
         public JSONSchemaPropsV1Beta1 Not { get; set; }
     }
 }

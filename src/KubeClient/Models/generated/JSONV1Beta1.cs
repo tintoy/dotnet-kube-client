@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("Raw")]
         [YamlMember(Alias = "Raw")]
+        [JsonProperty("Raw", NullValueHandling = NullValueHandling.Include)]
         public string Raw { get; set; }
     }
 }

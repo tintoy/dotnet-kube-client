@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Selects the pods to which this NetworkPolicy object applies. The array of ingress rules is applied to any pods selected by this field. Multiple network policies can select the same set of pods. In this case, the ingress rules for each are combined additively. This field is NOT optional and follows standard label selector semantics. An empty podSelector matches all pods in this namespace.
         /// </summary>
-        [JsonProperty("podSelector")]
         [YamlMember(Alias = "podSelector")]
+        [JsonProperty("podSelector", NullValueHandling = NullValueHandling.Include)]
         public LabelSelectorV1 PodSelector { get; set; }
 
         /// <summary>

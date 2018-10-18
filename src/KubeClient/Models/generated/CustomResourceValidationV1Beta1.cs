@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     OpenAPIV3Schema is the OpenAPI v3 schema to be validated against.
         /// </summary>
-        [JsonProperty("openAPIV3Schema")]
         [YamlMember(Alias = "openAPIV3Schema")]
+        [JsonProperty("openAPIV3Schema", NullValueHandling = NullValueHandling.Ignore)]
         public JSONSchemaPropsV1Beta1 OpenAPIV3Schema { get; set; }
     }
 }

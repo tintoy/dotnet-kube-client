@@ -13,85 +13,85 @@ namespace KubeClient.Models
         /// <summary>
         ///     Use the host's ipc namespace. Optional: Default to false.
         /// </summary>
-        [JsonProperty("hostIPC")]
         [YamlMember(Alias = "hostIPC")]
-        public bool HostIPC { get; set; }
+        [JsonProperty("hostIPC", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HostIPC { get; set; }
 
         /// <summary>
         ///     Use the host's pid namespace. Optional: Default to false.
         /// </summary>
-        [JsonProperty("hostPID")]
         [YamlMember(Alias = "hostPID")]
-        public bool HostPID { get; set; }
+        [JsonProperty("hostPID", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HostPID { get; set; }
 
         /// <summary>
         ///     Specifies the hostname of the Pod If not specified, the pod's hostname will be set to a system-defined value.
         /// </summary>
-        [JsonProperty("hostname")]
         [YamlMember(Alias = "hostname")]
+        [JsonProperty("hostname", NullValueHandling = NullValueHandling.Ignore)]
         public string Hostname { get; set; }
 
         /// <summary>
         ///     NodeName is a request to schedule this pod onto a specific node. If it is non-empty, the scheduler simply schedules this pod onto that node, assuming that it fits resource requirements.
         /// </summary>
-        [JsonProperty("nodeName")]
         [YamlMember(Alias = "nodeName")]
+        [JsonProperty("nodeName", NullValueHandling = NullValueHandling.Ignore)]
         public string NodeName { get; set; }
 
         /// <summary>
         ///     If specified, indicates the pod's priority. "system-node-critical" and "system-cluster-critical" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default.
         /// </summary>
-        [JsonProperty("priorityClassName")]
         [YamlMember(Alias = "priorityClassName")]
+        [JsonProperty("priorityClassName", NullValueHandling = NullValueHandling.Ignore)]
         public string PriorityClassName { get; set; }
 
         /// <summary>
         ///     If specified, the pod will be dispatched by specified scheduler. If not specified, the pod will be dispatched by default scheduler.
         /// </summary>
-        [JsonProperty("schedulerName")]
         [YamlMember(Alias = "schedulerName")]
+        [JsonProperty("schedulerName", NullValueHandling = NullValueHandling.Ignore)]
         public string SchedulerName { get; set; }
 
         /// <summary>
         ///     ServiceAccountName is the name of the ServiceAccount to use to run this pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
         /// </summary>
-        [JsonProperty("serviceAccountName")]
         [YamlMember(Alias = "serviceAccountName")]
+        [JsonProperty("serviceAccountName", NullValueHandling = NullValueHandling.Ignore)]
         public string ServiceAccountName { get; set; }
 
         /// <summary>
         ///     Share a single process namespace between all of the containers in a pod. When this is set containers will be able to view and signal processes from other containers in the same pod, and the first process in each container will not be assigned PID 1. HostPID and ShareProcessNamespace cannot both be set. Optional: Default to false. This field is alpha-level and is honored only by servers that enable the PodShareProcessNamespace feature.
         /// </summary>
-        [JsonProperty("shareProcessNamespace")]
         [YamlMember(Alias = "shareProcessNamespace")]
-        public bool ShareProcessNamespace { get; set; }
+        [JsonProperty("shareProcessNamespace", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ShareProcessNamespace { get; set; }
 
         /// <summary>
         ///     Specifies the DNS parameters of a pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
         /// </summary>
-        [JsonProperty("dnsConfig")]
         [YamlMember(Alias = "dnsConfig")]
+        [JsonProperty("dnsConfig", NullValueHandling = NullValueHandling.Ignore)]
         public PodDNSConfigV1 DnsConfig { get; set; }
 
         /// <summary>
         ///     Host networking requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
         /// </summary>
-        [JsonProperty("hostNetwork")]
         [YamlMember(Alias = "hostNetwork")]
-        public bool HostNetwork { get; set; }
+        [JsonProperty("hostNetwork", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HostNetwork { get; set; }
 
         /// <summary>
         ///     AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
         /// </summary>
-        [JsonProperty("automountServiceAccountToken")]
         [YamlMember(Alias = "automountServiceAccountToken")]
-        public bool AutomountServiceAccountToken { get; set; }
+        [JsonProperty("automountServiceAccountToken", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AutomountServiceAccountToken { get; set; }
 
         /// <summary>
         ///     If specified, the fully qualified Pod hostname will be "&lt;hostname&gt;.&lt;subdomain&gt;.&lt;pod namespace&gt;.svc.&lt;cluster domain&gt;". If not specified, the pod will not have a domainname at all.
         /// </summary>
-        [JsonProperty("subdomain")]
         [YamlMember(Alias = "subdomain")]
+        [JsonProperty("subdomain", NullValueHandling = NullValueHandling.Ignore)]
         public string Subdomain { get; set; }
 
         /// <summary>
@@ -104,8 +104,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
         /// </summary>
-        [JsonProperty("activeDeadlineSeconds")]
         [YamlMember(Alias = "activeDeadlineSeconds")]
+        [JsonProperty("activeDeadlineSeconds", NullValueHandling = NullValueHandling.Ignore)]
         public int? ActiveDeadlineSeconds { get; set; }
 
         /// <summary>
@@ -150,8 +150,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 30 seconds.
         /// </summary>
-        [JsonProperty("terminationGracePeriodSeconds")]
         [YamlMember(Alias = "terminationGracePeriodSeconds")]
+        [JsonProperty("terminationGracePeriodSeconds", NullValueHandling = NullValueHandling.Ignore)]
         public int? TerminationGracePeriodSeconds { get; set; }
 
         /// <summary>
@@ -173,43 +173,43 @@ namespace KubeClient.Models
         /// <summary>
         ///     SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.
         /// </summary>
-        [JsonProperty("securityContext")]
         [YamlMember(Alias = "securityContext")]
+        [JsonProperty("securityContext", NullValueHandling = NullValueHandling.Ignore)]
         public PodSecurityContextV1 SecurityContext { get; set; }
 
         /// <summary>
         ///     DeprecatedServiceAccount is a depreciated alias for ServiceAccountName. Deprecated: Use serviceAccountName instead.
         /// </summary>
-        [JsonProperty("serviceAccount")]
         [YamlMember(Alias = "serviceAccount")]
+        [JsonProperty("serviceAccount", NullValueHandling = NullValueHandling.Ignore)]
         public string ServiceAccount { get; set; }
 
         /// <summary>
         ///     If specified, the pod's scheduling constraints
         /// </summary>
-        [JsonProperty("affinity")]
         [YamlMember(Alias = "affinity")]
+        [JsonProperty("affinity", NullValueHandling = NullValueHandling.Ignore)]
         public AffinityV1 Affinity { get; set; }
 
         /// <summary>
         ///     Set DNS policy for the pod. Defaults to "ClusterFirst". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. DNS parameters given in DNSConfig will be merged with the policy selected with DNSPolicy. To have DNS options set along with hostNetwork, you have to specify DNS policy explicitly to 'ClusterFirstWithHostNet'.
         /// </summary>
-        [JsonProperty("dnsPolicy")]
         [YamlMember(Alias = "dnsPolicy")]
+        [JsonProperty("dnsPolicy", NullValueHandling = NullValueHandling.Ignore)]
         public string DnsPolicy { get; set; }
 
         /// <summary>
         ///     The priority value. Various system components use this field to find the priority of the pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority.
         /// </summary>
-        [JsonProperty("priority")]
         [YamlMember(Alias = "priority")]
-        public int Priority { get; set; }
+        [JsonProperty("priority", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Priority { get; set; }
 
         /// <summary>
         ///     Restart policy for all containers within the pod. One of Always, OnFailure, Never. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
         /// </summary>
-        [JsonProperty("restartPolicy")]
         [YamlMember(Alias = "restartPolicy")]
+        [JsonProperty("restartPolicy", NullValueHandling = NullValueHandling.Ignore)]
         public string RestartPolicy { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     ConfigMap is a reference to a Node's ConfigMap
         /// </summary>
-        [JsonProperty("configMap")]
         [YamlMember(Alias = "configMap")]
+        [JsonProperty("configMap", NullValueHandling = NullValueHandling.Ignore)]
         public ConfigMapNodeConfigSourceV1 ConfigMap { get; set; }
     }
 }

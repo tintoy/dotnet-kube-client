@@ -20,8 +20,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota but expressed using ScopeSelectorOperator in combination with possible values. For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
         /// </summary>
-        [JsonProperty("scopeSelector")]
         [YamlMember(Alias = "scopeSelector")]
+        [JsonProperty("scopeSelector", NullValueHandling = NullValueHandling.Ignore)]
         public ScopeSelectorV1 ScopeSelector { get; set; }
 
         /// <summary>

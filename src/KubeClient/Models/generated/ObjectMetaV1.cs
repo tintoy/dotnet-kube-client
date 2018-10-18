@@ -15,15 +15,15 @@ namespace KubeClient.Models
         ///     
         ///     Populated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
         /// </summary>
-        [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid", NullValueHandling = NullValueHandling.Ignore)]
         public string Uid { get; set; }
 
         /// <summary>
         ///     The name of the cluster which the object belongs to. This is used to distinguish resources with same name and namespace in different clusters. This field is not set anywhere right now and apiserver is going to ignore it if set in create or update request.
         /// </summary>
-        [JsonProperty("clusterName")]
         [YamlMember(Alias = "clusterName")]
+        [JsonProperty("clusterName", NullValueHandling = NullValueHandling.Ignore)]
         public string ClusterName { get; set; }
 
         /// <summary>
@@ -33,15 +33,15 @@ namespace KubeClient.Models
         ///     
         ///     Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#idempotency
         /// </summary>
-        [JsonProperty("generateName")]
         [YamlMember(Alias = "generateName")]
+        [JsonProperty("generateName", NullValueHandling = NullValueHandling.Ignore)]
         public string GenerateName { get; set; }
 
         /// <summary>
         ///     Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
@@ -49,31 +49,31 @@ namespace KubeClient.Models
         ///     
         ///     Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces
         /// </summary>
-        [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
+        [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]
         public string Namespace { get; set; }
 
         /// <summary>
         ///     SelfLink is a URL representing this object. Populated by the system. Read-only.
         /// </summary>
-        [JsonProperty("selfLink")]
         [YamlMember(Alias = "selfLink")]
+        [JsonProperty("selfLink", NullValueHandling = NullValueHandling.Ignore)]
         public string SelfLink { get; set; }
 
         /// <summary>
         ///     A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
         /// </summary>
-        [JsonProperty("generation")]
         [YamlMember(Alias = "generation")]
-        public int Generation { get; set; }
+        [JsonProperty("generation", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Generation { get; set; }
 
         /// <summary>
         ///     An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
         ///     
         ///     Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
         /// </summary>
-        [JsonProperty("resourceVersion")]
         [YamlMember(Alias = "resourceVersion")]
+        [JsonProperty("resourceVersion", NullValueHandling = NullValueHandling.Ignore)]
         public string ResourceVersion { get; set; }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace KubeClient.Models
         ///     
         ///     Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
-        [JsonProperty("creationTimestamp")]
         [YamlMember(Alias = "creationTimestamp")]
+        [JsonProperty("creationTimestamp", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
@@ -90,8 +90,8 @@ namespace KubeClient.Models
         ///     
         ///     Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
-        [JsonProperty("deletionTimestamp")]
         [YamlMember(Alias = "deletionTimestamp")]
+        [JsonProperty("deletionTimestamp", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? DeletionTimestamp { get; set; }
 
         /// <summary>
@@ -104,9 +104,9 @@ namespace KubeClient.Models
         /// <summary>
         ///     Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
         /// </summary>
-        [JsonProperty("deletionGracePeriodSeconds")]
         [YamlMember(Alias = "deletionGracePeriodSeconds")]
-        public int DeletionGracePeriodSeconds { get; set; }
+        [JsonProperty("deletionGracePeriodSeconds", NullValueHandling = NullValueHandling.Ignore)]
+        public int? DeletionGracePeriodSeconds { get; set; }
 
         /// <summary>
         ///     Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed.
@@ -121,8 +121,8 @@ namespace KubeClient.Models
         ///     
         ///     When an object is created, the system will populate this list with the current set of initializers. Only privileged users may set or modify this list. Once it is empty, it may not be modified further by any user.
         /// </summary>
-        [JsonProperty("initializers")]
         [YamlMember(Alias = "initializers")]
+        [JsonProperty("initializers", NullValueHandling = NullValueHandling.Ignore)]
         public InitializersV1 Initializers { get; set; }
 
         /// <summary>

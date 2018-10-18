@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     AcceptedNames are the names that are actually being used to serve discovery They may be different than the names in spec.
         /// </summary>
-        [JsonProperty("acceptedNames")]
         [YamlMember(Alias = "acceptedNames")]
+        [JsonProperty("acceptedNames", NullValueHandling = NullValueHandling.Include)]
         public CustomResourceDefinitionNamesV1Beta1 AcceptedNames { get; set; }
 
         /// <summary>

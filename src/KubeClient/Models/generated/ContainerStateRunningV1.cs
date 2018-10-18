@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Time at which the container was last (re-)started
         /// </summary>
-        [JsonProperty("startedAt")]
         [YamlMember(Alias = "startedAt")]
+        [JsonProperty("startedAt", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? StartedAt { get; set; }
     }
 }

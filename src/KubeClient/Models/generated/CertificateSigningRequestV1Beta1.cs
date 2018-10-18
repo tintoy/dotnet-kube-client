@@ -27,15 +27,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     The certificate request itself and any additional information.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public CertificateSigningRequestSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Derived information about the request.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public CertificateSigningRequestStatusV1Beta1 Status { get; set; }
     }
 }

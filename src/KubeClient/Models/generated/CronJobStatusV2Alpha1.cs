@@ -20,8 +20,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Information when was the last time the job was successfully scheduled.
         /// </summary>
-        [JsonProperty("lastScheduleTime")]
         [YamlMember(Alias = "lastScheduleTime")]
+        [JsonProperty("lastScheduleTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastScheduleTime { get; set; }
     }
 }

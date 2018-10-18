@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Path of the field to select in the specified API version.
         /// </summary>
-        [JsonProperty("fieldPath")]
         [YamlMember(Alias = "fieldPath")]
+        [JsonProperty("fieldPath", NullValueHandling = NullValueHandling.Include)]
         public string FieldPath { get; set; }
 
         /// <summary>
         ///     Version of the schema the FieldPath is written in terms of, defaults to "v1".
         /// </summary>
-        [JsonProperty("apiVersion")]
         [YamlMember(Alias = "apiVersion")]
+        [JsonProperty("apiVersion", NullValueHandling = NullValueHandling.Ignore)]
         public string ApiVersion { get; set; }
     }
 }

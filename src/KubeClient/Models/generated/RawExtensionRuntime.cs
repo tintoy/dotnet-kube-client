@@ -40,8 +40,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Raw is the underlying serialization of this object.
         /// </summary>
-        [JsonProperty("Raw")]
         [YamlMember(Alias = "Raw")]
+        [JsonProperty("Raw", NullValueHandling = NullValueHandling.Include)]
         public string Raw { get; set; }
     }
 }

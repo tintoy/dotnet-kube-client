@@ -21,8 +21,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     If result is set with the Failure field, the object will be persisted to storage and then deleted, ensuring that other clients can observe the deletion.
         /// </summary>
-        [JsonProperty("result")]
         [YamlMember(Alias = "result")]
+        [JsonProperty("result", NullValueHandling = NullValueHandling.Ignore)]
         public StatusV1 Result { get; set; }
     }
 }

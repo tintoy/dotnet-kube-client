@@ -17,22 +17,22 @@ namespace KubeClient.Models
         ///       "name" - the field "name" on the current resource
         ///       "items[0].name" - the field "name" on the first array entry in "items"
         /// </summary>
-        [JsonProperty("field")]
         [YamlMember(Alias = "field")]
+        [JsonProperty("field", NullValueHandling = NullValueHandling.Ignore)]
         public string Field { get; set; }
 
         /// <summary>
         ///     A human-readable description of the cause of the error.  This field may be presented as-is to a reader.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     A machine-readable description of the cause of the error. If this value is empty there is no information available.
         /// </summary>
-        [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
         public string Reason { get; set; }
     }
 }

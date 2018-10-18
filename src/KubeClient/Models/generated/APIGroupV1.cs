@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     name is the name of the group.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     preferredVersion is the version preferred by the API server, which probably is the storage version.
         /// </summary>
-        [JsonProperty("preferredVersion")]
         [YamlMember(Alias = "preferredVersion")]
+        [JsonProperty("preferredVersion", NullValueHandling = NullValueHandling.Ignore)]
         public GroupVersionForDiscoveryV1 PreferredVersion { get; set; }
 
         /// <summary>

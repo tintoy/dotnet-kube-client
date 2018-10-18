@@ -20,15 +20,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     UID information about the requesting user. See user.Info interface for details.
         /// </summary>
-        [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid", NullValueHandling = NullValueHandling.Ignore)]
         public string Uid { get; set; }
 
         /// <summary>
         ///     Information about the requesting user. See user.Info interface for details.
         /// </summary>
-        [JsonProperty("username")]
         [YamlMember(Alias = "username")]
+        [JsonProperty("username", NullValueHandling = NullValueHandling.Ignore)]
         public string Username { get; set; }
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Base64-encoded PKCS#10 CSR data
         /// </summary>
-        [JsonProperty("request")]
         [YamlMember(Alias = "request")]
+        [JsonProperty("request", NullValueHandling = NullValueHandling.Include)]
         public string Request { get; set; }
     }
 }

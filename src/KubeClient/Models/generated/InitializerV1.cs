@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     name of the process that is responsible for initializing this object.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
     }
 }

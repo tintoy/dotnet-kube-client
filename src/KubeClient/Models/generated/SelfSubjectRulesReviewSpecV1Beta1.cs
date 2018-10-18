@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Namespace to evaluate rules for. Required.
         /// </summary>
-        [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
+        [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]
         public string Namespace { get; set; }
     }
 }

@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Required: This must match the Name of a deployment.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     The config of this deployment rollback.
         /// </summary>
-        [JsonProperty("rollbackTo")]
         [YamlMember(Alias = "rollbackTo")]
+        [JsonProperty("rollbackTo", NullValueHandling = NullValueHandling.Include)]
         public RollbackConfigV1Beta1 RollbackTo { get; set; }
 
         /// <summary>

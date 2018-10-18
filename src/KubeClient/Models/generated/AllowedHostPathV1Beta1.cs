@@ -15,15 +15,15 @@ namespace KubeClient.Models
         ///     
         ///     Examples: `/foo` would allow `/foo`, `/foo/` and `/foo/bar` `/foo` would not allow `/food` or `/etc/foo`
         /// </summary>
-        [JsonProperty("pathPrefix")]
         [YamlMember(Alias = "pathPrefix")]
+        [JsonProperty("pathPrefix", NullValueHandling = NullValueHandling.Ignore)]
         public string PathPrefix { get; set; }
 
         /// <summary>
         ///     when set to true, will allow host volumes matching the pathPrefix only if all volume mounts are readOnly.
         /// </summary>
-        [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ReadOnly { get; set; }
     }
 }

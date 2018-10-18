@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     rule is the strategy that will dictate the allowable labels that may be set.
         /// </summary>
-        [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
+        [JsonProperty("rule", NullValueHandling = NullValueHandling.Include)]
         public string Rule { get; set; }
 
         /// <summary>
         ///     seLinuxOptions required to run as; required for MustRunAs More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
         /// </summary>
-        [JsonProperty("seLinuxOptions")]
         [YamlMember(Alias = "seLinuxOptions")]
+        [JsonProperty("seLinuxOptions", NullValueHandling = NullValueHandling.Ignore)]
         public SELinuxOptionsV1 SeLinuxOptions { get; set; }
     }
 }

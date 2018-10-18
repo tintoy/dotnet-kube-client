@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     LoadBalancer contains the current status of the load-balancer, if one is present.
         /// </summary>
-        [JsonProperty("loadBalancer")]
         [YamlMember(Alias = "loadBalancer")]
+        [JsonProperty("loadBalancer", NullValueHandling = NullValueHandling.Ignore)]
         public LoadBalancerStatusV1 LoadBalancer { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     rule is the strategy that will dictate what FSGroup is used in the SecurityContext.
         /// </summary>
-        [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
+        [JsonProperty("rule", NullValueHandling = NullValueHandling.Ignore)]
         public string Rule { get; set; }
 
         /// <summary>

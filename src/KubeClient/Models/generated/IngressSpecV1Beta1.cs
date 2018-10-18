@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     A default backend capable of servicing requests that don't match any rule. At least one of 'backend' or 'rules' must be specified. This field is optional to allow the loadbalancer controller or defaulting logic to specify a global default.
         /// </summary>
-        [JsonProperty("backend")]
         [YamlMember(Alias = "backend")]
+        [JsonProperty("backend", NullValueHandling = NullValueHandling.Ignore)]
         public IngressBackendV1Beta1 Backend { get; set; }
 
         /// <summary>

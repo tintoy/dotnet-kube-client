@@ -27,8 +27,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     NodePhase is the recently observed lifecycle phase of the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#phase The field is never populated, and now is deprecated.
         /// </summary>
-        [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
+        [JsonProperty("phase", NullValueHandling = NullValueHandling.Ignore)]
         public string Phase { get; set; }
 
         /// <summary>
@@ -41,15 +41,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Status of the config assigned to the node via the dynamic Kubelet config feature.
         /// </summary>
-        [JsonProperty("config")]
         [YamlMember(Alias = "config")]
+        [JsonProperty("config", NullValueHandling = NullValueHandling.Ignore)]
         public NodeConfigStatusV1 Config { get; set; }
 
         /// <summary>
         ///     Set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
         /// </summary>
-        [JsonProperty("nodeInfo")]
         [YamlMember(Alias = "nodeInfo")]
+        [JsonProperty("nodeInfo", NullValueHandling = NullValueHandling.Ignore)]
         public NodeSystemInfoV1 NodeInfo { get; set; }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Endpoints of daemons running on the Node.
         /// </summary>
-        [JsonProperty("daemonEndpoints")]
         [YamlMember(Alias = "daemonEndpoints")]
+        [JsonProperty("daemonEndpoints", NullValueHandling = NullValueHandling.Ignore)]
         public NodeDaemonEndpointsV1 DaemonEndpoints { get; set; }
 
         /// <summary>

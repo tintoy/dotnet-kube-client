@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     metricName is the name of the metric in question
         /// </summary>
-        [JsonProperty("metricName")]
         [YamlMember(Alias = "metricName")]
+        [JsonProperty("metricName", NullValueHandling = NullValueHandling.Include)]
         public string MetricName { get; set; }
 
         /// <summary>
         ///     targetAverageValue is the target value of the average of the metric across all relevant pods (as a quantity)
         /// </summary>
-        [JsonProperty("targetAverageValue")]
         [YamlMember(Alias = "targetAverageValue")]
+        [JsonProperty("targetAverageValue", NullValueHandling = NullValueHandling.Include)]
         public string TargetAverageValue { get; set; }
     }
 }

@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     The name of the scope that the selector applies to.
         /// </summary>
-        [JsonProperty("scopeName")]
         [YamlMember(Alias = "scopeName")]
+        [JsonProperty("scopeName", NullValueHandling = NullValueHandling.Include)]
         public string ScopeName { get; set; }
 
         /// <summary>
         ///     Represents a scope's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist.
         /// </summary>
-        [JsonProperty("operator")]
         [YamlMember(Alias = "operator")]
+        [JsonProperty("operator", NullValueHandling = NullValueHandling.Include)]
         public string Operator { get; set; }
 
         /// <summary>

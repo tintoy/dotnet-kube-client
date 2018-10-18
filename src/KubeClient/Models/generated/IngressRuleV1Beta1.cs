@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("http")]
         [YamlMember(Alias = "http")]
+        [JsonProperty("http", NullValueHandling = NullValueHandling.Ignore)]
         public HTTPIngressRuleValueV1Beta1 Http { get; set; }
 
         /// <summary>
@@ -25,8 +25,8 @@ namespace KubeClient.Models
         ///     	  :443 for https.
         ///     Both these may change in the future. Incoming requests are matched against the host before the IngressRuleValue. If the host is unspecified, the Ingress routes all traffic based on the specified IngressRuleValue.
         /// </summary>
-        [JsonProperty("host")]
         [YamlMember(Alias = "host")]
+        [JsonProperty("host", NullValueHandling = NullValueHandling.Ignore)]
         public string Host { get; set; }
     }
 }

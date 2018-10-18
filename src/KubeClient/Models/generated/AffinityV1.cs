@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Describes node affinity scheduling rules for the pod.
         /// </summary>
-        [JsonProperty("nodeAffinity")]
         [YamlMember(Alias = "nodeAffinity")]
+        [JsonProperty("nodeAffinity", NullValueHandling = NullValueHandling.Ignore)]
         public NodeAffinityV1 NodeAffinity { get; set; }
 
         /// <summary>
         ///     Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
         /// </summary>
-        [JsonProperty("podAffinity")]
         [YamlMember(Alias = "podAffinity")]
+        [JsonProperty("podAffinity", NullValueHandling = NullValueHandling.Ignore)]
         public PodAffinityV1 PodAffinity { get; set; }
 
         /// <summary>
         ///     Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
         /// </summary>
-        [JsonProperty("podAntiAffinity")]
         [YamlMember(Alias = "podAntiAffinity")]
+        [JsonProperty("podAntiAffinity", NullValueHandling = NullValueHandling.Ignore)]
         public PodAntiAffinityV1 PodAntiAffinity { get; set; }
     }
 }

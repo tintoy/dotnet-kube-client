@@ -25,9 +25,9 @@ namespace KubeClient.Models
         /// <summary>
         ///     AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted. Can be overridden at the pod level.
         /// </summary>
-        [JsonProperty("automountServiceAccountToken")]
         [YamlMember(Alias = "automountServiceAccountToken")]
-        public bool AutomountServiceAccountToken { get; set; }
+        [JsonProperty("automountServiceAccountToken", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AutomountServiceAccountToken { get; set; }
 
         /// <summary>
         ///     ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images in pods that reference this ServiceAccount. ImagePullSecrets are distinct from Secrets because Secrets can be mounted in the pod, but ImagePullSecrets are only accessed by the kubelet. More info: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod

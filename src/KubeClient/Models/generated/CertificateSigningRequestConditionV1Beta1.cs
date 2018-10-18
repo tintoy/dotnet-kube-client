@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     timestamp for the last update to this condition
         /// </summary>
-        [JsonProperty("lastUpdateTime")]
         [YamlMember(Alias = "lastUpdateTime")]
+        [JsonProperty("lastUpdateTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastUpdateTime { get; set; }
 
         /// <summary>
         ///     human readable message with details about the request state
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     request approval state, currently Approved or Denied.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
         public string Type { get; set; }
 
         /// <summary>
         ///     brief reason for the request state
         /// </summary>
-        [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
         public string Reason { get; set; }
     }
 }

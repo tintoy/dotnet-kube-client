@@ -20,8 +20,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Selector is a label query over a set of resources, in this case pods. Required.
         /// </summary>
-        [JsonProperty("selector")]
         [YamlMember(Alias = "selector")]
+        [JsonProperty("selector", NullValueHandling = NullValueHandling.Ignore)]
         public LabelSelectorV1 Selector { get; set; }
 
         /// <summary>

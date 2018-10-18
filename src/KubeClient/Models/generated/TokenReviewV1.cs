@@ -15,15 +15,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec holds information about the request being evaluated
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Include)]
         public TokenReviewSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Status is filled in by the server and indicates whether the request can be authenticated.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public TokenReviewStatusV1 Status { get; set; }
     }
 }

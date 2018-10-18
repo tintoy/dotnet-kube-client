@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     CIDR is a string representing the IP Block Valid examples are "192.168.1.1/24"
         /// </summary>
-        [JsonProperty("cidr")]
         [YamlMember(Alias = "cidr")]
+        [JsonProperty("cidr", NullValueHandling = NullValueHandling.Include)]
         public string Cidr { get; set; }
 
         /// <summary>

@@ -13,36 +13,36 @@ namespace KubeClient.Models
         /// <summary>
         ///     The last time the condition transitioned from one status to another.
         /// </summary>
-        [JsonProperty("lastTransitionTime")]
         [YamlMember(Alias = "lastTransitionTime")]
+        [JsonProperty("lastTransitionTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
         ///     A human readable message indicating details about the transition.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     Type of replication controller condition.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
         public string Type { get; set; }
 
         /// <summary>
         ///     The reason for the condition's last transition.
         /// </summary>
-        [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
         public string Reason { get; set; }
 
         /// <summary>
         ///     Status of the condition, one of True, False, Unknown.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
         public string Status { get; set; }
     }
 }

@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     Message about the condition for a component. For example, information about a health check.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     Type of condition for a component. Valid value: "Healthy"
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
         public string Type { get; set; }
 
         /// <summary>
         ///     Condition error code for a component. For example, a health check error code.
         /// </summary>
-        [JsonProperty("error")]
         [YamlMember(Alias = "error")]
+        [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
         public string Error { get; set; }
 
         /// <summary>
         ///     Status of the condition for a component. Valid values for "Healthy": "True", "False", or "Unknown".
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
         public string Status { get; set; }
     }
 }

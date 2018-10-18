@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     metricName is the name of the metric in question.
         /// </summary>
-        [JsonProperty("metricName")]
         [YamlMember(Alias = "metricName")]
+        [JsonProperty("metricName", NullValueHandling = NullValueHandling.Include)]
         public string MetricName { get; set; }
 
         /// <summary>
         ///     targetValue is the target value of the metric (as a quantity).
         /// </summary>
-        [JsonProperty("targetValue")]
         [YamlMember(Alias = "targetValue")]
+        [JsonProperty("targetValue", NullValueHandling = NullValueHandling.Include)]
         public string TargetValue { get; set; }
 
         /// <summary>
         ///     target is the described Kubernetes object.
         /// </summary>
-        [JsonProperty("target")]
         [YamlMember(Alias = "target")]
+        [JsonProperty("target", NullValueHandling = NullValueHandling.Include)]
         public CrossVersionObjectReferenceV2Beta1 Target { get; set; }
     }
 }

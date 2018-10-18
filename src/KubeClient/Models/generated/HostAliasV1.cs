@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     IP address of the host file entry.
         /// </summary>
-        [JsonProperty("ip")]
         [YamlMember(Alias = "ip")]
+        [JsonProperty("ip", NullValueHandling = NullValueHandling.Ignore)]
         public string Ip { get; set; }
 
         /// <summary>

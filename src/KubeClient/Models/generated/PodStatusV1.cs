@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     IP address of the host to which the pod is assigned. Empty if not yet scheduled.
         /// </summary>
-        [JsonProperty("hostIP")]
         [YamlMember(Alias = "hostIP")]
+        [JsonProperty("hostIP", NullValueHandling = NullValueHandling.Ignore)]
         public string HostIP { get; set; }
 
         /// <summary>
         ///     IP address allocated to the pod. Routable at least within the cluster. Empty if not yet allocated.
         /// </summary>
-        [JsonProperty("podIP")]
         [YamlMember(Alias = "podIP")]
+        [JsonProperty("podIP", NullValueHandling = NullValueHandling.Ignore)]
         public string PodIP { get; set; }
 
         /// <summary>
         ///     A human readable message indicating details about why the pod is in this condition.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     nominatedNodeName is set only when this pod preempts other pods on the node, but it cannot be scheduled right away as preemption victims receive their graceful termination periods. This field does not guarantee that the pod will be scheduled on this node. Scheduler may decide to place the pod elsewhere if other nodes become available sooner. Scheduler may also decide to give the resources on this node to a higher priority pod that is created after preemption. As a result, this field may be different than PodSpec.nodeName when the pod is scheduled.
         /// </summary>
-        [JsonProperty("nominatedNodeName")]
         [YamlMember(Alias = "nominatedNodeName")]
+        [JsonProperty("nominatedNodeName", NullValueHandling = NullValueHandling.Ignore)]
         public string NominatedNodeName { get; set; }
 
         /// <summary>
@@ -45,22 +45,22 @@ namespace KubeClient.Models
         ///     
         ///     More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-phase
         /// </summary>
-        [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
+        [JsonProperty("phase", NullValueHandling = NullValueHandling.Ignore)]
         public string Phase { get; set; }
 
         /// <summary>
         ///     RFC 3339 date and time at which the object was acknowledged by the Kubelet. This is before the Kubelet pulled the container image(s) for the pod.
         /// </summary>
-        [JsonProperty("startTime")]
         [YamlMember(Alias = "startTime")]
+        [JsonProperty("startTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? StartTime { get; set; }
 
         /// <summary>
         ///     A brief CamelCase message indicating details about why the pod is in this state. e.g. 'Evicted'
         /// </summary>
-        [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
         public string Reason { get; set; }
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     The Quality of Service (QOS) classification assigned to the pod based on resource requirements See PodQOSClass type for available QOS classes More info: https://git.k8s.io/community/contributors/design-proposals/node/resource-qos.md
         /// </summary>
-        [JsonProperty("qosClass")]
         [YamlMember(Alias = "qosClass")]
+        [JsonProperty("qosClass", NullValueHandling = NullValueHandling.Ignore)]
         public string QosClass { get; set; }
     }
 }
