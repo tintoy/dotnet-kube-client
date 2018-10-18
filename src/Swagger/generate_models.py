@@ -19,6 +19,7 @@ IGNORE_MODELS = [
     'io.k8s.api.apps.v1beta2.ControllerRevisionList',
 ]
 VALUE_TYPE_NAMES = [
+    'bool',
     'int',
     'DateTime'
 ]
@@ -41,13 +42,14 @@ class KubeModel(object):
     Represents a Kubernetes API model.
     """
 
-    def __init__(self, name, summary, api_version, pretty_api_version, kube_group):
+    def __init__(self, name, summary, api_version, pretty_api_version, kube_group, required_property_keys):
         self.name = name
         self.api_version = api_version
         self.pretty_api_version = pretty_api_version
         self.kube_group = kube_group
         self.clr_name = self.name + self.pretty_api_version
         self.summary = summary or 'No summary provided'
+        self.required_property_keys = required_property_keys
         self.properties = {}
 
     def update_properties(self, property_definitions, data_types):
@@ -67,7 +69,10 @@ class KubeModel(object):
                 safe_property_name,
                 property_name,
                 property_definitions[property_name],
-                data_types
+                data_types,
+                is_optional=(
+                    property_name not in self.required_property_keys
+                )
             )
 
     def is_kube_object(self):
@@ -142,6 +147,10 @@ class KubeModel(object):
             '>', '&gt;'
         )
 
+        required_property_keys = set(
+            definition.get('required') or []
+        )
+
         # Override model metadata with Kubernetes-specific values, if available.
         kube_group = ''
         if 'x-kubernetes-group-version-kind' in definition:
@@ -152,7 +161,7 @@ class KubeModel(object):
 
             name = kube_kind
 
-        return KubeModel(name, summary, api_version, pretty_api_version, kube_group)
+        return KubeModel(name, summary, api_version, pretty_api_version, kube_group, required_property_keys)
 
 
     @classmethod
@@ -207,9 +216,8 @@ class KubeModelProperty(object):
         )
 
     @classmethod
-    def from_definition(cls, name, json_name, property_definition, data_types):
+    def from_definition(cls, name, json_name, property_definition, data_types, is_optional):
         summary = property_definition.get('description', 'Description not provided.')
-        is_optional = summary.startswith('Optional') or 'if not specified' in summary
         data_type = KubeDataType.from_definition(property_definition, data_types)
 
         is_merge = False
@@ -638,9 +646,12 @@ def main():
                         if not model_property.merge_key:
                             class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
 
-                    class_file.write('        [JsonProperty("%s")]%s' % (model_property.json_name, LINE_ENDING))
+                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))                    
 
-                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
+                    if model_property.is_optional:
+                        class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
+                    else:
+                        class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Include)]%s' % (model_property.json_name, LINE_ENDING))
 
                     # ...but longer attribute comes after [YamlMember].
                     if model_property.is_merge:
