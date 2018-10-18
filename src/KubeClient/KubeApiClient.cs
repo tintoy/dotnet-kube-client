@@ -133,20 +133,22 @@ namespace KubeClient
             
             var clientBuilder = new ClientBuilder();
 
-            if (!String.IsNullOrWhiteSpace(options.AccessToken))
+            if (options.AuthStrategy == AuthStrategy.StaticBearerToken)
             {
                 clientBuilder = clientBuilder.AddHandler(
                     () => new StaticBearerTokenHandler(options.AccessToken)
                 );
             }
-            else if (!String.IsNullOrWhiteSpace(options.AccessTokenCommand))
+            else if (options.AuthStrategy == AuthStrategy.RefreshableBearerToken)
             {
                 clientBuilder = clientBuilder.AddHandler(
                     () => new CommandBearerTokenHandler(
                         accessTokenCommand: options.AccessTokenCommand,
                         accessTokenCommandArguments: options.AccessTokenCommandArguments,
                         accessTokenSelector: options.AccessTokenSelector,
-                        accessTokenExpirySelector: options.AccessTokenExpirySelector
+                        accessTokenExpirySelector: options.AccessTokenExpirySelector,
+                        initialAccessToken: options.InitialAccessToken,
+                        initialTokenExpiry: options.InitialTokenExpiry
                     )
                 );
             }
