@@ -1,12 +1,15 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
+using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
+    
     using Models;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using TestCommon;
 
     /// <summary>
@@ -49,6 +52,65 @@ namespace KubeClient.Tests
             
             Assert.NotNull(rootToken);
             Assert.Equal(rootToken.Type, expectedTokenType);
+        }
+
+        /// <summary>
+        ///     Verify that serialised models correctly include or omit required/optional empty collection properties.
+        /// </summary>
+        [InlineData(typeof(ObjectMetaV1), nameof(ObjectMetaV1.Annotations),  false)]
+        [InlineData(typeof(ObjectMetaV1), nameof(ObjectMetaV1.Labels),       false)]
+        [InlineData(typeof(PodSpecV1),    nameof(PodSpecV1.Containers),      true)]
+        [InlineData(typeof(PodSpecV1),    nameof(PodSpecV1.HostAliases),     false)]
+        [Theory(DisplayName = "Serialised models correctly include or omit required/optional empty collection properties ")]
+        public void KubeObjectV1_Empty_CollectionProperty(Type modelType, string targetPropertyName, bool shouldBeSerialized)
+        {
+            object model = Activator.CreateInstance(modelType);
+
+            JObject rootObject;
+            using (JTokenWriter writer = new JTokenWriter())
+            {
+                new JsonSerializer().Serialize(writer, model);
+                writer.Flush();
+
+                rootObject = (JObject)writer.Token;
+            }
+
+            string expectedPropertyName = GetJsonPropertyName(modelType, targetPropertyName);
+            string[] actualPropertyNames = rootObject.Properties().Select(property => property.Name).ToArray();
+
+            if (shouldBeSerialized)
+                Assert.Contains(expectedPropertyName, actualPropertyNames);
+            else
+                Assert.DoesNotContain(expectedPropertyName, actualPropertyNames);
+        }
+
+        /// <summary>
+        ///     Get the JSON property name corresponding to the specified model property.
+        /// </summary>
+        /// <param name="modelType">
+        ///     The model <see cref="Type"/>.
+        /// </param>
+        /// <param name="propertyName">
+        ///     The name of the target property.
+        /// </param>
+        /// <returns>
+        ///     The JSON property name.
+        /// </returns>
+        static string GetJsonPropertyName(Type modelType, string propertyName)
+        {
+            if (modelType == null)
+                throw new ArgumentNullException(nameof(modelType));
+            
+            if (String.IsNullOrWhiteSpace(propertyName))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'propertyName'.", nameof(propertyName));
+            
+            PropertyInfo targetProperty = modelType.GetProperty(propertyName);
+            Assert.NotNull(targetProperty);
+
+            JsonPropertyAttribute jsonPropertyAttribute = targetProperty.GetCustomAttribute<JsonPropertyAttribute>();
+            Assert.NotNull(jsonPropertyAttribute);
+
+            return jsonPropertyAttribute.PropertyName;
         }
     }
 }
