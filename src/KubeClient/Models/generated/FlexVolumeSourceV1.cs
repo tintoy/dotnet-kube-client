@@ -35,8 +35,13 @@ namespace KubeClient.Models
         ///     Optional: Extra command options if any.
         /// </summary>
         [YamlMember(Alias = "options")]
-        [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("options", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Options { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Options"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeOptions() => Options.Count > 0;
 
         /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.

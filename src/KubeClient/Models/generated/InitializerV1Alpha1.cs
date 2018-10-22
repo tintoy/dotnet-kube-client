@@ -21,7 +21,12 @@ namespace KubeClient.Models
         ///     Rules describes what resources/subresources the initializer cares about. The initializer cares about an operation if it matches _any_ Rule. Rule.Resources must not include subresources.
         /// </summary>
         [YamlMember(Alias = "rules")]
-        [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<RuleV1Alpha1> Rules { get; set; } = new List<RuleV1Alpha1>();
+        [JsonProperty("rules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<RuleV1Alpha1> Rules { get; } = new List<RuleV1Alpha1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Rules"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRules() => Rules.Count > 0;
     }
 }

@@ -28,15 +28,25 @@ namespace KubeClient.Models
         ///     Optional: FC target worldwide names (WWNs)
         /// </summary>
         [YamlMember(Alias = "targetWWNs")]
-        [JsonProperty("targetWWNs", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> TargetWWNs { get; set; } = new List<string>();
+        [JsonProperty("targetWWNs", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> TargetWWNs { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="TargetWWNs"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeTargetWWNs() => TargetWWNs.Count > 0;
 
         /// <summary>
         ///     Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
         /// </summary>
         [YamlMember(Alias = "wwids")]
-        [JsonProperty("wwids", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Wwids { get; set; } = new List<string>();
+        [JsonProperty("wwids", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Wwids { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Wwids"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeWwids() => Wwids.Count > 0;
 
         /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.

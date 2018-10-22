@@ -50,7 +50,12 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<JobConditionV1> Conditions { get; set; } = new List<JobConditionV1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<JobConditionV1> Conditions { get; } = new List<JobConditionV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
     }
 }

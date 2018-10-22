@@ -21,7 +21,12 @@ namespace KubeClient.Models
         ///     ranges are the allowed ranges of uids that may be used. If you would like to force a single uid then supply a single range with the same start and end. Required for MustRunAs.
         /// </summary>
         [YamlMember(Alias = "ranges")]
-        [JsonProperty("ranges", NullValueHandling = NullValueHandling.Ignore)]
-        public List<IDRangeV1Beta1> Ranges { get; set; } = new List<IDRangeV1Beta1>();
+        [JsonProperty("ranges", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<IDRangeV1Beta1> Ranges { get; } = new List<IDRangeV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Ranges"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRanges() => Ranges.Count > 0;
     }
 }

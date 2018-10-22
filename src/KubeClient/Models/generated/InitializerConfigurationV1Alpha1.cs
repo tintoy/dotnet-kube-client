@@ -25,7 +25,12 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "initializers")]
-        [JsonProperty("initializers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<InitializerV1Alpha1> Initializers { get; set; } = new List<InitializerV1Alpha1>();
+        [JsonProperty("initializers", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<InitializerV1Alpha1> Initializers { get; } = new List<InitializerV1Alpha1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Initializers"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeInitializers() => Initializers.Count > 0;
     }
 }

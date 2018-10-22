@@ -42,8 +42,13 @@ namespace KubeClient.Models
         ///     AccessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
         /// </summary>
         [YamlMember(Alias = "accessModes")]
-        [JsonProperty("accessModes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> AccessModes { get; set; } = new List<string>();
+        [JsonProperty("accessModes", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> AccessModes { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="AccessModes"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAccessModes() => AccessModes.Count > 0;
 
         /// <summary>
         ///     Resources represents the minimum resources the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources

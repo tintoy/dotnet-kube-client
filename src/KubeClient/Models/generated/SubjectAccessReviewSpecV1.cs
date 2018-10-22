@@ -14,8 +14,13 @@ namespace KubeClient.Models
         ///     Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
         /// </summary>
         [YamlMember(Alias = "extra")]
-        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        [JsonProperty("extra", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, List<string>> Extra { get; } = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Extra"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeExtra() => Extra.Count > 0;
 
         /// <summary>
         ///     UID information about the requesting user.
@@ -35,8 +40,13 @@ namespace KubeClient.Models
         ///     Groups is the groups you're testing for.
         /// </summary>
         [YamlMember(Alias = "groups")]
-        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Groups { get; set; } = new List<string>();
+        [JsonProperty("groups", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Groups { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Groups"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeGroups() => Groups.Count > 0;
 
         /// <summary>
         ///     NonResourceAttributes describes information for a non-resource access request

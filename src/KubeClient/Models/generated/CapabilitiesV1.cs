@@ -14,14 +14,24 @@ namespace KubeClient.Models
         ///     Added capabilities
         /// </summary>
         [YamlMember(Alias = "add")]
-        [JsonProperty("add", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Add { get; set; } = new List<string>();
+        [JsonProperty("add", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Add { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Add"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAdd() => Add.Count > 0;
 
         /// <summary>
         ///     Removed capabilities
         /// </summary>
         [YamlMember(Alias = "drop")]
-        [JsonProperty("drop", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Drop { get; set; } = new List<string>();
+        [JsonProperty("drop", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Drop { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Drop"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeDrop() => Drop.Count > 0;
     }
 }

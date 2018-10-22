@@ -28,8 +28,13 @@ namespace KubeClient.Models
         ///     Custom headers to set in the request. HTTP allows repeated headers.
         /// </summary>
         [YamlMember(Alias = "httpHeaders")]
-        [JsonProperty("httpHeaders", NullValueHandling = NullValueHandling.Ignore)]
-        public List<HTTPHeaderV1> HttpHeaders { get; set; } = new List<HTTPHeaderV1>();
+        [JsonProperty("httpHeaders", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<HTTPHeaderV1> HttpHeaders { get; } = new List<HTTPHeaderV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="HttpHeaders"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeHttpHeaders() => HttpHeaders.Count > 0;
 
         /// <summary>
         ///     Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.

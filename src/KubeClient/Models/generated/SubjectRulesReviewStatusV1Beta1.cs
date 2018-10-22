@@ -28,14 +28,14 @@ namespace KubeClient.Models
         ///     NonResourceRules is the list of actions the subject is allowed to perform on non-resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
         /// </summary>
         [YamlMember(Alias = "nonResourceRules")]
-        [JsonProperty("nonResourceRules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NonResourceRuleV1Beta1> NonResourceRules { get; set; } = new List<NonResourceRuleV1Beta1>();
+        [JsonProperty("nonResourceRules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<NonResourceRuleV1Beta1> NonResourceRules { get; } = new List<NonResourceRuleV1Beta1>();
 
         /// <summary>
         ///     ResourceRules is the list of actions the subject is allowed to perform on resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
         /// </summary>
         [YamlMember(Alias = "resourceRules")]
-        [JsonProperty("resourceRules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ResourceRuleV1Beta1> ResourceRules { get; set; } = new List<ResourceRuleV1Beta1>();
+        [JsonProperty("resourceRules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ResourceRuleV1Beta1> ResourceRules { get; } = new List<ResourceRuleV1Beta1>();
     }
 }

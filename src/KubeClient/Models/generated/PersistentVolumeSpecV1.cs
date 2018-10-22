@@ -161,8 +161,13 @@ namespace KubeClient.Models
         ///     AccessModes contains all ways the volume can be mounted. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes
         /// </summary>
         [YamlMember(Alias = "accessModes")]
-        [JsonProperty("accessModes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> AccessModes { get; set; } = new List<string>();
+        [JsonProperty("accessModes", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> AccessModes { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="AccessModes"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAccessModes() => AccessModes.Count > 0;
 
         /// <summary>
         ///     CephFS represents a Ceph FS mount on the host that shares a pod's lifetime
@@ -182,8 +187,13 @@ namespace KubeClient.Models
         ///     A list of mount options, e.g. ["ro", "soft"]. Not validated - mount will simply fail if one is invalid. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#mount-options
         /// </summary>
         [YamlMember(Alias = "mountOptions")]
-        [JsonProperty("mountOptions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> MountOptions { get; set; } = new List<string>();
+        [JsonProperty("mountOptions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> MountOptions { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="MountOptions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeMountOptions() => MountOptions.Count > 0;
 
         /// <summary>
         ///     NFS represents an NFS mount on the host. Provisioned by an admin. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
@@ -203,8 +213,13 @@ namespace KubeClient.Models
         ///     A description of the persistent volume's resources and capacity. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity
         /// </summary>
         [YamlMember(Alias = "capacity")]
-        [JsonProperty("capacity", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Capacity { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("capacity", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Capacity { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Capacity"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeCapacity() => Capacity.Count > 0;
 
         /// <summary>
         ///     NodeAffinity defines constraints that limit what nodes this volume can be accessed from. This field influences the scheduling of pods that use this volume.

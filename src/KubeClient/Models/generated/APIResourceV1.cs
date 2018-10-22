@@ -56,21 +56,31 @@ namespace KubeClient.Models
         ///     categories is a list of the grouped resources this resource belongs to (e.g. 'all')
         /// </summary>
         [YamlMember(Alias = "categories")]
-        [JsonProperty("categories", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Categories { get; set; } = new List<string>();
+        [JsonProperty("categories", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Categories { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Categories"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeCategories() => Categories.Count > 0;
 
         /// <summary>
         ///     shortNames is a list of suggested short names of the resource.
         /// </summary>
         [YamlMember(Alias = "shortNames")]
-        [JsonProperty("shortNames", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> ShortNames { get; set; } = new List<string>();
+        [JsonProperty("shortNames", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> ShortNames { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ShortNames"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeShortNames() => ShortNames.Count > 0;
 
         /// <summary>
         ///     verbs is a list of supported kube verbs (this includes get, list, watch, create, update, patch, delete, deletecollection, and proxy)
         /// </summary>
         [YamlMember(Alias = "verbs")]
-        [JsonProperty("verbs", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Verbs { get; set; } = new List<string>();
+        [JsonProperty("verbs", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Verbs { get; } = new List<string>();
     }
 }

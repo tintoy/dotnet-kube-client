@@ -629,14 +629,24 @@ def main():
                         if model_property.merge_key and len(model_property.merge_key) > len(model_property.json_name):
                             class_file.write('        [MergeStrategy(Key = "%s")]%s' % (model_property.merge_key, LINE_ENDING))
 
-                    class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))
+                    class_file.write('        [JsonProperty("%s", ObjectCreationHandling = ObjectCreationHandling.Reuse)]%s' % (model_property.json_name, LINE_ENDING))
 
-                    class_file.write('        public %s %s { get; set; } = new %s();%s' % (
+                    class_file.write('        public %s %s { get; } = new %s();%s' % (
                         model_property.data_type.to_clr_type_name(),
                         model_property.name,
                         model_property.data_type.to_clr_type_name(),
                         LINE_ENDING
                     ))
+
+                    # Don't serialise empty lists for optional properties.
+                    # See tintoy/dotnet-kube-client#36 for reasoning behind this.
+                    if model_property.is_optional:
+                        class_file.write(LINE_ENDING)
+
+                        class_file.write('        /// <summary>' + LINE_ENDING)
+                        class_file.write('        ///     Determine whether the <see cref="{0}"/> property should be serialised.{1}'.format(model_property.name, LINE_ENDING))
+                        class_file.write('        /// </summary>' + LINE_ENDING)
+                        class_file.write('        public bool ShouldSerialize{0}() => {0}.Count > 0;{1}'.format(model_property.name, LINE_ENDING))
                 else:
                     if model_property.is_retain_keys:
                         class_file.write('        [RetainKeysStrategy]%s' % (LINE_ENDING, ))
@@ -646,7 +656,7 @@ def main():
                         if not model_property.merge_key:
                             class_file.write('        [MergeStrategy]%s' % (LINE_ENDING,))
 
-                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))                    
+                    class_file.write('        [YamlMember(Alias = "%s")]%s' % (model_property.json_name, LINE_ENDING))
 
                     if model_property.is_optional:
                         class_file.write('        [JsonProperty("%s", NullValueHandling = NullValueHandling.Ignore)]%s' % (model_property.json_name, LINE_ENDING))

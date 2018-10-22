@@ -47,22 +47,37 @@ namespace KubeClient.Models
         ///     Restrict the node topologies where volumes can be dynamically provisioned. Each volume plugin defines its own supported topology specifications. An empty TopologySelectorTerm list means there is no topology restriction. This field is alpha-level and is only honored by servers that enable the DynamicProvisioningScheduling feature.
         /// </summary>
         [YamlMember(Alias = "allowedTopologies")]
-        [JsonProperty("allowedTopologies", NullValueHandling = NullValueHandling.Ignore)]
-        public List<TopologySelectorTermV1> AllowedTopologies { get; set; } = new List<TopologySelectorTermV1>();
+        [JsonProperty("allowedTopologies", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<TopologySelectorTermV1> AllowedTopologies { get; } = new List<TopologySelectorTermV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="AllowedTopologies"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAllowedTopologies() => AllowedTopologies.Count > 0;
 
         /// <summary>
         ///     Dynamically provisioned PersistentVolumes of this storage class are created with these mountOptions, e.g. ["ro", "soft"]. Not validated - mount of the PVs will simply fail if one is invalid.
         /// </summary>
         [YamlMember(Alias = "mountOptions")]
-        [JsonProperty("mountOptions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> MountOptions { get; set; } = new List<string>();
+        [JsonProperty("mountOptions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> MountOptions { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="MountOptions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeMountOptions() => MountOptions.Count > 0;
 
         /// <summary>
         ///     Parameters holds the parameters for the provisioner that should create volumes of this storage class.
         /// </summary>
         [YamlMember(Alias = "parameters")]
-        [JsonProperty("parameters", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("parameters", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Parameters { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Parameters"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeParameters() => Parameters.Count > 0;
 
         /// <summary>
         ///     Dynamically provisioned PersistentVolumes of this storage class are created with this reclaimPolicy. Defaults to Delete.

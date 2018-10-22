@@ -68,22 +68,37 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PodConditionV1> Conditions { get; set; } = new List<PodConditionV1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<PodConditionV1> Conditions { get; } = new List<PodConditionV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
 
         /// <summary>
         ///     The list has one entry per container in the manifest. Each entry is currently the output of `docker inspect`. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-and-container-status
         /// </summary>
         [YamlMember(Alias = "containerStatuses")]
-        [JsonProperty("containerStatuses", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ContainerStatusV1> ContainerStatuses { get; set; } = new List<ContainerStatusV1>();
+        [JsonProperty("containerStatuses", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ContainerStatusV1> ContainerStatuses { get; } = new List<ContainerStatusV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ContainerStatuses"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeContainerStatuses() => ContainerStatuses.Count > 0;
 
         /// <summary>
         ///     The list has one entry per init container in the manifest. The most recent successful init container will have ready = true, the most recently started container will have startTime set. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-and-container-status
         /// </summary>
         [YamlMember(Alias = "initContainerStatuses")]
-        [JsonProperty("initContainerStatuses", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ContainerStatusV1> InitContainerStatuses { get; set; } = new List<ContainerStatusV1>();
+        [JsonProperty("initContainerStatuses", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ContainerStatusV1> InitContainerStatuses { get; } = new List<ContainerStatusV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="InitContainerStatuses"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeInitContainerStatuses() => InitContainerStatuses.Count > 0;
 
         /// <summary>
         ///     The Quality of Service (QOS) classification assigned to the pod based on resource requirements See PodQOSClass type for available QOS classes More info: https://git.k8s.io/community/contributors/design-proposals/node/resource-qos.md

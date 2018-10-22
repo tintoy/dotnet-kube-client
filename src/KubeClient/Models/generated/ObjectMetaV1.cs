@@ -98,8 +98,13 @@ namespace KubeClient.Models
         ///     Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
         /// </summary>
         [YamlMember(Alias = "annotations")]
-        [JsonProperty("annotations", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Annotations { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("annotations", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Annotations { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Annotations"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAnnotations() => Annotations.Count > 0;
 
         /// <summary>
         ///     Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
@@ -113,8 +118,13 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy]
         [YamlMember(Alias = "finalizers")]
-        [JsonProperty("finalizers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Finalizers { get; set; } = new List<string>();
+        [JsonProperty("finalizers", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Finalizers { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Finalizers"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeFinalizers() => Finalizers.Count > 0;
 
         /// <summary>
         ///     An initializer is a controller which enforces some system invariant at object creation time. This field is a list of initializers that have not yet acted on this object. If nil or empty, this object has been completely initialized. Otherwise, the object is considered uninitialized and is hidden (in list/watch and get calls) from clients that haven't explicitly asked to observe uninitialized objects.
@@ -129,15 +139,25 @@ namespace KubeClient.Models
         ///     Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
         /// </summary>
         [YamlMember(Alias = "labels")]
-        [JsonProperty("labels", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Labels { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("labels", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Labels { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Labels"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeLabels() => Labels.Count > 0;
 
         /// <summary>
         ///     List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
         /// </summary>
         [MergeStrategy(Key = "uid")]
         [YamlMember(Alias = "ownerReferences")]
-        [JsonProperty("ownerReferences", NullValueHandling = NullValueHandling.Ignore)]
-        public List<OwnerReferenceV1> OwnerReferences { get; set; } = new List<OwnerReferenceV1>();
+        [JsonProperty("ownerReferences", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<OwnerReferenceV1> OwnerReferences { get; } = new List<OwnerReferenceV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="OwnerReferences"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeOwnerReferences() => OwnerReferences.Count > 0;
     }
 }

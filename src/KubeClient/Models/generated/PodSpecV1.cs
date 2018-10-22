@@ -98,8 +98,13 @@ namespace KubeClient.Models
         ///     NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
         /// </summary>
         [YamlMember(Alias = "nodeSelector")]
-        [JsonProperty("nodeSelector", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> NodeSelector { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("nodeSelector", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> NodeSelector { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="NodeSelector"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeNodeSelector() => NodeSelector.Count > 0;
 
         /// <summary>
         ///     Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
@@ -113,39 +118,59 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "containers")]
-        [JsonProperty("containers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ContainerV1> Containers { get; set; } = new List<ContainerV1>();
+        [JsonProperty("containers", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ContainerV1> Containers { get; } = new List<ContainerV1>();
 
         /// <summary>
         ///     HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified. This is only valid for non-hostNetwork pods.
         /// </summary>
         [MergeStrategy(Key = "ip")]
         [YamlMember(Alias = "hostAliases")]
-        [JsonProperty("hostAliases", NullValueHandling = NullValueHandling.Ignore)]
-        public List<HostAliasV1> HostAliases { get; set; } = new List<HostAliasV1>();
+        [JsonProperty("hostAliases", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<HostAliasV1> HostAliases { get; } = new List<HostAliasV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="HostAliases"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeHostAliases() => HostAliases.Count > 0;
 
         /// <summary>
         ///     ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. For example, in the case of docker, only DockerConfig type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
         /// </summary>
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "imagePullSecrets")]
-        [JsonProperty("imagePullSecrets", NullValueHandling = NullValueHandling.Ignore)]
-        public List<LocalObjectReferenceV1> ImagePullSecrets { get; set; } = new List<LocalObjectReferenceV1>();
+        [JsonProperty("imagePullSecrets", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<LocalObjectReferenceV1> ImagePullSecrets { get; } = new List<LocalObjectReferenceV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ImagePullSecrets"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeImagePullSecrets() => ImagePullSecrets.Count > 0;
 
         /// <summary>
         ///     List of initialization containers belonging to the pod. Init containers are executed in order prior to containers being started. If any init container fails, the pod is considered to have failed and is handled according to its restartPolicy. The name for an init container or normal container must be unique among all containers. Init containers may not have Lifecycle actions, Readiness probes, or Liveness probes. The resourceRequirements of an init container are taken into account during scheduling by finding the highest request/limit for each resource type, and then using the max of of that value or the sum of the normal containers. Limits are applied to init containers in a similar fashion. Init containers cannot currently be added or removed. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
         /// </summary>
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "initContainers")]
-        [JsonProperty("initContainers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ContainerV1> InitContainers { get; set; } = new List<ContainerV1>();
+        [JsonProperty("initContainers", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ContainerV1> InitContainers { get; } = new List<ContainerV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="InitContainers"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeInitContainers() => InitContainers.Count > 0;
 
         /// <summary>
         ///     If specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to "True" More info: https://github.com/kubernetes/community/blob/master/keps/sig-network/0007-pod-ready%2B%2B.md
         /// </summary>
         [YamlMember(Alias = "readinessGates")]
-        [JsonProperty("readinessGates", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PodReadinessGateV1> ReadinessGates { get; set; } = new List<PodReadinessGateV1>();
+        [JsonProperty("readinessGates", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<PodReadinessGateV1> ReadinessGates { get; } = new List<PodReadinessGateV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ReadinessGates"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeReadinessGates() => ReadinessGates.Count > 0;
 
         /// <summary>
         ///     Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 30 seconds.
@@ -158,8 +183,13 @@ namespace KubeClient.Models
         ///     If specified, the pod's tolerations.
         /// </summary>
         [YamlMember(Alias = "tolerations")]
-        [JsonProperty("tolerations", NullValueHandling = NullValueHandling.Ignore)]
-        public List<TolerationV1> Tolerations { get; set; } = new List<TolerationV1>();
+        [JsonProperty("tolerations", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<TolerationV1> Tolerations { get; } = new List<TolerationV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Tolerations"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeTolerations() => Tolerations.Count > 0;
 
         /// <summary>
         ///     List of volumes that can be mounted by containers belonging to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes
@@ -167,8 +197,13 @@ namespace KubeClient.Models
         [RetainKeysStrategy]
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "volumes")]
-        [JsonProperty("volumes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<VolumeV1> Volumes { get; set; } = new List<VolumeV1>();
+        [JsonProperty("volumes", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<VolumeV1> Volumes { get; } = new List<VolumeV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Volumes"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeVolumes() => Volumes.Count > 0;
 
         /// <summary>
         ///     SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.

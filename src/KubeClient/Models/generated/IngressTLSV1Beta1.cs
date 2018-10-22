@@ -21,7 +21,12 @@ namespace KubeClient.Models
         ///     Hosts are a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
         /// </summary>
         [YamlMember(Alias = "hosts")]
-        [JsonProperty("hosts", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Hosts { get; set; } = new List<string>();
+        [JsonProperty("hosts", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Hosts { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Hosts"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeHosts() => Hosts.Count > 0;
     }
 }

@@ -22,7 +22,12 @@ namespace KubeClient.Models
         ///     Items is a list of downward API volume file
         /// </summary>
         [YamlMember(Alias = "items")]
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DownwardAPIVolumeFileV1> Items { get; set; } = new List<DownwardAPIVolumeFileV1>();
+        [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<DownwardAPIVolumeFileV1> Items { get; } = new List<DownwardAPIVolumeFileV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Items"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeItems() => Items.Count > 0;
     }
 }

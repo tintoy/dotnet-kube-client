@@ -42,8 +42,13 @@ namespace KubeClient.Models
         ///     The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.
         /// </summary>
         [YamlMember(Alias = "causes")]
-        [JsonProperty("causes", NullValueHandling = NullValueHandling.Ignore)]
-        public List<StatusCauseV1> Causes { get; set; } = new List<StatusCauseV1>();
+        [JsonProperty("causes", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<StatusCauseV1> Causes { get; } = new List<StatusCauseV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Causes"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeCauses() => Causes.Count > 0;
 
         /// <summary>
         ///     If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.

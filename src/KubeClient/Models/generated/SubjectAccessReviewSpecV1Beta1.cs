@@ -14,8 +14,13 @@ namespace KubeClient.Models
         ///     Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
         /// </summary>
         [YamlMember(Alias = "extra")]
-        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        [JsonProperty("extra", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, List<string>> Extra { get; } = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Extra"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeExtra() => Extra.Count > 0;
 
         /// <summary>
         ///     UID information about the requesting user.
@@ -28,8 +33,13 @@ namespace KubeClient.Models
         ///     Groups is the groups you're testing for.
         /// </summary>
         [YamlMember(Alias = "group")]
-        [JsonProperty("group", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Group { get; set; } = new List<string>();
+        [JsonProperty("group", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Group { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Group"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeGroup() => Group.Count > 0;
 
         /// <summary>
         ///     User is the user you're testing for. If you specify "User" but not "Group", then is it interpreted as "What if User were not a member of any groups

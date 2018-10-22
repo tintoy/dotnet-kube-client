@@ -21,14 +21,14 @@ namespace KubeClient.Models
         ///     Conditions indicate state for particular aspects of a CustomResourceDefinition
         /// </summary>
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<CustomResourceDefinitionConditionV1Beta1> Conditions { get; set; } = new List<CustomResourceDefinitionConditionV1Beta1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<CustomResourceDefinitionConditionV1Beta1> Conditions { get; } = new List<CustomResourceDefinitionConditionV1Beta1>();
 
         /// <summary>
         ///     StoredVersions are all versions of CustomResources that were ever persisted. Tracking these versions allows a migration path for stored versions in etcd. The field is mutable so the migration controller can first finish a migration to another version (i.e. that no old objects are left in the storage), and then remove the rest of the versions from this list. None of the versions in this list can be removed from the spec.Versions field.
         /// </summary>
         [YamlMember(Alias = "storedVersions")]
-        [JsonProperty("storedVersions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> StoredVersions { get; set; } = new List<string>();
+        [JsonProperty("storedVersions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> StoredVersions { get; } = new List<string>();
     }
 }

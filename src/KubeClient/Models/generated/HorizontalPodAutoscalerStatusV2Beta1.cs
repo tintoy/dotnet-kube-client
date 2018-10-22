@@ -28,15 +28,15 @@ namespace KubeClient.Models
         ///     conditions is the set of conditions required for this autoscaler to scale its target, and indicates whether or not those conditions are met.
         /// </summary>
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<HorizontalPodAutoscalerConditionV2Beta1> Conditions { get; set; } = new List<HorizontalPodAutoscalerConditionV2Beta1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<HorizontalPodAutoscalerConditionV2Beta1> Conditions { get; } = new List<HorizontalPodAutoscalerConditionV2Beta1>();
 
         /// <summary>
         ///     currentMetrics is the last read state of the metrics used by this autoscaler.
         /// </summary>
         [YamlMember(Alias = "currentMetrics")]
-        [JsonProperty("currentMetrics", NullValueHandling = NullValueHandling.Ignore)]
-        public List<MetricStatusV2Beta1> CurrentMetrics { get; set; } = new List<MetricStatusV2Beta1>();
+        [JsonProperty("currentMetrics", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<MetricStatusV2Beta1> CurrentMetrics { get; } = new List<MetricStatusV2Beta1>();
 
         /// <summary>
         ///     currentReplicas is current number of replicas of pods managed by this autoscaler, as last seen by the autoscaler.

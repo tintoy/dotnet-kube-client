@@ -28,8 +28,13 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "required")]
-        [JsonProperty("required", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Required { get; set; } = new List<string>();
+        [JsonProperty("required", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Required { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Required"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRequired() => Required.Count > 0;
 
         /// <summary>
         ///     Description not provided.
@@ -63,15 +68,25 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "allOf")]
-        [JsonProperty("allOf", NullValueHandling = NullValueHandling.Ignore)]
-        public List<JSONSchemaPropsV1Beta1> AllOf { get; set; } = new List<JSONSchemaPropsV1Beta1>();
+        [JsonProperty("allOf", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<JSONSchemaPropsV1Beta1> AllOf { get; } = new List<JSONSchemaPropsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="AllOf"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAllOf() => AllOf.Count > 0;
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "anyOf")]
-        [JsonProperty("anyOf", NullValueHandling = NullValueHandling.Ignore)]
-        public List<JSONSchemaPropsV1Beta1> AnyOf { get; set; } = new List<JSONSchemaPropsV1Beta1>();
+        [JsonProperty("anyOf", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<JSONSchemaPropsV1Beta1> AnyOf { get; } = new List<JSONSchemaPropsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="AnyOf"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAnyOf() => AnyOf.Count > 0;
 
         /// <summary>
         ///     Description not provided.
@@ -84,8 +99,13 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "oneOf")]
-        [JsonProperty("oneOf", NullValueHandling = NullValueHandling.Ignore)]
-        public List<JSONSchemaPropsV1Beta1> OneOf { get; set; } = new List<JSONSchemaPropsV1Beta1>();
+        [JsonProperty("oneOf", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<JSONSchemaPropsV1Beta1> OneOf { get; } = new List<JSONSchemaPropsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="OneOf"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeOneOf() => OneOf.Count > 0;
 
         /// <summary>
         ///     Description not provided.
@@ -105,8 +125,13 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "enum")]
-        [JsonProperty("enum", NullValueHandling = NullValueHandling.Ignore)]
-        public List<JSONV1Beta1> Enum { get; set; } = new List<JSONV1Beta1>();
+        [JsonProperty("enum", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<JSONV1Beta1> Enum { get; } = new List<JSONV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Enum"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeEnum() => Enum.Count > 0;
 
         /// <summary>
         ///     Description not provided.
@@ -168,15 +193,25 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "definitions")]
-        [JsonProperty("definitions", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, JSONSchemaPropsV1Beta1> Definitions { get; set; } = new Dictionary<string, JSONSchemaPropsV1Beta1>();
+        [JsonProperty("definitions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, JSONSchemaPropsV1Beta1> Definitions { get; } = new Dictionary<string, JSONSchemaPropsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Definitions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeDefinitions() => Definitions.Count > 0;
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "dependencies")]
-        [JsonProperty("dependencies", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, JSONSchemaPropsOrStringArrayV1Beta1> Dependencies { get; set; } = new Dictionary<string, JSONSchemaPropsOrStringArrayV1Beta1>();
+        [JsonProperty("dependencies", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, JSONSchemaPropsOrStringArrayV1Beta1> Dependencies { get; } = new Dictionary<string, JSONSchemaPropsOrStringArrayV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Dependencies"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeDependencies() => Dependencies.Count > 0;
 
         /// <summary>
         ///     Description not provided.
@@ -224,15 +259,25 @@ namespace KubeClient.Models
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "patternProperties")]
-        [JsonProperty("patternProperties", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, JSONSchemaPropsV1Beta1> PatternProperties { get; set; } = new Dictionary<string, JSONSchemaPropsV1Beta1>();
+        [JsonProperty("patternProperties", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, JSONSchemaPropsV1Beta1> PatternProperties { get; } = new Dictionary<string, JSONSchemaPropsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="PatternProperties"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializePatternProperties() => PatternProperties.Count > 0;
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "properties")]
-        [JsonProperty("properties", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, JSONSchemaPropsV1Beta1> Properties { get; set; } = new Dictionary<string, JSONSchemaPropsV1Beta1>();
+        [JsonProperty("properties", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, JSONSchemaPropsV1Beta1> Properties { get; } = new Dictionary<string, JSONSchemaPropsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Properties"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeProperties() => Properties.Count > 0;
 
         /// <summary>
         ///     Description not provided.

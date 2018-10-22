@@ -42,14 +42,24 @@ namespace KubeClient.Models
         ///     Categories is a list of grouped resources custom resources belong to (e.g. 'all')
         /// </summary>
         [YamlMember(Alias = "categories")]
-        [JsonProperty("categories", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Categories { get; set; } = new List<string>();
+        [JsonProperty("categories", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Categories { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Categories"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeCategories() => Categories.Count > 0;
 
         /// <summary>
         ///     ShortNames are short names for the resource.  It must be all lowercase.
         /// </summary>
         [YamlMember(Alias = "shortNames")]
-        [JsonProperty("shortNames", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> ShortNames { get; set; } = new List<string>();
+        [JsonProperty("shortNames", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> ShortNames { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ShortNames"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeShortNames() => ShortNames.Count > 0;
     }
 }

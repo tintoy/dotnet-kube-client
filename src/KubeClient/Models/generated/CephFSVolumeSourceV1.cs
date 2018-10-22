@@ -42,8 +42,8 @@ namespace KubeClient.Models
         ///     Required: Monitors is a collection of Ceph monitors More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it
         /// </summary>
         [YamlMember(Alias = "monitors")]
-        [JsonProperty("monitors", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Monitors { get; set; } = new List<string>();
+        [JsonProperty("monitors", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Monitors { get; } = new List<string>();
 
         /// <summary>
         ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://releases.k8s.io/HEAD/examples/volumes/cephfs/README.md#how-to-use-it

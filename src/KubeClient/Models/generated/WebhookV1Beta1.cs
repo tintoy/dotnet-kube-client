@@ -65,8 +65,13 @@ namespace KubeClient.Models
         ///     Rules describes what operations on what resources/subresources the webhook cares about. The webhook cares about an operation if it matches _any_ Rule. However, in order to prevent ValidatingAdmissionWebhooks and MutatingAdmissionWebhooks from putting the cluster in a state which cannot be recovered from without completely disabling the plugin, ValidatingAdmissionWebhooks and MutatingAdmissionWebhooks are never called on admission requests for ValidatingWebhookConfiguration and MutatingWebhookConfiguration objects.
         /// </summary>
         [YamlMember(Alias = "rules")]
-        [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<RuleWithOperationsV1Beta1> Rules { get; set; } = new List<RuleWithOperationsV1Beta1>();
+        [JsonProperty("rules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<RuleWithOperationsV1Beta1> Rules { get; } = new List<RuleWithOperationsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Rules"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRules() => Rules.Count > 0;
 
         /// <summary>
         ///     FailurePolicy defines how unrecognized errors from the admission endpoint are handled - allowed values are Ignore or Fail. Defaults to Ignore.

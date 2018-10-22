@@ -14,8 +14,13 @@ namespace KubeClient.Models
         ///     Any additional information provided by the authenticator.
         /// </summary>
         [YamlMember(Alias = "extra")]
-        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        [JsonProperty("extra", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, List<string>> Extra { get; } = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Extra"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeExtra() => Extra.Count > 0;
 
         /// <summary>
         ///     A unique value that identifies this user across time. If this user is deleted and another user by the same name is added, they will have different UIDs.
@@ -35,7 +40,12 @@ namespace KubeClient.Models
         ///     The names of groups this user is a part of.
         /// </summary>
         [YamlMember(Alias = "groups")]
-        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Groups { get; set; } = new List<string>();
+        [JsonProperty("groups", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Groups { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Groups"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeGroups() => Groups.Count > 0;
     }
 }

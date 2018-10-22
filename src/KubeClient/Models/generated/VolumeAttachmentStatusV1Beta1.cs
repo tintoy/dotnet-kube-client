@@ -14,8 +14,13 @@ namespace KubeClient.Models
         ///     Upon successful attach, this field is populated with any information returned by the attach operation that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
         /// </summary>
         [YamlMember(Alias = "attachmentMetadata")]
-        [JsonProperty("attachmentMetadata", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> AttachmentMetadata { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("attachmentMetadata", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> AttachmentMetadata { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="AttachmentMetadata"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAttachmentMetadata() => AttachmentMetadata.Count > 0;
 
         /// <summary>
         ///     Indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.

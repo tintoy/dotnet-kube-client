@@ -70,8 +70,13 @@ namespace KubeClient.Models
         ///     iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
         /// </summary>
         [YamlMember(Alias = "portals")]
-        [JsonProperty("portals", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Portals { get; set; } = new List<string>();
+        [JsonProperty("portals", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Portals { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Portals"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializePortals() => Portals.Count > 0;
 
         /// <summary>
         ///     whether support iSCSI Discovery CHAP authentication

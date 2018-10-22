@@ -14,8 +14,13 @@ namespace KubeClient.Models
         ///     Extra information about the requesting user. See user.Info interface for details.
         /// </summary>
         [YamlMember(Alias = "extra")]
-        [JsonProperty("extra", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, List<string>> Extra { get; set; } = new Dictionary<string, List<string>>();
+        [JsonProperty("extra", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, List<string>> Extra { get; } = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Extra"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeExtra() => Extra.Count > 0;
 
         /// <summary>
         ///     UID information about the requesting user. See user.Info interface for details.
@@ -35,16 +40,26 @@ namespace KubeClient.Models
         ///     Group information about the requesting user. See user.Info interface for details.
         /// </summary>
         [YamlMember(Alias = "groups")]
-        [JsonProperty("groups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Groups { get; set; } = new List<string>();
+        [JsonProperty("groups", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Groups { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Groups"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeGroups() => Groups.Count > 0;
 
         /// <summary>
         ///     allowedUsages specifies a set of usage contexts the key will be valid for. See: https://tools.ietf.org/html/rfc5280#section-4.2.1.3
         ///          https://tools.ietf.org/html/rfc5280#section-4.2.1.12
         /// </summary>
         [YamlMember(Alias = "usages")]
-        [JsonProperty("usages", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Usages { get; set; } = new List<string>();
+        [JsonProperty("usages", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Usages { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Usages"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeUsages() => Usages.Count > 0;
 
         /// <summary>
         ///     Base64-encoded PKCS#10 CSR data

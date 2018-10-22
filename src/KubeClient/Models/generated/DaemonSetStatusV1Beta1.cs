@@ -64,8 +64,13 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DaemonSetConditionV1Beta1> Conditions { get; set; } = new List<DaemonSetConditionV1Beta1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<DaemonSetConditionV1Beta1> Conditions { get; } = new List<DaemonSetConditionV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
 
         /// <summary>
         ///     Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.

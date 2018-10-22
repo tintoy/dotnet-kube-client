@@ -56,8 +56,13 @@ namespace KubeClient.Models
         ///     Attributes of the volume to publish.
         /// </summary>
         [YamlMember(Alias = "volumeAttributes")]
-        [JsonProperty("volumeAttributes", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> VolumeAttributes { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("volumeAttributes", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> VolumeAttributes { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="VolumeAttributes"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeVolumeAttributes() => VolumeAttributes.Count > 0;
 
         /// <summary>
         ///     Optional: The value to pass to ControllerPublishVolumeRequest. Defaults to false (read/write).

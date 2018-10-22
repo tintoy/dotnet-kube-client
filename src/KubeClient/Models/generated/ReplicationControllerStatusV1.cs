@@ -29,8 +29,13 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ReplicationControllerConditionV1> Conditions { get; set; } = new List<ReplicationControllerConditionV1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ReplicationControllerConditionV1> Conditions { get; } = new List<ReplicationControllerConditionV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
 
         /// <summary>
         ///     The number of pods that have labels matching the labels of the pod template of the replication controller.

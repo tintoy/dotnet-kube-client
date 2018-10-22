@@ -36,8 +36,13 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<StatefulSetConditionV1Beta2> Conditions { get; set; } = new List<StatefulSetConditionV1Beta2>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<StatefulSetConditionV1Beta2> Conditions { get; } = new List<StatefulSetConditionV1Beta2>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
 
         /// <summary>
         ///     currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
