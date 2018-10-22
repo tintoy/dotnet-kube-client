@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIServiceList is a list of APIService objects.
     /// </summary>
-    [KubeListItem("APIService", "v1")]
-    [KubeObject("APIServiceList", "v1")]
+    [KubeListItem("APIService", "apiregistration.k8s.io/v1")]
+    [KubeObject("APIServiceList", "apiregistration.k8s.io/v1")]
     public partial class APIServiceListV1 : KubeResourceListV1<APIServiceV1>
     {
         /// <summary>

@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodSecurityPolicyList is a list of PodSecurityPolicy objects.
     /// </summary>
-    [KubeListItem("PodSecurityPolicy", "v1beta1")]
-    [KubeObject("PodSecurityPolicyList", "v1beta1")]
+    [KubeListItem("PodSecurityPolicy", "policy/v1beta1")]
+    [KubeObject("PodSecurityPolicyList", "policy/v1beta1")]
     public partial class PodSecurityPolicyListV1Beta1 : KubeResourceListV1<PodSecurityPolicyV1Beta1>
     {
         /// <summary>

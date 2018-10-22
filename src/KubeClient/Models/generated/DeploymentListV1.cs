@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     DeploymentList is a list of Deployments.
     /// </summary>
-    [KubeListItem("Deployment", "v1")]
-    [KubeObject("DeploymentList", "v1")]
+    [KubeListItem("Deployment", "apps/v1")]
+    [KubeObject("DeploymentList", "apps/v1")]
     public partial class DeploymentListV1 : KubeResourceListV1<DeploymentV1>
     {
         /// <summary>

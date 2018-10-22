@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     ValidatingWebhookConfigurationList is a list of ValidatingWebhookConfiguration.
     /// </summary>
-    [KubeListItem("ValidatingWebhookConfiguration", "v1beta1")]
-    [KubeObject("ValidatingWebhookConfigurationList", "v1beta1")]
+    [KubeListItem("ValidatingWebhookConfiguration", "admissionregistration.k8s.io/v1beta1")]
+    [KubeObject("ValidatingWebhookConfigurationList", "admissionregistration.k8s.io/v1beta1")]
     public partial class ValidatingWebhookConfigurationListV1Beta1 : KubeResourceListV1<ValidatingWebhookConfigurationV1Beta1>
     {
         /// <summary>

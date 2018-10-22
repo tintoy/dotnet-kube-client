@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     DaemonSetList is a collection of daemon sets.
     /// </summary>
-    [KubeListItem("DaemonSet", "v1")]
-    [KubeObject("DaemonSetList", "v1")]
+    [KubeListItem("DaemonSet", "apps/v1")]
+    [KubeObject("DaemonSetList", "apps/v1")]
     public partial class DaemonSetListV1 : KubeResourceListV1<DaemonSetV1>
     {
         /// <summary>

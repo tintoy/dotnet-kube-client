@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
-    [KubeObject("Deployment", "v1")]
+    [KubeObject("Deployment", "apps/v1")]
     [KubeApi(KubeAction.List, "apis/apps/v1/deployments")]
     [KubeApi(KubeAction.WatchList, "apis/apps/v1/watch/deployments")]
     [KubeApi(KubeAction.List, "apis/apps/v1/namespaces/{namespace}/deployments")]
