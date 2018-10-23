@@ -1,19 +1,14 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using KubeClient.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace KubeClient.MessageHandlers
 {
-    using Utilities;
-
-    // TODO: Add support for supplying initial token and token-expiry (supplied if present in auth-provider section of configuration).
-
     /// <summary>
     ///     HTTP message handler that runs a command to obtain a bearer token and adds it to outgoing requests.
     /// </summary>
@@ -70,7 +65,7 @@ namespace KubeClient.MessageHandlers
         /// <param name="accessTokenExpirySelector">
         ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
         /// </param>
-        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector)
+        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, string initialTokenExpiry = null)
         {
             if (String.IsNullOrWhiteSpace(accessTokenCommand))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'accessTokenCommand'.", nameof(accessTokenCommand));
@@ -85,6 +80,12 @@ namespace KubeClient.MessageHandlers
             _accessTokenCommandArguments = accessTokenCommandArguments ?? String.Empty;
             _accessTokenSelector = JPathFromGoSelector(accessTokenSelector);
             _accessTokenExpirySelector = JPathFromGoSelector(accessTokenExpirySelector);
+
+            if (!String.IsNullOrWhiteSpace(initialAccessToken))
+                _accessToken = initialAccessToken;
+
+            if (!String.IsNullOrWhiteSpace(initialTokenExpiry))
+                _accessTokenExpiresUtc = ConvertAccessTokenExpiresUtc(initialTokenExpiry);
         }
 
         /// <summary>
@@ -169,10 +170,7 @@ namespace KubeClient.MessageHandlers
                     );
                 }
 
-                accessTokenExpiresUtc = DateTime.Parse(accessTokenExpiresUtcValue,
-                    provider: CultureInfo.InvariantCulture,
-                    styles: DateTimeStyles.AssumeUniversal
-                );
+                accessTokenExpiresUtc = ConvertAccessTokenExpiresUtc(accessTokenExpiresUtcValue);
 
                 // OK, both access token and expiry are good; update atomically.
                 lock (_stateLock)
@@ -183,6 +181,14 @@ namespace KubeClient.MessageHandlers
 
                 return accessToken;
             }
+        }
+
+        private static DateTime ConvertAccessTokenExpiresUtc(string accessTokenExpiresUtcValue)
+        {
+            return DateTime.Parse(accessTokenExpiresUtcValue,
+                provider: CultureInfo.InvariantCulture,
+                styles: DateTimeStyles.AssumeUniversal
+            );
         }
 
         /// <summary>

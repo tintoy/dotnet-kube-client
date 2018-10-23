@@ -66,6 +66,21 @@ namespace KubeClient
         ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
         /// </summary>
         public string AccessTokenExpirySelector { get; set; }
+        
+        /// <summary>
+        ///     The initial access token used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string InitialAccessToken { get; set; }
+        
+        /// <summary>
+        ///     The initial token expiry used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string InitialTokenExpiry { get; set; }
+        
+        /// <summary>
+        ///     The strategy used for authenticating to the Kubernetes API.
+        /// </summary>
+        public AuthStrategy AuthStrategy { get; set; }
 
         /// <summary>
         ///     The client certificate used to authenticate to the Kubernetes API.
@@ -170,5 +185,12 @@ namespace KubeClient
                 CertificationAuthorityCertificate = kubeCACertificate
             };
         }
+    }
+
+    public enum AuthStrategy
+    {
+        None,
+        StaticBearerToken,
+        RefreshableBearerToken
     }
 }
