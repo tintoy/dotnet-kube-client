@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -12,6 +13,7 @@ namespace KubeClient.Models
         ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
         [JsonProperty("metadata")]
+        [YamlMember(Alias = "metadata")]
         public ObjectMetaV1 Metadata { get; set; }
     }
 }
