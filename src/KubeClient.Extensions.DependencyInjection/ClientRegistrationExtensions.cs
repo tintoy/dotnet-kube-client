@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace KubeClient
 {
@@ -90,6 +91,28 @@ namespace KubeClient
 
             services.AddScoped<KubeApiClient>(ResolveWithOptions);
             services.AddScoped<IKubeApiClient>(ResolveWithOptions);
+
+            return services;
+        }
+
+        /// <summary>
+        ///     Add a <see cref="KubeApiClient" /> to the service collection. Automatically use a pod service account if no API endpoint is configured.
+        /// </summary>
+        /// <param name="services">
+        ///     The service collection to configure.
+        /// </param>
+        /// <param name="configuration">
+        ///     Configuration to be deserialized as <see cref="KubeClientOptions"/>.
+        /// </param>
+        public static IServiceCollection AddKubeClient(this IServiceCollection services, IConfiguration configuration)
+        {
+            var options = new KubeClientOptions();
+            configuration.Bind(options);
+
+            if (options.ApiEndPoint == null)
+                options = KubeClientOptions.FromPodServiceAccount();
+
+            services.AddKubeClient(options);
 
             return services;
         }
