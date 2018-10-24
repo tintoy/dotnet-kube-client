@@ -48,7 +48,7 @@ namespace KubeClient.MessageHandlers
         /// <summary>
         ///     The UTC date/time that the access token expires.
         /// </summary>
-        DateTime _accessTokenExpiresUtc;
+        DateTime? _accessTokenExpiresUtc;
 
         /// <summary>
         ///     Create a new <see cref="CommandBearerTokenHandler"/>.
@@ -65,7 +65,13 @@ namespace KubeClient.MessageHandlers
         /// <param name="accessTokenExpirySelector">
         ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
         /// </param>
-        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, string initialTokenExpiry = null)
+        /// <param name="initialAccessToken">
+        ///     The initial access token (if any) to use for authentication.
+        /// </param>
+        /// <param name="initialTokenExpiryUtc">
+        ///     The UTC date / time the the initial access token (if any) expires.
+        /// </param>
+        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, DateTime? initialTokenExpiryUtc = null)
         {
             if (String.IsNullOrWhiteSpace(accessTokenCommand))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'accessTokenCommand'.", nameof(accessTokenCommand));
@@ -84,8 +90,7 @@ namespace KubeClient.MessageHandlers
             if (!String.IsNullOrWhiteSpace(initialAccessToken))
                 _accessToken = initialAccessToken;
 
-            if (!String.IsNullOrWhiteSpace(initialTokenExpiry))
-                _accessTokenExpiresUtc = ConvertAccessTokenExpiresUtc(initialTokenExpiry);
+            _accessTokenExpiresUtc = initialTokenExpiryUtc;
         }
 
         /// <summary>
@@ -100,7 +105,7 @@ namespace KubeClient.MessageHandlers
         protected override async Task<string> GetTokenAsync(CancellationToken cancellationToken)
         {
             string accessToken;
-            DateTime accessTokenExpiresUtc;
+            DateTime? accessTokenExpiresUtc;
 
             // Capture snapshot of access token / expiry.
             lock (_stateLock)

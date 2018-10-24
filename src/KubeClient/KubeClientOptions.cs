@@ -75,12 +75,12 @@ namespace KubeClient
         /// <summary>
         ///     The initial token expiry used to authenticate to the Kubernetes API.
         /// </summary>
-        public string InitialTokenExpiry { get; set; }
+        public DateTime? InitialTokenExpiryUtc { get; set; }
         
         /// <summary>
         ///     The strategy used for authenticating to the Kubernetes API.
         /// </summary>
-        public AuthStrategy AuthStrategy { get; set; }
+        public KubeAuthStrategy AuthStrategy { get; set; }
 
         /// <summary>
         ///     The client certificate used to authenticate to the Kubernetes API.
@@ -187,10 +187,29 @@ namespace KubeClient
         }
     }
 
-    public enum AuthStrategy
+    /// <summary>
+    ///     Represents a strategy for authenticating to the Kubernetes API.
+    /// </summary>
+    public enum KubeAuthStrategy
     {
+        /// <summary>
+        ///     No authentication (e.g. via "kubectl proxy").
+        /// </summary>
         None,
-        StaticBearerToken,
-        RefreshableBearerToken
+
+        /// <summary>
+        ///     Client certificate (i.e. mutual SSL) authentication.
+        /// </summary>
+        ClientCertificate,
+
+        /// <summary>
+        ///     A pre-defined (static) bearer token.
+        /// </summary>
+        BearerToken,
+
+        /// <summary>
+        ///     A bearer token obtained by an authentication provider (i.e. running an external command).
+        /// </summary>
+        BearerTokenProvider
     }
 }

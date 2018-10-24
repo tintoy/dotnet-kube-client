@@ -133,33 +133,46 @@ namespace KubeClient
             
             var clientBuilder = new ClientBuilder();
 
-            if (options.AuthStrategy == AuthStrategy.StaticBearerToken)
+            switch (options.AuthStrategy)
             {
-                clientBuilder = clientBuilder.AddHandler(
-                    () => new StaticBearerTokenHandler(options.AccessToken)
-                );
-            }
-            else if (options.AuthStrategy == AuthStrategy.RefreshableBearerToken)
-            {
-                clientBuilder = clientBuilder.AddHandler(
-                    () => new CommandBearerTokenHandler(
-                        accessTokenCommand: options.AccessTokenCommand,
-                        accessTokenCommandArguments: options.AccessTokenCommandArguments,
-                        accessTokenSelector: options.AccessTokenSelector,
-                        accessTokenExpirySelector: options.AccessTokenExpirySelector,
-                        initialAccessToken: options.InitialAccessToken,
-                        initialTokenExpiry: options.InitialTokenExpiry
-                    )
-                );
+                case KubeAuthStrategy.BearerToken:
+                {
+                    clientBuilder = clientBuilder.AddHandler(
+                        () => new StaticBearerTokenHandler(options.AccessToken)
+                    );
+
+                    break;
+                }
+                case KubeAuthStrategy.BearerTokenProvider:
+                {
+                    clientBuilder = clientBuilder.AddHandler(
+                        () => new CommandBearerTokenHandler(
+                            accessTokenCommand: options.AccessTokenCommand,
+                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
+                            accessTokenSelector: options.AccessTokenSelector,
+                            accessTokenExpirySelector: options.AccessTokenExpirySelector,
+                            initialAccessToken: options.InitialAccessToken,
+                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc
+                        )
+                    );
+
+                    break;
+                }
+                case KubeAuthStrategy.ClientCertificate:
+                {
+                    if (options.ClientCertificate == null)
+                        throw new KubeClientException("Cannot specify ClientCertificate authentication strategy without supplying a client certificate.");
+
+                    clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
+
+                    break;
+                }
             }
 
             if (options.AllowInsecure)
                 clientBuilder = clientBuilder.AcceptAnyServerCertificate();
             else if (options.CertificationAuthorityCertificate != null)
                 clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
-
-            if (options.ClientCertificate != null)
-                clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
 
             if (loggerFactory != null)
             {
