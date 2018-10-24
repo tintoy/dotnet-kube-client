@@ -181,6 +181,7 @@ namespace KubeClient
             return new KubeClientOptions
             {
                 ApiEndPoint = new Uri(apiEndPoint),
+                AuthStrategy = KubeAuthStrategy.BearerToken,
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate
             };
