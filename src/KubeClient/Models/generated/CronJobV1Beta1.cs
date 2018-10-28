@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJob represents the configuration of a single cron job.
     /// </summary>
-    [KubeObject("CronJob", "v1beta1")]
+    [KubeObject("CronJob", "batch/v1beta1")]
     [KubeApi(KubeAction.List, "apis/batch/v1beta1/cronjobs")]
     [KubeApi(KubeAction.WatchList, "apis/batch/v1beta1/watch/cronjobs")]
     [KubeApi(KubeAction.List, "apis/batch/v1beta1/namespaces/{namespace}/cronjobs")]

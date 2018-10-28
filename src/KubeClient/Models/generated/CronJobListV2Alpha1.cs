@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     CronJobList is a collection of cron jobs.
     /// </summary>
-    [KubeListItem("CronJob", "v2alpha1")]
-    [KubeObject("CronJobList", "v2alpha1")]
+    [KubeListItem("CronJob", "batch/v2alpha1")]
+    [KubeObject("CronJobList", "batch/v2alpha1")]
     public partial class CronJobListV2Alpha1 : KubeResourceListV1<CronJobV2Alpha1>
     {
         /// <summary>

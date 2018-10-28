@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicaSet ensures that a specified number of pod replicas are running at any given time.
     /// </summary>
-    [KubeObject("ReplicaSet", "v1")]
+    [KubeObject("ReplicaSet", "apps/v1")]
     [KubeApi(KubeAction.List, "apis/apps/v1/replicasets")]
     [KubeApi(KubeAction.WatchList, "apis/apps/v1/watch/replicasets")]
     [KubeApi(KubeAction.List, "apis/apps/v1/namespaces/{namespace}/replicasets")]

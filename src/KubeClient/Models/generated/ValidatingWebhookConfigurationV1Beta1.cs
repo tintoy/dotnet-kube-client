@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ValidatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and object without changing it.
     /// </summary>
-    [KubeObject("ValidatingWebhookConfiguration", "v1beta1")]
+    [KubeObject("ValidatingWebhookConfiguration", "admissionregistration.k8s.io/v1beta1")]
     [KubeApi(KubeAction.List, "apis/admissionregistration.k8s.io/v1beta1/validatingwebhookconfigurations")]
     [KubeApi(KubeAction.Create, "apis/admissionregistration.k8s.io/v1beta1/validatingwebhookconfigurations")]
     [KubeApi(KubeAction.Get, "apis/admissionregistration.k8s.io/v1beta1/validatingwebhookconfigurations/{name}")]

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DEPRECATED - This group version of Deployment is deprecated by apps/v1beta2/Deployment. See the release notes for more information. Deployment enables declarative updates for Pods and ReplicaSets.
     /// </summary>
-    [KubeObject("Deployment", "v1beta1")]
+    [KubeObject("Deployment", "apps/v1beta1")]
     [KubeApi(KubeAction.List, "apis/apps/v1beta1/deployments")]
     [KubeApi(KubeAction.WatchList, "apis/apps/v1beta1/watch/deployments")]
     [KubeApi(KubeAction.List, "apis/apps/v1beta1/namespaces/{namespace}/deployments")]

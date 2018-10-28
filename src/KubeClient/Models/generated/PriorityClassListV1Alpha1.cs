@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     PriorityClassList is a collection of priority classes.
     /// </summary>
-    [KubeListItem("PriorityClass", "v1alpha1")]
-    [KubeObject("PriorityClassList", "v1alpha1")]
+    [KubeListItem("PriorityClass", "scheduling.k8s.io/v1alpha1")]
+    [KubeObject("PriorityClassList", "scheduling.k8s.io/v1alpha1")]
     public partial class PriorityClassListV1Alpha1 : KubeResourceListV1<PriorityClassV1Alpha1>
     {
         /// <summary>

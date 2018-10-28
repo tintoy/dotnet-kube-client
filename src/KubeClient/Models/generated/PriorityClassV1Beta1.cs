@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PriorityClass defines mapping from a priority class name to the priority integer value. The value can be any valid integer.
     /// </summary>
-    [KubeObject("PriorityClass", "v1beta1")]
+    [KubeObject("PriorityClass", "scheduling.k8s.io/v1beta1")]
     [KubeApi(KubeAction.List, "apis/scheduling.k8s.io/v1beta1/priorityclasses")]
     [KubeApi(KubeAction.Create, "apis/scheduling.k8s.io/v1beta1/priorityclasses")]
     [KubeApi(KubeAction.Get, "apis/scheduling.k8s.io/v1beta1/priorityclasses/{name}")]

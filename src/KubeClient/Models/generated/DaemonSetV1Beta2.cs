@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DEPRECATED - This group version of DaemonSet is deprecated by apps/v1/DaemonSet. See the release notes for more information. DaemonSet represents the configuration of a daemon set.
     /// </summary>
-    [KubeObject("DaemonSet", "v1beta2")]
+    [KubeObject("DaemonSet", "apps/v1beta2")]
     [KubeApi(KubeAction.List, "apis/apps/v1beta2/daemonsets")]
     [KubeApi(KubeAction.WatchList, "apis/apps/v1beta2/watch/daemonsets")]
     [KubeApi(KubeAction.List, "apis/apps/v1beta2/namespaces/{namespace}/daemonsets")]

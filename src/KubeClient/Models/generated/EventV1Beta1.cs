@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Event is a report of an event somewhere in the cluster. It generally denotes some state change in the system.
     /// </summary>
-    [KubeObject("Event", "v1beta1")]
+    [KubeObject("Event", "events.k8s.io/v1beta1")]
     [KubeApi(KubeAction.List, "apis/events.k8s.io/v1beta1/events")]
     [KubeApi(KubeAction.WatchList, "apis/events.k8s.io/v1beta1/watch/events")]
     [KubeApi(KubeAction.List, "apis/events.k8s.io/v1beta1/namespaces/{namespace}/events")]

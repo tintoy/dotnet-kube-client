@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     DaemonSet represents the configuration of a daemon set.
     /// </summary>
-    [KubeObject("DaemonSet", "v1")]
+    [KubeObject("DaemonSet", "apps/v1")]
     [KubeApi(KubeAction.List, "apis/apps/v1/daemonsets")]
     [KubeApi(KubeAction.WatchList, "apis/apps/v1/watch/daemonsets")]
     [KubeApi(KubeAction.List, "apis/apps/v1/namespaces/{namespace}/daemonsets")]

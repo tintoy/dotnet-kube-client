@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Describes a certificate signing request
     /// </summary>
-    [KubeObject("CertificateSigningRequest", "v1beta1")]
+    [KubeObject("CertificateSigningRequest", "certificates.k8s.io/v1beta1")]
     [KubeApi(KubeAction.List, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests")]
     [KubeApi(KubeAction.Create, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests")]
     [KubeApi(KubeAction.Get, "apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}")]

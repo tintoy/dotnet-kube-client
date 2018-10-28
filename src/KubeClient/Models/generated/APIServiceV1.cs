@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     APIService represents a server for a particular GroupVersion. Name must be "version.group".
     /// </summary>
-    [KubeObject("APIService", "v1")]
+    [KubeObject("APIService", "apiregistration.k8s.io/v1")]
     [KubeApi(KubeAction.List, "apis/apiregistration.k8s.io/v1/apiservices")]
     [KubeApi(KubeAction.Create, "apis/apiregistration.k8s.io/v1/apiservices")]
     [KubeApi(KubeAction.Get, "apis/apiregistration.k8s.io/v1/apiservices/{name}")]

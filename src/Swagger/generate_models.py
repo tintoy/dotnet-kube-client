@@ -47,6 +47,10 @@ class KubeModel(object):
         self.api_version = api_version
         self.pretty_api_version = pretty_api_version
         self.kube_group = kube_group
+        if self.kube_group:
+            self.api_groupversion = '{0}/{1}'.format(self.kube_group, self.api_version)
+        else:
+            self.api_groupversion = self.api_version
         self.clr_name = self.name + self.pretty_api_version
         self.summary = summary or 'No summary provided'
         self.required_property_keys = required_property_keys
@@ -527,14 +531,14 @@ def main():
 
                 model_annotations.append('    [KubeListItem("{0}", "{1}")]{2}'.format(
                     list_item_model.name,
-                    list_item_model.api_version,
+                    list_item_model.api_groupversion,
                     LINE_ENDING
                 ))
 
             if model.is_kube_resource() or model.is_kube_resource_list():
                 model_annotations.append('    [KubeObject("{0}", "{1}")]{2}'.format(
                     model.name,
-                    model.api_version,
+                    model.api_groupversion,
                     LINE_ENDING
                 ))
 

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.
     /// </summary>
-    [KubeObject("ClusterRole", "v1")]
+    [KubeObject("ClusterRole", "rbac.authorization.k8s.io/v1")]
     [KubeApi(KubeAction.List, "apis/rbac.authorization.k8s.io/v1/clusterroles")]
     [KubeApi(KubeAction.Create, "apis/rbac.authorization.k8s.io/v1/clusterroles")]
     [KubeApi(KubeAction.Get, "apis/rbac.authorization.k8s.io/v1/clusterroles/{name}")]

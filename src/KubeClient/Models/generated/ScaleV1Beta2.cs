@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Scale represents a scaling request for a resource.
     /// </summary>
-    [KubeObject("Scale", "v1beta2")]
+    [KubeObject("Scale", "apps/v1beta2")]
     [KubeApi(KubeAction.Get, "apis/apps/v1beta2/namespaces/{namespace}/deployments/{name}/scale")]
     [KubeApi(KubeAction.Get, "apis/apps/v1beta2/namespaces/{namespace}/replicasets/{name}/scale")]
     [KubeApi(KubeAction.Get, "apis/apps/v1beta2/namespaces/{namespace}/statefulsets/{name}/scale")]

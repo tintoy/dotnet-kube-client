@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     CustomResourceDefinitionList is a list of CustomResourceDefinition objects.
     /// </summary>
-    [KubeListItem("CustomResourceDefinition", "v1beta1")]
-    [KubeObject("CustomResourceDefinitionList", "v1beta1")]
+    [KubeListItem("CustomResourceDefinition", "apiextensions.k8s.io/v1beta1")]
+    [KubeObject("CustomResourceDefinitionList", "apiextensions.k8s.io/v1beta1")]
     public partial class CustomResourceDefinitionListV1Beta1 : KubeResourceListV1<CustomResourceDefinitionV1Beta1>
     {
         /// <summary>

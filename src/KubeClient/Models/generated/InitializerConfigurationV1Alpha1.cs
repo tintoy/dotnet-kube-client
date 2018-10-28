@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     InitializerConfiguration describes the configuration of initializers.
     /// </summary>
-    [KubeObject("InitializerConfiguration", "v1alpha1")]
+    [KubeObject("InitializerConfiguration", "admissionregistration.k8s.io/v1alpha1")]
     [KubeApi(KubeAction.List, "apis/admissionregistration.k8s.io/v1alpha1/initializerconfigurations")]
     [KubeApi(KubeAction.Create, "apis/admissionregistration.k8s.io/v1alpha1/initializerconfigurations")]
     [KubeApi(KubeAction.Get, "apis/admissionregistration.k8s.io/v1alpha1/initializerconfigurations/{name}")]
