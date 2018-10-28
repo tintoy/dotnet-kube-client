@@ -56,6 +56,7 @@ For more flexible configuration, use the overload that takes `KubeClientOptions`
 KubeApiClient client = KubeApiClient.Create(new KubeClientOptions
 {
     ApiEndPoint = new Uri("http://localhost:8001"),
+    AuthStrategy = KubeAuthStrategy.BearerToken,
     AccessToken = "my-access-token",
     AllowInsecure = true // Don't validate server certificate
 });
@@ -95,6 +96,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddKubeClient(new KubeClientOptions
     {
         ApiEndPoint = new Uri("http://localhost:8001"),
+        AuthStrategy = KubeAuthStrategy.BearerToken,
         AccessToken = "my-access-token",
         AllowInsecure = true // Don't validate server certificate
     });
@@ -110,6 +112,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddKubeClientOptions("my-cluster", clientOptions =>
     {
         clientOptions.ApiEndPoint = new Uri("http://localhost:8001");
+        clientOptions.AuthStrategy = KubeAuthStrategy.BearerToken;
         clientOptions.AccessToken = "my-access-token";
         clientOptions.AllowInsecure = true; // Don't validate server certificate
     });
@@ -119,6 +122,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddKubeClient("my-cluster", clientOptions =>
     {
         clientOptions.ApiEndPoint = new Uri("http://localhost:8001");
+        clientOptions.AuthStrategy = KubeAuthStrategy.BearerToken;
         clientOptions.AccessToken = "my-access-token";
         clientOptions.AllowInsecure = true; // Don't validate server certificate
     });

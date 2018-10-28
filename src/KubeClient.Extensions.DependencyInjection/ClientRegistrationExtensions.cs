@@ -20,7 +20,10 @@ namespace KubeClient
         /// <param name="usePodServiceAccount">
         ///     Configure the client to use the service account for the current Pod?
         /// </param>
-        public static void AddKubeClient(this IServiceCollection services, bool usePodServiceAccount = false)
+        /// <returns>
+        ///     The configured service collection.
+        /// </returns>
+        public static IServiceCollection AddKubeClient(this IServiceCollection services, bool usePodServiceAccount = false)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -52,6 +55,8 @@ namespace KubeClient
                 services.AddScoped<KubeApiClient>(ResolveWithOptions);
                 services.AddScoped<IKubeApiClient>(ResolveWithOptions);
             }
+
+            return services;
         }
 
         /// <summary>
@@ -63,7 +68,10 @@ namespace KubeClient
         /// <param name="options">
         ///     <see cref="KubeClientOptions"/> containing the client configuration to use.
         /// </param>
-        public static void AddKubeClient(this IServiceCollection services, KubeClientOptions options)
+        /// <returns>
+        ///     The configured service collection.
+        /// </returns>
+        public static IServiceCollection AddKubeClient(this IServiceCollection services, KubeClientOptions options)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -82,6 +90,8 @@ namespace KubeClient
 
             services.AddScoped<KubeApiClient>(ResolveWithOptions);
             services.AddScoped<IKubeApiClient>(ResolveWithOptions);
+
+            return services;
         }
 
         /// <summary>
@@ -96,7 +106,10 @@ namespace KubeClient
         /// <param name="configure">
         ///     A delegate that performs required configuration of the <see cref="KubeClientOptions"/> to use.
         /// </param>
-        public static void AddKubeClient(this IServiceCollection services, string name, Action<KubeClientOptions> configure)
+        /// <returns>
+        ///     The configured service collection.
+        /// </returns>
+        public static IServiceCollection AddKubeClient(this IServiceCollection services, string name, Action<KubeClientOptions> configure)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -109,6 +122,8 @@ namespace KubeClient
             
             services.AddKubeClientOptions(name, configure);
             services.AddNamedKubeClients();
+
+            return services;
         }
 
         /// <summary>
@@ -123,7 +138,10 @@ namespace KubeClient
         /// <param name="configure">
         ///     A delegate that performs required configuration of the <see cref="KubeClientOptions"/>.
         /// </param>
-        public static void AddKubeClientOptions(this IServiceCollection services, string name, Action<KubeClientOptions> configure)
+        /// <returns>
+        ///     The configured service collection.
+        /// </returns>
+        public static IServiceCollection AddKubeClientOptions(this IServiceCollection services, string name, Action<KubeClientOptions> configure)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -139,6 +157,8 @@ namespace KubeClient
                 configure(options);
                 options.EnsureValid();
             });
+
+            return services;
         }
 
         /// <summary>
