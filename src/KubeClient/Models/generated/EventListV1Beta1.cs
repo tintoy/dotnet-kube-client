@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     EventList is a list of Event objects.
     /// </summary>
-    [KubeListItem("Event", "v1beta1")]
-    [KubeObject("EventList", "v1beta1")]
+    [KubeListItem("Event", "events.k8s.io/v1beta1")]
+    [KubeObject("EventList", "events.k8s.io/v1beta1")]
     public partial class EventListV1Beta1 : KubeResourceListV1<EventV1Beta1>
     {
         /// <summary>

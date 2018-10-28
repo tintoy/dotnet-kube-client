@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodSecurityPolicy governs the ability to make requests that affect the Security Context that will be applied to a pod and container.
     /// </summary>
-    [KubeObject("PodSecurityPolicy", "v1beta1")]
+    [KubeObject("PodSecurityPolicy", "policy/v1beta1")]
     [KubeApi(KubeAction.List, "apis/policy/v1beta1/podsecuritypolicies")]
     [KubeApi(KubeAction.Create, "apis/policy/v1beta1/podsecuritypolicies")]
     [KubeApi(KubeAction.Get, "apis/policy/v1beta1/podsecuritypolicies/{name}")]

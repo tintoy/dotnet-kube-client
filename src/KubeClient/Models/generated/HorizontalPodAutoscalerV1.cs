@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     configuration of a horizontal pod autoscaler.
     /// </summary>
-    [KubeObject("HorizontalPodAutoscaler", "v1")]
+    [KubeObject("HorizontalPodAutoscaler", "autoscaling/v1")]
     [KubeApi(KubeAction.List, "apis/autoscaling/v1/horizontalpodautoscalers")]
     [KubeApi(KubeAction.WatchList, "apis/autoscaling/v1/watch/horizontalpodautoscalers")]
     [KubeApi(KubeAction.List, "apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers")]

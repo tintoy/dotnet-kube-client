@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     Job represents the configuration of a single job.
     /// </summary>
-    [KubeObject("Job", "v1")]
+    [KubeObject("Job", "batch/v1")]
     [KubeApi(KubeAction.List, "apis/batch/v1/jobs")]
     [KubeApi(KubeAction.WatchList, "apis/batch/v1/watch/jobs")]
     [KubeApi(KubeAction.List, "apis/batch/v1/namespaces/{namespace}/jobs")]

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     PodPreset is a policy resource that defines additional runtime requirements for a Pod.
     /// </summary>
-    [KubeObject("PodPreset", "v1alpha1")]
+    [KubeObject("PodPreset", "settings.k8s.io/v1alpha1")]
     [KubeApi(KubeAction.List, "apis/settings.k8s.io/v1alpha1/podpresets")]
     [KubeApi(KubeAction.WatchList, "apis/settings.k8s.io/v1alpha1/watch/podpresets")]
     [KubeApi(KubeAction.List, "apis/settings.k8s.io/v1alpha1/namespaces/{namespace}/podpresets")]
