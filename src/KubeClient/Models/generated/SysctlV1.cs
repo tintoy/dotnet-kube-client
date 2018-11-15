@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name of a property to set
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     Value of a property to set
         /// </summary>
-        [JsonProperty("value")]
         [YamlMember(Alias = "value")]
+        [JsonProperty("value", NullValueHandling = NullValueHandling.Include)]
         public string Value { get; set; }
     }
 }

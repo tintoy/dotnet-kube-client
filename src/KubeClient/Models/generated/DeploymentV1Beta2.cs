@@ -28,15 +28,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Specification of the desired behavior of the Deployment.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public DeploymentSpecV1Beta2 Spec { get; set; }
 
         /// <summary>
         ///     Most recently observed status of the Deployment.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public DeploymentStatusV1Beta2 Status { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Required specifies hard node constraints that must be met.
         /// </summary>
-        [JsonProperty("required")]
         [YamlMember(Alias = "required")]
+        [JsonProperty("required", NullValueHandling = NullValueHandling.Ignore)]
         public NodeSelectorV1 Required { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Specifies the target UID.
         /// </summary>
-        [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid", NullValueHandling = NullValueHandling.Ignore)]
         public string Uid { get; set; }
     }
 }

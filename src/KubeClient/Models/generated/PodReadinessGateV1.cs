@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     ConditionType refers to a condition in the pod's condition list with matching type.
         /// </summary>
-        [JsonProperty("conditionType")]
         [YamlMember(Alias = "conditionType")]
+        [JsonProperty("conditionType", NullValueHandling = NullValueHandling.Include)]
         public string ConditionType { get; set; }
     }
 }

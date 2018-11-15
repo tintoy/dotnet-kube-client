@@ -26,14 +26,24 @@ namespace KubeClient.Models
         ///     BinaryData contains the binary data. Each key must consist of alphanumeric characters, '-', '_' or '.'. BinaryData can contain byte sequences that are not in the UTF-8 range. The keys stored in BinaryData must not overlap with the ones in the Data field, this is enforced during validation process. Using this field will require 1.10+ apiserver and kubelet.
         /// </summary>
         [YamlMember(Alias = "binaryData")]
-        [JsonProperty("binaryData", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> BinaryData { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("binaryData", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> BinaryData { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="BinaryData"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeBinaryData() => BinaryData.Count > 0;
 
         /// <summary>
         ///     Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'. Values with non-UTF-8 byte sequences must use the BinaryData field. The keys stored in Data must not overlap with the keys in the BinaryData field, this is enforced during validation process.
         /// </summary>
         [YamlMember(Alias = "data")]
-        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("data", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Data"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeData() => Data.Count > 0;
     }
 }

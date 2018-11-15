@@ -14,7 +14,7 @@ namespace KubeClient.Models
         ///     Limits is the list of LimitRangeItem objects that are enforced.
         /// </summary>
         [YamlMember(Alias = "limits")]
-        [JsonProperty("limits", NullValueHandling = NullValueHandling.Ignore)]
-        public List<LimitRangeItemV1> Limits { get; set; } = new List<LimitRangeItemV1>();
+        [JsonProperty("limits", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<LimitRangeItemV1> Limits { get; } = new List<LimitRangeItemV1>();
     }
 }

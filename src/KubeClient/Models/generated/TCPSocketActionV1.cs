@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Optional: Host name to connect to, defaults to the pod IP.
         /// </summary>
-        [JsonProperty("host")]
         [YamlMember(Alias = "host")]
+        [JsonProperty("host", NullValueHandling = NullValueHandling.Ignore)]
         public string Host { get; set; }
 
         /// <summary>
         ///     Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
         /// </summary>
-        [JsonProperty("port")]
         [YamlMember(Alias = "port")]
+        [JsonProperty("port", NullValueHandling = NullValueHandling.Include)]
         public string Port { get; set; }
     }
 }

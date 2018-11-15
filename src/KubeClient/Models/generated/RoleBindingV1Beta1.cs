@@ -25,15 +25,20 @@ namespace KubeClient.Models
         /// <summary>
         ///     RoleRef can reference a Role in the current namespace or a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error.
         /// </summary>
-        [JsonProperty("roleRef")]
         [YamlMember(Alias = "roleRef")]
+        [JsonProperty("roleRef", NullValueHandling = NullValueHandling.Include)]
         public RoleRefV1Beta1 RoleRef { get; set; }
 
         /// <summary>
         ///     Subjects holds references to the objects the role applies to.
         /// </summary>
         [YamlMember(Alias = "subjects")]
-        [JsonProperty("subjects", NullValueHandling = NullValueHandling.Ignore)]
-        public List<SubjectV1Beta1> Subjects { get; set; } = new List<SubjectV1Beta1>();
+        [JsonProperty("subjects", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<SubjectV1Beta1> Subjects { get; } = new List<SubjectV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Subjects"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeSubjects() => Subjects.Count > 0;
     }
 }

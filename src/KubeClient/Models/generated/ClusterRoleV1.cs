@@ -23,15 +23,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     AggregationRule is an optional field that describes how to build the Rules for this ClusterRole. If AggregationRule is set, then the Rules are controller managed and direct changes to Rules will be stomped by the controller.
         /// </summary>
-        [JsonProperty("aggregationRule")]
         [YamlMember(Alias = "aggregationRule")]
+        [JsonProperty("aggregationRule", NullValueHandling = NullValueHandling.Ignore)]
         public AggregationRuleV1 AggregationRule { get; set; }
 
         /// <summary>
         ///     Rules holds all the PolicyRules for this ClusterRole
         /// </summary>
         [YamlMember(Alias = "rules")]
-        [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PolicyRuleV1> Rules { get; set; } = new List<PolicyRuleV1>();
+        [JsonProperty("rules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<PolicyRuleV1> Rules { get; } = new List<PolicyRuleV1>();
     }
 }

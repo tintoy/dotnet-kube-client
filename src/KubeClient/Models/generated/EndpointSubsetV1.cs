@@ -21,21 +21,36 @@ namespace KubeClient.Models
         ///     IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
         /// </summary>
         [YamlMember(Alias = "addresses")]
-        [JsonProperty("addresses", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointAddressV1> Addresses { get; set; } = new List<EndpointAddressV1>();
+        [JsonProperty("addresses", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<EndpointAddressV1> Addresses { get; } = new List<EndpointAddressV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Addresses"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeAddresses() => Addresses.Count > 0;
 
         /// <summary>
         ///     IP addresses which offer the related ports but are not currently marked as ready because they have not yet finished starting, have recently failed a readiness check, or have recently failed a liveness check.
         /// </summary>
         [YamlMember(Alias = "notReadyAddresses")]
-        [JsonProperty("notReadyAddresses", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointAddressV1> NotReadyAddresses { get; set; } = new List<EndpointAddressV1>();
+        [JsonProperty("notReadyAddresses", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<EndpointAddressV1> NotReadyAddresses { get; } = new List<EndpointAddressV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="NotReadyAddresses"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeNotReadyAddresses() => NotReadyAddresses.Count > 0;
 
         /// <summary>
         ///     Port numbers available on the related IP addresses.
         /// </summary>
         [YamlMember(Alias = "ports")]
-        [JsonProperty("ports", NullValueHandling = NullValueHandling.Ignore)]
-        public List<EndpointPortV1> Ports { get; set; } = new List<EndpointPortV1>();
+        [JsonProperty("ports", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<EndpointPortV1> Ports { get; } = new List<EndpointPortV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Ports"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializePorts() => Ports.Count > 0;
     }
 }

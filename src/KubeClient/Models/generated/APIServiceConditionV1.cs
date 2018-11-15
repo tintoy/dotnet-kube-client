@@ -13,36 +13,36 @@ namespace KubeClient.Models
         /// <summary>
         ///     Last time the condition transitioned from one status to another.
         /// </summary>
-        [JsonProperty("lastTransitionTime")]
         [YamlMember(Alias = "lastTransitionTime")]
+        [JsonProperty("lastTransitionTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
         ///     Human-readable message indicating details about last transition.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     Type is the type of the condition.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
         public string Type { get; set; }
 
         /// <summary>
         ///     Unique, one-word, CamelCase reason for the condition's last transition.
         /// </summary>
-        [JsonProperty("reason")]
         [YamlMember(Alias = "reason")]
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
         public string Reason { get; set; }
 
         /// <summary>
         ///     Status is the status of the condition. Can be True, False, Unknown.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
         public string Status { get; set; }
     }
 }

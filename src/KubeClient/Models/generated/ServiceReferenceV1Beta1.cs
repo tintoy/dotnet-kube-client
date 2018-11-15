@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name is the name of the service
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
         ///     Namespace is the namespace of the service
         /// </summary>
-        [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
+        [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]
         public string Namespace { get; set; }
     }
 }

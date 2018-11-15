@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
         /// </summary>
-        [JsonProperty("timeAdded")]
         [YamlMember(Alias = "timeAdded")]
+        [JsonProperty("timeAdded", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? TimeAdded { get; set; }
 
         /// <summary>
         ///     Required. The taint value corresponding to the taint key.
         /// </summary>
-        [JsonProperty("value")]
         [YamlMember(Alias = "value")]
+        [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
         public string Value { get; set; }
 
         /// <summary>
         ///     Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
         /// </summary>
-        [JsonProperty("effect")]
         [YamlMember(Alias = "effect")]
+        [JsonProperty("effect", NullValueHandling = NullValueHandling.Include)]
         public string Effect { get; set; }
 
         /// <summary>
         ///     Required. The taint key to be applied to a node.
         /// </summary>
-        [JsonProperty("key")]
         [YamlMember(Alias = "key")]
+        [JsonProperty("key", NullValueHandling = NullValueHandling.Include)]
         public string Key { get; set; }
     }
 }

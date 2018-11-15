@@ -14,7 +14,12 @@ namespace KubeClient.Models
         ///     ClusterRoleSelectors holds a list of selectors which will be used to find ClusterRoles and create the rules. If any of the selectors match, then the ClusterRole's permissions will be added
         /// </summary>
         [YamlMember(Alias = "clusterRoleSelectors")]
-        [JsonProperty("clusterRoleSelectors", NullValueHandling = NullValueHandling.Ignore)]
-        public List<LabelSelectorV1> ClusterRoleSelectors { get; set; } = new List<LabelSelectorV1>();
+        [JsonProperty("clusterRoleSelectors", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<LabelSelectorV1> ClusterRoleSelectors { get; } = new List<LabelSelectorV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ClusterRoleSelectors"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeClusterRoleSelectors() => ClusterRoleSelectors.Count > 0;
     }
 }

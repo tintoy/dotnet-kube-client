@@ -13,15 +13,20 @@ namespace KubeClient.Models
         /// <summary>
         ///     If request was approved, the controller will place the issued certificate here.
         /// </summary>
-        [JsonProperty("certificate")]
         [YamlMember(Alias = "certificate")]
+        [JsonProperty("certificate", NullValueHandling = NullValueHandling.Ignore)]
         public string Certificate { get; set; }
 
         /// <summary>
         ///     Conditions applied to the request, such as approval or denial.
         /// </summary>
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<CertificateSigningRequestConditionV1Beta1> Conditions { get; set; } = new List<CertificateSigningRequestConditionV1Beta1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<CertificateSigningRequestConditionV1Beta1> Conditions { get; } = new List<CertificateSigningRequestConditionV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
     }
 }

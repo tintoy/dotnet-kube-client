@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Time of the last occurrence observed
         /// </summary>
-        [JsonProperty("lastObservedTime")]
         [YamlMember(Alias = "lastObservedTime")]
+        [JsonProperty("lastObservedTime", NullValueHandling = NullValueHandling.Ignore)]
         public MicroTimeV1 LastObservedTime { get; set; }
 
         /// <summary>
         ///     State of this Series: Ongoing or Finished
         /// </summary>
-        [JsonProperty("state")]
         [YamlMember(Alias = "state")]
+        [JsonProperty("state", NullValueHandling = NullValueHandling.Ignore)]
         public string State { get; set; }
 
         /// <summary>
         ///     Number of occurrences in this series up to the last heartbeat time
         /// </summary>
-        [JsonProperty("count")]
         [YamlMember(Alias = "count")]
-        public int Count { get; set; }
+        [JsonProperty("count", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Count { get; set; }
     }
 }

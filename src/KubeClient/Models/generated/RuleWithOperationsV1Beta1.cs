@@ -14,22 +14,37 @@ namespace KubeClient.Models
         ///     APIGroups is the API groups the resources belong to. '*' is all groups. If '*' is present, the length of the slice must be one. Required.
         /// </summary>
         [YamlMember(Alias = "apiGroups")]
-        [JsonProperty("apiGroups", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> ApiGroups { get; set; } = new List<string>();
+        [JsonProperty("apiGroups", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> ApiGroups { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ApiGroups"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeApiGroups() => ApiGroups.Count > 0;
 
         /// <summary>
         ///     APIVersions is the API versions the resources belong to. '*' is all versions. If '*' is present, the length of the slice must be one. Required.
         /// </summary>
         [YamlMember(Alias = "apiVersions")]
-        [JsonProperty("apiVersions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> ApiVersions { get; set; } = new List<string>();
+        [JsonProperty("apiVersions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> ApiVersions { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="ApiVersions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeApiVersions() => ApiVersions.Count > 0;
 
         /// <summary>
         ///     Operations is the operations the admission hook cares about - CREATE, UPDATE, or * for all operations. If '*' is present, the length of the slice must be one. Required.
         /// </summary>
         [YamlMember(Alias = "operations")]
-        [JsonProperty("operations", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Operations { get; set; } = new List<string>();
+        [JsonProperty("operations", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Operations { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Operations"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeOperations() => Operations.Count > 0;
 
         /// <summary>
         ///     Resources is a list of resources this rule applies to.
@@ -41,7 +56,12 @@ namespace KubeClient.Models
         ///     Depending on the enclosing object, subresources might not be allowed. Required.
         /// </summary>
         [YamlMember(Alias = "resources")]
-        [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Resources { get; set; } = new List<string>();
+        [JsonProperty("resources", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Resources { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Resources"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeResources() => Resources.Count > 0;
     }
 }

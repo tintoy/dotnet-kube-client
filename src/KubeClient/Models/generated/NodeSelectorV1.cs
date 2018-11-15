@@ -14,7 +14,7 @@ namespace KubeClient.Models
         ///     Required. A list of node selector terms. The terms are ORed.
         /// </summary>
         [YamlMember(Alias = "nodeSelectorTerms")]
-        [JsonProperty("nodeSelectorTerms", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NodeSelectorTermV1> NodeSelectorTerms { get; set; } = new List<NodeSelectorTermV1>();
+        [JsonProperty("nodeSelectorTerms", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<NodeSelectorTermV1> NodeSelectorTerms { get; } = new List<NodeSelectorTermV1>();
     }
 }

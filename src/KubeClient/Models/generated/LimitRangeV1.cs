@@ -25,8 +25,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec defines the limits enforced. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public LimitRangeSpecV1 Spec { get; set; }
     }
 }

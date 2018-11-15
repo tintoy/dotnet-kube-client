@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     groupVersion is the group and version this APIResourceList is for.
         /// </summary>
-        [JsonProperty("groupVersion")]
         [YamlMember(Alias = "groupVersion")]
+        [JsonProperty("groupVersion", NullValueHandling = NullValueHandling.Include)]
         public string GroupVersion { get; set; }
 
         /// <summary>
         ///     resources contains the name of the resources and if they are namespaced.
         /// </summary>
         [YamlMember(Alias = "resources")]
-        [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
-        public List<APIResourceV1> Resources { get; set; } = new List<APIResourceV1>();
+        [JsonProperty("resources", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<APIResourceV1> Resources { get; } = new List<APIResourceV1>();
     }
 }

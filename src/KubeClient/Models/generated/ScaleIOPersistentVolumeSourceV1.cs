@@ -13,71 +13,71 @@ namespace KubeClient.Models
         /// <summary>
         ///     Flag to enable/disable SSL communication with Gateway, default false
         /// </summary>
-        [JsonProperty("sslEnabled")]
         [YamlMember(Alias = "sslEnabled")]
-        public bool SslEnabled { get; set; }
+        [JsonProperty("sslEnabled", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? SslEnabled { get; set; }
 
         /// <summary>
         ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
         /// </summary>
-        [JsonProperty("fsType")]
         [YamlMember(Alias = "fsType")]
+        [JsonProperty("fsType", NullValueHandling = NullValueHandling.Ignore)]
         public string FsType { get; set; }
 
         /// <summary>
         ///     Indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
         /// </summary>
-        [JsonProperty("storageMode")]
         [YamlMember(Alias = "storageMode")]
+        [JsonProperty("storageMode", NullValueHandling = NullValueHandling.Ignore)]
         public string StorageMode { get; set; }
 
         /// <summary>
         ///     The name of a volume already created in the ScaleIO system that is associated with this volume source.
         /// </summary>
-        [JsonProperty("volumeName")]
         [YamlMember(Alias = "volumeName")]
+        [JsonProperty("volumeName", NullValueHandling = NullValueHandling.Ignore)]
         public string VolumeName { get; set; }
 
         /// <summary>
         ///     SecretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
         /// </summary>
-        [JsonProperty("secretRef")]
         [YamlMember(Alias = "secretRef")]
+        [JsonProperty("secretRef", NullValueHandling = NullValueHandling.Include)]
         public SecretReferenceV1 SecretRef { get; set; }
 
         /// <summary>
         ///     The ScaleIO Storage Pool associated with the protection domain.
         /// </summary>
-        [JsonProperty("storagePool")]
         [YamlMember(Alias = "storagePool")]
+        [JsonProperty("storagePool", NullValueHandling = NullValueHandling.Ignore)]
         public string StoragePool { get; set; }
 
         /// <summary>
         ///     The name of the storage system as configured in ScaleIO.
         /// </summary>
-        [JsonProperty("system")]
         [YamlMember(Alias = "system")]
+        [JsonProperty("system", NullValueHandling = NullValueHandling.Include)]
         public string System { get; set; }
 
         /// <summary>
         ///     The name of the ScaleIO Protection Domain for the configured storage.
         /// </summary>
-        [JsonProperty("protectionDomain")]
         [YamlMember(Alias = "protectionDomain")]
+        [JsonProperty("protectionDomain", NullValueHandling = NullValueHandling.Ignore)]
         public string ProtectionDomain { get; set; }
 
         /// <summary>
         ///     The host address of the ScaleIO API Gateway.
         /// </summary>
-        [JsonProperty("gateway")]
         [YamlMember(Alias = "gateway")]
+        [JsonProperty("gateway", NullValueHandling = NullValueHandling.Include)]
         public string Gateway { get; set; }
 
         /// <summary>
         ///     Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
-        [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ReadOnly { get; set; }
     }
 }

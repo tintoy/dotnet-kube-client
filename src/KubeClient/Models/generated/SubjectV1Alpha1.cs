@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name of the object being referenced.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
         /// </summary>
-        [JsonProperty("namespace")]
         [YamlMember(Alias = "namespace")]
+        [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]
         public string Namespace { get; set; }
     }
 }

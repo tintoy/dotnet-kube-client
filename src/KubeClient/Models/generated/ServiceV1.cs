@@ -29,15 +29,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public ServiceSpecV1 Spec { get; set; }
 
         /// <summary>
         ///     Most recently observed status of the service. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public ServiceStatusV1 Status { get; set; }
     }
 }

@@ -11,6 +11,7 @@ branches:
   only:
     - develop
     - master
+    # Feature branches
     - /^feature\/.*$/
 
 before_install:

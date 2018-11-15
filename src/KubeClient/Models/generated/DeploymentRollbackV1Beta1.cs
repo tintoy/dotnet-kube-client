@@ -13,22 +13,27 @@ namespace KubeClient.Models
         /// <summary>
         ///     Required: This must match the Name of a deployment.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     The config of this deployment rollback.
         /// </summary>
-        [JsonProperty("rollbackTo")]
         [YamlMember(Alias = "rollbackTo")]
+        [JsonProperty("rollbackTo", NullValueHandling = NullValueHandling.Include)]
         public RollbackConfigV1Beta1 RollbackTo { get; set; }
 
         /// <summary>
         ///     The annotations to be updated to a deployment
         /// </summary>
         [YamlMember(Alias = "updatedAnnotations")]
-        [JsonProperty("updatedAnnotations", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> UpdatedAnnotations { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("updatedAnnotations", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> UpdatedAnnotations { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="UpdatedAnnotations"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeUpdatedAnnotations() => UpdatedAnnotations.Count > 0;
     }
 }

@@ -25,7 +25,12 @@ namespace KubeClient.Models
         /// </summary>
         [MergeStrategy(Key = "name")]
         [YamlMember(Alias = "webhooks")]
-        [JsonProperty("webhooks", NullValueHandling = NullValueHandling.Ignore)]
-        public List<WebhookV1Beta1> Webhooks { get; set; } = new List<WebhookV1Beta1>();
+        [JsonProperty("webhooks", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<WebhookV1Beta1> Webhooks { get; } = new List<WebhookV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Webhooks"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeWebhooks() => Webhooks.Count > 0;
     }
 }

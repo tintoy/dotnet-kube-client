@@ -13,15 +13,20 @@ namespace KubeClient.Models
         /// <summary>
         ///     CIDR is a string representing the IP Block Valid examples are "192.168.1.1/24"
         /// </summary>
-        [JsonProperty("cidr")]
         [YamlMember(Alias = "cidr")]
+        [JsonProperty("cidr", NullValueHandling = NullValueHandling.Include)]
         public string Cidr { get; set; }
 
         /// <summary>
         ///     Except is a slice of CIDRs that should not be included within an IP Block Valid examples are "192.168.1.1/24" Except values will be rejected if they are outside the CIDR range
         /// </summary>
         [YamlMember(Alias = "except")]
-        [JsonProperty("except", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Except { get; set; } = new List<string>();
+        [JsonProperty("except", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Except { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Except"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeExcept() => Except.Count > 0;
     }
 }

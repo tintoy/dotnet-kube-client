@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Endpoint on which Kubelet is listening.
         /// </summary>
-        [JsonProperty("kubeletEndpoint")]
         [YamlMember(Alias = "kubeletEndpoint")]
+        [JsonProperty("kubeletEndpoint", NullValueHandling = NullValueHandling.Ignore)]
         public DaemonEndpointV1 KubeletEndpoint { get; set; }
     }
 }

@@ -23,15 +23,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     defines the behavior of the scale. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public ScaleSpecV1Beta2 Spec { get; set; }
 
         /// <summary>
         ///     current status of the scale. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status. Read-only.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public ScaleStatusV1Beta2 Status { get; set; }
     }
 }

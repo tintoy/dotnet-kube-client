@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Port number of the given endpoint.
         /// </summary>
-        [JsonProperty("Port")]
         [YamlMember(Alias = "Port")]
+        [JsonProperty("Port", NullValueHandling = NullValueHandling.Include)]
         public int Port { get; set; }
     }
 }

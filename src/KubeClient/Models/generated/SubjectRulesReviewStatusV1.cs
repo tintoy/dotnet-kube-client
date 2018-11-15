@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     Incomplete is true when the rules returned by this call are incomplete. This is most commonly encountered when an authorizer, such as an external authorizer, doesn't support rules evaluation.
         /// </summary>
-        [JsonProperty("incomplete")]
         [YamlMember(Alias = "incomplete")]
+        [JsonProperty("incomplete", NullValueHandling = NullValueHandling.Include)]
         public bool Incomplete { get; set; }
 
         /// <summary>
         ///     EvaluationError can appear in combination with Rules. It indicates an error occurred during rule evaluation, such as an authorizer that doesn't support rule evaluation, and that ResourceRules and/or NonResourceRules may be incomplete.
         /// </summary>
-        [JsonProperty("evaluationError")]
         [YamlMember(Alias = "evaluationError")]
+        [JsonProperty("evaluationError", NullValueHandling = NullValueHandling.Ignore)]
         public string EvaluationError { get; set; }
 
         /// <summary>
         ///     NonResourceRules is the list of actions the subject is allowed to perform on non-resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
         /// </summary>
         [YamlMember(Alias = "nonResourceRules")]
-        [JsonProperty("nonResourceRules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<NonResourceRuleV1> NonResourceRules { get; set; } = new List<NonResourceRuleV1>();
+        [JsonProperty("nonResourceRules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<NonResourceRuleV1> NonResourceRules { get; } = new List<NonResourceRuleV1>();
 
         /// <summary>
         ///     ResourceRules is the list of actions the subject is allowed to perform on resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
         /// </summary>
         [YamlMember(Alias = "resourceRules")]
-        [JsonProperty("resourceRules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ResourceRuleV1> ResourceRules { get; set; } = new List<ResourceRuleV1>();
+        [JsonProperty("resourceRules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ResourceRuleV1> ResourceRules { get; } = new List<ResourceRuleV1>();
     }
 }

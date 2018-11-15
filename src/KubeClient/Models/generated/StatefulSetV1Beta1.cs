@@ -31,15 +31,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Spec defines the desired identities of pods in this set.
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public StatefulSetSpecV1Beta1 Spec { get; set; }
 
         /// <summary>
         ///     Status is the current status of Pods in this StatefulSet. This data may be out of date by some window of time.
         /// </summary>
-        [JsonProperty("status")]
         [YamlMember(Alias = "status")]
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
         public StatefulSetStatusV1Beta1 Status { get; set; }
     }
 }

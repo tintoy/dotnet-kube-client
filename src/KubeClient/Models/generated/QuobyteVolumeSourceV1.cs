@@ -13,36 +13,36 @@ namespace KubeClient.Models
         /// <summary>
         ///     Volume is a string that references an already created Quobyte volume by name.
         /// </summary>
-        [JsonProperty("volume")]
         [YamlMember(Alias = "volume")]
+        [JsonProperty("volume", NullValueHandling = NullValueHandling.Include)]
         public string Volume { get; set; }
 
         /// <summary>
         ///     Group to map volume access to Default is no group
         /// </summary>
-        [JsonProperty("group")]
         [YamlMember(Alias = "group")]
+        [JsonProperty("group", NullValueHandling = NullValueHandling.Ignore)]
         public string Group { get; set; }
 
         /// <summary>
         ///     User to map volume access to Defaults to serivceaccount user
         /// </summary>
-        [JsonProperty("user")]
         [YamlMember(Alias = "user")]
+        [JsonProperty("user", NullValueHandling = NullValueHandling.Ignore)]
         public string User { get; set; }
 
         /// <summary>
         ///     ReadOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
         /// </summary>
-        [JsonProperty("readOnly")]
         [YamlMember(Alias = "readOnly")]
-        public bool ReadOnly { get; set; }
+        [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ReadOnly { get; set; }
 
         /// <summary>
         ///     Registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
         /// </summary>
-        [JsonProperty("registry")]
         [YamlMember(Alias = "registry")]
+        [JsonProperty("registry", NullValueHandling = NullValueHandling.Include)]
         public string Registry { get; set; }
     }
 }

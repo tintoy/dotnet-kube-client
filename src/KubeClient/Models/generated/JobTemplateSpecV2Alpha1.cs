@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Standard object's metadata of the jobs created from this template. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
-        [JsonProperty("metadata")]
         [YamlMember(Alias = "metadata")]
+        [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
         public ObjectMetaV1 Metadata { get; set; }
 
         /// <summary>
         ///     Specification of the desired behavior of the job. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("spec")]
         [YamlMember(Alias = "spec")]
+        [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public JobSpecV1 Spec { get; set; }
     }
 }

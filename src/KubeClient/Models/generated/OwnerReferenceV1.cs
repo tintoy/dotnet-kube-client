@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     UID of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
         /// </summary>
-        [JsonProperty("uid")]
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid", NullValueHandling = NullValueHandling.Include)]
         public string Uid { get; set; }
 
         /// <summary>
         ///     Name of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#names
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
         /// </summary>
-        [JsonProperty("blockOwnerDeletion")]
         [YamlMember(Alias = "blockOwnerDeletion")]
-        public bool BlockOwnerDeletion { get; set; }
+        [JsonProperty("blockOwnerDeletion", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? BlockOwnerDeletion { get; set; }
 
         /// <summary>
         ///     If true, this reference points to the managing controller.
         /// </summary>
-        [JsonProperty("controller")]
         [YamlMember(Alias = "controller")]
-        public bool Controller { get; set; }
+        [JsonProperty("controller", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Controller { get; set; }
     }
 }

@@ -65,7 +65,7 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                         Name = configMapName,
                         Namespace = configMapNamespace
                     },
-                    Data = new Dictionary<string, string>
+                    Data =
                     {
                         ["Key1"] = "One",
                         ["Key2"] = "Two"

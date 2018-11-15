@@ -25,8 +25,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Template defines the pods that will be created from this pod template. https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
         /// </summary>
-        [JsonProperty("template")]
         [YamlMember(Alias = "template")]
+        [JsonProperty("template", NullValueHandling = NullValueHandling.Ignore)]
         public PodTemplateSpecV1 Template { get; set; }
     }
 }

@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     The name of the admission webhook. Name should be fully qualified, e.g., imagepolicy.kubernetes.io, where "imagepolicy" is the name of the webhook, and kubernetes.io is the name of the organization. Required.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     ClientConfig defines how to communicate with the hook. Required
         /// </summary>
-        [JsonProperty("clientConfig")]
         [YamlMember(Alias = "clientConfig")]
+        [JsonProperty("clientConfig", NullValueHandling = NullValueHandling.Include)]
         public WebhookClientConfigV1Beta1 ClientConfig { get; set; }
 
         /// <summary>
@@ -57,22 +57,27 @@ namespace KubeClient.Models
         ///     
         ///     Default to the empty LabelSelector, which matches everything.
         /// </summary>
-        [JsonProperty("namespaceSelector")]
         [YamlMember(Alias = "namespaceSelector")]
+        [JsonProperty("namespaceSelector", NullValueHandling = NullValueHandling.Ignore)]
         public LabelSelectorV1 NamespaceSelector { get; set; }
 
         /// <summary>
         ///     Rules describes what operations on what resources/subresources the webhook cares about. The webhook cares about an operation if it matches _any_ Rule. However, in order to prevent ValidatingAdmissionWebhooks and MutatingAdmissionWebhooks from putting the cluster in a state which cannot be recovered from without completely disabling the plugin, ValidatingAdmissionWebhooks and MutatingAdmissionWebhooks are never called on admission requests for ValidatingWebhookConfiguration and MutatingWebhookConfiguration objects.
         /// </summary>
         [YamlMember(Alias = "rules")]
-        [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<RuleWithOperationsV1Beta1> Rules { get; set; } = new List<RuleWithOperationsV1Beta1>();
+        [JsonProperty("rules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<RuleWithOperationsV1Beta1> Rules { get; } = new List<RuleWithOperationsV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Rules"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRules() => Rules.Count > 0;
 
         /// <summary>
         ///     FailurePolicy defines how unrecognized errors from the admission endpoint are handled - allowed values are Ignore or Fail. Defaults to Ignore.
         /// </summary>
-        [JsonProperty("failurePolicy")]
         [YamlMember(Alias = "failurePolicy")]
+        [JsonProperty("failurePolicy", NullValueHandling = NullValueHandling.Ignore)]
         public string FailurePolicy { get; set; }
     }
 }

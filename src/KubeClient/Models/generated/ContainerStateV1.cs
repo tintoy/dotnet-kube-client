@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Details about a terminated container
         /// </summary>
-        [JsonProperty("terminated")]
         [YamlMember(Alias = "terminated")]
+        [JsonProperty("terminated", NullValueHandling = NullValueHandling.Ignore)]
         public ContainerStateTerminatedV1 Terminated { get; set; }
 
         /// <summary>
         ///     Details about a running container
         /// </summary>
-        [JsonProperty("running")]
         [YamlMember(Alias = "running")]
+        [JsonProperty("running", NullValueHandling = NullValueHandling.Ignore)]
         public ContainerStateRunningV1 Running { get; set; }
 
         /// <summary>
         ///     Details about a waiting container
         /// </summary>
-        [JsonProperty("waiting")]
         [YamlMember(Alias = "waiting")]
+        [JsonProperty("waiting", NullValueHandling = NullValueHandling.Ignore)]
         public ContainerStateWaitingV1 Waiting { get; set; }
     }
 }

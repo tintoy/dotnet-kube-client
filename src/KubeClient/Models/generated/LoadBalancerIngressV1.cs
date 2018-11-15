@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Hostname is set for load-balancer ingress points that are DNS based (typically AWS load-balancers)
         /// </summary>
-        [JsonProperty("hostname")]
         [YamlMember(Alias = "hostname")]
+        [JsonProperty("hostname", NullValueHandling = NullValueHandling.Ignore)]
         public string Hostname { get; set; }
 
         /// <summary>
         ///     IP is set for load-balancer ingress points that are IP based (typically GCE or OpenStack load-balancers)
         /// </summary>
-        [JsonProperty("ip")]
         [YamlMember(Alias = "ip")]
+        [JsonProperty("ip", NullValueHandling = NullValueHandling.Ignore)]
         public string Ip { get; set; }
     }
 }

@@ -14,14 +14,14 @@ namespace KubeClient.Models
         ///     Names by which this image is known. e.g. ["k8s.gcr.io/hyperkube:v1.0.7", "dockerhub.io/google_containers/hyperkube:v1.0.7"]
         /// </summary>
         [YamlMember(Alias = "names")]
-        [JsonProperty("names", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Names { get; set; } = new List<string>();
+        [JsonProperty("names", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Names { get; } = new List<string>();
 
         /// <summary>
         ///     The size of the image in bytes.
         /// </summary>
-        [JsonProperty("sizeBytes")]
         [YamlMember(Alias = "sizeBytes")]
-        public int SizeBytes { get; set; }
+        [JsonProperty("sizeBytes", NullValueHandling = NullValueHandling.Ignore)]
+        public int? SizeBytes { get; set; }
     }
 }

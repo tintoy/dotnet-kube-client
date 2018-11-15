@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     String detailing the error encountered during Attach or Detach operation. This string maybe logged, so it should not contain sensitive information.
         /// </summary>
-        [JsonProperty("message")]
         [YamlMember(Alias = "message")]
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
         /// <summary>
         ///     Time the error was encountered.
         /// </summary>
-        [JsonProperty("time")]
         [YamlMember(Alias = "time")]
+        [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? Time { get; set; }
     }
 }

@@ -15,15 +15,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
         ///     Specify whether the Secret must be defined
         /// </summary>
-        [JsonProperty("optional")]
         [YamlMember(Alias = "optional")]
-        public bool Optional { get; set; }
+        [JsonProperty("optional", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Optional { get; set; }
     }
 }

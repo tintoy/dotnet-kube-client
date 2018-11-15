@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     min is the start of the range, inclusive.
         /// </summary>
-        [JsonProperty("min")]
         [YamlMember(Alias = "min")]
+        [JsonProperty("min", NullValueHandling = NullValueHandling.Include)]
         public int Min { get; set; }
 
         /// <summary>
         ///     max is the end of the range, inclusive.
         /// </summary>
-        [JsonProperty("max")]
         [YamlMember(Alias = "max")]
+        [JsonProperty("max", NullValueHandling = NullValueHandling.Include)]
         public int Max { get; set; }
     }
 }

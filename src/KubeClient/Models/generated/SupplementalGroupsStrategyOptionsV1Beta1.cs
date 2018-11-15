@@ -13,15 +13,20 @@ namespace KubeClient.Models
         /// <summary>
         ///     rule is the strategy that will dictate what supplemental groups is used in the SecurityContext.
         /// </summary>
-        [JsonProperty("rule")]
         [YamlMember(Alias = "rule")]
+        [JsonProperty("rule", NullValueHandling = NullValueHandling.Ignore)]
         public string Rule { get; set; }
 
         /// <summary>
         ///     ranges are the allowed ranges of supplemental groups.  If you would like to force a single supplemental group then supply a single range with the same start and end. Required for MustRunAs.
         /// </summary>
         [YamlMember(Alias = "ranges")]
-        [JsonProperty("ranges", NullValueHandling = NullValueHandling.Ignore)]
-        public List<IDRangeV1Beta1> Ranges { get; set; } = new List<IDRangeV1Beta1>();
+        [JsonProperty("ranges", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<IDRangeV1Beta1> Ranges { get; } = new List<IDRangeV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Ranges"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRanges() => Ranges.Count > 0;
     }
 }

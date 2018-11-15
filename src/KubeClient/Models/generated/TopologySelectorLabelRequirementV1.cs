@@ -14,14 +14,14 @@ namespace KubeClient.Models
         ///     An array of string values. One value must match the label to be selected. Each entry in Values is ORed.
         /// </summary>
         [YamlMember(Alias = "values")]
-        [JsonProperty("values", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Values { get; set; } = new List<string>();
+        [JsonProperty("values", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Values { get; } = new List<string>();
 
         /// <summary>
         ///     The label key that the selector applies to.
         /// </summary>
-        [JsonProperty("key")]
         [YamlMember(Alias = "key")]
+        [JsonProperty("key", NullValueHandling = NullValueHandling.Include)]
         public string Key { get; set; }
     }
 }

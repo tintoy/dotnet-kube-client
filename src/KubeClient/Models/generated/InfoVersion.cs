@@ -13,64 +13,64 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("buildDate")]
         [YamlMember(Alias = "buildDate")]
+        [JsonProperty("buildDate", NullValueHandling = NullValueHandling.Include)]
         public string BuildDate { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("gitTreeState")]
         [YamlMember(Alias = "gitTreeState")]
+        [JsonProperty("gitTreeState", NullValueHandling = NullValueHandling.Include)]
         public string GitTreeState { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("platform")]
         [YamlMember(Alias = "platform")]
+        [JsonProperty("platform", NullValueHandling = NullValueHandling.Include)]
         public string Platform { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("gitVersion")]
         [YamlMember(Alias = "gitVersion")]
+        [JsonProperty("gitVersion", NullValueHandling = NullValueHandling.Include)]
         public string GitVersion { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("goVersion")]
         [YamlMember(Alias = "goVersion")]
+        [JsonProperty("goVersion", NullValueHandling = NullValueHandling.Include)]
         public string GoVersion { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("compiler")]
         [YamlMember(Alias = "compiler")]
+        [JsonProperty("compiler", NullValueHandling = NullValueHandling.Include)]
         public string Compiler { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("major")]
         [YamlMember(Alias = "major")]
+        [JsonProperty("major", NullValueHandling = NullValueHandling.Include)]
         public string Major { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("minor")]
         [YamlMember(Alias = "minor")]
+        [JsonProperty("minor", NullValueHandling = NullValueHandling.Include)]
         public string Minor { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("gitCommit")]
         [YamlMember(Alias = "gitCommit")]
+        [JsonProperty("gitCommit", NullValueHandling = NullValueHandling.Include)]
         public string GitCommit { get; set; }
     }
 }

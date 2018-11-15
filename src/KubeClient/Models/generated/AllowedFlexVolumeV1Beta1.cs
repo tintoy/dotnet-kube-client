@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     driver is the name of the Flexvolume driver.
         /// </summary>
-        [JsonProperty("driver")]
         [YamlMember(Alias = "driver")]
+        [JsonProperty("driver", NullValueHandling = NullValueHandling.Include)]
         public string Driver { get; set; }
     }
 }

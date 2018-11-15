@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Name of the persistent volume to attach.
         /// </summary>
-        [JsonProperty("persistentVolumeName")]
         [YamlMember(Alias = "persistentVolumeName")]
+        [JsonProperty("persistentVolumeName", NullValueHandling = NullValueHandling.Ignore)]
         public string PersistentVolumeName { get; set; }
     }
 }

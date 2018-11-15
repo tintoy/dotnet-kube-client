@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Token is the opaque bearer token.
         /// </summary>
-        [JsonProperty("token")]
         [YamlMember(Alias = "token")]
+        [JsonProperty("token", NullValueHandling = NullValueHandling.Ignore)]
         public string Token { get; set; }
     }
 }

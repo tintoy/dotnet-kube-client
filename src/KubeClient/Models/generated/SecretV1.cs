@@ -26,21 +26,31 @@ namespace KubeClient.Models
         ///     Data contains the secret data. Each key must consist of alphanumeric characters, '-', '_' or '.'. The serialized form of the secret data is a base64 encoded string, representing the arbitrary (possibly non-string) data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
         /// </summary>
         [YamlMember(Alias = "data")]
-        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("data", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Data"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeData() => Data.Count > 0;
 
         /// <summary>
         ///     stringData allows specifying non-binary secret data in string form. It is provided as a write-only convenience method. All keys and values are merged into the data field on write, overwriting any existing values. It is never output when reading from the API.
         /// </summary>
         [YamlMember(Alias = "stringData")]
-        [JsonProperty("stringData", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> StringData { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("stringData", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public Dictionary<string, string> StringData { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="StringData"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeStringData() => StringData.Count > 0;
 
         /// <summary>
         ///     Used to facilitate programmatic handling of secret data.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
     }
 }

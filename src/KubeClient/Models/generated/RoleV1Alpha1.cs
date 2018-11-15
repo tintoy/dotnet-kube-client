@@ -26,7 +26,7 @@ namespace KubeClient.Models
         ///     Rules holds all the PolicyRules for this Role
         /// </summary>
         [YamlMember(Alias = "rules")]
-        [JsonProperty("rules", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PolicyRuleV1Alpha1> Rules { get; set; } = new List<PolicyRuleV1Alpha1>();
+        [JsonProperty("rules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<PolicyRuleV1Alpha1> Rules { get; } = new List<PolicyRuleV1Alpha1>();
     }
 }

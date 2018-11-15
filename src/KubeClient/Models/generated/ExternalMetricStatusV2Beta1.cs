@@ -13,29 +13,29 @@ namespace KubeClient.Models
         /// <summary>
         ///     currentAverageValue is the current value of metric averaged over autoscaled pods.
         /// </summary>
-        [JsonProperty("currentAverageValue")]
         [YamlMember(Alias = "currentAverageValue")]
+        [JsonProperty("currentAverageValue", NullValueHandling = NullValueHandling.Ignore)]
         public string CurrentAverageValue { get; set; }
 
         /// <summary>
         ///     currentValue is the current value of the metric (as a quantity)
         /// </summary>
-        [JsonProperty("currentValue")]
         [YamlMember(Alias = "currentValue")]
+        [JsonProperty("currentValue", NullValueHandling = NullValueHandling.Include)]
         public string CurrentValue { get; set; }
 
         /// <summary>
         ///     metricName is the name of a metric used for autoscaling in metric system.
         /// </summary>
-        [JsonProperty("metricName")]
         [YamlMember(Alias = "metricName")]
+        [JsonProperty("metricName", NullValueHandling = NullValueHandling.Include)]
         public string MetricName { get; set; }
 
         /// <summary>
         ///     metricSelector is used to identify a specific time series within a given metric.
         /// </summary>
-        [JsonProperty("metricSelector")]
         [YamlMember(Alias = "metricSelector")]
+        [JsonProperty("metricSelector", NullValueHandling = NullValueHandling.Ignore)]
         public LabelSelectorV1 MetricSelector { get; set; }
     }
 }

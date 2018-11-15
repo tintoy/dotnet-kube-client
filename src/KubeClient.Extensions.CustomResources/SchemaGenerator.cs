@@ -165,7 +165,7 @@ namespace KubeClient.Extensions.CustomResources
                 Description = enumType.Name
             };
 
-            schema.Enum = new List<JSONV1Beta1>(
+            schema.Enum.AddRange(
                 Enum.GetNames(enumType).Select(
                     memberName => new JSONV1Beta1
                     {
@@ -214,34 +214,33 @@ namespace KubeClient.Extensions.CustomResources
             if (objectType == null)
                 throw new ArgumentNullException(nameof(objectType));
             
-            return new JSONSchemaPropsV1Beta1
+            var schemaProps = new JSONSchemaPropsV1Beta1
             {
                 Type = "object",
                 Description = objectType.Name,
-                Properties = objectType.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(property =>
-                    {
-                        if (!(property.CanRead && property.CanWrite))
-                            return false;
-                            
-                        // Ignore non-serialised properties.
-                        if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
-                            return false;
-
-                        // We only want properties declared on KubeCustomResourceV1 (or classes derived from it).
-                        if (!typeof(KubeCustomResourceV1).IsAssignableFrom(property.DeclaringType))
-                            return false;
-
-                        return true;
-                    })
-                    .ToDictionary(
-                        property => property.Name,
-                        property => GenerateSchema(property.PropertyType)
-                    ),
-                Required = new List<string>(
-                    GetRequiredPropertyNames(objectType)
-                )
             };
+
+            foreach (PropertyInfo property in objectType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                if (!(property.CanRead && property.CanWrite))
+                    continue;
+                    
+                // Ignore non-serialised properties.
+                if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
+                    continue;
+
+                // We only want properties declared on KubeCustomResourceV1 (or classes derived from it).
+                if (!typeof(KubeCustomResourceV1).IsAssignableFrom(property.DeclaringType))
+                    continue;
+
+                schemaProps.Properties[property.Name] = GenerateSchema(property.PropertyType);
+            }
+
+            schemaProps.Required.AddRange(
+                GetRequiredPropertyNames(objectType)
+            );
+            
+            return schemaProps;
         }
 
         /// <summary>

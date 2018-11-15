@@ -23,22 +23,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     The value of this priority class. This is the actual priority that pods receive when they have the name of this class in their pod spec.
         /// </summary>
-        [JsonProperty("value")]
         [YamlMember(Alias = "value")]
+        [JsonProperty("value", NullValueHandling = NullValueHandling.Include)]
         public int Value { get; set; }
 
         /// <summary>
         ///     description is an arbitrary string that usually provides guidelines on when this priority class should be used.
         /// </summary>
-        [JsonProperty("description")]
         [YamlMember(Alias = "description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         /// <summary>
         ///     globalDefault specifies whether this PriorityClass should be considered as the default priority for pods that do not have any priority class. Only one PriorityClass can be marked as `globalDefault`. However, if more than one PriorityClasses exists with their `globalDefault` field set to true, the smallest value of such global default PriorityClasses will be used as the default priority.
         /// </summary>
-        [JsonProperty("globalDefault")]
         [YamlMember(Alias = "globalDefault")]
-        public bool GlobalDefault { get; set; }
+        [JsonProperty("globalDefault", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? GlobalDefault { get; set; }
     }
 }

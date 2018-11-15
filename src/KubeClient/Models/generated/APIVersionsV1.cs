@@ -14,14 +14,14 @@ namespace KubeClient.Models
         ///     a map of client CIDR to server address that is serving this group. This is to help clients reach servers in the most network-efficient way possible. Clients can use the appropriate server address as per the CIDR that they match. In case of multiple matches, clients should use the longest matching CIDR. The server returns only those CIDRs that it thinks that the client can match. For example: the master will return an internal IP CIDR only, if the client reaches the server using an internal IP. Server looks at X-Forwarded-For header or X-Real-Ip header or request.RemoteAddr (in that order) to get the client IP.
         /// </summary>
         [YamlMember(Alias = "serverAddressByClientCIDRs")]
-        [JsonProperty("serverAddressByClientCIDRs", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ServerAddressByClientCIDRV1> ServerAddressByClientCIDRs { get; set; } = new List<ServerAddressByClientCIDRV1>();
+        [JsonProperty("serverAddressByClientCIDRs", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ServerAddressByClientCIDRV1> ServerAddressByClientCIDRs { get; } = new List<ServerAddressByClientCIDRV1>();
 
         /// <summary>
         ///     versions are the api versions that are available.
         /// </summary>
         [YamlMember(Alias = "versions")]
-        [JsonProperty("versions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> Versions { get; set; } = new List<string>();
+        [JsonProperty("versions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> Versions { get; } = new List<string>();
     }
 }

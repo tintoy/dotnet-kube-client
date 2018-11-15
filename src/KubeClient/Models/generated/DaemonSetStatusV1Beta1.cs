@@ -13,72 +13,77 @@ namespace KubeClient.Models
         /// <summary>
         ///     The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
         /// </summary>
-        [JsonProperty("currentNumberScheduled")]
         [YamlMember(Alias = "currentNumberScheduled")]
+        [JsonProperty("currentNumberScheduled", NullValueHandling = NullValueHandling.Include)]
         public int CurrentNumberScheduled { get; set; }
 
         /// <summary>
         ///     The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
         /// </summary>
-        [JsonProperty("desiredNumberScheduled")]
         [YamlMember(Alias = "desiredNumberScheduled")]
+        [JsonProperty("desiredNumberScheduled", NullValueHandling = NullValueHandling.Include)]
         public int DesiredNumberScheduled { get; set; }
 
         /// <summary>
         ///     The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
         /// </summary>
-        [JsonProperty("numberMisscheduled")]
         [YamlMember(Alias = "numberMisscheduled")]
+        [JsonProperty("numberMisscheduled", NullValueHandling = NullValueHandling.Include)]
         public int NumberMisscheduled { get; set; }
 
         /// <summary>
         ///     The total number of nodes that are running updated daemon pod
         /// </summary>
-        [JsonProperty("updatedNumberScheduled")]
         [YamlMember(Alias = "updatedNumberScheduled")]
-        public int UpdatedNumberScheduled { get; set; }
+        [JsonProperty("updatedNumberScheduled", NullValueHandling = NullValueHandling.Ignore)]
+        public int? UpdatedNumberScheduled { get; set; }
 
         /// <summary>
         ///     The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
         /// </summary>
-        [JsonProperty("numberAvailable")]
         [YamlMember(Alias = "numberAvailable")]
-        public int NumberAvailable { get; set; }
+        [JsonProperty("numberAvailable", NullValueHandling = NullValueHandling.Ignore)]
+        public int? NumberAvailable { get; set; }
 
         /// <summary>
         ///     The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
         /// </summary>
-        [JsonProperty("numberUnavailable")]
         [YamlMember(Alias = "numberUnavailable")]
-        public int NumberUnavailable { get; set; }
+        [JsonProperty("numberUnavailable", NullValueHandling = NullValueHandling.Ignore)]
+        public int? NumberUnavailable { get; set; }
 
         /// <summary>
         ///     The most recent generation observed by the daemon set controller.
         /// </summary>
-        [JsonProperty("observedGeneration")]
         [YamlMember(Alias = "observedGeneration")]
-        public int ObservedGeneration { get; set; }
+        [JsonProperty("observedGeneration", NullValueHandling = NullValueHandling.Ignore)]
+        public int? ObservedGeneration { get; set; }
 
         /// <summary>
         ///     Represents the latest available observations of a DaemonSet's current state.
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "conditions")]
-        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
-        public List<DaemonSetConditionV1Beta1> Conditions { get; set; } = new List<DaemonSetConditionV1Beta1>();
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<DaemonSetConditionV1Beta1> Conditions { get; } = new List<DaemonSetConditionV1Beta1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
 
         /// <summary>
         ///     Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
         /// </summary>
-        [JsonProperty("collisionCount")]
         [YamlMember(Alias = "collisionCount")]
-        public int CollisionCount { get; set; }
+        [JsonProperty("collisionCount", NullValueHandling = NullValueHandling.Ignore)]
+        public int? CollisionCount { get; set; }
 
         /// <summary>
         ///     The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and ready.
         /// </summary>
-        [JsonProperty("numberReady")]
         [YamlMember(Alias = "numberReady")]
+        [JsonProperty("numberReady", NullValueHandling = NullValueHandling.Include)]
         public int NumberReady { get; set; }
     }
 }

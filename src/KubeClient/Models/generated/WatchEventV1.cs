@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Description not provided.
         /// </summary>
-        [JsonProperty("type")]
         [YamlMember(Alias = "type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
         public string Type { get; set; }
 
         /// <summary>
@@ -24,8 +24,8 @@ namespace KubeClient.Models
         ///      * If Type is Error: *Status is recommended; other types may make sense
         ///        depending on context.
         /// </summary>
-        [JsonProperty("object")]
         [YamlMember(Alias = "object")]
+        [JsonProperty("object", NullValueHandling = NullValueHandling.Include)]
         public RawExtensionRuntime Object { get; set; }
     }
 }

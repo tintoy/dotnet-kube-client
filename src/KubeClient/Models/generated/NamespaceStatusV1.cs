@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Phase is the current lifecycle phase of the namespace. More info: https://kubernetes.io/docs/tasks/administer-cluster/namespaces/
         /// </summary>
-        [JsonProperty("phase")]
         [YamlMember(Alias = "phase")]
+        [JsonProperty("phase", NullValueHandling = NullValueHandling.Ignore)]
         public string Phase { get; set; }
     }
 }

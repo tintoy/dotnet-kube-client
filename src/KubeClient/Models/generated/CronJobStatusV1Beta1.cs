@@ -14,14 +14,19 @@ namespace KubeClient.Models
         ///     A list of pointers to currently running jobs.
         /// </summary>
         [YamlMember(Alias = "active")]
-        [JsonProperty("active", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ObjectReferenceV1> Active { get; set; } = new List<ObjectReferenceV1>();
+        [JsonProperty("active", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<ObjectReferenceV1> Active { get; } = new List<ObjectReferenceV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Active"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeActive() => Active.Count > 0;
 
         /// <summary>
         ///     Information when was the last time the job was successfully scheduled.
         /// </summary>
-        [JsonProperty("lastScheduleTime")]
         [YamlMember(Alias = "lastScheduleTime")]
+        [JsonProperty("lastScheduleTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastScheduleTime { get; set; }
     }
 }

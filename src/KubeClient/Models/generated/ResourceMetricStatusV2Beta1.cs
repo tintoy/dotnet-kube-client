@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     currentAverageValue is the current value of the average of the resource metric across all relevant pods, as a raw value (instead of as a percentage of the request), similar to the "pods" metric source type. It will always be set, regardless of the corresponding metric specification.
         /// </summary>
-        [JsonProperty("currentAverageValue")]
         [YamlMember(Alias = "currentAverageValue")]
+        [JsonProperty("currentAverageValue", NullValueHandling = NullValueHandling.Include)]
         public string CurrentAverageValue { get; set; }
 
         /// <summary>
         ///     name is the name of the resource in question.
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     currentAverageUtilization is the current value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods.  It will only be present if `targetAverageValue` was set in the corresponding metric specification.
         /// </summary>
-        [JsonProperty("currentAverageUtilization")]
         [YamlMember(Alias = "currentAverageUtilization")]
-        public int CurrentAverageUtilization { get; set; }
+        [JsonProperty("currentAverageUtilization", NullValueHandling = NullValueHandling.Ignore)]
+        public int? CurrentAverageUtilization { get; set; }
     }
 }

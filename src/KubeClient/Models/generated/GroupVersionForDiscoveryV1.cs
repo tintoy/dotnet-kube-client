@@ -13,15 +13,15 @@ namespace KubeClient.Models
         /// <summary>
         ///     groupVersion specifies the API group and version in the form "group/version"
         /// </summary>
-        [JsonProperty("groupVersion")]
         [YamlMember(Alias = "groupVersion")]
+        [JsonProperty("groupVersion", NullValueHandling = NullValueHandling.Include)]
         public string GroupVersion { get; set; }
 
         /// <summary>
         ///     version specifies the version in the form of "version". This is to save the clients the trouble of splitting the GroupVersion.
         /// </summary>
-        [JsonProperty("version")]
         [YamlMember(Alias = "version")]
+        [JsonProperty("version", NullValueHandling = NullValueHandling.Include)]
         public string Version { get; set; }
     }
 }

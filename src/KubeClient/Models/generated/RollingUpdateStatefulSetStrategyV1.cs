@@ -13,8 +13,8 @@ namespace KubeClient.Models
         /// <summary>
         ///     Partition indicates the ordinal at which the StatefulSet should be partitioned. Default value is 0.
         /// </summary>
-        [JsonProperty("partition")]
         [YamlMember(Alias = "partition")]
-        public int Partition { get; set; }
+        [JsonProperty("partition", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Partition { get; set; }
     }
 }

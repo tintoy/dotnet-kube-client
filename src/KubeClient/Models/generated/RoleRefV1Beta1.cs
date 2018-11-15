@@ -13,22 +13,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Kind is the type of resource being referenced
         /// </summary>
-        [JsonProperty("kind")]
         [YamlMember(Alias = "kind")]
+        [JsonProperty("kind", NullValueHandling = NullValueHandling.Include)]
         public string Kind { get; set; }
 
         /// <summary>
         ///     Name is the name of resource being referenced
         /// </summary>
-        [JsonProperty("name")]
         [YamlMember(Alias = "name")]
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
         public string Name { get; set; }
 
         /// <summary>
         ///     APIGroup is the group for the resource being referenced
         /// </summary>
-        [JsonProperty("apiGroup")]
         [YamlMember(Alias = "apiGroup")]
+        [JsonProperty("apiGroup", NullValueHandling = NullValueHandling.Include)]
         public string ApiGroup { get; set; }
     }
 }

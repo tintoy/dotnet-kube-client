@@ -15,22 +15,22 @@ namespace KubeClient.Models
         /// <summary>
         ///     Commit hash for the specified revision.
         /// </summary>
-        [JsonProperty("revision")]
         [YamlMember(Alias = "revision")]
+        [JsonProperty("revision", NullValueHandling = NullValueHandling.Ignore)]
         public string Revision { get; set; }
 
         /// <summary>
         ///     Target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
         /// </summary>
-        [JsonProperty("directory")]
         [YamlMember(Alias = "directory")]
+        [JsonProperty("directory", NullValueHandling = NullValueHandling.Ignore)]
         public string Directory { get; set; }
 
         /// <summary>
         ///     Repository URL
         /// </summary>
-        [JsonProperty("repository")]
         [YamlMember(Alias = "repository")]
+        [JsonProperty("repository", NullValueHandling = NullValueHandling.Include)]
         public string Repository { get; set; }
     }
 }
