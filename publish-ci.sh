@@ -56,10 +56,6 @@ if [[ "$TRAVIS_BRANCH" == "master" ]]; then
     for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
         dotnet nuget push "$PACKAGE" --source "$NUGET_FEED_URL" --api-key "$NUGET_API_KEY"
     done
-
-    for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
-        dotnet nuget push "$SYMBOL_PACKAGE" --source "$NUGET_SYMBOL_FEED_URL" --api-key "$NUGET_API_KEY"
-    done
 else
     echo "Not publishing packages for branch '$TRAVIS_BRANCH' to NuGet package feed."
 fi

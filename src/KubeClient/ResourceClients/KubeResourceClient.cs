@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace KubeClient.ResourceClients
 {
@@ -45,6 +46,7 @@ namespace KubeClient.ResourceClients
         /// </summary>
         protected internal static JsonSerializerSettings SerializerSettings => new JsonSerializerSettings
         {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Converters =
             {
                 new StringEnumConverter()
