@@ -110,7 +110,10 @@ namespace KubeClient
             configuration.Bind(options);
 
             if (options.ApiEndPoint == null)
+            {
                 options = KubeClientOptions.FromPodServiceAccount();
+                configuration.Bind(options);
+            }
 
             services.AddKubeClient(options);
 
