@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     NetworkPolicy describes what network traffic is allowed for a set of Pods
     /// </summary>
-    [KubeObject("NetworkPolicy", "v1")]
+    [KubeObject("NetworkPolicy", "networking.k8s.io/v1")]
     [KubeApi(KubeAction.List, "apis/networking.k8s.io/v1/networkpolicies")]
     [KubeApi(KubeAction.WatchList, "apis/networking.k8s.io/v1/watch/networkpolicies")]
     [KubeApi(KubeAction.List, "apis/networking.k8s.io/v1/namespaces/{namespace}/networkpolicies")]

@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
     /// </summary>
-    [KubeObject("HorizontalPodAutoscaler", "v2beta1")]
+    [KubeObject("HorizontalPodAutoscaler", "autoscaling/v2beta1")]
     [KubeApi(KubeAction.List, "apis/autoscaling/v2beta1/horizontalpodautoscalers")]
     [KubeApi(KubeAction.WatchList, "apis/autoscaling/v2beta1/watch/horizontalpodautoscalers")]
     [KubeApi(KubeAction.List, "apis/autoscaling/v2beta1/namespaces/{namespace}/horizontalpodautoscalers")]

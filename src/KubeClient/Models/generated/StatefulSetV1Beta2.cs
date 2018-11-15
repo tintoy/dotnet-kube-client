@@ -11,7 +11,7 @@ namespace KubeClient.Models
     ///      - Storage: As many VolumeClaims as requested.
     ///     The StatefulSet guarantees that a given network identity will always map to the same storage identity.
     /// </summary>
-    [KubeObject("StatefulSet", "v1beta2")]
+    [KubeObject("StatefulSet", "apps/v1beta2")]
     [KubeApi(KubeAction.List, "apis/apps/v1beta2/statefulsets")]
     [KubeApi(KubeAction.WatchList, "apis/apps/v1beta2/watch/statefulsets")]
     [KubeApi(KubeAction.List, "apis/apps/v1beta2/namespaces/{namespace}/statefulsets")]

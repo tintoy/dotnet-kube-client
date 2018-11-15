@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -22,6 +23,7 @@ namespace KubeClient.Models
         ///     Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         /// </summary>
         [JsonProperty("metadata")]
+        [YamlMember(Alias = "metadata")]
         public ListMetaV1 Metadata { get; set; }
 
         /// <summary>

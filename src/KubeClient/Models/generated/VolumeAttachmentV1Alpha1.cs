@@ -10,7 +10,7 @@ namespace KubeClient.Models
     ///     
     ///     VolumeAttachment objects are non-namespaced.
     /// </summary>
-    [KubeObject("VolumeAttachment", "v1alpha1")]
+    [KubeObject("VolumeAttachment", "storage.k8s.io/v1alpha1")]
     [KubeApi(KubeAction.List, "apis/storage.k8s.io/v1alpha1/volumeattachments")]
     [KubeApi(KubeAction.Create, "apis/storage.k8s.io/v1alpha1/volumeattachments")]
     [KubeApi(KubeAction.Get, "apis/storage.k8s.io/v1alpha1/volumeattachments/{name}")]

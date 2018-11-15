@@ -8,7 +8,7 @@ namespace KubeClient.Models
     /// <summary>
     ///     MutatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and may change the object.
     /// </summary>
-    [KubeObject("MutatingWebhookConfiguration", "v1beta1")]
+    [KubeObject("MutatingWebhookConfiguration", "admissionregistration.k8s.io/v1beta1")]
     [KubeApi(KubeAction.List, "apis/admissionregistration.k8s.io/v1beta1/mutatingwebhookconfigurations")]
     [KubeApi(KubeAction.Create, "apis/admissionregistration.k8s.io/v1beta1/mutatingwebhookconfigurations")]
     [KubeApi(KubeAction.Get, "apis/admissionregistration.k8s.io/v1beta1/mutatingwebhookconfigurations/{name}")]

@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     StatefulSetList is a collection of StatefulSets.
     /// </summary>
-    [KubeListItem("StatefulSet", "v1")]
-    [KubeObject("StatefulSetList", "v1")]
+    [KubeListItem("StatefulSet", "apps/v1")]
+    [KubeObject("StatefulSetList", "apps/v1")]
     public partial class StatefulSetListV1 : KubeResourceListV1<StatefulSetV1>
     {
         /// <summary>

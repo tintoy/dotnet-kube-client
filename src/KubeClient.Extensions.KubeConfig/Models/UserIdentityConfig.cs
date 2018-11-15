@@ -18,6 +18,12 @@ namespace KubeClient.Extensions.KubeConfig.Models
         public string Token { get; set; }
 
         /// <summary>
+        ///     Optional configuration for an authentication provider.
+        /// </summary>
+        [YamlMember(Alias = "auth-provider")]
+        public AuthProviderConfig AuthProvider { get; set; }
+
+        /// <summary>
         ///     A file containing the PEM-encoded client certificate to use.
         /// </summary>
         [YamlMember(Alias = "client-certificate")]

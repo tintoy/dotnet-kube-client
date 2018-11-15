@@ -48,6 +48,41 @@ namespace KubeClient
         public string AccessToken { get; set; }
 
         /// <summary>
+        ///     The command used to generate an access token for authenticating to the Kubernetes API.
+        /// </summary>
+        public string AccessTokenCommand { get; set; }
+
+        /// <summary>
+        ///     The command arguments used to generate an access token for authenticating to the Kubernetes API.
+        /// </summary>
+        public string AccessTokenCommandArguments { get; set; }
+
+        /// <summary>
+        ///     The Go-style selector used to retrieve the access token from the command output.
+        /// </summary>
+        public string AccessTokenSelector { get; set; }
+
+        /// <summary>
+        ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
+        /// </summary>
+        public string AccessTokenExpirySelector { get; set; }
+        
+        /// <summary>
+        ///     The initial access token used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string InitialAccessToken { get; set; }
+        
+        /// <summary>
+        ///     The initial token expiry used to authenticate to the Kubernetes API.
+        /// </summary>
+        public DateTime? InitialTokenExpiryUtc { get; set; }
+        
+        /// <summary>
+        ///     The strategy used for authenticating to the Kubernetes API.
+        /// </summary>
+        public KubeAuthStrategy AuthStrategy { get; set; }
+
+        /// <summary>
         ///     The client certificate used to authenticate to the Kubernetes API.
         /// </summary>
         public X509Certificate2 ClientCertificate { get; set; }
@@ -146,9 +181,36 @@ namespace KubeClient
             return new KubeClientOptions
             {
                 ApiEndPoint = new Uri(apiEndPoint),
+                AuthStrategy = KubeAuthStrategy.BearerToken,
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate
             };
         }
+    }
+
+    /// <summary>
+    ///     Represents a strategy for authenticating to the Kubernetes API.
+    /// </summary>
+    public enum KubeAuthStrategy
+    {
+        /// <summary>
+        ///     No authentication (e.g. via "kubectl proxy").
+        /// </summary>
+        None,
+
+        /// <summary>
+        ///     Client certificate (i.e. mutual SSL) authentication.
+        /// </summary>
+        ClientCertificate,
+
+        /// <summary>
+        ///     A pre-defined (static) bearer token.
+        /// </summary>
+        BearerToken,
+
+        /// <summary>
+        ///     A bearer token obtained by an authentication provider (i.e. running an external command).
+        /// </summary>
+        BearerTokenProvider
     }
 }

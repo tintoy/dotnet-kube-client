@@ -8,8 +8,8 @@ namespace KubeClient.Models
     /// <summary>
     ///     ReplicaSetList is a collection of ReplicaSets.
     /// </summary>
-    [KubeListItem("ReplicaSet", "v1")]
-    [KubeObject("ReplicaSetList", "v1")]
+    [KubeListItem("ReplicaSet", "apps/v1")]
+    [KubeObject("ReplicaSetList", "apps/v1")]
     public partial class ReplicaSetListV1 : KubeResourceListV1<ReplicaSetV1>
     {
         /// <summary>
