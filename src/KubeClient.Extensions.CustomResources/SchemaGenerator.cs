@@ -15,6 +15,11 @@ namespace KubeClient.Extensions.CustomResources
     public static class SchemaGenerator
     {
         /// <summary>
+        ///     The CLR type representing <see cref="KubeCustomResourceV1"/>.
+        /// </summary>
+        static readonly Type CustomResourceV1Type = typeof(KubeCustomResourceV1);
+
+        /// <summary>
         ///     Generate the CRD validation schema for a specification model type.
         /// </summary>
         /// <typeparam name="TModel">
@@ -43,10 +48,8 @@ namespace KubeClient.Extensions.CustomResources
             if (modelType == null)
                 throw new ArgumentNullException(nameof(modelType));
 
-            if (typeof(KubeCustomResourceV1).IsAssignableFrom(modelType))
-            {
-
-            }
+            if (!CustomResourceV1Type.IsAssignableFrom(modelType))
+                throw new ArgumentException($"Cannot generate JSON schema for model type '{modelType.FullName}' because it does not derive from '{CustomResourceV1Type.FullName}'.");
 
             TypeInfo modelTypeInfo = modelType.GetTypeInfo();
             if (modelTypeInfo.IsEnum)

@@ -30,7 +30,7 @@ namespace KubeClient.Models
     }
 
     /// <summary>
-    ///     The base class for models representing Kubernetes Custom Resources (CRDs).
+    ///     The base class for models representing Kubernetes Custom Resource Definitions (CRDs).
     /// </summary>
     /// <typeparam name="TSpecification">
     ///     The type of model used to represent the resource specification.
