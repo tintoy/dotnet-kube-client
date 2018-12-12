@@ -276,6 +276,25 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes StatefulSets (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IStatefulSetClientV1 StatefulSetV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient(
+                client => new StatefulSetClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get a client for dynamic access to Kubernetes resource APIs.
         /// </summary>
         /// <param name="kubeClient">
