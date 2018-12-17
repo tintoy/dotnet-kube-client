@@ -45,7 +45,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<PodV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -116,7 +116,7 @@ namespace KubeClient.ResourceClients
         /// </param>
         /// <param name="containerName">
         ///     The name of the container.
-        /// 
+        ///
         ///     Not required if the pod only has a single container.
         /// </param>
         /// <param name="kubeNamespace">
@@ -135,7 +135,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             HttpResponseMessage responseMessage = await Http.GetAsync(
                 Requests.Logs.WithTemplateParameters(new
                 {
@@ -166,7 +166,7 @@ namespace KubeClient.ResourceClients
         /// </param>
         /// <param name="containerName">
         ///     The name of the container.
-        /// 
+        ///
         ///     Not required if the pod only has a single container.
         /// </param>
         /// <param name="kubeNamespace">
@@ -182,7 +182,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return ObserveLines(
                 Requests.Logs.WithTemplateParameters(new
                 {
@@ -212,7 +212,7 @@ namespace KubeClient.ResourceClients
         {
             if (newPod == null)
                 throw new ArgumentNullException(nameof(newPod));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -242,18 +242,26 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="StatusV1"/> indicating the result of the request.
         /// </returns>
-        public async Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<PodV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             return await Http
-                .DeleteAsync(
+                .DeleteAsJsonAsync(
                     Requests.ByName.WithTemplateParameters(new
                     {
                         Name = name,
                         Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                     }),
+                    deleteBody: new DeleteOptionsV1
+                    {
+                        // HACK: Always use Foreground DeletePropagationPolicy for pods so that the returned type is always PodV1.
+                        // This is the kubectl default afaik.
+                        // TODO This should be customizable and defaulting to null so the server picks a default,
+                        // and the return type should be serialized to a different type depending on the Kind field
+                        PropagationPolicy = DeletePropagationPolicy.Foreground,
+                    },
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsObjectV1Async<StatusV1>(
+                .ReadContentAsObjectV1Async<PodV1>(
                     $"delete v1/Pod resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
                     HttpStatusCode.OK, HttpStatusCode.NotFound
                 );
@@ -267,17 +275,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods/{Name}");
 
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
+            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
         }
     }
 
@@ -343,7 +351,7 @@ namespace KubeClient.ResourceClients
         /// </param>
         /// <param name="containerName">
         ///     The name of the container.
-        /// 
+        ///
         ///     Not required if the pod only has a single container.
         /// </param>
         /// <param name="kubeNamespace">
@@ -368,7 +376,7 @@ namespace KubeClient.ResourceClients
         /// </param>
         /// <param name="containerName">
         ///     The name of the container.
-        /// 
+        ///
         ///     Not required if the pod only has a single container.
         /// </param>
         /// <param name="kubeNamespace">
@@ -411,6 +419,6 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="StatusV1"/> indicating the result of the request.
         /// </returns>
-        Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<PodV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
     }
 }
