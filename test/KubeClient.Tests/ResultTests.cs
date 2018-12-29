@@ -25,6 +25,28 @@ namespace KubeClient.Tests
         }
 
         /// <summary>
+        ///     Verify that a PodV1 resource result, when constructed from a PodV1, can be implicitly cast to a PodV1.
+        /// </summary>
+        [Fact(DisplayName = "PodV1 resource result from PodV1 can be cast to PodV1")]
+        public void PodV1Result_From_PodV1_ImplicitCast_Resource()
+        {
+            PodV1 expected = new PodV1
+            {
+                Metadata = new ObjectMetaV1
+                {
+                    Name = "my-pod",
+                    Namespace = "my-namespace"
+                }
+            };
+            
+            var result = new KubeResourceResultV1<PodV1>(expected);
+            
+            PodV1 actual = result;
+            Assert.NotNull(actual);
+            Assert.Same(expected, actual);
+        }
+
+        /// <summary>
         ///     Verify that a PodV1 resource result, when constructed from a failing StatusV1 throws a KubeApiException when implicitly cast to a PodV1.
         /// </summary>
         [Fact(DisplayName = "PodV1 resource result from failing StatusV1 throws when cast to PodV1")]
