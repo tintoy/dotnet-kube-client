@@ -236,27 +236,18 @@ namespace KubeClient.ResourceClients
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     A <see cref="PodV1"/> representing the pod's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indication the operation result.
         /// </returns>
-        public async Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<PodV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
         {
-            return await Http
-                .DeleteAsync(
-                    Requests.ByName.WithTemplateParameters(new
-                    {
-                        Name = name,
-                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsObjectV1Async<StatusV1>(
-                    $"delete v1/Pod resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
-                    HttpStatusCode.OK, HttpStatusCode.NotFound
-                );
+            return DeleteResource<PodV1>(Requests.ByName, name, kubeNamespace, propagationPolicy, cancellationToken);
         }
 
         /// <summary>
@@ -405,12 +396,15 @@ namespace KubeClient.ResourceClients
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     A <see cref="PodV1"/> representing the pod's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indication the operation result.
         /// </returns>
-        Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<PodV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
     }
 }

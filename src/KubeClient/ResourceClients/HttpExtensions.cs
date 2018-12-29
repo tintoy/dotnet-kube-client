@@ -40,7 +40,7 @@ namespace KubeClient.ResourceClients
             }
             catch (HttpRequestException<StatusV1> requestError)
             {
-                throw new KubeClientException(requestError.Response, requestError);
+                throw new KubeApiException(requestError.Response, requestError);
             }
         }
 
@@ -74,7 +74,7 @@ namespace KubeClient.ResourceClients
             }
             catch (HttpRequestException<StatusV1> requestError)
             {
-                throw new KubeClientException($"Unable to {operationDescription}.", requestError);
+                throw new KubeApiException($"Unable to {operationDescription}.", requestError);
             }
         }
     }
