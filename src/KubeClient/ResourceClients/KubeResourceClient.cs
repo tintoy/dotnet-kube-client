@@ -302,7 +302,7 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <typeparamref name="TResource"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indication the operation result.
+        ///     A <typeparamref name="TResource"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
         /// </returns>
         protected async Task<KubeResourceResultV1<TResource>> DeleteResource<TResource>(HttpRequest resourceByNameRequestTemplate, string name, string kubeNamespace, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
             where TResource : KubeResourceV1
