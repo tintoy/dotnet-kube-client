@@ -2,6 +2,7 @@ dist: trusty
 language: csharp
 
 mono: none
+dotnet: 2.1
 
 # Needed by GitVersion
 git:
@@ -15,18 +16,11 @@ branches:
     - /^feature\/.*$/
 
 before_install:
-  - echo 'Installing .NET Core...'
-  - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
-  - export DOTNET_CLI_TELEMETRY_OPTOUT=1
-  - sudo apt-get -qq update
-  - sudo apt-get install -y curl
-  - sudo curl -L -o /tmp/packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
-  - sudo dpkg -i /tmp/packages-microsoft-prod.deb
-  - sudo apt-get -qq update
-  - sudo apt-get install dotnet-sdk-2.1
-  - sudo dotnet tool install -g GitVersion.Tool --version 4.0.1-*
+  - echo 'Installing GitVersion...'
+  - sudo dotnet tool install -g GitVersion.Tool --version '4.0.1-*'
 
 script:
+  - export PATH="$PATH:$HOME/.dotnet/tools"
   - /bin/bash ./build-ci.sh
   - /bin/bash ./publish-ci.sh
 
