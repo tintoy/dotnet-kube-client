@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     Does the result represent a successful operation?
         /// </summary>
-        public bool IsSuccess => Status?.Status == "Success";
+        public bool IsSuccess => Status?.IsSuccess ?? false;
 
         /// <summary>
         ///     The type of resource represented by the <see cref="KubeResultV1"/>.

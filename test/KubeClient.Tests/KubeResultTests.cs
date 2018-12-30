@@ -10,16 +10,16 @@ namespace KubeClient.Tests
     /// <summary>
     ///     Tests for <see cref="KubeResultV1"/> implementations.
     /// </summary>
-    public class ResultTests
+    public class KubeResultTests
         : TestBase
     {
         /// <summary>
-        ///     Create a new <see cref="ResultTests"/> test suite.
+        ///     Create a new <see cref="KubeResultTests"/> test suite.
         /// </summary>
         /// <param name="testOutput">
         ///     Output for the current test.
         /// </param>
-        public ResultTests(ITestOutputHelper testOutput)
+        public KubeResultTests(ITestOutputHelper testOutput)
             : base(testOutput)
         {
         }
@@ -54,13 +54,14 @@ namespace KubeClient.Tests
         {
             PodV1 pod = null;
 
-            KubeApiException exception = Assert.Throws<KubeApiException>(
-                () => pod = new KubeResourceResultV1<PodV1>(new StatusV1
+            KubeApiException exception = Assert.Throws<KubeApiException>(() =>
+            {
+                pod = new KubeResourceResultV1<PodV1>(new StatusV1
                 {
                     Status = "Failure",
                     Message = "Most definitely not a success."
-                })
-            );
+                });
+            });
             Assert.Null(pod);
             Assert.True(exception.HasStatus);
             Assert.Equal("Failure", exception.Status.Status);
