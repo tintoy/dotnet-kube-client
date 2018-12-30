@@ -22,7 +22,7 @@ echo 'travis_fold:end:fetch_tags'
 echo 'travis_fold:start:compute_build_version'
 
 echo 'Computing build version...'
-mono $PWD/tools/GitVersion/GitVersion.exe | tee $PWD/version-info.json
+dotnet gitversion | tee $PWD/version-info.json
 
 echo 'travis_fold:end:compute_build_version'
 

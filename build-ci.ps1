@@ -1,6 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
-$rawVersionInfo = .\tools\GitVersion\GitVersion.exe
+$dotnet = Get-Command dotnet
+
+$rawVersionInfo = & $dotnet gitversion
 If ($LASTEXITCODE) {
     Write-Host 'GitVersion:'
     Write-Host $rawVersionInfo
@@ -19,8 +21,6 @@ If ($versionSuffix) {
 } Else {
     Write-Host "Build version is $versionPrefix"
 }
-
-$dotnet = Get-Command dotnet
 
 Write-Host '====================='
 Write-Host 'Restoring packages...'
