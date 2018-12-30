@@ -1,7 +1,7 @@
 dist: trusty
 language: csharp
 
-mono: latest
+mono: none
 
 # Needed by GitVersion
 git:
@@ -24,6 +24,7 @@ before_install:
   - sudo dpkg -i /tmp/packages-microsoft-prod.deb
   - sudo apt-get -qq update
   - sudo apt-get install dotnet-sdk-2.1
+  - sudo dotnet tool install -g GitVersion.Tool --version 4.0.1-*
 
 script:
   - /bin/bash ./build-ci.sh
