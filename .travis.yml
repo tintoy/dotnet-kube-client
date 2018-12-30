@@ -17,7 +17,9 @@ branches:
 
 before_install:
   - echo 'Installing GitVersion...'
-  - sudo dotnet tool install -g GitVersion.Tool --version '4.0.1-*'
+  - dotnet tool install -g GitVersion.Tool --version '4.0.1-*'
+  - echo Cleaning up NuGet lock files...
+  - rm -rf /tmp/NuGetScratch/lock
 
 script:
   - export PATH="$PATH:$HOME/.dotnet/tools"
