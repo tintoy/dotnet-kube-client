@@ -59,6 +59,16 @@ dotnet build /p:VersionPrefix="$BUILD_BASEVERSION" /p:VersionSuffix="$BUILD_VERS
 echo 'travis_fold:end:dotnet_build'
 
 echo ''
+echo 'Testing...'
+echo ''
+echo 'travis_fold:start:dotnet_test'
+testProjects=$(find ./test -name 'KubeClient*.Tests.csproj')
+for testProject in $testProjects; do
+	dotnet test $testProject --no-build --no-restore
+done
+echo 'travis_fold:end:dotnet_test'
+
+echo ''
 echo "Packing into '$ARTIFACTS_DIRECTORY'..."
 echo ''
 echo 'travis_fold:start:dotnet_pack'

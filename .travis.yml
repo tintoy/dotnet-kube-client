@@ -21,26 +21,10 @@ before_install:
   - echo Cleaning up NuGet lock files...
   - rm -rf /tmp/NuGetScratch/lock
 
-stages:
-  - build
-  - unit-test
-  - publish
-
-jobs:
-  include:
-  - stage: build
-    name: "Build"
-    script:
-      - export PATH="$PATH:$HOME/.dotnet/tools"
-      - /bin/bash ./ci/build.sh
-
-  - stage: unit-test
-    name: "Unit Tests"
-    script: /bin/bash ./ci/unit-test.sh
-
-  - stage: publish
-    name: "Publish Packages"
-    script: /bin/bash ./ci/publish.sh
+script:
+  - export PATH="$PATH:$HOME/.dotnet/tools"
+  - /bin/bash ./build-ci.sh
+  - /bin/bash ./publish-ci.sh
 
 env:
   global:
