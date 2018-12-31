@@ -125,7 +125,7 @@ namespace KubeClient.ResourceClients
                 }
 
                 // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
-                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
                 if (status.Reason == "NotFound")
                     return null;
 
@@ -185,7 +185,7 @@ namespace KubeClient.ResourceClients
                     }
                 }
 
-                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
 
                 throw new KubeClientException($"Unable to list {apiVersion}/{kind} resources (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
@@ -260,7 +260,7 @@ namespace KubeClient.ResourceClients
                 }
 
                 // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
-                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
                 if (status.Reason == "NotFound")
                 {
                     string errorMessage = isNamespaced ?

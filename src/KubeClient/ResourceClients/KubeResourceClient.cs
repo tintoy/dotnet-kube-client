@@ -130,7 +130,7 @@ namespace KubeClient.ResourceClients
                     return await responseMessage.ReadContentAsAsync<TResource>().ConfigureAwait(false);
 
                 // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
-                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
                 if (status.Reason == "NotFound")
                     return null;
 
@@ -143,7 +143,7 @@ namespace KubeClient.ResourceClients
 
                 throw new KubeApiException($"Unable to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
-                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(responseMessage.StatusCode).ConfigureAwait(false)
+                        response: await responseMessage.ReadContentAsStatusV1Async(responseMessage.StatusCode).ConfigureAwait(false)
                     )
                 );
             }
@@ -184,7 +184,7 @@ namespace KubeClient.ResourceClients
 
                 throw new KubeApiException($"Unable to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
-                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(responseMessage.StatusCode).ConfigureAwait(false)
+                        response: await responseMessage.ReadContentAsStatusV1Async(responseMessage.StatusCode).ConfigureAwait(false)
                     )
                 );
             }
@@ -456,7 +456,7 @@ namespace KubeClient.ResourceClients
                         if (!responseMessage.IsSuccessStatusCode)
                         {
                             throw HttpRequestException<StatusV1>.Create(responseMessage.StatusCode,
-                                await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
+                                await responseMessage.ReadContentAsStatusV1Async().ConfigureAwait(false)
                             );
                         }
 

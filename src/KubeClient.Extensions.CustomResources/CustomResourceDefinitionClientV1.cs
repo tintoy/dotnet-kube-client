@@ -141,7 +141,7 @@ namespace KubeClient.ResourceClients
                     postBody: newCustomResourceDefinition,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsAsync<CustomResourceDefinitionV1Beta1, StatusV1>();
+                .ReadContentAsObjectV1Async<CustomResourceDefinitionV1Beta1>();
         }
 
         /// <summary>

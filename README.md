@@ -204,7 +204,7 @@ public class PodClientV1 : KubeResourceClient
                 }),
                 cancellationToken: cancellationToken
             )
-            .ReadContentAsAsync<PodListV1, StatusV1>();
+            .ReadContentAsObjectV1Async<PodListV1>();
 
         return matchingPods.Items;
     }
