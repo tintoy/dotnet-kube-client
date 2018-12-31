@@ -330,7 +330,58 @@ namespace KubeClient.ResourceClients
             );
 
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
-            string operationDescription = $"Delete {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}'";
+            string operationDescription = $"delete {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}'";
+
+            if (propagationPolicy == DeletePropagationPolicy.Foreground)
+                return await response.ReadContentAsObjectV1Async<TResource>(operationDescription, HttpStatusCode.OK);
+            
+            return await response.ReadContentAsObjectV1Async<StatusV1>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
+        ///     Request deletion of the specified global (non-namespaced) resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to delete.
+        /// </typeparam>
+        /// <param name="resourceByNameNoNamespaceRequestTemplate">
+        ///     The HTTP request template for addressing a non-namespaced <typeparamref name="TResource"/> by name.
+        /// </param>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        protected async Task<KubeResourceResultV1<TResource>> DeleteGlobalResource<TResource>(HttpRequest resourceByNameNoNamespaceRequestTemplate, string name, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if (resourceByNameNoNamespaceRequestTemplate == null)
+                throw new ArgumentNullException(nameof(resourceByNameNoNamespaceRequestTemplate));
+            
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            var response = Http.DeleteAsJsonAsync(
+                resourceByNameNoNamespaceRequestTemplate.WithTemplateParameters(new
+                {
+                    Name = name
+                }),
+                deleteBody: new DeleteOptionsV1
+                {
+                    PropagationPolicy = propagationPolicy
+                },
+                cancellationToken: cancellationToken
+            );
+
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+            string operationDescription = $"delete {apiVersion}/{kind} resource '{name}'";
 
             if (propagationPolicy == DeletePropagationPolicy.Foreground)
                 return await response.ReadContentAsObjectV1Async<TResource>(operationDescription, HttpStatusCode.OK);
