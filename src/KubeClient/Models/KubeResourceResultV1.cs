@@ -99,10 +99,14 @@ namespace KubeClient.Models
         /// <summary>
         ///     The default <see cref="StatusV1"/> used when no status is available because an operation returned a status.
         /// </summary>
-        protected static StatusV1 DefaultStatus => new StatusV1
+        protected static StatusV1 DefaultStatus
         {
-            Status = "Success",
-            Message = $"Result contains a {typeof(TResource).Name} resource."
-        };
+            get
+            {
+                (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+
+                return StatusV1.Success($"Result contains a {apiVersion}/{kind} resource.");
+            }
+        }
     }
 }

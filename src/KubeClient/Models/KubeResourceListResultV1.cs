@@ -22,7 +22,7 @@ namespace KubeClient.Models
         ///     The <typeparamref name="TResource"/> list represented by the <see cref="KubeResourceListResultV1{TResource}"/>.
         /// </param>
         public KubeResourceListResultV1(KubeResourceListV1<TResource> resources)
-            : base(DefaultStatus)
+            : base(DefaultStatus(resources))
         {
             Resources = resources;
         }
@@ -102,11 +102,13 @@ namespace KubeClient.Models
         /// <summary>
         ///     The default <see cref="StatusV1"/> used when no status is available because an operation returned a list of resources.
         /// </summary>
-        protected static StatusV1 DefaultStatus => new StatusV1
+        protected static StatusV1 DefaultStatus(KubeResourceListV1<TResource> resources)
         {
-            Status = "Success",
-            Message = $"Result contains a list of {typeof(TResource).Name} resources."
-        };
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+            int resourceCount = resources != null ? resources.Items.Count : 0;
+
+            return StatusV1.Success($"Result contains {resourceCount} {apiVersion}/{kind} resources.");
+        }
 
         /// <summary>
         ///     Get a typed enumerator for the resources returned with the result.
