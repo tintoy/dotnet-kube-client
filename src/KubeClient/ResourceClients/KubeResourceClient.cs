@@ -332,10 +332,7 @@ namespace KubeClient.ResourceClients
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             string operationDescription = $"delete {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}'";
 
-            if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await response.ReadContentAsObjectV1Async<TResource>(operationDescription, HttpStatusCode.OK);
-            
-            return await response.ReadContentAsObjectV1Async<StatusV1>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await response.ReadContentAsResourceOrStatusV1<TResource>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>
@@ -383,10 +380,7 @@ namespace KubeClient.ResourceClients
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             string operationDescription = $"delete {apiVersion}/{kind} resource '{name}'";
 
-            if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await response.ReadContentAsObjectV1Async<TResource>(operationDescription, HttpStatusCode.OK);
-            
-            return await response.ReadContentAsObjectV1Async<StatusV1>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return await response.ReadContentAsResourceOrStatusV1<TResource>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
         }
 
         /// <summary>
