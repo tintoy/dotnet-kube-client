@@ -172,7 +172,7 @@ namespace KubeClient.ResourceClients
         ///     The Kubernetes namespace containing the Job to delete.
         /// </param>
         /// <param name="propagationPolicy">
-        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        ///     An optional <see cref="DeletePropagationPolicy"/> value indicating how child resources should be deleted (if at all).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
@@ -304,7 +304,7 @@ namespace KubeClient.ResourceClients
         ///     The Kubernetes namespace containing the Job to delete.
         /// </param>
         /// <param name="propagationPolicy">
-        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        ///     An optional <see cref="DeletePropagationPolicy"/> value indicating how child resources should be deleted (if at all).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
