@@ -149,6 +149,37 @@ Use of code generation is limited; generated clients tend to wind up being non-i
 
 KubeClient's approach is to generate model classes (see `src/swagger` for the Python script that does this) and hand-code the actual operation methods to provide an improved consumer experience (i.e. useful and consistent exception types).
 
+### KubeResultV1
+
+Some operations in the Kubernetes API can return a different response depending on the arguments passed in. For example, a request to delete a `v1/Pod` returns the existing `v1/Pod` (as a `PodV1` model) if the caller specifies `DeletePropagationPolicy.Foreground` but returns a `v1/Status` (as a `StatusV1` model) if any other type of `DeletePropagationPolicy` is specified.
+
+To handle this type of polymorphic response KubeClient uses the `KubeResultV1` model (and its derived implementations, `KubeResourceResultV1<TResource>` and `KubeResourceListResultV1<TResource>`).
+
+`KubeResourceResultV1<TResource>` can be implicitly cast to a `TResource` or a `StatusV1`, so consuming code can continue to use the client as if it expects an operation to return only a resource or expects it to return only a `StatusV1`:
+
+```csharp
+PodV1 existingPod = await client.PodsV1().Delete("mypod", propagationPolicy: DeletePropagationPolicy.Foreground);
+// OR:
+StatusV1 deleteStatus = await client.PodsV1().Delete("mypod", propagationPolicy: DeletePropagationPolicy.Background);
+```
+
+If an attempt is made to cast a `KubeResourceResultV1<TResource>` that contains a non-success `StatusV1` to a `TResource`, a `KubeApiException` is thrown, based on the information in the `StatusV1`:
+
+```csharp
+PodV1 existingPod;
+
+try
+{
+    existingPod = await client.PodsV1().Delete("mypod", propagationPolicy: DeletePropagationPolicy.Foreground);
+}
+catch (KubeApiException kubeApiError)
+{
+    Log.Error(kubeApiError, "Failed to delete Pod: {ErrorMessage}", kubeApiError.Status.Message);
+}
+```
+
+For more information about the behaviour of `KubeResultV1` and its derived implementations, see [KubeResultTests.cs](test/KubeClient.Tests/KubeResultTests.cs).
+
 ## Extensibility
 
 KubeClient is designed to be easily extensible. The `KubeApiClient` provides the top-level entry point for the Kubernetes API and extension methods are used to expose more specific resource clients.
@@ -173,7 +204,7 @@ public class PodClientV1 : KubeResourceClient
                 }),
                 cancellationToken: cancellationToken
             )
-            .ReadContentAsAsync<PodListV1, StatusV1>();
+            .ReadContentAsObjectV1Async<PodListV1>();
 
         return matchingPods.Items;
     }

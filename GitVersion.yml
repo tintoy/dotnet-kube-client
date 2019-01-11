@@ -23,23 +23,6 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
 
-  development/v0.0:
-    mode: ContinuousDeployment
-    regex: development/v0.0
-    tag: v0-unstable
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-
-  release/v0.0:
-    mode: ContinuousDelivery
-    regex: release/v0.0
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: true
-
   feature:
     mode: ContinuousDeployment
     regex: feature?[/-]

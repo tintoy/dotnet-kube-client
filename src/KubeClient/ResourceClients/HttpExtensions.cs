@@ -14,6 +14,66 @@ namespace KubeClient.ResourceClients
     public static class HttpExtensions
     {
         /// <summary>
+        ///     Read response content as a <see cref="StatusV1"/>.
+        /// </summary>
+        /// <param name="response">
+        ///     A <see cref="Task{TResult}"/> representing the HTTP response.
+        /// </param>
+        /// <param name="successStatusCodes">
+        ///     Optional <see cref="HttpStatusCode"/>s that should be treated as representing a successful response.
+        /// </param>
+        /// <returns>
+        ///     The response content, as a <see cref="StatusV1"/>.
+        /// </returns>
+        /// <exception cref="HttpRequestException{TResponse}">
+        ///     The response status code was unexpected or did not represent success.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     No formatters were configured for the request, or an appropriate formatter could not be found in the request's list of formatters.
+        /// </exception>
+        public static async Task<StatusV1> ReadContentAsStatusV1Async(this Task<HttpResponseMessage> response, params HttpStatusCode[] successStatusCodes)
+        {
+            try
+            {
+                return await response.ReadContentAsAsync<StatusV1, StatusV1>(successStatusCodes);
+            }
+            catch (HttpRequestException<StatusV1> requestError)
+            {
+                throw new KubeApiException(requestError.Response, requestError);
+            }
+        }
+
+        /// <summary>
+        ///     Read response content as a <see cref="StatusV1"/>.
+        /// </summary>
+        /// <param name="response">
+        ///     The HTTP response.
+        /// </param>
+        /// <param name="successStatusCodes">
+        ///     Optional <see cref="HttpStatusCode"/>s that should be treated as representing a successful response.
+        /// </param>
+        /// <returns>
+        ///     The response content, as a <see cref="StatusV1"/>.
+        /// </returns>
+        /// <exception cref="HttpRequestException{TResponse}">
+        ///     The response status code was unexpected or did not represent success.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     No formatters were configured for the request, or an appropriate formatter could not be found in the request's list of formatters.
+        /// </exception>
+        public static async Task<StatusV1> ReadContentAsStatusV1Async(this HttpResponseMessage response, params HttpStatusCode[] successStatusCodes)
+        {
+            try
+            {
+                return await response.ReadContentAsAsync<StatusV1, StatusV1>(successStatusCodes);
+            }
+            catch (HttpRequestException<StatusV1> requestError)
+            {
+                throw new KubeApiException(requestError.Response, requestError);
+            }
+        }
+
+        /// <summary>
         ///     Read response content as a <see cref="KubeObjectV1"/>.
         /// </summary>
         /// <param name="response">
@@ -40,7 +100,7 @@ namespace KubeClient.ResourceClients
             }
             catch (HttpRequestException<StatusV1> requestError)
             {
-                throw new KubeClientException(requestError.Response, requestError);
+                throw new KubeApiException(requestError.Response, requestError);
             }
         }
 
@@ -74,7 +134,7 @@ namespace KubeClient.ResourceClients
             }
             catch (HttpRequestException<StatusV1> requestError)
             {
-                throw new KubeClientException($"Unable to {operationDescription}.", requestError);
+                throw new KubeApiException($"Unable to {operationDescription}.", requestError);
             }
         }
     }

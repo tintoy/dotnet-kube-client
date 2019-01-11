@@ -18,7 +18,7 @@ namespace KubeClient
         /// <returns>
         ///     The resource client.
         /// </returns>
-        public static CustomResourceDefinitionClientV1Beta1 CustomResourceDefinitionsV1Beta1(this KubeApiClient kubeClient)
+        public static ICustomResourceDefinitionClientV1Beta1 CustomResourceDefinitionsV1Beta1(this KubeApiClient kubeClient)
         {
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
