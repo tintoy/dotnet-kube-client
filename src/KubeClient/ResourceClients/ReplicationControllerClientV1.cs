@@ -191,27 +191,11 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     A <see cref="ReplicationControllerV1"/> representing the replication controller's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public async Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<ReplicationControllerV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
-            var request = Http.DeleteAsJsonAsync(
-                Requests.ByName.WithTemplateParameters(new
-                {
-                    Name = name,
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                }),
-                deleteBody: new DeleteOptionsV1
-                {
-                    PropagationPolicy = propagationPolicy
-                },
-                cancellationToken: cancellationToken
-            );
-
-            if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<ReplicationControllerV1>($"delete v1/ReplicationController resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'", HttpStatusCode.OK);
-            
-            return await request.ReadContentAsObjectV1Async<StatusV1>($"delete v1/ReplicationController resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'", HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return DeleteResource<ReplicationControllerV1>(Requests.ByName, name, kubeNamespace, propagationPolicy, cancellationToken);
         }
 
         /// <summary>
@@ -335,8 +319,8 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     A <see cref="ReplicationControllerV1"/> representing the replication controller's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<ReplicationControllerV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }

@@ -130,7 +130,7 @@ namespace KubeClient.ResourceClients
                     return await responseMessage.ReadContentAsAsync<TResource>().ConfigureAwait(false);
 
                 // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
-                StatusV1 status = await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(HttpStatusCode.NotFound).ConfigureAwait(false);
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
                 if (status.Reason == "NotFound")
                     return null;
 
@@ -141,9 +141,9 @@ namespace KubeClient.ResourceClients
                         ? $"{itemKind} ({itemApiVersion}) resource"
                         : typeof(TResource).Name;
 
-                throw new KubeClientException($"Unable to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeApiException($"Unable to retrieve {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
-                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(responseMessage.StatusCode).ConfigureAwait(false)
+                        response: await responseMessage.ReadContentAsStatusV1Async(responseMessage.StatusCode).ConfigureAwait(false)
                     )
                 );
             }
@@ -182,9 +182,9 @@ namespace KubeClient.ResourceClients
                         ? $"{itemKind} ({itemApiVersion}) resources"
                         : typeof(TResourceList).Name;
 
-                throw new KubeClientException($"Unable to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
+                throw new KubeApiException($"Unable to list {resourceTypeDescription} (HTTP status {responseMessage.StatusCode}).",
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode,
-                        response: await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>(responseMessage.StatusCode).ConfigureAwait(false)
+                        response: await responseMessage.ReadContentAsStatusV1Async(responseMessage.StatusCode).ConfigureAwait(false)
                     )
                 );
             }
@@ -281,6 +281,115 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Request deletion of the specified resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to delete.
+        /// </typeparam>
+        /// <param name="resourceByNameRequestTemplate">
+        ///     The HTTP request template for addressing a <typeparamref name="TResource"/> by name.
+        /// </param>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        protected async Task<KubeResourceResultV1<TResource>> DeleteResource<TResource>(HttpRequest resourceByNameRequestTemplate, string name, string kubeNamespace, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if (resourceByNameRequestTemplate == null)
+                throw new ArgumentNullException(nameof(resourceByNameRequestTemplate));
+            
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if (String.IsNullOrWhiteSpace(kubeNamespace))
+                kubeNamespace = KubeClient.DefaultNamespace;
+            
+            var response = Http.DeleteAsJsonAsync(
+                resourceByNameRequestTemplate.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                deleteBody: new DeleteOptionsV1
+                {
+                    PropagationPolicy = propagationPolicy
+                },
+                cancellationToken: cancellationToken
+            );
+
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+            string operationDescription = $"delete {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}'";
+
+            if (propagationPolicy == DeletePropagationPolicy.Foreground)
+                return await response.ReadContentAsObjectV1Async<TResource>(operationDescription, HttpStatusCode.OK);
+            
+            return await response.ReadContentAsObjectV1Async<StatusV1>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
+        ///     Request deletion of the specified global (non-namespaced) resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to delete.
+        /// </typeparam>
+        /// <param name="resourceByNameNoNamespaceRequestTemplate">
+        ///     The HTTP request template for addressing a non-namespaced <typeparamref name="TResource"/> by name.
+        /// </param>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        protected async Task<KubeResourceResultV1<TResource>> DeleteGlobalResource<TResource>(HttpRequest resourceByNameNoNamespaceRequestTemplate, string name, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if (resourceByNameNoNamespaceRequestTemplate == null)
+                throw new ArgumentNullException(nameof(resourceByNameNoNamespaceRequestTemplate));
+            
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            var response = Http.DeleteAsJsonAsync(
+                resourceByNameNoNamespaceRequestTemplate.WithTemplateParameters(new
+                {
+                    Name = name
+                }),
+                deleteBody: new DeleteOptionsV1
+                {
+                    PropagationPolicy = propagationPolicy
+                },
+                cancellationToken: cancellationToken
+            );
+
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+            string operationDescription = $"delete {apiVersion}/{kind} resource '{name}'";
+
+            if (propagationPolicy == DeletePropagationPolicy.Foreground)
+                return await response.ReadContentAsObjectV1Async<TResource>(operationDescription, HttpStatusCode.OK);
+            
+            return await response.ReadContentAsObjectV1Async<StatusV1>(operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
         ///     Get an <see cref="IObservable{T}"/> for <see cref="IResourceEventV1{TResource}"/>s streamed from an HTTP GET request.
         /// </summary>
         /// <typeparam name="TResource">
@@ -347,7 +456,7 @@ namespace KubeClient.ResourceClients
                         if (!responseMessage.IsSuccessStatusCode)
                         {
                             throw HttpRequestException<StatusV1>.Create(responseMessage.StatusCode,
-                                await responseMessage.ReadContentAsAsync<StatusV1, StatusV1>().ConfigureAwait(false)
+                                await responseMessage.ReadContentAsStatusV1Async().ConfigureAwait(false)
                             );
                         }
 
@@ -467,7 +576,7 @@ namespace KubeClient.ResourceClients
 
             StatusV1 status = watchEvent.SelectToken("object").ToObject<StatusV1>();
 
-            throw new KubeClientException($"Unable to {operationDescription}.", status);
+            throw new KubeApiException($"Unable to {operationDescription}.", status);
         }
     }
 }

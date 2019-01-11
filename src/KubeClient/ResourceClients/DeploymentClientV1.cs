@@ -191,25 +191,9 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="DeploymentV1"/> representing the deployment's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public async Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<DeploymentV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
-            var request = Http.DeleteAsJsonAsync(
-                Requests.ByName.WithTemplateParameters(new
-                {
-                    Name = name,
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
-                }),
-                deleteBody: new DeleteOptionsV1
-                {
-                    PropagationPolicy = propagationPolicy
-                },
-                cancellationToken: cancellationToken
-            );
-
-            if (propagationPolicy == DeletePropagationPolicy.Foreground)
-                return await request.ReadContentAsObjectV1Async<DeploymentV1>("delete v1/Deployment", HttpStatusCode.OK);
-            
-            return await request.ReadContentAsObjectV1Async<StatusV1>("delete v1/Deployment", HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return DeleteResource<DeploymentV1>(Requests.ByName, name, kubeNamespace, propagationPolicy, cancellationToken);
         }
 
         /// <summary>
@@ -335,6 +319,6 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="DeploymentV1"/> representing the deployment's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        Task<KubeObjectV1> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<DeploymentV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }
