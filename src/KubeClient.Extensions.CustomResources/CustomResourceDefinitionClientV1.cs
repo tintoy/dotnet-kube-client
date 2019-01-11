@@ -159,7 +159,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="CustomResourceDefinitionV1Beta1"/> representing the job's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public Task<KubeResourceResultV1<CustomResourceDefinitionV1Beta1>> Delete(string name, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<CustomResourceDefinitionV1Beta1>> Delete(string name, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
             return DeleteGlobalResource<CustomResourceDefinitionV1Beta1>(Requests.ByName, name, propagationPolicy, cancellationToken);
         }
@@ -275,6 +275,6 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="CustomResourceDefinitionV1Beta1"/> representing the job's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        Task<KubeResourceResultV1<CustomResourceDefinitionV1Beta1>> Delete(string name, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<CustomResourceDefinitionV1Beta1>> Delete(string name, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }

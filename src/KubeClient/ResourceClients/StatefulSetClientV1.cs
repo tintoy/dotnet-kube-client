@@ -191,7 +191,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="StatefulSetV1"/> representing the StatefulSet's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public Task<KubeResourceResultV1<StatefulSetV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<StatefulSetV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
             return DeleteResource<StatefulSetV1>(Requests.ByName, name, kubeNamespace, propagationPolicy, cancellationToken);
         }
@@ -319,6 +319,6 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="StatefulSetV1"/> representing the StatefulSet's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        Task<KubeResourceResultV1<StatefulSetV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<StatefulSetV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }

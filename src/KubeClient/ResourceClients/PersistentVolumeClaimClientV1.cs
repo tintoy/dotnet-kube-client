@@ -129,7 +129,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="PersistentVolumeClaimV1"/> representing the persistent volume claim's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public Task<KubeResourceResultV1<PersistentVolumeClaimV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<PersistentVolumeClaimV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
             return DeleteResource<PersistentVolumeClaimV1>(Requests.ByName, name, kubeNamespace, propagationPolicy, cancellationToken);
         }
@@ -223,6 +223,6 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="PersistentVolumeClaimV1"/> representing the persistent volume claim's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        Task<KubeResourceResultV1<PersistentVolumeClaimV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy propagationPolicy = DeletePropagationPolicy.Background, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<PersistentVolumeClaimV1>> Delete(string name, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }
