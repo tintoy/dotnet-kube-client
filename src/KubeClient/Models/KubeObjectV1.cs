@@ -21,14 +21,7 @@ namespace KubeClient.Models
         /// </summary>
         protected KubeObjectV1()
         {
-            (Kind, ApiVersion) = ModelMetadata.GetOrAdd(GetType(), modelType =>
-            {
-                var kubeObjectAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeObjectAttribute>();
-                if (kubeObjectAttribute != null)
-                    return (kubeObjectAttribute.Kind, kubeObjectAttribute.ApiVersion);
-
-                return (null, null);
-            });
+            (Kind, ApiVersion) = GetKubeKind(GetType());
         }
 
         /// <summary>
@@ -76,8 +69,14 @@ namespace KubeClient.Models
             if (kubeObjectType == null)
                 throw new ArgumentNullException(nameof(kubeObjectType));
 
-            (string kind, string apiVersion) kubeKind;
-            ModelMetadata.TryGetValue(kubeObjectType, out kubeKind);
+            (string kind, string apiVersion) kubeKind = ModelMetadata.GetOrAdd(kubeObjectType, modelType =>
+            {
+                var kubeObjectAttribute = modelType.GetTypeInfo().GetCustomAttribute<KubeObjectAttribute>();
+                if (kubeObjectAttribute != null)
+                    return (kubeObjectAttribute.Kind, kubeObjectAttribute.ApiVersion);
+
+                return (null, null);
+            });
 
             return kubeKind;
         }
