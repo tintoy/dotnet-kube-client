@@ -46,7 +46,24 @@ namespace KubeClient
                 client => new ConfigMapClientV1(client)
             );
         }
+        /// <summary>
+        ///     Get the Kubernetes DaemonSets (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IDaemonSetClientV1 DaemonSetsV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
 
+            return kubeClient.ResourceClient(
+                client => new DaemonSetClientV1(client)
+            );
+        }
         /// <summary>
         ///     Get the Kubernetes Deployments (v1) resource client.
         /// </summary>
