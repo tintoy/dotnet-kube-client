@@ -129,23 +129,18 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the Namespace to delete.
         /// </param>
+        /// <param name="propagationPolicy">
+        ///     An optional <see cref="DeletePropagationPolicy"/> value indicating how child resources should be deleted (if at all).
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     A <see cref="NamespaceV1"/> representing the namespace's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        public async Task<StatusV1> Delete(string name, CancellationToken cancellationToken = default)
+        public Task<KubeResourceResultV1<NamespaceV1>> Delete(string name, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
-            return await Http
-                .DeleteAsync(
-                    Requests.ByName.WithTemplateParameters(new
-                    {
-                        Name = name
-                    }),
-                    cancellationToken: cancellationToken
-                )
-                .ReadContentAsObjectV1Async<StatusV1>("delete v1/Namespace resource", HttpStatusCode.OK, HttpStatusCode.NotFound);
+            return DeleteGlobalResource<NamespaceV1>(Requests.ByName, name, propagationPolicy, cancellationToken);
         }
 
         /// <summary>
@@ -235,12 +230,15 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the Namespace to delete.
         /// </param>
+        /// <param name="propagationPolicy">
+        ///     An optional <see cref="DeletePropagationPolicy"/> value indicating how child resources should be deleted (if at all).
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     An <see cref="StatusV1"/> indicating the result of the request.
+        ///     A <see cref="NamespaceV1"/> representing the namespace's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/>.
         /// </returns>
-        Task<StatusV1> Delete(string name, CancellationToken cancellationToken = default);
+        Task<KubeResourceResultV1<NamespaceV1>> Delete(string name, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }
