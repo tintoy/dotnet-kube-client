@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: extensions-sample
+  labels:
+    name: extensions-sample
+data:
+  thing.environment: 'kubed'
+  thing.nested.Name: 'I''m nested'
+  thing.Nested.other: 'what?'
+
