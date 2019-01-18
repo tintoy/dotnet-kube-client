@@ -126,7 +126,8 @@ namespace KubeClient.Extensions.Configuration
 
                             return entry.Value;
                         }
-                    }
+                    },
+                    StringComparer.OrdinalIgnoreCase
                 );
             }
             else

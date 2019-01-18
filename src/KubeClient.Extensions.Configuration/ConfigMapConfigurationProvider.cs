@@ -104,7 +104,8 @@ namespace KubeClient.Extensions.Configuration
                 
                 Data = configMap.Data.ToDictionary(
                     entry => sectionNamePrefix + entry.Key.Replace('.', ':'),
-                    entry => entry.Value
+                    entry => entry.Value, 
+                    StringComparer.OrdinalIgnoreCase
                 );
             }
             else
