@@ -45,5 +45,61 @@ namespace KubeClient.Models
             
             return (hostName, port);
         }
+
+        /// <summary>
+        ///     Determine the revision (represented by the "deployment.kubernetes.io/revision" annotation) of the Deployment.
+        /// </summary>
+        /// <param name="deployment">
+        ///     The <see cref="DeploymentV1"/> model.
+        /// </param>
+        /// <returns>
+        ///     The revision, if present; <c>null</c>, if the annotation is absent or not a number.
+        /// </returns>
+        public static int? GetRevision(this DeploymentV1 deployment)
+        {
+            if (deployment == null)
+                throw new ArgumentNullException(nameof(deployment));
+
+            if (deployment.Metadata == null)
+                return null;
+            
+            string rawRevision;
+            if (!deployment.Metadata.Annotations.TryGetValue(K8sAnnotations.Deployment.Revision, out rawRevision))
+                return null;
+
+            int revision;
+            if (!Int32.TryParse(rawRevision, out revision))
+                return null;
+
+            return revision;
+        }
+
+        /// <summary>
+        ///     Determine the revision (represented by the "deployment.kubernetes.io/revision" annotation) of the Deployment represented by the ReplicaSet.
+        /// </summary>
+        /// <param name="deployment">
+        ///     The <see cref="ReplicaSetV1"/> model.
+        /// </param>
+        /// <returns>
+        ///     The revision, if present; <c>null</c>, if the annotation is absent or not a number.
+        /// </returns>
+        public static int? GetRevision(this ReplicaSetV1 deployment)
+        {
+            if (deployment == null)
+                throw new ArgumentNullException(nameof(deployment));
+
+            if (deployment.Metadata == null)
+                return null;
+            
+            string rawRevision;
+            if (!deployment.Metadata.Annotations.TryGetValue(K8sAnnotations.Deployment.Revision, out rawRevision))
+                return null;
+
+            int revision;
+            if (!Int32.TryParse(rawRevision, out revision))
+                return null;
+
+            return revision;
+        }
     }
 }

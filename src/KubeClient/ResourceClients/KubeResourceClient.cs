@@ -221,6 +221,7 @@ namespace KubeClient.ResourceClients
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
             
             var patch = new JsonPatchDocument<TResource>();
+
             patchAction(patch);
 
             return await
