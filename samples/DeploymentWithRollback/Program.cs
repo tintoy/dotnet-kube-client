@@ -62,8 +62,6 @@ namespace KubeClient.Samples.DeploymentWithRollback
 
                 Log.Information("Ok, Deployment does not exist yet - we're ready to go.");
 
-                string appName = options.DeploymentName;
-
                 Log.Information("Creating Deployment {DeploymentName} in namespace {KubeNamespace}...",
                     options.DeploymentName,
                     options.KubeNamespace
@@ -89,7 +87,6 @@ namespace KubeClient.Samples.DeploymentWithRollback
                     options.DeploymentName,
                     options.KubeNamespace
                 );
-
                 DeploymentV1 updatedDeployment = await UpdateDeployment(client, initialDeployment);
                 int? updatedRevision = updatedDeployment.GetRevision();
                 if (updatedRevision == null)
@@ -295,11 +292,11 @@ namespace KubeClient.Samples.DeploymentWithRollback
                 kubeNamespace: deployment.Metadata.Namespace
             );
 
-            ReplicaSetV1 initialRevisionReplicaSet = replicaSets.Items.FirstOrDefault(
+            ReplicaSetV1 targetRevisionReplicaSet = replicaSets.Items.FirstOrDefault(
                 replicaSet => replicaSet.GetRevision() == targetRevision
             );
 
-            return initialRevisionReplicaSet;
+            return targetRevisionReplicaSet;
         }
 
         /// <summary>
