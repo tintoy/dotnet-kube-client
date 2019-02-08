@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace KubeClient.Samples.DeploymentWithRollback
 {
-    using System.Linq;
     using Extensions.KubeConfig.Models;
     using Models;
 
