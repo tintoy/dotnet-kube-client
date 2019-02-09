@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KubeClient.Models
@@ -44,6 +45,43 @@ namespace KubeClient.Models
             }
             
             return (hostName, port);
+        }
+
+        /// <summary>
+        ///     Determine whether a Deployment owns a ReplicaSet.
+        /// </summary>
+        /// <param name="replicaSet">
+        ///     The ReplicaSet to examine.
+        /// </param>
+        /// <param name="deployment">
+        ///     The Deployment to examine.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c>, if the ReplicaSet has an owner-reference to the Deployment; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsOwnedBy(this ReplicaSetV1 replicaSet, DeploymentV1 deployment)
+        {
+            if (replicaSet == null)
+                throw new ArgumentNullException(nameof(replicaSet));
+
+            if (deployment == null)
+                throw new ArgumentNullException(nameof(deployment));
+
+            if (replicaSet.Metadata == null)
+                throw new ArgumentException("Cannot evaluate ownership of the supplied ReplicaSet because its Metadata is null.", nameof(replicaSet));
+
+            if (deployment.Metadata == null)
+                throw new ArgumentException("Cannot evaluate ownership of the supplied ReplicaSet because the supplied Deployment's Metadata is null.", nameof(replicaSet));
+            
+            bool isOwnedBy = replicaSet.Metadata.OwnerReferences.Any(ownerReference =>
+                ownerReference.Kind == deployment.Kind
+                &&
+                ownerReference.ApiVersion == deployment.ApiVersion
+                &&
+                ownerReference.Name == deployment.Metadata.Name
+            );
+            
+            return isOwnedBy;
         }
 
         /// <summary>
@@ -100,6 +138,45 @@ namespace KubeClient.Models
                 return null;
 
             return revision;
+        }
+
+        /// <summary>
+        ///     Get the composite label selector (if any) associated with the specified Deployment.
+        /// </summary>
+        /// <param name="deployment">
+        ///     A <see cref="DeploymentV1"/> representing the Deployment's current state.
+        /// </param>
+        /// <returns>
+        ///     The composite label selector (e.g. "key1=value1,key2=value2"), or <c>null</c> if the Deployment doesn't specify any label selectors.
+        /// </returns>
+        public static string GetLabelSelector(this DeploymentV1 deployment)
+        {
+            if (deployment == null)
+                throw new ArgumentNullException(nameof(deployment));
+            
+            return deployment.Spec?.Selector?.GetLabelSelector();
+        }
+
+        /// <summary>
+        ///     Get the composite label selector (if any) associated with the specified Deployment.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     A <see cref="DeploymentV1"/> representing the Deployment's current state.
+        /// </param>
+        /// <returns>
+        ///     The composite label selector (e.g. "key1=value1,key2=value2"), or <c>null</c> if <paramref name="labelSelector" />'s <see cref="LabelSelectorV1.MatchLabels"/> is empty.
+        /// </returns>
+        public static string GetLabelSelector(this LabelSelectorV1 labelSelector)
+        {
+            if (labelSelector == null)
+                throw new ArgumentNullException(nameof(labelSelector));
+
+            if (labelSelector.MatchLabels.Count == 0)
+                return null;
+
+            return String.Join(",", labelSelector.MatchLabels.Select(
+                selector => $"{selector.Key}={selector.Value}"
+            ));
         }
     }
 }

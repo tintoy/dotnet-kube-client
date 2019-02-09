@@ -301,6 +301,10 @@ using (StreamReader stdout = new StreamReader(connection.GetInputStream(1), Enco
 
 For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at the [HTTPlease](https://tintoy.github.io/HTTPlease/) documentation.
 
+#### Working out what APIs to call
+
+If you want to replicate the behaviour of a `kubectl` command you can pass the flag `--v=10` to `kubectl` and it will dump out (for each request that it makes) the request URI, request body, and response body.
+
 ### Building
 
 You will need to use v2.1.300 (or newer) of the .NET Core SDK to build KubeClient.

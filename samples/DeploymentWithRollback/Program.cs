@@ -231,7 +231,7 @@ namespace KubeClient.Samples.DeploymentWithRollback
         }
 
         /// <summary>
-        ///     Create update a Deployment, modifying its Command.
+        ///     Update a Deployment, modifying its Command.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
