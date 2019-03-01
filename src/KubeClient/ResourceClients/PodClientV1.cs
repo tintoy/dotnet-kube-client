@@ -123,7 +123,12 @@ namespace KubeClient.ResourceClients
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="limitBytes">
-        ///     Limit the number of bytes returned.
+        ///     Limit the number of bytes returned (optional).
+        /// </param>
+        /// <param name="tailLines">
+        ///     The number of lines from the end of the log to show (optional).
+        /// 
+        ///     If not specified, logs are since from the creation of the container.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
@@ -131,7 +136,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A string containing the logs.
         /// </returns>
-        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, CancellationToken cancellationToken = default)
+        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -142,7 +147,8 @@ namespace KubeClient.ResourceClients
                     Name = name,
                     ContainerName = containerName,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                    LimitBytes = limitBytes
+                    LimitBytes = limitBytes,
+                    TailLines = tailLines
                 }),
                 cancellationToken
             );
@@ -173,12 +179,17 @@ namespace KubeClient.ResourceClients
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="limitBytes">
-        ///     Limit the number of bytes returned.
+        ///     Limit the number of bytes returned (optional).
+        /// </param>
+        /// <param name="tailLines">
+        ///     The number of lines from the end of the log to show (optional).
+        /// 
+        ///     If not specified, logs are since from the creation of the container.
         /// </param>
         /// <returns>
         ///     An <see cref="IObservable{T}"/> sequence of lines from the log.
         /// </returns>
-        public IObservable<string> StreamLogs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null)
+        public IObservable<string> StreamLogs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -190,6 +201,7 @@ namespace KubeClient.ResourceClients
                     ContainerName = containerName,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes,
+                    TailLines = tailLines,
                     Follow = "true"
                 }),
                 operationDescription: $"stream logs for v1/Pod '{name}' (container '{containerName ?? "<default>"}') in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
@@ -268,7 +280,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?limitBytes={LimitBytes?}&container={ContainerName?}&follow={Follow?}");
+            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?container={ContainerName?}&follow={Follow?}&limitBytes={LimitBytes?}&tailLines={TailLines?}");
         }
     }
 
@@ -341,7 +353,12 @@ namespace KubeClient.ResourceClients
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="limitBytes">
-        ///     Limit the number of bytes returned.
+        ///     Limit the number of bytes returned (optional).
+        /// </param>
+        /// <param name="tailLines">
+        ///     The number of lines from the end of the log to show (optional).
+        /// 
+        ///     If not specified, logs are since from the creation of the container.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
@@ -349,7 +366,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A string containing the logs.
         /// </returns>
-        Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, CancellationToken cancellationToken = default);
+        Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Stream the combined logs for the Pod with the specified name.
@@ -366,12 +383,17 @@ namespace KubeClient.ResourceClients
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="limitBytes">
-        ///     Limit the number of bytes returned.
+        ///     Limit the number of bytes returned (optional).
+        /// </param>
+        /// <param name="tailLines">
+        ///     The number of lines from the end of the log to show (optional).
+        /// 
+        ///     If not specified, logs are since from the creation of the container.
         /// </param>
         /// <returns>
         ///     An <see cref="IObservable{T}"/> sequence of lines from the log.
         /// </returns>
-        IObservable<string> StreamLogs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null);
+        IObservable<string> StreamLogs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null);
 
         /// <summary>
         ///     Request creation of a <see cref="PodV1"/>.
