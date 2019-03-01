@@ -23,7 +23,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<INamespaceClientV1>(
                 client => new NamespaceClientV1(client)
             );
         }
@@ -42,7 +42,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IConfigMapClientV1>(
                 client => new ConfigMapClientV1(client)
             );
         }
@@ -60,7 +60,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IDaemonSetClientV1>(
                 client => new DaemonSetClientV1(client)
             );
         }
@@ -78,7 +78,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IDeploymentClientV1>(
                 client => new DeploymentClientV1(client)
             );
         }
@@ -97,7 +97,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IDeploymentClientV1Beta1>(
                 client => new DeploymentClientV1Beta1(client)
             );
         }
@@ -116,7 +116,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IJobClientV1>(
                 client => new JobClientV1(client)
             );
         }
@@ -135,7 +135,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IPersistentVolumeClientV1>(
                 client => new PersistentVolumeClientV1(client)
             );
         }
@@ -154,7 +154,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IPersistentVolumeClaimClientV1>(
                 client => new PersistentVolumeClaimClientV1(client)
             );
         }
@@ -173,7 +173,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IPodClientV1>(
                 client => new PodClientV1(client)
             );
         }
@@ -192,7 +192,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<ISecretClientV1>(
                 client => new SecretClientV1(client)
             );
         }
@@ -211,7 +211,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IServiceClientV1>(
                 client => new ServiceClientV1(client)
             );
         }
@@ -230,7 +230,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IReplicationControllerClientV1>(
                 client => new ReplicationControllerClientV1(client)
             );
         }
@@ -249,7 +249,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IReplicaSetClientV1>(
                 client => new ReplicaSetClientV1(client)
             );
         }
@@ -268,7 +268,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IAPIGroupClientV1>(
                 client => new APIGroupClientV1(client)
             );
         }
@@ -287,7 +287,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IAPIResourceClientV1>(
                 client => new APIResourceClientV1(client)
             );
         }
@@ -306,7 +306,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IStatefulSetClientV1>(
                 client => new StatefulSetClientV1(client)
             );
         }
@@ -325,7 +325,7 @@ namespace KubeClient
             if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
-            return kubeClient.ResourceClient(
+            return kubeClient.ResourceClient<IDynamicResourceClient>(
                 client => new DynamicResourceClient(client)
             );
         }
