@@ -19,6 +19,7 @@ using Newtonsoft.Json.Serialization;
 namespace KubeClient.ResourceClients
 {
     using Models;
+    using Models.Converters;
 
     /// <summary>
     ///     The base class for Kubernetes resource API clients.
@@ -50,7 +51,8 @@ namespace KubeClient.ResourceClients
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Converters =
             {
-                new StringEnumConverter()
+                new StringEnumConverter(),
+                new Int32OrStringV1Converter()
             }
         };
 

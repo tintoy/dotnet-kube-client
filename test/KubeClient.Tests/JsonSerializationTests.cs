@@ -8,14 +8,15 @@ using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
-    
+    using System.IO;
     using Models;
+    using Models.Converters;
     using TestCommon;
 
     /// <summary>
-    ///     Tests for serialisation of various Kubernetes models.
+    ///     Tests for JSON serialisation of various Kubernetes models.
     /// </summary>
-    public class SerializationTests
+    public class JsonSerializationTests
         : TestBase
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace KubeClient.Tests
         /// <param name="testOutput">
         ///     Output for the current test.
         /// </param>
-        public SerializationTests(ITestOutputHelper testOutput)
+        public JsonSerializationTests(ITestOutputHelper testOutput)
             : base(testOutput)
         {
         }
@@ -85,6 +86,58 @@ namespace KubeClient.Tests
         }
 
         /// <summary>
+        ///     Verify that an <see cref="Int32OrStringV1"/> can be correctly serialised to JSON (regardless of whether it's a number or string).
+        /// </summary>
+        [InlineData(null, null)]
+        [InlineData(567, 567)]
+        [InlineData("567", 567)]
+        [InlineData("567tcp", "567tcp")]
+        [InlineData("567 tcp", "567 tcp")]
+        [Theory(DisplayName = "Can serialise Int32OrStringV1 to JSON")]
+        public void Can_Serialize_Int32OrStringV1_Null(object rawValue, object renderedValue)
+        {
+            Int32OrStringV1 int32OrString;
+            if (rawValue is string stringValue)
+                int32OrString = stringValue;
+            else if (rawValue is int intValue)
+                int32OrString = intValue;
+            else if (rawValue == null)
+                int32OrString = null;
+            else
+                throw new InvalidOperationException($"Unexpected value type: '{rawValue.GetType().FullName}'.");
+
+            var model = new TestModel
+            {
+                Number = 123,
+                Text = "hello",
+                Mixed = int32OrString
+            };
+
+            JObject rootObject;
+            using (JTokenWriter writer = new JTokenWriter())
+            {
+                JsonSerializer
+                    .Create(new JsonSerializerSettings
+                    {
+                        Converters =
+                        {
+                            new Int32OrStringV1Converter()
+                        }
+                    })
+                    .Serialize(writer, model);
+
+                writer.Flush();
+
+                rootObject = (JObject)writer.Token;
+            }
+            
+            string propertyName = GetJsonPropertyName(typeof(TestModel), "Mixed");
+            var propertyValue = rootObject.Property(propertyName)?.Value as JValue;
+            Assert.NotNull(propertyValue);
+            Assert.Equal(renderedValue, propertyValue.Value);
+        }
+
+        /// <summary>
         ///     Get the JSON property name corresponding to the specified model property.
         /// </summary>
         /// <param name="modelType">
@@ -111,6 +164,30 @@ namespace KubeClient.Tests
             Assert.NotNull(jsonPropertyAttribute);
 
             return jsonPropertyAttribute.PropertyName;
+        }
+
+        /// <summary>
+        ///     Model used for serialisation tests.
+        /// </summary>
+        class TestModel
+        {
+            /// <summary>
+            ///     A 32-bit integer.
+            /// </summary>
+            [JsonProperty("number")]
+            public int Number { get; set; }
+            
+            /// <summary>
+            ///     Some free-form text.
+            /// </summary>
+            [JsonProperty("text")]
+            public string Text { get; set; }
+
+            /// <summary>
+            ///     Either a 32-bit integer or some free-form text.
+            /// </summary>
+            [JsonProperty("mixed")]
+            public Int32OrStringV1 Mixed { get; set; }
         }
     }
 }

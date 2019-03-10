@@ -425,7 +425,7 @@ def get_data_types(models):
         'integer': KubeIntrinsicDataType('int'),
         'string': KubeIntrinsicDataType('string'),
         'io.k8s.apimachinery.pkg.apis.meta.v1.Time': KubeIntrinsicDataType('DateTime'),
-        'io.k8s.apimachinery.pkg.util.intstr.IntOrString': KubeIntrinsicDataType('string'),
+        'io.k8s.apimachinery.pkg.util.intstr.IntOrString': KubeIntrinsicDataType('Int32OrStringV1'),
         'io.k8s.apimachinery.pkg.api.resource.Quantity': KubeIntrinsicDataType('string'),
         'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions': KubeIntrinsicDataType('DeleteOptionsV1')  # This model is hand-crafted
     })
