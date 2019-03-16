@@ -22,6 +22,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "servicePort")]
         [JsonProperty("servicePort", NullValueHandling = NullValueHandling.Include)]
-        public string ServicePort { get; set; }
+        public Int32OrStringV1 ServicePort { get; set; }
     }
 }

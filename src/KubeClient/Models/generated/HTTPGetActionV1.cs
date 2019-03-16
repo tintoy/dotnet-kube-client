@@ -48,6 +48,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "port")]
         [JsonProperty("port", NullValueHandling = NullValueHandling.Include)]
-        public string Port { get; set; }
+        public Int32OrStringV1 Port { get; set; }
     }
 }
