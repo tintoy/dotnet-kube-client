@@ -59,12 +59,27 @@ namespace KubeClient.Tests
                 Mixed = int32OrString
             };
 
-            string expected = "number: 123\r\ntext: hello\r\n";
+            string expected = "number: 123\ntext: hello\n";
             if (renderedValue != null)
-                expected += $"mixed: {renderedValue}\r\n";
+                expected += $"mixed: {renderedValue}\n";
+
+            expected = NormalizeLineEndings(expected);
 
             string actual = serializer.Serialize(model);
             Assert.Equal(expected, actual);
+        }
+
+        /// <summary>
+        ///     Normalise line-endings to match the local environment.
+        /// </summary>
+        /// <param name="text">The text to normalise.</param>
+        /// <returns>The text with line-endings updated to match <see cref="Environment.NewLine"/>.</returns>
+        static string NormalizeLineEndings(string text)
+        {
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
+            
+            return text.Replace("\n", Environment.NewLine);
         }
 
         /// <summary>
