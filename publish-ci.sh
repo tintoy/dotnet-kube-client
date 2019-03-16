@@ -37,14 +37,18 @@ fi
 
 echo 'travis_fold:start:publish_packages_myget'
 
-echo "Publishing packages to MyGet package feed..."
-for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
-    dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --api-key "$MYGET_API_KEY"
-done
+if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then
+    echo "Publishing packages to MyGet package feed..."
+    for PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.nupkg' \! -name '*.symbols.nupkg'); do
+        dotnet nuget push "$PACKAGE" --source "$MYGET_FEED_URL" --api-key "$MYGET_API_KEY"
+    done
 
-for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
-    dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
-done
+    for SYMBOL_PACKAGE in $(find $ARTIFACTS_DIRECTORY -name '*.symbols.nupkg'); do
+        dotnet nuget push "$SYMBOL_PACKAGE" --source "$MYGET_SYMBOL_FEED_URL" --api-key "$MYGET_API_KEY"
+    done
+else
+    echo "Not publishing packages for pull request '$TRAVIS_PULL_REQUEST' to MyGet package feed."
+fi
 
 echo 'travis_fold:end:publish_packages_myget'
 
