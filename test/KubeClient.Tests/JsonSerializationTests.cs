@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -83,6 +84,42 @@ namespace KubeClient.Tests
                 Assert.Contains(expectedPropertyName, actualPropertyNames);
             else
                 Assert.DoesNotContain(expectedPropertyName, actualPropertyNames);
+        }
+
+        [Fact]
+        public void Int32OrStringWithNullDeserializesCorrectly()
+        {
+            var json = "{ \"path\": \"/healthz\", \"port\": null, \"scheme\": \"HTTP\" }";
+            var httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            Assert.NotNull(httpGetAction);
+            Assert.Equal("/healthz", httpGetAction.Path);
+            Assert.Null(httpGetAction.Port);
+            Assert.Equal("HTTP", httpGetAction.Scheme);
+        }
+
+        [Fact]
+        public void Int32OrStringWithIntegerDeserializesCorrectly()
+        {
+            var json = "{ \"path\": \"/healthz\", \"port\": 10254, \"scheme\": \"HTTP\" }";
+            var httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            Assert.NotNull(httpGetAction);
+            Assert.Equal("/healthz", httpGetAction.Path);
+            Assert.True(httpGetAction.Port.IsInt32);
+            Assert.False(httpGetAction.Port.IsString);
+            Assert.Equal(10254, httpGetAction.Port.Int32Value);
+            Assert.Equal("HTTP", httpGetAction.Scheme);
+        }
+
+        [Fact]
+        public void Int32OrStringWithStringDeserializesCorrectly()
+        {
+            var json = "{ \"path\": \"/healthz\", \"port\": \"http\", \"scheme\": \"HTTP\" }";
+            var httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            Assert.NotNull(httpGetAction);
+            Assert.False(httpGetAction.Port.IsInt32);
+            Assert.True(httpGetAction.Port.IsString);
+            Assert.Equal("http", httpGetAction.Port.StringValue);
+            Assert.Equal("HTTP", httpGetAction.Scheme);
         }
 
         /// <summary>

@@ -72,15 +72,11 @@ namespace KubeClient.Models.Converters
                 }
                 case JsonToken.Integer:
                 {
-                    return new Int32OrStringV1(
-                        reader.ReadAsInt32().Value
-                    );
+                    return new Int32OrStringV1((int)(long)reader.Value);
                 }
                 case JsonToken.String:
                 {
-                    return new Int32OrStringV1(
-                        reader.ReadAsString()
-                    );
+                    return new Int32OrStringV1((string)reader.Value);
                 }
                 default:
                 {
