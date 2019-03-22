@@ -31,16 +31,13 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the PersistentVolume to retrieve.
         /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="PersistentVolumeV1"/> representing the current state for the PersistentVolume, or <c>null</c> if no PersistentVolume was found with the specified name and namespace.
+        ///     A <see cref="PersistentVolumeV1"/> representing the current state for the PersistentVolume, or <c>null</c> if no PersistentVolume was found with the specified name.
         /// </returns>
-        public async Task<PersistentVolumeV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<PersistentVolumeV1> Get(string name, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -48,21 +45,17 @@ namespace KubeClient.ResourceClients
             return await GetSingleResource<PersistentVolumeV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
-                    Name = name,
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                    Name = name
                 }),
                 cancellationToken: cancellationToken
             );
         }
 
         /// <summary>
-        ///     Get all PersistentVolumes in the specified namespace, optionally matching a label selector.
+        ///     Get all PersistentVolumes, optionally matching a label selector.
         /// </summary>
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the PersistentVolumes.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
@@ -70,12 +63,11 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="PersistentVolumeListV1"/> containing the PersistentVolumes.
         /// </returns>
-        public async Task<PersistentVolumeListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<PersistentVolumeListV1> List(string labelSelector = null, CancellationToken cancellationToken = default)
         {
             return await GetResourceList<PersistentVolumeListV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector
                 }),
                 cancellationToken: cancellationToken
@@ -88,22 +80,18 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the PersistentVolumes.
         /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<IResourceEventV1<PersistentVolumeV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<PersistentVolumeV1>> WatchAll(string labelSelector = null)
         {
             return ObserveEvents<PersistentVolumeV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
-                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
                     Watch = true
                 }),
-                operationDescription: $"watch all v1/PersistentVolumes with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
+                operationDescription: $"watch all v1/PersistentVolumes with label selector '{labelSelector ?? "<none>"}'"
             );
         }
 
@@ -126,10 +114,7 @@ namespace KubeClient.ResourceClients
             
             return await Http
                 .PostAsJsonAsync(
-                    Requests.Collection.WithTemplateParameters(new
-                    {
-                        Namespace = newPersistentVolume?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
-                    }),
+                    Requests.Collection,
                     postBody: newPersistentVolume,
                     cancellationToken: cancellationToken
                 )
@@ -142,23 +127,19 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the PersistentVolume to delete.
         /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     An <see cref="StatusV1"/> indicating the result of the request.
         /// </returns>
-        public async Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<StatusV1> Delete(string name, CancellationToken cancellationToken = default)
         {
             return await Http
                 .DeleteAsync(
                     Requests.ByName.WithTemplateParameters(new
                     {
-                        Name = name,
-                        Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                        Name = name
                     }),
                     cancellationToken: cancellationToken
                 )
@@ -173,12 +154,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level PersistentVolume (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/persistentvolumes?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/persistentvolumes?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name PersistentVolume (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/persistentvolumes/{Name}");
+            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/persistentvolumes/{Name}");
         }
     }
 
@@ -194,25 +175,19 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the PersistentVolume to retrieve.
         /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="PersistentVolumeV1"/> representing the current state for the PersistentVolume, or <c>null</c> if no PersistentVolume was found with the specified name and namespace.
+        ///     A <see cref="PersistentVolumeV1"/> representing the current state for the PersistentVolume, or <c>null</c> if no PersistentVolume was found with the specified name.
         /// </returns>
-        Task<PersistentVolumeV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<PersistentVolumeV1> Get(string name, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Get all PersistentVolumes in the specified namespace, optionally matching a label selector.
+        ///     Get all PersistentVolumes, optionally matching a label selector.
         /// </summary>
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the PersistentVolumes.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
@@ -220,7 +195,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="PersistentVolumeListV1"/> containing the PersistentVolumes.
         /// </returns>
-        Task<PersistentVolumeListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<PersistentVolumeListV1> List(string labelSelector = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Watch for events relating to PersistentVolumes.
@@ -228,13 +203,10 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the PersistentVolumes.
         /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        IObservable<IResourceEventV1<PersistentVolumeV1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
+        IObservable<IResourceEventV1<PersistentVolumeV1>> WatchAll(string labelSelector = null);
 
         /// <summary>
         ///     Request creation of a <see cref="PersistentVolumeV1"/>.
@@ -256,15 +228,12 @@ namespace KubeClient.ResourceClients
         /// <param name="name">
         ///     The name of the PersistentVolume to delete.
         /// </param>
-        /// <param name="kubeNamespace">
-        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
-        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     An <see cref="StatusV1"/> indicating the result of the request.
         /// </returns>
-        Task<StatusV1> Delete(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<StatusV1> Delete(string name, CancellationToken cancellationToken = default);
     }
 }
