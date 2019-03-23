@@ -36,14 +36,14 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "runAsGroup")]
         [JsonProperty("runAsGroup", NullValueHandling = NullValueHandling.Ignore)]
-        public int? RunAsGroup { get; set; }
+        public long? RunAsGroup { get; set; }
 
         /// <summary>
         ///     The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
         /// </summary>
         [YamlMember(Alias = "runAsUser")]
         [JsonProperty("runAsUser", NullValueHandling = NullValueHandling.Ignore)]
-        public int? RunAsUser { get; set; }
+        public long? RunAsUser { get; set; }
 
         /// <summary>
         ///     The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime.

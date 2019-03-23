@@ -93,7 +93,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "multipleOf")]
         [JsonProperty("multipleOf", NullValueHandling = NullValueHandling.Ignore)]
-        public double MultipleOf { get; set; }
+        public double? MultipleOf { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -112,14 +112,14 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "maxLength")]
         [JsonProperty("maxLength", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MaxLength { get; set; }
+        public long? MaxLength { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "minLength")]
         [JsonProperty("minLength", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MinLength { get; set; }
+        public long? MinLength { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -152,14 +152,14 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "maximum")]
         [JsonProperty("maximum", NullValueHandling = NullValueHandling.Ignore)]
-        public double Maximum { get; set; }
+        public double? Maximum { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "minimum")]
         [JsonProperty("minimum", NullValueHandling = NullValueHandling.Ignore)]
-        public double Minimum { get; set; }
+        public double? Minimum { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -232,28 +232,28 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "maxItems")]
         [JsonProperty("maxItems", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MaxItems { get; set; }
+        public long? MaxItems { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "maxProperties")]
         [JsonProperty("maxProperties", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MaxProperties { get; set; }
+        public long? MaxProperties { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "minItems")]
         [JsonProperty("minItems", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MinItems { get; set; }
+        public long? MinItems { get; set; }
 
         /// <summary>
         ///     Description not provided.
         /// </summary>
         [YamlMember(Alias = "minProperties")]
         [JsonProperty("minProperties", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MinProperties { get; set; }
+        public long? MinProperties { get; set; }
 
         /// <summary>
         ///     Description not provided.

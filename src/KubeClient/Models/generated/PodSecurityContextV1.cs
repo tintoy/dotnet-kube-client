@@ -19,21 +19,21 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "fsGroup")]
         [JsonProperty("fsGroup", NullValueHandling = NullValueHandling.Ignore)]
-        public int? FsGroup { get; set; }
+        public long? FsGroup { get; set; }
 
         /// <summary>
         ///     The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
         /// </summary>
         [YamlMember(Alias = "runAsGroup")]
         [JsonProperty("runAsGroup", NullValueHandling = NullValueHandling.Ignore)]
-        public int? RunAsGroup { get; set; }
+        public long? RunAsGroup { get; set; }
 
         /// <summary>
         ///     The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
         /// </summary>
         [YamlMember(Alias = "runAsUser")]
         [JsonProperty("runAsUser", NullValueHandling = NullValueHandling.Ignore)]
-        public int? RunAsUser { get; set; }
+        public long? RunAsUser { get; set; }
 
         /// <summary>
         ///     The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
@@ -47,7 +47,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "supplementalGroups")]
         [JsonProperty("supplementalGroups", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public List<int> SupplementalGroups { get; } = new List<int>();
+        public List<long> SupplementalGroups { get; } = new List<long>();
 
         /// <summary>
         ///     Determine whether the <see cref="SupplementalGroups"/> property should be serialised.

@@ -36,7 +36,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "startingDeadlineSeconds")]
         [JsonProperty("startingDeadlineSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? StartingDeadlineSeconds { get; set; }
+        public long? StartingDeadlineSeconds { get; set; }
 
         /// <summary>
         ///     The number of failed finished jobs to retain. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.

@@ -22,7 +22,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "templateGeneration")]
         [JsonProperty("templateGeneration", NullValueHandling = NullValueHandling.Ignore)]
-        public int? TemplateGeneration { get; set; }
+        public long? TemplateGeneration { get; set; }
 
         /// <summary>
         ///     A label query over pods that are managed by the daemon set. Must match in order to be controlled. If empty, defaulted to labels on Pod template. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors

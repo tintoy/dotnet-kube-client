@@ -43,7 +43,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "activeDeadlineSeconds")]
         [JsonProperty("activeDeadlineSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ActiveDeadlineSeconds { get; set; }
+        public long? ActiveDeadlineSeconds { get; set; }
 
         /// <summary>
         ///     Specifies the desired number of successfully finished pods the job should be run with.  Setting to nil means that the success of any pod signals the success of all pods, and allows parallelism to have any positive value.  Setting to 1 means that parallelism is limited to 1 and the success of that pod signals the success of the job. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/

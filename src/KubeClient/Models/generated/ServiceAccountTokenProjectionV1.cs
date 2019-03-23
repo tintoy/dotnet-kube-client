@@ -29,6 +29,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "expirationSeconds")]
         [JsonProperty("expirationSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ExpirationSeconds { get; set; }
+        public long? ExpirationSeconds { get; set; }
     }
 }

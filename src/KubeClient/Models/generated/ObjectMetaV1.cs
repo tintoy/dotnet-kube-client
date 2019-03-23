@@ -65,7 +65,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "generation")]
         [JsonProperty("generation", NullValueHandling = NullValueHandling.Ignore)]
-        public int? Generation { get; set; }
+        public long? Generation { get; set; }
 
         /// <summary>
         ///     An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
@@ -111,7 +111,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "deletionGracePeriodSeconds")]
         [JsonProperty("deletionGracePeriodSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? DeletionGracePeriodSeconds { get; set; }
+        public long? DeletionGracePeriodSeconds { get; set; }
 
         /// <summary>
         ///     Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed.

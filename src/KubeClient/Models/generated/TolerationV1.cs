@@ -29,7 +29,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "tolerationSeconds")]
         [JsonProperty("tolerationSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? TolerationSeconds { get; set; }
+        public long? TolerationSeconds { get; set; }
 
         /// <summary>
         ///     Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.

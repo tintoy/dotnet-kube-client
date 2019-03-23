@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "observedGeneration")]
         [JsonProperty("observedGeneration", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ObservedGeneration { get; set; }
+        public long? ObservedGeneration { get; set; }
 
         /// <summary>
         ///     The number of available replicas (ready for at least minReadySeconds) for this replication controller.

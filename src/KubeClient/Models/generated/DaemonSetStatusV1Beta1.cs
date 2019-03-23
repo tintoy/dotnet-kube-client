@@ -57,7 +57,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "observedGeneration")]
         [JsonProperty("observedGeneration", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ObservedGeneration { get; set; }
+        public long? ObservedGeneration { get; set; }
 
         /// <summary>
         ///     Represents the latest available observations of a DaemonSet's current state.

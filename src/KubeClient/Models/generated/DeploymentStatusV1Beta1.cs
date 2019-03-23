@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "observedGeneration")]
         [JsonProperty("observedGeneration", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ObservedGeneration { get; set; }
+        public long? ObservedGeneration { get; set; }
 
         /// <summary>
         ///     Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.

@@ -22,7 +22,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "observedGeneration")]
         [JsonProperty("observedGeneration", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ObservedGeneration { get; set; }
+        public long? ObservedGeneration { get; set; }
 
         /// <summary>
         ///     updateRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)

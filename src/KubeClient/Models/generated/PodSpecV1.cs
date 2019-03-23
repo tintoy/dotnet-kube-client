@@ -111,7 +111,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "activeDeadlineSeconds")]
         [JsonProperty("activeDeadlineSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ActiveDeadlineSeconds { get; set; }
+        public long? ActiveDeadlineSeconds { get; set; }
 
         /// <summary>
         ///     List of containers belonging to the pod. Containers cannot currently be added or removed. There must be at least one container in a Pod. Cannot be updated.
@@ -177,7 +177,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "terminationGracePeriodSeconds")]
         [JsonProperty("terminationGracePeriodSeconds", NullValueHandling = NullValueHandling.Ignore)]
-        public int? TerminationGracePeriodSeconds { get; set; }
+        public long? TerminationGracePeriodSeconds { get; set; }
 
         /// <summary>
         ///     If specified, the pod's tolerations.

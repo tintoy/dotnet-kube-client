@@ -34,6 +34,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "revision")]
         [JsonProperty("revision", NullValueHandling = NullValueHandling.Include)]
-        public int Revision { get; set; }
+        public long Revision { get; set; }
     }
 }

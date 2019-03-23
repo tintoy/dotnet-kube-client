@@ -22,7 +22,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "observedGeneration")]
         [JsonProperty("observedGeneration", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ObservedGeneration { get; set; }
+        public long? ObservedGeneration { get; set; }
 
         /// <summary>
         ///     conditions is the set of conditions required for this autoscaler to scale its target, and indicates whether or not those conditions are met.

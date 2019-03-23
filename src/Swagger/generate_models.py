@@ -8,19 +8,46 @@ import yaml
 
 BASE_DIRECTORY = os.path.abspath('../KubeClient/Models/generated')
 ROOT_NAMESPACE = 'KubeClient.Models'
-IGNORE_MODELS = [
+IGNORE_MODELS = {
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
     'io.k8s.apimachinery.pkg.apis.meta.v1.Time',
     'io.k8s.apimachinery.pkg.api.resource.Quantity',
     'io.k8s.apimachinery.pkg.util.intstr.IntOrString',
-    'io.k8s.api.apps.v1beta1.ControllerRevision',
-    'io.k8s.api.apps.v1beta1.ControllerRevisionList',
-    'io.k8s.api.apps.v1beta2.ControllerRevision',
-    'io.k8s.api.apps.v1beta2.ControllerRevisionList',
-]
+
+    # Present in both regular and and 'extensions' groups:
+    'io.k8s.api.extensions.v1beta1.Deployment',
+    'io.k8s.api.extensions.v1beta1.DeploymentList',
+    'io.k8s.api.extensions.v1beta1.DeploymentRollback',
+    'io.k8s.api.extensions.v1beta1.NetworkPolicy',
+    'io.k8s.api.extensions.v1beta1.NetworkPolicyList',
+    'io.k8s.api.extensions.v1beta1.PodSecurityPolicy',
+    'io.k8s.api.extensions.v1beta1.PodSecurityPolicyList',
+    'io.k8s.api.extensions.v1beta1.ReplicaSet',
+    'io.k8s.api.extensions.v1beta1.ReplicaSetList',
+    'io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevision',
+    'io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevisionList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSet',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSetList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Deployment',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DeploymentList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DeploymentRollback',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.NetworkPolicy',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.NetworkPolicyList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.PodSecurityPolicy',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.PodSecurityPolicyList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSet',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSetList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Scale',
+
+    # Hand-coded:
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResourceList'
+}
 VALUE_TYPE_NAMES = [
     'bool',
     'int',
+    'long',
+    'double',
     'DateTime'
 ]
 KUBE_ACTIONS = {
@@ -278,7 +305,9 @@ class KubeDataType(object):
                     return KubeIntrinsicDataType('double')
             elif type_name == 'integer':
                 type_format = definition['format']
-                if type_format == 'int64':
+                if type_format == 'int32':
+                    return KubeIntrinsicDataType('int')
+                elif type_format == 'int64':
                     return KubeIntrinsicDataType('long')
             else:
                 if type_name in data_types:
@@ -504,20 +533,24 @@ def main():
             continue
 
         model = models[definition_name]
-        if model.kube_group == 'extensions':
-            continue
 
+        class_namespace = ROOT_NAMESPACE
+        class_directory_path = BASE_DIRECTORY
+
+        if not os.path.exists(class_directory_path):
+            os.mkdir(class_directory_path)
+        
         resource_api_key = '{}/{}/{}'.format(model.kube_group, model.api_version, model.name)
         resource_api = apis.get(resource_api_key)
 
-        class_file_name = os.path.join(BASE_DIRECTORY, model.clr_name + '.cs')
+        class_file_name = os.path.join(class_directory_path, model.clr_name + '.cs')
         with open(class_file_name, 'w') as class_file:
             class_file.write('using Newtonsoft.Json;' + LINE_ENDING)
             class_file.write('using System;' + LINE_ENDING)
             class_file.write('using System.Collections.Generic;' + LINE_ENDING)
             class_file.write('using YamlDotNet.Serialization;' + LINE_ENDING)
             class_file.write(LINE_ENDING)
-            class_file.write('namespace ' + ROOT_NAMESPACE + LINE_ENDING)
+            class_file.write('namespace ' + class_namespace + LINE_ENDING)
             class_file.write('{' + LINE_ENDING)
 
             class_file.write('    /// <summary>' + LINE_ENDING)
@@ -529,7 +562,13 @@ def main():
             model_annotations = []
 
             if model.has_list_items():
-                list_item_model = model.list_item_data_type().model
+                try:
+                    list_item_model = model.list_item_data_type().model
+                except AttributeError:
+                    print('List item datatype "{0}" is not a model'.format(model.name))
+                    pprint.pprint(model.list_item_data_type)
+
+                    raise
 
                 model_annotations.append('    [KubeListItem("{0}", "{1}")]{2}'.format(
                     list_item_model.name,
