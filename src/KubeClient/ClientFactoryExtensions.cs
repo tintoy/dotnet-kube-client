@@ -122,6 +122,22 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes Nodes (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static INodeClientV1 NodesV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient<INodeClientV1>(
+                client => new NodeClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes PersistentVolumes (v1) resource client.
         /// </summary>
         /// <param name="kubeClient">

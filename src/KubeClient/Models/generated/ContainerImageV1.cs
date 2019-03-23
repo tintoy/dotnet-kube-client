@@ -22,6 +22,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "sizeBytes")]
         [JsonProperty("sizeBytes", NullValueHandling = NullValueHandling.Ignore)]
-        public int? SizeBytes { get; set; }
+        public long? SizeBytes { get; set; }
     }
 }
