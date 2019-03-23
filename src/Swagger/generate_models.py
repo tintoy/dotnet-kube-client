@@ -276,7 +276,9 @@ class KubeDataType(object):
                 type_format = definition['format']
                 if type_format == 'double':
                     return KubeIntrinsicDataType('double')
-                elif type_format == 'int64':
+            elif type_name == 'integer':
+                type_format = definition['format']
+                if type_format == 'int64':
                     return KubeIntrinsicDataType('long')
             else:
                 if type_name in data_types:
