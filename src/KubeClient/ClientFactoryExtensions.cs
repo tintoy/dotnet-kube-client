@@ -124,9 +124,12 @@ namespace KubeClient
         /// <summary>
         ///     Get the Kubernetes Nodes (v1) resource client.
         /// </summary>
-        /// <param name="kubeClient"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
         public static INodeClientV1 NodesV1(this IKubeApiClient kubeClient)
         {
             if (kubeClient == null)
@@ -134,6 +137,25 @@ namespace KubeClient
 
             return kubeClient.ResourceClient<INodeClientV1>(
                 client => new NodeClientV1(client)
+            );
+        }
+
+        /// <summary>
+        ///     Get the Kubernetes Ingresses (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IIngressClientV1Beta1 IngressesV1Beta1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient<IIngressClientV1Beta1>(
+                client => new IngressClientV1Beta1(client)
             );
         }
 
