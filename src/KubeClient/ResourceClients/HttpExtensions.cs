@@ -1,8 +1,10 @@
 using HTTPlease;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HTTPlease.Formatters.Json;
 
 namespace KubeClient.ResourceClients
 {
@@ -150,7 +152,8 @@ namespace KubeClient.ResourceClients
                 if (actualKind == null)
                     throw new KubeClientException($"Unable to {operationDescription}: received an invalid response from the Kubernetes API (expected a resource, but response was missing 'apiVersion' property).");
 
-                JsonSerializer serializer = JsonSerializer.Create(KubeResourceClient.SerializerSettings);
+                var jsonFormatter = (await response).GetFormatters().OfType<JsonFormatter>().FirstOrDefault();
+                var serializer = JsonSerializer.Create(jsonFormatter?.SerializerSettings ?? KubeResourceClient.SerializerSettings);
 
                 if ((actualKind, actualApiVersion) == (expectedKind, expectedApiVersion))
                     return serializer.Deserialize<TResource>(responseJson.CreateReader());
