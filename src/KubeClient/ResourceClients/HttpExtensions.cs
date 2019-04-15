@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HTTPlease.Formatters;
 using HTTPlease.Formatters.Json;
 
 namespace KubeClient.ResourceClients
@@ -137,7 +138,7 @@ namespace KubeClient.ResourceClients
         {
             if (response == null)
                 throw new ArgumentNullException(nameof(response));
-            
+
             (string expectedKind, string expectedApiVersion) = KubeObjectV1.GetKubeKind<TResource>();
 
             try
@@ -152,8 +153,7 @@ namespace KubeClient.ResourceClients
                 if (actualKind == null)
                     throw new KubeClientException($"Unable to {operationDescription}: received an invalid response from the Kubernetes API (expected a resource, but response was missing 'apiVersion' property).");
 
-                var jsonFormatter = (await response).GetFormatters().OfType<JsonFormatter>().FirstOrDefault();
-                var serializer = JsonSerializer.Create(jsonFormatter?.SerializerSettings ?? KubeResourceClient.SerializerSettings);
+                var serializer = JsonSerializer.Create((await response).GetSerializerSettingsOrFallback());
 
                 if ((actualKind, actualApiVersion) == (expectedKind, expectedApiVersion))
                     return serializer.Deserialize<TResource>(responseJson.CreateReader());
@@ -201,5 +201,21 @@ namespace KubeClient.ResourceClients
                 throw new KubeApiException($"Unable to {operationDescription}.", requestError);
             }
         }
+
+        /// <summary>
+        /// Gets the <see cref="JsonSerializerSettings"/> from the first <see cref="IFormatter"/>
+        /// configured for the <paramref name="request"/> or falls back to <see cref="KubeResourceClient.SerializerSettings"/>.
+        /// </summary>
+        public static JsonSerializerSettings GetSerializerSettingsOrFallback(this HttpRequest request)
+            => request.GetFormatters().OfType<JsonFormatter>().FirstOrDefault()?.SerializerSettings
+               ?? KubeResourceClient.SerializerSettings;
+
+        /// <summary>
+        /// Gets the <see cref="JsonSerializerSettings"/> from the first <see cref="IFormatter"/>
+        /// configured for the <paramref name="response"/> or falls back to <see cref="KubeResourceClient.SerializerSettings"/>.
+        /// </summary>
+        public static JsonSerializerSettings GetSerializerSettingsOrFallback(this HttpResponseMessage response)
+            => response.GetFormatters().OfType<JsonFormatter>().FirstOrDefault()?.SerializerSettings
+               ?? KubeResourceClient.SerializerSettings;
     }
 }

@@ -118,7 +118,7 @@ namespace KubeClient.ResourceClients
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {
-                        JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+                        JsonSerializer serializer = JsonSerializer.Create(responseMessage.GetSerializerSettingsOrFallback());
 
                         return (KubeResourceV1)serializer.Deserialize(responseReader, modelType);
                     }
@@ -179,7 +179,7 @@ namespace KubeClient.ResourceClients
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {
-                        JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+                        JsonSerializer serializer = JsonSerializer.Create(responseMessage.GetSerializerSettingsOrFallback());
 
                         return (KubeResourceListV1)serializer.Deserialize(responseReader, listModelType);
                     }
@@ -253,7 +253,7 @@ namespace KubeClient.ResourceClients
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {
-                        JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+                        JsonSerializer serializer = JsonSerializer.Create(responseMessage.GetSerializerSettingsOrFallback());
 
                         return (KubeResourceV1)serializer.Deserialize(responseReader, modelType);
                     }
