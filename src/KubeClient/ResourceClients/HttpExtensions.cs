@@ -1,8 +1,12 @@
 using HTTPlease;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HTTPlease.Formatters;
+using HTTPlease.Formatters.Json;
 
 namespace KubeClient.ResourceClients
 {
@@ -150,7 +154,7 @@ namespace KubeClient.ResourceClients
                 if (actualKind == null)
                     throw new KubeClientException($"Unable to {operationDescription}: received an invalid response from the Kubernetes API (expected a resource, but response was missing 'apiVersion' property).");
 
-                JsonSerializer serializer = JsonSerializer.Create(KubeResourceClient.SerializerSettings);
+                JsonSerializer serializer = (await response).GetJsonSerializer();
 
                 if ((actualKind, actualApiVersion) == (expectedKind, expectedApiVersion))
                     return serializer.Deserialize<TResource>(responseJson.CreateReader());
@@ -197,6 +201,26 @@ namespace KubeClient.ResourceClients
             {
                 throw new KubeApiException($"Unable to {operationDescription}.", requestError);
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="JsonSerializer"/> using settings from the <see cref="IFormatter"/>s
+        /// configured for the <paramref name="response"/>.
+        /// Falls back to <see cref="KubeResourceClient.SerializerSettings"/> if there is none.
+        /// </summary>
+        public static JsonSerializer GetJsonSerializer(this HttpResponseMessage response)
+        {
+            return JsonSerializer.Create(response.GetFormatters().GetJsonSerializerSettings());
+        }
+
+        /// <summary>
+        /// Gets the <see cref="JsonSerializerSettings"/> from a set of <paramref name="formatters"/>.
+        /// Falls back to <see cref="KubeResourceClient.SerializerSettings"/> if there is none.
+        /// </summary>
+        public static JsonSerializerSettings GetJsonSerializerSettings(this IEnumerable<IFormatter> formatters)
+        {
+            return formatters.OfType<JsonFormatter>().FirstOrDefault()?.SerializerSettings
+                   ?? KubeResourceClient.SerializerSettings;
         }
     }
 }
