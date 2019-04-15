@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -410,12 +411,14 @@ namespace KubeClient.ResourceClients
             if (String.IsNullOrWhiteSpace(operationDescription))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
 
+            JsonSerializerSettings serializerSettings = request.GetFormatters().Values.GetJsonSerializerSettings();
+
             return ObserveLines(request, operationDescription)
                 .Do(
                     line => CheckForEventError(line, operationDescription)
                 )
                 .Select(
-                    line => (IResourceEventV1<TResource>) JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, SerializerSettings)
+                    line => (IResourceEventV1<TResource>) JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, serializerSettings)
                 );
         }
 
