@@ -1,32 +1,25 @@
 dist: trusty
 language: csharp
-
 mono: none
 dotnet: 2.1
-
-# Needed by GitVersion
 git:
   depth: 9999999
-
 branches:
   only:
-    - develop
-    - master
-    # Feature branches
-    - /^feature\/.*$/
-
+  - develop
+  - master
+  - "/^feature\\/.*$/"
 before_install:
-  - echo 'Installing GitVersion...'
-  - dotnet tool install -g GitVersion.Tool --version '4.0.1-*'
-  - echo Cleaning up NuGet lock files...
-  - rm -rf /tmp/NuGetScratch/lock
-
+- echo 'Installing GitVersion...'
+- dotnet tool install -g GitVersion.Tool --version '4.0.1-*'
+- echo Cleaning up NuGet lock files...
+- rm -rf /tmp/NuGetScratch/lock
 script:
-  - export PATH="$PATH:$HOME/.dotnet/tools"
-  - /bin/bash ./build-ci.sh
-  - /bin/bash ./publish-ci.sh
-
+- export PATH="$PATH:$HOME/.dotnet/tools"
+- "/bin/bash ./build-ci.sh"
+- "/bin/bash ./publish-ci.sh"
 env:
   global:
-    - secure: "ZIwB05HxjhMMfNcziZ+hn+nnljsUSK2OS0+mgpp6lJgknaJymKmgb76UelyGk4SGGiunxErsgp4sYuqtc9G4a6aJZVqJkiyxWjsUKEz7tTlVzt4jPQix/B5xpTTLU7yNemuZ3/o92YIcmSrurDMvpU09+x2SwjQgPlCkVZsshcWFLvBEpA955yS/Ks/+HPfRf+IxM2KKSoKn4nUvVp/KAtr0PlIvlcRWfuisHok9M2tzuI+1m+FyqyD7xTHFGCkIRGDu4xlG6Io6VuCdxBrWcPWwLxdOWfYTKPZhcim/L6b4pTfhwDvoIPEI+INUjds+H47qasys4ATtJ9kF4qDXX8MncM/Ws009RyVZYpWn4HjtVnXiH6XQ0/nlG2K3JEI8sF2UxLAAJb4IaPnTmeg4460gRewWGXCtAvdOjvnnfJDmhsQvhhu8WswRfLuLP05k++aoyYgFI0HjggdUwaiGtqAZH4QF6ZctnBGEdLEBz9YlOBVu+l5lDfkbVF327IRb4DClZBOLhUeOv4hVaRZEBCWLuyaHH26yz7GFwXYcDfY2kINg+7N+04aUNnTFSj8NzID1SdgrWacp6rmECkq12cYAHYWhJaGc+76Xp6jS2k1zfFXeY7rZsEA8JlTwrAkfzK9M3DFhDWbqiIuykNgzdwoyqayLx+pHb14baKD6WaM="
-    - secure: "Rc+7dCJfL67YWwRgEm5ema+wm8hXlXDjCrJYDXpNqXQuLD/Q8vlwQojQv/tjKDb+iqlGRvqOrfdvueDlLEmAzHkr2VuSKUfSTdR8lIZMz/P/9bsLDXxnfGgDfdzIi1p4MPJnahYPuZWA1o0C5lxCIRBhakwZFzYPkzPyGWSLIdFKpSnZ9pjNtSc2bDvfShzKvRxSUOBjCyf2REZsYtj/VbByp/L5HsJgaPCtAZ0AC6H+lyuriaBFf6rQL0/3ZcIM/co0ViPqMA6R84/ewJsdME5Jk6C+0/tR/WBIb6pkRaN9AHYCOzsyMq0TBE9s6HUhamxLKb2hJHBQDeVzzBpqm6Ve2nK/djRma/k0QwrOr0XpxEq4iqRdEnDAdWpq6fJme7LeqJPLQB2qXwPNV8eZD/IDK8X8pWrLG7dqJ/ORsis34xEgm77asKIlGSiykQSpQM4KrjSWgOt5Uk5jNPGYVQ34x/vgTZJTLzJuQC5G0TB5VUxPDwgD/tg9GH0RJbprmVjSFDCedt0afv55eM4vw7ssIsiFUegn3Suk9nqFeGp4vk40m7OQ/cXAdCBaBKpYLTT1Xa31uY4lBt4OV6g06QxIDkH00J4p+xIPo4DeA8iQPhYyR1fY/pLI31FnFtU9n9gzeZEeBLoXV/VPWQjnlHhfkuEvVY8+cpow4EOnOvc="
+  - secure: ZIwB05HxjhMMfNcziZ+hn+nnljsUSK2OS0+mgpp6lJgknaJymKmgb76UelyGk4SGGiunxErsgp4sYuqtc9G4a6aJZVqJkiyxWjsUKEz7tTlVzt4jPQix/B5xpTTLU7yNemuZ3/o92YIcmSrurDMvpU09+x2SwjQgPlCkVZsshcWFLvBEpA955yS/Ks/+HPfRf+IxM2KKSoKn4nUvVp/KAtr0PlIvlcRWfuisHok9M2tzuI+1m+FyqyD7xTHFGCkIRGDu4xlG6Io6VuCdxBrWcPWwLxdOWfYTKPZhcim/L6b4pTfhwDvoIPEI+INUjds+H47qasys4ATtJ9kF4qDXX8MncM/Ws009RyVZYpWn4HjtVnXiH6XQ0/nlG2K3JEI8sF2UxLAAJb4IaPnTmeg4460gRewWGXCtAvdOjvnnfJDmhsQvhhu8WswRfLuLP05k++aoyYgFI0HjggdUwaiGtqAZH4QF6ZctnBGEdLEBz9YlOBVu+l5lDfkbVF327IRb4DClZBOLhUeOv4hVaRZEBCWLuyaHH26yz7GFwXYcDfY2kINg+7N+04aUNnTFSj8NzID1SdgrWacp6rmECkq12cYAHYWhJaGc+76Xp6jS2k1zfFXeY7rZsEA8JlTwrAkfzK9M3DFhDWbqiIuykNgzdwoyqayLx+pHb14baKD6WaM=
+  - secure: Rc+7dCJfL67YWwRgEm5ema+wm8hXlXDjCrJYDXpNqXQuLD/Q8vlwQojQv/tjKDb+iqlGRvqOrfdvueDlLEmAzHkr2VuSKUfSTdR8lIZMz/P/9bsLDXxnfGgDfdzIi1p4MPJnahYPuZWA1o0C5lxCIRBhakwZFzYPkzPyGWSLIdFKpSnZ9pjNtSc2bDvfShzKvRxSUOBjCyf2REZsYtj/VbByp/L5HsJgaPCtAZ0AC6H+lyuriaBFf6rQL0/3ZcIM/co0ViPqMA6R84/ewJsdME5Jk6C+0/tR/WBIb6pkRaN9AHYCOzsyMq0TBE9s6HUhamxLKb2hJHBQDeVzzBpqm6Ve2nK/djRma/k0QwrOr0XpxEq4iqRdEnDAdWpq6fJme7LeqJPLQB2qXwPNV8eZD/IDK8X8pWrLG7dqJ/ORsis34xEgm77asKIlGSiykQSpQM4KrjSWgOt5Uk5jNPGYVQ34x/vgTZJTLzJuQC5G0TB5VUxPDwgD/tg9GH0RJbprmVjSFDCedt0afv55eM4vw7ssIsiFUegn3Suk9nqFeGp4vk40m7OQ/cXAdCBaBKpYLTT1Xa31uY4lBt4OV6g06QxIDkH00J4p+xIPo4DeA8iQPhYyR1fY/pLI31FnFtU9n9gzeZEeBLoXV/VPWQjnlHhfkuEvVY8+cpow4EOnOvc=
+  - secure: en+sObSHO0Jk2E0t1CAj/A8s4hzA5U7r2LJTZ1btcilC9qZMK5CFqIAgEQ8zCConL1wmoy3OUZoADOy6s/LRSk/LUvxGjLVSROnJMmd+eA3MgXbzhh7J5V1NRVUKXK7KuNk8kBkA1l7tUXGxgtg9iQnjbWo2rgpHDPtreA0CCg/CUS/ZnIGw8UJAEjDXjcwwC/1vPib250mOHiFynNNfc40cWv3svLkKFhXcp1ejKnUxPBEVKK3WyFjOXec8P3Wg4xkNahDIjqKM0LiUpuX37WqKFIxgf6mQo4+/kywdBAF1oTmVsrsv7cXElXl8hYV+mcdberUtPk+kBibVgKOBngJjiqiIHurYLshJJpPagxenPZOmpwpeKR1QyCH9QBq9NyZoCnGb1BGCVX1geOp3U3vxTZIJ4djcYkf6czEZBrpBpAOshwKBhO3WhwSv/g7V+7NrG6nF8w+INWTzwabqIig5wbkp8KuJp2EuHbSw+O0J9EqUwhNdIHDeCNhxLy95a8hVCf+Cv6ag1O+7enPFOUVFAXlLXq2fkRrIhG2VS3kQsRth1gQJbanvLHDn+A/uWcyfenCGkzTNLxy/c77msMUvmCOrMZ3MQQlKd7qlNLzQg4NClcZVN+3NL5EYMsjaKDHL/b55xIElD/bNye1TARZr0GTiHGPG4lM4Hr9WnVE=
