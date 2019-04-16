@@ -1,18 +1,18 @@
 using HTTPlease;
+using HTTPlease.Formatters;
+using HTTPlease.Formatters.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HTTPlease.Formatters;
-using HTTPlease.Formatters.Json;
 
 namespace KubeClient.ResourceClients
 {
     using Models;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     /// <summary>
     ///     Extension methods for HTTPlease types.
@@ -142,9 +142,11 @@ namespace KubeClient.ResourceClients
             
             (string expectedKind, string expectedApiVersion) = KubeObjectV1.GetKubeKind<TResource>();
 
+            HttpResponseMessage responseMessage = await response;
+            
             try
             {
-                JObject responseJson = await response.ReadContentAsAsync<JObject, StatusV1>(successStatusCodes);
+                JObject responseJson = await responseMessage.ReadContentAsAsync<JObject, StatusV1>(successStatusCodes);
 
                 string actualKind = responseJson.Value<string>("kind");
                 if (actualKind == null)
@@ -154,7 +156,7 @@ namespace KubeClient.ResourceClients
                 if (actualKind == null)
                     throw new KubeClientException($"Unable to {operationDescription}: received an invalid response from the Kubernetes API (expected a resource, but response was missing 'apiVersion' property).");
 
-                JsonSerializer serializer = (await response).GetJsonSerializer();
+                JsonSerializer serializer = responseMessage.GetJsonSerializer();
 
                 if ((actualKind, actualApiVersion) == (expectedKind, expectedApiVersion))
                     return serializer.Deserialize<TResource>(responseJson.CreateReader());
@@ -166,6 +168,10 @@ namespace KubeClient.ResourceClients
             catch (HttpRequestException<StatusV1> requestError)
             {
                 throw new KubeApiException(requestError.Response, requestError);
+            }
+            finally
+            {
+                responseMessage?.Dispose();
             }
         }
 
