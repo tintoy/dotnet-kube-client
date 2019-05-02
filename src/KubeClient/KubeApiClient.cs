@@ -31,17 +31,14 @@ namespace KubeClient
         /// <param name="options">
         ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
         /// </param>
-        /// <param name="loggerFactory">
-        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components, or null to use a no-op logger factory.
-        /// </param>
-        KubeApiClient(HttpClient httpClient, KubeClientOptions options, ILoggerFactory loggerFactory)
+        KubeApiClient(HttpClient httpClient, KubeClientOptions options)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
 
             Http = httpClient;
             Options = options.Clone();
-            LoggerFactory = loggerFactory ?? new LoggerFactory();
+            LoggerFactory = options.LoggerFactory ?? new LoggerFactory();
 
             DefaultNamespace = options.KubeNamespace;
         }
@@ -118,13 +115,10 @@ namespace KubeClient
         /// <param name="options">
         ///     The <see cref="KubeClientOptions"/> used to configure the client.
         /// </param>
-        /// <param name="loggerFactory">
-        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
-        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        public static KubeApiClient Create(KubeClientOptions options, ILoggerFactory loggerFactory = null)
+        public static KubeApiClient Create(KubeClientOptions options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
@@ -174,7 +168,7 @@ namespace KubeClient
             else if (options.CertificationAuthorityCertificate != null)
                 clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
 
-            if (loggerFactory != null)
+            if (options.LoggerFactory != null)
             {
                 LogMessageComponents logComponents = LogMessageComponents.Basic;
                 if (options.LogHeaders)
@@ -183,7 +177,7 @@ namespace KubeClient
                     logComponents |= LogMessageComponents.Body;
 
                 clientBuilder = clientBuilder.WithLogging(
-                    logger: loggerFactory.CreateLogger(
+                    logger: options.LoggerFactory.CreateLogger(
                         typeof(KubeApiClient).FullName + ".Http"
                     ),
                     requestComponents: logComponents,
@@ -193,7 +187,7 @@ namespace KubeClient
 
             HttpClient httpClient = clientBuilder.CreateClient(options.ApiEndPoint);
 
-            return new KubeApiClient(httpClient, options, loggerFactory);
+            return new KubeApiClient(httpClient, options);
         }
 
         /// <summary>
@@ -229,8 +223,9 @@ namespace KubeClient
         {
             return Create(new KubeClientOptions
             {
-                ApiEndPoint = apiEndPoint
-            }, loggerFactory);
+                ApiEndPoint = apiEndPoint,
+                LoggerFactory = loggerFactory
+            });
         }
 
         /// <summary>
@@ -258,8 +253,9 @@ namespace KubeClient
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.BearerToken,
                 AccessToken = accessToken,
-                CertificationAuthorityCertificate = expectServerCertificate
-            }, loggerFactory);
+                CertificationAuthorityCertificate = expectServerCertificate,
+                LoggerFactory = loggerFactory
+            });
         }
 
         /// <summary>
@@ -287,8 +283,9 @@ namespace KubeClient
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.ClientCertificate,
                 ClientCertificate = clientCertificate,
-                CertificationAuthorityCertificate = expectServerCertificate
-            }, loggerFactory);
+                CertificationAuthorityCertificate = expectServerCertificate,
+                LoggerFactory = loggerFactory
+            });
         }
 
         /// <summary>
@@ -305,10 +302,10 @@ namespace KubeClient
         /// </remarks>
         public static KubeApiClient CreateFromPodServiceAccount(ILoggerFactory loggerFactory = null)
         {
-            return Create(
-                KubeClientOptions.FromPodServiceAccount(),
-                loggerFactory
-            );
+            KubeClientOptions clientOptions = KubeClientOptions.FromPodServiceAccount();
+            clientOptions.LoggerFactory = loggerFactory;
+
+            return Create(clientOptions);
         }
 
         /// <summary>
@@ -320,13 +317,10 @@ namespace KubeClient
         /// <param name="options">
         ///     The <see cref="KubeClientOptions"/> used to configure the <see cref="KubeApiClient"/>.
         /// </param>
-        /// <param name="loggerFactory">
-        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
-        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options, ILoggerFactory loggerFactory = null)
+        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
@@ -339,7 +333,7 @@ namespace KubeClient
 
             options.EnsureValid();
 
-            return new KubeApiClient(httpClient, options, loggerFactory);
+            return new KubeApiClient(httpClient, options);
         }
     }
 }

@@ -8,6 +8,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient
 {
     using Extensions.KubeConfig.Models;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     ///     Kubernetes client configuration.
@@ -136,12 +137,17 @@ namespace KubeClient
         /// <param name="defaultKubeNamespace">
         ///     The default Kubernetes namespace to use.
         /// </param>
+        /// <param name="loggerFactory">
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeClientOptions"/>.
         /// </returns>
-        public KubeClientOptions ToKubeClientOptions(string kubeContextName = null, string defaultKubeNamespace = null)
+        public KubeClientOptions ToKubeClientOptions(string kubeContextName = null, string defaultKubeNamespace = null, ILoggerFactory loggerFactory = null)
         {
-            return ConfigureKubeClientOptions(new KubeClientOptions(), kubeContextName, defaultKubeNamespace);
+            var clientOptions = new KubeClientOptions { LoggerFactory = loggerFactory };
+
+            return ConfigureKubeClientOptions(clientOptions, kubeContextName, defaultKubeNamespace);
         }
 
         /// <summary>

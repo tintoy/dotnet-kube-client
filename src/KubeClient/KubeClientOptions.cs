@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -113,6 +114,41 @@ namespace KubeClient
         public List<Assembly> ModelTypeAssemblies { get; } = new List<Assembly>();
 
         /// <summary>
+        /// An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        /// </summary>
+        public ILoggerFactory LoggerFactory { get; set; }
+
+        /// <summary>
+        /// Create a copy of the <see cref="KubeClientOptions"/>.
+        /// </summary>
+        /// <returns>The new <see cref="KubeClientOptions"/>.</returns>
+        public KubeClientOptions Clone()
+        {
+            var clonedOptions = new KubeClientOptions
+            {
+                AccessToken = AccessToken,
+                AccessTokenCommand = AccessTokenCommand,
+                AccessTokenCommandArguments = AccessTokenCommandArguments,
+                AccessTokenExpirySelector = AccessTokenExpirySelector,
+                AccessTokenSelector = AccessTokenSelector,
+                AllowInsecure = AllowInsecure,
+                ApiEndPoint = ApiEndPoint,
+                AuthStrategy = AuthStrategy,
+                CertificationAuthorityCertificate = CertificationAuthorityCertificate,
+                ClientCertificate = ClientCertificate,
+                InitialAccessToken = InitialAccessToken,
+                InitialTokenExpiryUtc = InitialTokenExpiryUtc,
+                KubeNamespace = KubeNamespace,
+                LoggerFactory = LoggerFactory,
+                LogHeaders = LogHeaders,
+                LogPayloads = LogPayloads
+            };
+            clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
+
+            return clonedOptions;
+        }
+
+        /// <summary>
         ///     Ensure that the <see cref="KubeClientOptions"/> are valid.
         /// </summary>
         /// <returns>
@@ -130,30 +166,6 @@ namespace KubeClient
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid default namespace.");
 
             return this;
-        }
-
-        /// <summary>
-        ///     Create a copy of the <see cref="KubeClientOptions"/>.
-        /// </summary>
-        /// <returns>
-        ///     The new <see cref="KubeClientOptions"/>.
-        /// </returns>
-        public KubeClientOptions Clone()
-        {
-            var clonedOptions = new KubeClientOptions
-            {
-                ApiEndPoint = ApiEndPoint,
-                AccessToken = AccessToken,
-                AllowInsecure = AllowInsecure,
-                CertificationAuthorityCertificate = CertificationAuthorityCertificate,
-                ClientCertificate = ClientCertificate,
-                KubeNamespace = KubeNamespace,
-                LogHeaders = LogHeaders,
-                LogPayloads = LogPayloads
-            };
-            clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
-
-            return clonedOptions;
         }
 
         /// <summary>

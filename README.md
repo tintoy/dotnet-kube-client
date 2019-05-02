@@ -62,7 +62,7 @@ KubeApiClient client = KubeApiClient.Create(new KubeClientOptions
 });
 ```
 
-You can enable logging of requests and responses by passing an `ILoggerFactory` to `KubeApiClient.Create()`:
+You can enable logging of requests and responses by passing an `ILoggerFactory` to `KubeApiClient.Create()` or `KubeClientOptions.LoggerFactory`:
 
 ```csharp
 ILoggerFactory loggers = new LoggerFactory();

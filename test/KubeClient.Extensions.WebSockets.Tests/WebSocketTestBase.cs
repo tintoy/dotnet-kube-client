@@ -82,10 +82,11 @@
                 return KubeApiClient.Create(new KubeClientOptions
                 {
                     ApiEndPoint = BaseAddress,
-                    KubeNamespace = "default"
+                    KubeNamespace = "default",
+                    LoggerFactory = LoggerFactory
 
                     // No authentication.
-                }, LoggerFactory);
+                });
             }
 
             /// <summary>

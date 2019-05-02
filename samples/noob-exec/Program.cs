@@ -46,10 +46,11 @@ namespace KubeClient.Samples.NoobExec
             {
                 KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(
                     kubeContextName: options.KubeContext,
-                    defaultKubeNamespace: options.KubeNamespace
+                    defaultKubeNamespace: options.KubeNamespace,
+                    loggerFactory: loggers
                 );
 
-                using (KubeApiClient client = KubeApiClient.Create(clientOptions, loggers))
+                using (KubeApiClient client = KubeApiClient.Create(clientOptions))
                 {
                     Log.LogInformation("Finding target pod...");
 

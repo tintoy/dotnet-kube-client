@@ -46,11 +46,11 @@ namespace KubeClient
             {
                 KubeApiClient ResolveWithOptions(IServiceProvider serviceProvider)
                 {
-                    KubeClientOptions options = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
+                    KubeClientOptions clientOptions = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
+                    if (clientOptions.LoggerFactory == null)
+                        clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-                    return KubeApiClient.Create(options,
-                        loggerFactory: serviceProvider.GetService<ILoggerFactory>()
-                    );
+                    return KubeApiClient.Create(clientOptions);
                 }
 
                 services.AddScoped<KubeApiClient>(ResolveWithOptions);
@@ -84,9 +84,11 @@ namespace KubeClient
 
             KubeApiClient ResolveWithOptions(IServiceProvider serviceProvider)
             {
-                return KubeApiClient.Create(options,
-                    loggerFactory: serviceProvider.GetService<ILoggerFactory>()
-                );
+                KubeClientOptions clientOptions = options.Clone();
+                if (clientOptions.LoggerFactory == null)
+                    clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                return KubeApiClient.Create(options);
             }
 
             services.AddScoped<KubeApiClient>(ResolveWithOptions);

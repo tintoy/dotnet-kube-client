@@ -44,13 +44,13 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
             
-            KubeClientOptions options = ServiceProvider.GetRequiredService<IOptionsMonitor<KubeClientOptions>>().Get(name);
-            if (options == null)
+            KubeClientOptions clientOptions = ServiceProvider.GetRequiredService<IOptionsMonitor<KubeClientOptions>>().Get(name);
+            if (clientOptions == null)
                 throw new InvalidOperationException($"Cannot resolve a {nameof(KubeClientOptions)} instance named '{name}'.");
 
-            return KubeApiClient.Create(options,
-                loggerFactory: ServiceProvider.GetService<ILoggerFactory>()
-            );
+            clientOptions.LoggerFactory = ServiceProvider.GetService<ILoggerFactory>();
+
+            return KubeApiClient.Create(clientOptions);
         }
     }
 }

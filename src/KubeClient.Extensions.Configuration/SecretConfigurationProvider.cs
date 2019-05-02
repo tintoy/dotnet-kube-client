@@ -73,6 +73,7 @@ namespace KubeClient.Extensions.Configuration
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'secretName'.", nameof(secretName));
             
             _client = client;
+            Log = _client.LoggerFactory.CreateLogger<ConfigMapConfigurationProvider>();
             _secretName = secretName;
             _kubeNamespace = kubeNamespace;
             _sectionName = sectionName;
@@ -94,13 +95,22 @@ namespace KubeClient.Extensions.Configuration
         }
 
         /// <summary>
+        /// The configuration provider's logger.
+        /// </summary>
+        ILogger Log { get; }
+
+        /// <summary>
         ///     Load configuration entries from the Secret.
         /// </summary>
         public override void Load()
         {
+            Log.LogTrace("Attempting to load Secret {SecretName} in namespace {KubeNamespace}...", _secretName, _kubeNamespace ?? _client.DefaultNamespace);
+
             SecretV1 secret = _client.SecretsV1().Get(_secretName, _kubeNamespace).GetAwaiter().GetResult();
             if (secret != null)
             {
+                Log.LogTrace("Found Secret {SecretName} in namespace {KubeNamespace}.", _secretName, _kubeNamespace ?? _client.DefaultNamespace);
+
                 string sectionNamePrefix = !String.IsNullOrWhiteSpace(_sectionName) ? _sectionName + ":" : String.Empty;
                 
                 Data = secret.Data.ToDictionary(
@@ -131,17 +141,28 @@ namespace KubeClient.Extensions.Configuration
                 );
             }
             else
+            {
+                Log.LogTrace("Secret {SecretName} was not found in namespace {KubeNamespace}.", _secretName, _kubeNamespace ?? _client.DefaultNamespace);
+
                 Data = new Dictionary<string, string>();
+            }
 
             if (_watch && _watchSubscription == null)
             {
+                Log.LogTrace("Creating watch-event stream for Secret {SecretName} in namespace {KubeNamespace}...", _secretName, _kubeNamespace ?? _client.DefaultNamespace);
+
                 _watchSubscription = _client.SecretsV1()
                     .Watch(_secretName, _kubeNamespace)
                     .Subscribe(secretEvent =>
                     {
-                        if (secretEvent.EventType == ResourceEventType.Modified)
-                            OnReload();
+                        Log.LogTrace("Observed {EventType} watch-event for Secret {SecretName} in namespace {KubeNamespace}; triggering config reload...", secretEvent.EventType, _secretName, _kubeNamespace ?? _client.DefaultNamespace);
+                        
+                        OnReload();
+
+                        Log.LogTrace("Config reload triggered for Secret {SecretName} in namespace {KubeNamespace}.", _secretName, _kubeNamespace ?? _client.DefaultNamespace);
                     });
+
+                Log.LogTrace("Watch-event stream created for Secret {SecretName} in namespace {KubeNamespace}.", _secretName, _kubeNamespace ?? _client.DefaultNamespace);
             }
         }
     }

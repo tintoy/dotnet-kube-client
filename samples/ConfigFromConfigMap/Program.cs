@@ -14,6 +14,7 @@ namespace KubeClient.Samples.ConfigFromConfigMap
     using Extensions.Configuration;
     using Extensions.KubeConfig.Models;
     using Models;
+    using System.Linq;
 
     /// <summary>
     ///     The ConfigFromConfigMap program.
@@ -42,11 +43,12 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                 const string configMapName = "config-from-configmap";
                 const string configMapNamespace = "default";
 
-                KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(defaultKubeNamespace: configMapNamespace);
+                KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(defaultKubeNamespace: configMapNamespace, loggerFactory: loggerFactory);
+
                 if (options.Verbose)
                     clientOptions.LogPayloads = true;
 
-                KubeApiClient client = KubeApiClient.Create(clientOptions, loggerFactory);
+                KubeApiClient client = KubeApiClient.Create(clientOptions);
 
                 Log.Information("Checking for existing ConfigMap...");
                 ConfigMapV1 configMap = await client.ConfigMapsV1().Get(configMapName, configMapNamespace);
@@ -82,13 +84,6 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                     .Build();
                 Log.Information("Configuration built.");
 
-                configuration.GetReloadToken().RegisterChangeCallback(_ =>
-                {
-                    Log.Information("Got changed configuration:");
-                    foreach (var item in configuration.AsEnumerable())
-                        Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
-                }, state: null);
-
                 Log.Information("Got configuration:");
                 foreach (var item in configuration.AsEnumerable())
                     Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
@@ -96,6 +91,15 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                 Log.Information("Press enter to update ConfigMap...");
 
                 Console.ReadLine();
+
+                // NOTE: Reload tokens are single-use only (by design, it seems).
+                //       Once the change callback has been invoked, you will need call GetReloadToken again if you want to receive the next notification.
+                configuration.GetReloadToken().RegisterChangeCallback(_ =>
+                {
+                    Log.Information("Got changed configuration:");
+                    foreach (var item in configuration.AsEnumerable())
+                        Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
+                }, state: null);
 
                 Log.Information("Updating ConfigMap...");
 
@@ -157,7 +161,7 @@ namespace KubeClient.Samples.ConfigFromConfigMap
 
             Log.Logger = loggerConfiguration.CreateLogger();
 
-            return new LoggerFactory().AddSerilog(Log.Logger);
+            return new LoggerFactory().AddSerilog();
         }
 
         /// <summary>

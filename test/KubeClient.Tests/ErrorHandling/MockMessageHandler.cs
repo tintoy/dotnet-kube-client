@@ -186,7 +186,7 @@ namespace KubeClient.Tests.ErrorHandling
                 BaseAddress = options.ApiEndPoint
             };
 
-            return KubeApiClient.Create(client, options ?? new KubeClientOptions(), loggerFactory);
+            return KubeApiClient.Create(client, options ?? new KubeClientOptions { LoggerFactory = loggerFactory });
         }
     }
 }

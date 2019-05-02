@@ -38,11 +38,11 @@ namespace KubeClient.Samples.DeploymentWithRollback
 
             try
             {
-                KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(defaultKubeNamespace: options.KubeNamespace);
+                KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(defaultKubeNamespace: options.KubeNamespace, loggerFactory: loggerFactory);
                 if (options.Verbose)
                     clientOptions.LogPayloads = true;
 
-                KubeApiClient client = KubeApiClient.Create(clientOptions, loggerFactory);
+                KubeApiClient client = KubeApiClient.Create(clientOptions);
 
                 Log.Information("Looking for existing Deployment {DeploymentName} in namespace {KubeNamespace}...",
                     options.DeploymentName,
