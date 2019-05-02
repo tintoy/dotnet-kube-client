@@ -58,12 +58,25 @@ namespace KubeClient
         /// </returns>
         public static string Locate()
         {
-            string homeDirectoryVariableName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "UserProfile" : "HOME";
-            string homeDirectory = Environment.GetEnvironmentVariable(homeDirectoryVariableName);
-            if (String.IsNullOrWhiteSpace(homeDirectory))
-                throw new KubeClientException($"Cannot determine home directory for the current user (environment variable '{homeDirectoryVariableName}' is empty or not defined).");
+            //Windows users in an AD domain with a Home Drive mapped will have the HOME environment variable set.
+            //Mirror the logic that kubectl and other Kubernetes tools use for homedir resolution: https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/util/homedir/homedir.go
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var home = Environment.GetEnvironmentVariable("HOME");
+                if (!String.IsNullOrEmpty(home))
+                    return Path.Combine(home, ".kube", "config");
 
-            return Path.Combine(homeDirectory, ".kube", "config");
+                var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+                var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+                if (!String.IsNullOrEmpty(homeDrive) && !String.IsNullOrEmpty(homePath))
+                    return Path.Combine(homeDrive + homePath, ".kube", "config");
+
+                var userProfile = Environment.GetEnvironmentVariable("USERPROFILE");
+                if (!String.IsNullOrEmpty(userProfile))
+                    return Path.Combine(userProfile, ".kube", "config");
+            }
+
+            return Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kube", "config");
         }
 
         /// <summary>
@@ -188,12 +201,12 @@ namespace KubeClient
                 {
                     kubeClientOptions.AuthStrategy = KubeAuthStrategy.None;
                 }
-                
+
                 AuthProviderConfig authProvider = targetUser.Config.AuthProvider;
                 if (authProvider != null)
                 {
                     kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerTokenProvider;
-                    
+
                     if (authProvider.Config.TryGetValue("cmd-path", out object accessTokenCommand))
                         kubeClientOptions.AccessTokenCommand = (string)accessTokenCommand;
 
@@ -205,7 +218,7 @@ namespace KubeClient
 
                     if (authProvider.Config.TryGetValue("expiry-key", out object accessTokenExpirySelector))
                         kubeClientOptions.AccessTokenExpirySelector = (string)accessTokenExpirySelector;
-                    
+
                     if (authProvider.Config.TryGetValue("access-token", out object initialAccessToken))
                         kubeClientOptions.InitialAccessToken = (string)initialAccessToken;
 
