@@ -81,42 +81,51 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                     .Build();
                 Log.Information("Configuration built.");
 
-                Log.Information("Registering callback for change-notifications...");
-                Log.Information("NOTE: Since K8s change-notifications are asynchronous, you *may* see an initial change-notification event representing the ConfigMap's creation.");
-                ChangeToken.OnChange(configuration.GetReloadToken, () => // ChangeToken.OnChange takes care of requesting a new change token each time the callback is invoked.
-                {
-                    Log.Information("Got changed configuration:");
-                    foreach (var item in configuration.AsEnumerable())
-                        Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
-                });
-                Log.Information("Change-notification callback registered.");
-
                 Log.Information("Got configuration:");
-                foreach (var item in configuration.AsEnumerable())
-                    Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
+                Dump(configuration);
 
                 Log.Information("Press enter to update ConfigMap...");
 
                 Console.ReadLine();
 
-                Log.Information("Updating ConfigMap...");
+                Log.Information("Registering callback for change-notifications...");
 
-                configMap.Data["One"] = "1";
-                configMap.Data["Two"] = "2";
+                ManualResetEvent configurationChanged = new ManualResetEvent(false);
 
-                // Replace the entire Data dictionary (to modify only some of the data, you'll need to use an untyped JsonPatchDocument).
-                await client.ConfigMapsV1().Update(configMapName, patch =>
+                // See ConfigurationExtensions class below.
+                IDisposable reloadNotifications = configuration.OnReload(() =>
                 {
-                    patch.Replace(patchConfigMap => patchConfigMap.Data,
-                        value: configMap.Data
-                    );
+                    Log.Information("Got changed configuration:");
+                    Dump(configuration);
+
+                    configurationChanged.Set();
                 });
+                Log.Information("Change-notification callback registered.");
 
-                Log.Information("Updated ConfigMap.");
+                using (configurationChanged)
+                using (reloadNotifications)
+                {
+                    Log.Information("Updating ConfigMap...");
 
-                Log.Information("Waiting for configuration change; press enter to terminate.");
+                    configMap.Data["One"] = "1";
+                    configMap.Data["Two"] = "2";
 
-                Console.ReadLine();
+                    // Replace the entire Data dictionary (to modify only some of the data, you'll need to use an untyped JsonPatchDocument).
+                    await client.ConfigMapsV1().Update(configMapName, patch =>
+                    {
+                        patch.Replace(patchConfigMap => patchConfigMap.Data,
+                            value: configMap.Data
+                        );
+                    });
+
+                    Log.Information("Updated ConfigMap.");
+
+                    Log.Information("Waiting for configuration change...");
+
+                    configurationChanged.WaitOne();
+
+                    Log.Information("Configuration changed.");
+                }
 
                 return ExitCodes.Success;
             }
@@ -132,6 +141,19 @@ namespace KubeClient.Samples.ConfigFromConfigMap
 
                 return ExitCodes.UnexpectedError;
             }
+        }
+
+        /// <summary>
+        ///     Dump configuration keys and values to the log.
+        /// </summary>
+        /// <param name="configuration">The <see cref="IConfiguration"/>.</param>
+        static void Dump(IConfiguration configuration)
+        {
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            foreach (var item in configuration.AsEnumerable())
+                Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
         }
 
         /// <summary>
@@ -191,6 +213,56 @@ namespace KubeClient.Samples.ConfigFromConfigMap
             ///     An unexpected error occurred during program execution.
             /// </summary>
             public const int UnexpectedError = 5;
+        }
+    }
+
+    /// <summary>
+    ///     Extension methods for working with <see cref="IConfiguration"/>.
+    /// </summary>
+    public static class ConfigurationExtensions
+    {
+        /// <summary>
+        ///     Register a callback for configuration reload notifications.
+        /// </summary>
+        /// <param name="configuration">
+        ///     The configuration.
+        /// </param>
+        /// <param name="action">
+        ///     The <see cref="Action"/> delegate to invoke when the configuration is reloaded.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IDisposable"/> which, when disposed, terminates the notifications.
+        /// </returns>
+        public static IDisposable OnReload(this IConfiguration configuration, Action action)
+        {
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            // ChangeToken.OnChange takes care of requesting a new change token each time the callback is invoked.
+
+            return ChangeToken.OnChange(configuration.GetReloadToken, action);
+        }
+
+        /// <summary>
+        /// Register a callback for configuration reload notifications.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="action">The <see cref="Action{T1}"/> delegate to invoke when the configuration is reloaded.</param>
+        /// <returns>An <see cref="IDisposable"/> which, when disposed, terminates the notifications.</returns>
+        public static IDisposable OnReload(this IConfiguration configuration, Action<IConfiguration> action)
+        {
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            // ChangeToken.OnChange takes care of requesting a new change token each time the callback is invoked.
+
+            return ChangeToken.OnChange(configuration.GetReloadToken, action, configuration);
         }
     }
 }
