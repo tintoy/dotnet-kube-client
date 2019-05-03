@@ -166,11 +166,11 @@ namespace KubeClient.Extensions.Configuration
             else
                 Load(null); // Clear out configuration if the ConfigMap is invalid
 
-            Log.LogTrace("Triggering config reload for ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+            Log.LogTrace("Triggering config change-token for ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
             OnReload();
 
-            Log.LogTrace("Config reload triggered for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+            Log.LogTrace("Config change-token triggered for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
         }
     }
 }

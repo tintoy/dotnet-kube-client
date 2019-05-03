@@ -1,20 +1,17 @@
 ﻿using HTTPlease;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Serilog;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace KubeClient.Samples.ConfigFromConfigMap
 {
     using Extensions.Configuration;
-    using Extensions.KubeConfig.Models;
+    using Microsoft.Extensions.Primitives;
     using Models;
-    using System.Linq;
 
     /// <summary>
     ///     The ConfigFromConfigMap program.
@@ -84,6 +81,16 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                     .Build();
                 Log.Information("Configuration built.");
 
+                Log.Information("Registering callback for change-notifications...");
+                Log.Information("NOTE: Since K8s change-notifications are asynchronous, you *may* see an initial change-notification event representing the ConfigMap's creation.");
+                ChangeToken.OnChange(configuration.GetReloadToken, () => // ChangeToken.OnChange takes care of requesting a new change token each time the callback is invoked.
+                {
+                    Log.Information("Got changed configuration:");
+                    foreach (var item in configuration.AsEnumerable())
+                        Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
+                });
+                Log.Information("Change-notification callback registered.");
+
                 Log.Information("Got configuration:");
                 foreach (var item in configuration.AsEnumerable())
                     Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
@@ -92,21 +99,12 @@ namespace KubeClient.Samples.ConfigFromConfigMap
 
                 Console.ReadLine();
 
-                // NOTE: Reload tokens are single-use only (by design, it seems).
-                //       Once the change callback has been invoked, you will need call GetReloadToken again if you want to receive the next notification.
-                configuration.GetReloadToken().RegisterChangeCallback(_ =>
-                {
-                    Log.Information("Got changed configuration:");
-                    foreach (var item in configuration.AsEnumerable())
-                        Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
-                }, state: null);
-
                 Log.Information("Updating ConfigMap...");
 
                 configMap.Data["One"] = "1";
                 configMap.Data["Two"] = "2";
 
-                // Replace the entire Data dictionary (otherwise, use an untyped JsonPatchDocument).
+                // Replace the entire Data dictionary (to modify only some of the data, you'll need to use an untyped JsonPatchDocument).
                 await client.ConfigMapsV1().Update(configMapName, patch =>
                 {
                     patch.Replace(patchConfigMap => patchConfigMap.Data,
