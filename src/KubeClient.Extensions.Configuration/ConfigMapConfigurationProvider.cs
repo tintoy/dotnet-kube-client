@@ -106,15 +106,37 @@ namespace KubeClient.Extensions.Configuration
             Log.LogTrace("Attempting to load ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
             ConfigMapV1 configMap = _client.ConfigMapsV1().Get(_configMapName, _kubeNamespace).GetAwaiter().GetResult();
+            Load(configMap);
+
+            if (_watch && _watchSubscription == null)
+            {
+                Log.LogTrace("Creating watch-event stream for ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+
+                _watchSubscription = _client.ConfigMapsV1()
+                    .Watch(_configMapName, _kubeNamespace)
+                    .Subscribe(OnConfigMapChanged);
+
+                Log.LogTrace("Watch-event stream created for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+            }
+        }
+
+        /// <summary>
+        ///     Load data from the specified ConfigMap.
+        /// </summary>
+        /// <param name="configMap">
+        ///     A <see cref="ConfigMapV1"/> representing the ConfigMap's current state, or <c>null</c> if the ConfigMap was not found.
+        /// </param>
+        void Load(ConfigMapV1 configMap)
+        {
             if (configMap != null)
             {
                 Log.LogTrace("Found ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
                 string sectionNamePrefix = !String.IsNullOrWhiteSpace(_sectionName) ? _sectionName + ":" : String.Empty;
-                
+
                 Data = configMap.Data.ToDictionary(
                     entry => sectionNamePrefix + entry.Key.Replace('.', ':'),
-                    entry => entry.Value, 
+                    entry => entry.Value,
                     StringComparer.OrdinalIgnoreCase
                 );
             }
@@ -124,24 +146,31 @@ namespace KubeClient.Extensions.Configuration
 
                 Data = new Dictionary<string, string>();
             }
+        }
 
-            if (_watch && _watchSubscription == null)
-            {
-                Log.LogTrace("Creating watch-event stream for ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+        /// <summary>
+        ///     Called when the target ConfigMap is created, modified, or deleted.
+        /// </summary>
+        /// <param name="configMapEvent">
+        ///     The change-notification event data.
+        /// </param>
+        private void OnConfigMapChanged(IResourceEventV1<ConfigMapV1> configMapEvent)
+        {
+            if (configMapEvent == null)
+                throw new ArgumentNullException(nameof(configMapEvent));
 
-                _watchSubscription = _client.ConfigMapsV1()
-                    .Watch(_configMapName, _kubeNamespace)
-                    .Subscribe(configMapEvent =>
-                    {
-                        Log.LogTrace("Observed {EventType} watch-event for ConfigMap {ConfigMapName} in namespace {KubeNamespace}; triggering config reload...", configMapEvent.EventType, _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+            Log.LogTrace("Observed {EventType} watch-event for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", configMapEvent.EventType, _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
-                        OnReload();
+            if (configMapEvent.EventType != ResourceEventType.Error)
+                Load(configMapEvent.Resource);
+            else
+                Load(null); // Clear out configuration if the ConfigMap is invalid
 
-                        Log.LogTrace("Config reload triggered for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
-                    });
+            Log.LogTrace("Triggering config reload for ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
-                Log.LogTrace("Watch-event stream created for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
-            }
+            OnReload();
+
+            Log.LogTrace("Config reload triggered for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
         }
     }
 }
