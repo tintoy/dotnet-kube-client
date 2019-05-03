@@ -1,6 +1,7 @@
 ﻿using HTTPlease;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Serilog;
 using System;
 using System.Linq;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 namespace KubeClient.Samples.ConfigFromConfigMap
 {
     using Extensions.Configuration;
-    using Microsoft.Extensions.Primitives;
     using Models;
 
     /// <summary>
