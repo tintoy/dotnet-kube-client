@@ -61,11 +61,18 @@ namespace KubeClient.Extensions.KubeConfig.Models
             if (String.IsNullOrWhiteSpace(Token))
                 return null;
 
-            string token = Encoding.ASCII.GetString(
-                Convert.FromBase64String(Token)
-            );
-            if (token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                return token.Substring("Bearer ".Length);
+            try
+            {
+                string token = Encoding.ASCII.GetString(
+                    Convert.FromBase64String(Token)
+                );
+                if (token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    return token.Substring("Bearer ".Length);
+            }
+            catch (FormatException)
+            {
+                // ignored in case the string is not base64 encoded.  There's no good/reliable way to say for sure that a string is base64 encoded ('abcd' is technically a valid base64 string)
+            }
 
             return Token;
         }
