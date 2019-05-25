@@ -17,11 +17,16 @@ branches:
     is-release-branch: false
 
   develop:
+    regex: develop
     mode: ContinuousDeployment
-    tag: unstable
+    tag: develop
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
+    is-source-branch-for:
+      - master
 
   feature:
     mode: ContinuousDeployment
@@ -30,6 +35,8 @@ branches:
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    is-source-branch-for:
+      - develop
 
   pull-request:
     regex: (pull|pull\-request|pr)[/-]
