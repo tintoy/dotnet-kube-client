@@ -1,17 +1,19 @@
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
-    using System.IO;
     using Models;
     using Models.Converters;
+    using ResourceClients;
     using TestCommon;
 
     /// <summary>
@@ -86,22 +88,30 @@ namespace KubeClient.Tests
                 Assert.DoesNotContain(expectedPropertyName, actualPropertyNames);
         }
 
+        /// <summary>
+        /// Verify that an <see cref="Int32OrStringV1"/> with a <c>null</c> value deserialises correctly.
+        /// </summary>
         [Fact]
         public void Int32OrStringWithNullDeserializesCorrectly()
         {
-            var json = "{ \"path\": \"/healthz\", \"port\": null, \"scheme\": \"HTTP\" }";
-            var httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            string json = "{ \"path\": \"/healthz\", \"port\": null, \"scheme\": \"HTTP\" }";
+            HTTPGetActionV1 httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            
             Assert.NotNull(httpGetAction);
             Assert.Equal("/healthz", httpGetAction.Path);
             Assert.Null(httpGetAction.Port);
             Assert.Equal("HTTP", httpGetAction.Scheme);
         }
 
+        /// <summary>
+        /// Verify that an <see cref="Int32OrStringV1"/> with an integer value deserialises correctly.
+        /// </summary>
         [Fact]
         public void Int32OrStringWithIntegerDeserializesCorrectly()
         {
-            var json = "{ \"path\": \"/healthz\", \"port\": 10254, \"scheme\": \"HTTP\" }";
-            var httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            string json = "{ \"path\": \"/healthz\", \"port\": 10254, \"scheme\": \"HTTP\" }";
+            HTTPGetActionV1 httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            
             Assert.NotNull(httpGetAction);
             Assert.Equal("/healthz", httpGetAction.Path);
             Assert.True(httpGetAction.Port.IsInt32);
@@ -110,11 +120,15 @@ namespace KubeClient.Tests
             Assert.Equal("HTTP", httpGetAction.Scheme);
         }
 
+        /// <summary>
+        /// Verify that an <see cref="Int32OrStringV1"/> with a string value deserialises correctly.
+        /// </summary>
         [Fact]
         public void Int32OrStringWithStringDeserializesCorrectly()
         {
-            var json = "{ \"path\": \"/healthz\", \"port\": \"http\", \"scheme\": \"HTTP\" }";
-            var httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            string json = "{ \"path\": \"/healthz\", \"port\": \"http\", \"scheme\": \"HTTP\" }";
+            HTTPGetActionV1 httpGetAction = JsonConvert.DeserializeObject<HTTPGetActionV1>(json);
+            
             Assert.NotNull(httpGetAction);
             Assert.False(httpGetAction.Port.IsInt32);
             Assert.True(httpGetAction.Port.IsString);
@@ -125,12 +139,12 @@ namespace KubeClient.Tests
         /// <summary>
         ///     Verify that an <see cref="Int32OrStringV1"/> can be correctly serialised to JSON (regardless of whether it's a number or string).
         /// </summary>
-        [InlineData(null, null)]
-        [InlineData(567, 567)]
-        [InlineData("567", 567)]
-        [InlineData("567tcp", "567tcp")]
-        [InlineData("567 tcp", "567 tcp")]
-        [Theory(DisplayName = "Can serialise Int32OrStringV1 to JSON")]
+        [InlineData(null,       null)]
+        [InlineData(567,        567)]
+        [InlineData("567",      567)]
+        [InlineData("567tcp",   "567tcp")]
+        [InlineData("567 tcp",  "567 tcp")]
+        [Theory(DisplayName = "Can serialise Int32OrStringV1 to JSON ")]
         public void Can_Serialize_Int32OrStringV1_Null(object rawValue, object renderedValue)
         {
             Int32OrStringV1 int32OrString;
@@ -172,6 +186,64 @@ namespace KubeClient.Tests
             var propertyValue = rootObject.Property(propertyName)?.Value as JValue;
             Assert.NotNull(propertyValue);
             Assert.Equal(renderedValue, propertyValue.Value);
+        }
+
+        /// <summary>
+        ///     Verify that a <see cref="ResourceEventV1{TResource}"/> can be correctly deserialised from JSON.
+        /// </summary>
+        /// <param name="resourceType">The type of <see cref="KubeResourceV1"/> to be deserialised via <see cref="ResourceEventV1{TResource}.Resource"/>.</param>
+        /// <param name="expectedEventType">The expected event type.</param>
+        [InlineData(typeof(PodV1),  ResourceEventType.Added)]
+        [InlineData(typeof(PodV1),  ResourceEventType.Deleted)]
+        [InlineData(typeof(PodV1),  ResourceEventType.Modified)]
+        [InlineData(null,           ResourceEventType.Error)]
+        [Theory(DisplayName = "Can deserialise ResourceEventV1 ")]
+        public void Can_Deserialize_ResourceEventV1(Type resourceType, ResourceEventType expectedEventType)
+        {
+            JsonSerializerSettings serializerSettings = KubeResourceClient.SerializerSettings;
+            serializerSettings.Formatting = Formatting.Indented;
+
+            JsonSerializer serializer = JsonSerializer.Create(serializerSettings);
+
+            ResourceEventV1<KubeResourceV1> expectedResourceEvent = new ResourceEventV1<KubeResourceV1>
+            {
+                EventType = expectedEventType,
+                Resource = resourceType != null ? (KubeResourceV1)Activator.CreateInstance(resourceType) : null
+            };
+
+            StringBuilder buffer = new StringBuilder();
+
+            using (StringWriter bufferWriter = new StringWriter(buffer))
+            using (JsonWriter jsonWriter = new JsonTextWriter(bufferWriter))
+            {
+                serializer.Serialize(jsonWriter, expectedResourceEvent);
+                jsonWriter.Flush();
+            }
+
+            Log.LogInformation("Serialised event JSON:\n{EventJson:l}", buffer.ToString());
+
+            serializerSettings.Converters.Add(
+                new ResourceEventV1Converter(typeof(KubeResourceV1).Assembly)
+            );
+            serializer = JsonSerializer.Create(serializerSettings);
+
+            ResourceEventV1<KubeResourceV1> actualResourceEvent;
+            using (StringReader bufferReader = new StringReader(buffer.ToString()))
+            using (JsonReader jsonReader = new JsonTextReader(bufferReader))
+            {
+                actualResourceEvent = serializer.Deserialize<ResourceEventV1<KubeResourceV1>>(jsonReader);
+            }
+
+            Assert.NotNull(actualResourceEvent);
+            Assert.Equal(expectedResourceEvent.EventType, actualResourceEvent.EventType);
+            
+            if (resourceType != null)
+            {
+                Assert.NotNull(actualResourceEvent.Resource);
+                Assert.IsType(actualResourceEvent.Resource.GetType(), actualResourceEvent.Resource);
+            }
+            else
+                Assert.Null(actualResourceEvent.Resource);
         }
 
         /// <summary>

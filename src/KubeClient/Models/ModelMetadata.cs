@@ -33,22 +33,33 @@ namespace KubeClient.Models
             static readonly Type KubeResourceListV1Type = typeof(KubeResourceListV1);
 
             /// <summary>
-            ///     Get kind and apiVersion metadata for all model types in the specified assembly that derive from <see cref="KubeResourceListV1"/>.
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeResourceListV1"/>.
             /// </summary>
-            /// <param name="assembly">
-            ///     The target assembly.
+            /// <param name="assemblies">
+            ///     The target assemblies.
             /// </param>
             /// <returns>
             ///     A dictionary of kind/apiVersion tuples, keyed by model type.
             /// </returns>
-            public static Dictionary<Type, (string kind, string apiVersion)> BuildTypeToKindLookup(Assembly assembly)
+            public static Dictionary<Type, (string kind, string apiVersion)> BuildTypeToKindLookup(params Assembly[] assemblies) => BuildTypeToKindLookup((IEnumerable<Assembly>)assemblies);
+
+            /// <summary>
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeResourceListV1"/>.
+            /// </summary>
+            /// <param name="assemblies">
+            ///     The target assemblies.
+            /// </param>
+            /// <returns>
+            ///     A dictionary of kind/apiVersion tuples, keyed by model type.
+            /// </returns>
+            public static Dictionary<Type, (string kind, string apiVersion)> BuildTypeToKindLookup(IEnumerable<Assembly> assemblies)
             {
-                if (assembly == null)
-                    throw new ArgumentNullException(nameof(assembly));
+                if (assemblies == null)
+                    throw new ArgumentNullException(nameof(assemblies));
 
                 var lookup = new Dictionary<Type, (string kind, string apiVersion)>();
 
-                foreach (Type modelType in assembly.GetTypes())
+                foreach (Type modelType in assemblies.SelectMany(assembly => assembly.GetTypes()))
                 {
                     TypeInfo modelTypeInfo = modelType.GetTypeInfo();
                     if (!modelTypeInfo.IsPublic)
@@ -75,22 +86,33 @@ namespace KubeClient.Models
             }
 
             /// <summary>
-            ///     Get kind and apiVersion metadata for all model types in the specified assembly that derive from <see cref="KubeResourceListV1"/>.
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeResourceListV1"/>.
             /// </summary>
-            /// <param name="assembly">
-            ///     The target assembly.
+            /// <param name="assemblies">
+            ///     The target assemblies.
             /// </param>
             /// <returns>
             ///     A dictionary of kind/apiVersion tuples, keyed by model type.
             /// </returns>
-            public static Dictionary<Type, (string kind, string apiVersion)> BuildListTypeToKindLookup(Assembly assembly)
+            public static Dictionary<Type, (string kind, string apiVersion)> BuildListTypeToKindLookup(params Assembly[] assemblies) => BuildListTypeToKindLookup((IEnumerable<Assembly>)assemblies);
+
+            /// <summary>
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeResourceListV1"/>.
+            /// </summary>
+            /// <param name="assemblies">
+            ///     The target assemblies.
+            /// </param>
+            /// <returns>
+            ///     A dictionary of kind/apiVersion tuples, keyed by model type.
+            /// </returns>
+            public static Dictionary<Type, (string kind, string apiVersion)> BuildListTypeToKindLookup(IEnumerable<Assembly> assemblies)
             {
-                if (assembly == null)
-                    throw new ArgumentNullException(nameof(assembly));
+                if (assemblies == null)
+                    throw new ArgumentNullException(nameof(assemblies));
 
                 var lookup = new Dictionary<Type, (string kind, string apiVersion)>();
 
-                foreach (Type modelType in assembly.GetTypes())
+                foreach (Type modelType in assemblies.SelectMany(assembly => assembly.GetTypes()))
                 {
                     TypeInfo modelTypeInfo = modelType.GetTypeInfo();
                     if (!modelTypeInfo.IsPublic)
@@ -117,22 +139,33 @@ namespace KubeClient.Models
             }
 
             /// <summary>
-            ///     Get kind and apiVersion metadata for all model types in the specified assembly that derive from <see cref="KubeObjectV1"/>.
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeObjectV1"/>.
             /// </summary>
-            /// <param name="assembly">
-            ///     The target assembly.
+            /// <param name="assemblies">
+            ///     The target assemblies.
             /// </param>
             /// <returns>
             ///     A dictionary of model types, keyed by kind/apiVersion tuple.
             /// </returns>
-            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToTypeLookup(Assembly assembly)
+            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToTypeLookup(params Assembly[] assemblies) => BuildKindToTypeLookup((IEnumerable<Assembly>)assemblies);
+
+            /// <summary>
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeObjectV1"/>.
+            /// </summary>
+            /// <param name="assemblies">
+            ///     The target assemblies.
+            /// </param>
+            /// <returns>
+            ///     A dictionary of model types, keyed by kind/apiVersion tuple.
+            /// </returns>
+            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToTypeLookup(IEnumerable<Assembly> assemblies)
             {
-                if (assembly == null)
-                    throw new ArgumentNullException(nameof(assembly));
+                if (assemblies == null)
+                    throw new ArgumentNullException(nameof(assemblies));
 
                 var lookup = new Dictionary<(string kind, string apiVersion), Type>();
 
-                foreach (Type modelType in assembly.GetTypes())
+                foreach (Type modelType in assemblies.SelectMany(assembly => assembly.GetTypes()))
                 {
                     TypeInfo modelTypeInfo = modelType.GetTypeInfo();
                     if (!modelTypeInfo.IsPublic)
@@ -159,22 +192,33 @@ namespace KubeClient.Models
             }
 
             /// <summary>
-            ///     Get kind and apiVersion metadata for all model types in the specified assembly that derive from <see cref="KubeResourceListV1"/>.
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeResourceListV1"/>.
             /// </summary>
-            /// <param name="assembly">
-            ///     The target assembly.
+            /// <param name="assemblies">
+            ///     The target assemblies.
             /// </param>
             /// <returns>
             ///     A dictionary of model types, keyed by kind/apiVersion tuple.
             /// </returns>
-            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToListTypeLookup(Assembly assembly)
+            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToListTypeLookup(params Assembly[] assemblies) => BuildKindToListTypeLookup((IEnumerable<Assembly>)assemblies);
+
+            /// <summary>
+            ///     Get kind and apiVersion metadata for all model types in the specified assemblies that derive from <see cref="KubeResourceListV1"/>.
+            /// </summary>
+            /// <param name="assemblies">
+            ///     The target assemblies.
+            /// </param>
+            /// <returns>
+            ///     A dictionary of model types, keyed by kind/apiVersion tuple.
+            /// </returns>
+            public static Dictionary<(string kind, string apiVersion), Type> BuildKindToListTypeLookup(IEnumerable<Assembly> assemblies)
             {
-                if (assembly == null)
-                    throw new ArgumentNullException(nameof(assembly));
+                if (assemblies == null)
+                    throw new ArgumentNullException(nameof(assemblies));
 
                 var lookup = new Dictionary<(string kind, string apiVersion), Type>();
 
-                foreach (Type modelType in assembly.GetTypes())
+                foreach (Type modelType in assemblies.SelectMany(assembly => assembly.GetTypes()))
                 {
                     TypeInfo modelTypeInfo = modelType.GetTypeInfo();
                     if (!modelTypeInfo.IsPublic)
