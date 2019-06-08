@@ -237,10 +237,10 @@ namespace KubeClient.Tests
             Assert.NotNull(actualResourceEvent);
             Assert.Equal(expectedResourceEvent.EventType, actualResourceEvent.EventType);
             
-            if (resourceType != null)
+            if (expectedResourceEvent.Resource != null)
             {
                 Assert.NotNull(actualResourceEvent.Resource);
-                Assert.IsType(actualResourceEvent.Resource.GetType(), actualResourceEvent.Resource);
+                Assert.IsType(expectedResourceEvent.Resource.GetType(), actualResourceEvent.Resource);
             }
             else
                 Assert.Null(actualResourceEvent.Resource);
