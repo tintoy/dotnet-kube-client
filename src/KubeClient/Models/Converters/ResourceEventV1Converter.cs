@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace KubeClient.Models.Converters
@@ -21,6 +22,11 @@ namespace KubeClient.Models.Converters
         /// The CLR <see cref="Type"/> representing <see cref="KubeResourceV1"/>.
         /// </summary>
         static readonly TypeInfo KubeResourceV1Type = typeof(KubeResourceV1).GetTypeInfo();
+
+        /// <summary>
+        /// Default assemblies always scanned for model types.
+        /// </summary>
+        static readonly IEnumerable<Assembly> DefaultModelAssemblies = new Assembly[] { KubeResourceV1Type.Assembly };
 
         /// <summary>
         /// Registered model types, keyed by K8s kind and apiVersion.
@@ -45,7 +51,9 @@ namespace KubeClient.Models.Converters
             if (modelTypeAssemblies == null)
                 throw new ArgumentNullException(nameof(modelTypeAssemblies));
             
-            _modelTypesByKubeKind = ModelMetadata.KubeObject.BuildKindToTypeLookup(modelTypeAssemblies);
+            _modelTypesByKubeKind = ModelMetadata.KubeObject.BuildKindToTypeLookup(
+                DefaultModelAssemblies.Concat(modelTypeAssemblies)
+            );
         }
 
         /// <summary>

@@ -423,6 +423,54 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Get an <see cref="IObservable{T}"/> for dynamically-typed <see cref="IResourceEventV1{TResource}"/>s streamed from an HTTP GET request.
+        /// </summary>
+        /// <param name="request">
+        ///     The <see cref="HttpRequest"/> to execute.
+        /// </param>
+        /// <param name="operationDescription">
+        ///     A short description of the operation (used in error messages if the request fails).
+        /// </param>
+        /// <returns>
+        ///     The <see cref="IObservable{T}"/>.
+        /// </returns>
+        /// <remarks>If you have custom model types you need to deserialise, ensure that their assemblies are added to <see cref="KubeClientOptions.ModelTypeAssemblies"/>.</remarks>
+        protected IObservable<IResourceEventV1<KubeResourceV1>> ObserveEventsDynamic(HttpRequest request, string operationDescription)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            if (String.IsNullOrWhiteSpace(operationDescription))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
+
+            JsonSerializer eventSerializer = JsonSerializer.Create(
+                request.GetFormatters().Values.GetJsonSerializerSettings()
+            );
+            eventSerializer.Converters.Add(
+                new ResourceEventV1Converter(
+                    KubeClient.GetClientOptions().ModelTypeAssemblies
+                )
+            );
+            
+            return ObserveLines(request, operationDescription)
+                .Do(
+                    line => CheckForEventError(line, operationDescription)
+                )
+                .Select(line =>
+                {
+                    IResourceEventV1<KubeResourceV1> resourceEvent;
+
+                    using (StringReader lineReader = new StringReader(line))
+                    using (JsonReader lineJsonReader = new JsonTextReader(lineReader))
+                    {
+                        resourceEvent = eventSerializer.Deserialize<ResourceEventV1<KubeResourceV1>>(lineJsonReader);
+                    }
+
+                    return resourceEvent;
+                });
+        }
+
+        /// <summary>
         ///     Get an <see cref="IObservable{T}"/> for lines streamed from an HTTP GET request.
         /// </summary>
         /// <param name="request">
