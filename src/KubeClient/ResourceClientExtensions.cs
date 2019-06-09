@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace KubeClient
 {
+    using ApiMetadata;
     using Models;
     using ResourceClients;
 
@@ -143,6 +144,33 @@ namespace KubeClient
             rolledBackDeployment = await client.DeploymentsV1().Get(rolledBackDeployment.Metadata.Name, rolledBackDeployment.Metadata.Namespace, cancellationToken);
 
             return rolledBackDeployment;
+        }
+
+        /// <summary>
+        /// Get the Kubernetes resource represented by the specified object reference.
+        /// </summary>
+        /// <param name="dynamicResourceClient">The Kubernetes API client.</param>
+        /// <param name="resourceReference">The <see cref="ObjectReferenceV1"/>.</param>
+        /// <param name="cancellationToken">An optional <see cref="CancellationToken"/> that can be used to cancel the request.</param>
+        /// <returns>The resource, as a <see cref="KubeResourceV1"/>.</returns>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="resourceReference"/> has a <c>null</c> name or kind.
+        /// </exception>
+        public static Task<KubeResourceV1> Get(this IDynamicResourceClient dynamicResourceClient, ObjectReferenceV1 resourceReference, CancellationToken cancellationToken = default)
+        {
+            if (dynamicResourceClient == null)
+                throw new ArgumentNullException(nameof(dynamicResourceClient));
+            
+            if (resourceReference == null)
+                throw new ArgumentNullException(nameof(resourceReference));
+            
+            if (String.IsNullOrWhiteSpace(resourceReference.Kind))
+                throw new ArgumentException($"{nameof(ObjectReferenceV1)} does not specify 'kind' field.", nameof(resourceReference));
+
+            if (String.IsNullOrWhiteSpace(resourceReference.Name))
+                throw new ArgumentException($"{nameof(ObjectReferenceV1)} does not specify 'name' field.", nameof(resourceReference));
+
+            return dynamicResourceClient.Get(resourceReference.Name, resourceReference.Kind, resourceReference.ApiVersion, resourceReference.Namespace, cancellationToken);
         }
     }
 }

@@ -61,7 +61,7 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     Metadata for Kubernetes resource APIs.
         /// </summary>
-        KubeApiMetadataCache ApiMetadata { get; } = new KubeApiMetadataCache();
+        public KubeApiMetadataCache ApiMetadata { get; } = new KubeApiMetadataCache();
 
         /// <summary>
         ///     Retrieve a single resource by name.
@@ -406,6 +406,11 @@ namespace KubeClient.ResourceClients
     public interface IDynamicResourceClient
         : IKubeResourceClient
     {
+        /// <summary>
+        ///     Metadata for Kubernetes resource APIs.
+        /// </summary>
+        KubeApiMetadataCache ApiMetadata { get; }
+
         /// <summary>
         ///     Retrieve a single resource by name.
         /// </summary>

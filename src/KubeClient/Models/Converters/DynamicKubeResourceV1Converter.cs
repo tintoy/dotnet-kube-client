@@ -9,7 +9,7 @@ namespace KubeClient.Models.Converters
     /// <summary>
     ///     Dynamic JSON converter for types derived from <see cref="KubeResourceV1"/>.
     /// </summary>
-    public class DynamicKubeResourceConverter
+    public class DynamicKubeResourceV1Converter
         : JsonConverter
     {
         /// <summary>
@@ -23,19 +23,19 @@ namespace KubeClient.Models.Converters
         readonly Dictionary<(string kind, string apiVersion), Type> _modelTypesByKubeKind;
 
         /// <summary>
-        /// Create a new <see cref="DynamicKubeResourceConverter"/>.
+        /// Create a new <see cref="DynamicKubeResourceV1Converter"/>.
         /// </summary>
         /// <param name="modelTypeAssemblies">Assemblies containing model types supported for deserialisation.</param>
-        public DynamicKubeResourceConverter(params Assembly[] modelTypeAssemblies)
+        public DynamicKubeResourceV1Converter(params Assembly[] modelTypeAssemblies)
             : this((IEnumerable<Assembly>)modelTypeAssemblies)
         {
         }
 
         /// <summary>
-        /// Create a new <see cref="DynamicKubeResourceConverter"/>.
+        /// Create a new <see cref="DynamicKubeResourceV1Converter"/>.
         /// </summary>
         /// <param name="modelTypeAssemblies">Assemblies containing model types supported for deserialisation.</param>
-        public DynamicKubeResourceConverter(IEnumerable<Assembly> modelTypeAssemblies)
+        public DynamicKubeResourceV1Converter(IEnumerable<Assembly> modelTypeAssemblies)
         {
             if (modelTypeAssemblies == null)
                 throw new ArgumentNullException(nameof(modelTypeAssemblies));
