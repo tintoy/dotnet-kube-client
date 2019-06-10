@@ -10,6 +10,7 @@ namespace KubeClient
     using ApiMetadata;
     using Models;
     using ResourceClients;
+    using System.Text;
 
     /// <summary>
     ///     Extension methods for various K8s resource clients.
@@ -149,7 +150,7 @@ namespace KubeClient
         /// <summary>
         /// Get the Kubernetes resource represented by the specified object reference.
         /// </summary>
-        /// <param name="dynamicResourceClient">The Kubernetes API client.</param>
+        /// <param name="dynamicResourceClient">The Kubernetes dynamic resource client.</param>
         /// <param name="resourceReference">The <see cref="ObjectReferenceV1"/>.</param>
         /// <param name="cancellationToken">An optional <see cref="CancellationToken"/> that can be used to cancel the request.</param>
         /// <returns>The resource, as a <see cref="KubeResourceV1"/>.</returns>
@@ -175,5 +176,96 @@ namespace KubeClient
 
             return dynamicResourceClient.Get(resourceReference.Name, resourceReference.Kind, resourceReference.ApiVersion, resourceReference.Namespace, cancellationToken);
         }
+
+        /// <summary>
+        /// List events that apply to the specified Kubernetes resource.
+        /// </summary>
+        /// <param name="eventClient">The Kubernetes API client.</param>
+        /// <param name="resource">The <see cref="KubeResourceV1"/>.</param>
+        /// <param name="onlyNewEvents">Only return events newer than the <paramref name="resource"/>'s ResourceVersion?</param>
+        /// <param name="cancellationToken">An optional <see cref="CancellationToken"/> that can be used to cancel the request.</param>
+        /// <returns>An <see cref="EventListV1"/> containing the relevant events.</returns>
+        public static Task<EventListV1> List(this IEventClientV1 eventClient, KubeResourceV1 resource, bool onlyNewEvents = false, CancellationToken cancellationToken = default)
+        {
+            if (eventClient == null)
+                throw new ArgumentNullException(nameof(eventClient));
+
+            if (resource == null)
+                throw new ArgumentNullException(nameof(resource));
+
+            string fieldSelector = BuildInvolvedObjectFieldSelector(resource);
+
+            return eventClient.List(
+                fieldSelector: fieldSelector,
+                resourceVersion: onlyNewEvents ? resource.Metadata.ResourceVersion : null,
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        /// Watch for events that apply to the specified Kubernetes resource.
+        /// </summary>
+        /// <param name="eventClient">The Kubernetes API client.</param>
+        /// <param name="resource">The <see cref="KubeResourceV1"/>.</param>
+        /// <returns>An <see cref="EventListV1"/> containing the relevant events.</returns>
+        public static IObservable<IResourceEventV1<EventV1>> WatchAll(this IEventClientV1 eventClient, KubeResourceV1 resource)
+        {
+            if (eventClient == null)
+                throw new ArgumentNullException(nameof(eventClient));
+
+            if (resource == null)
+                throw new ArgumentNullException(nameof(resource));
+
+            string fieldSelector = BuildInvolvedObjectFieldSelector(resource);
+
+            return eventClient.WatchAll(
+                fieldSelector: fieldSelector,
+                resourceVersion: resource.Metadata.ResourceVersion
+            );
+        }
+
+        /// <summary>
+        /// Build a Kubernetes field selector for <see cref="EventV1.InvolvedObject"/> that targets the specified resource.
+        /// </summary>
+        /// <param name="resource">The <see cref="KubeResourceV1"/>.</param>
+        /// <returns>The field selector.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="resource"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="resource"/> has <c>null</c> <see cref="KubeResourceV1.Metadata"/>.
+        /// </exception>
+        static string BuildInvolvedObjectFieldSelector(KubeResourceV1 resource)
+        {
+            if (resource == null)
+                throw new ArgumentNullException(nameof(resource));
+
+            if (resource.Metadata == null)
+                throw new ArgumentException($"{resource.GetType().Name} has null metadata.", nameof(resource));
+
+            StringBuilder fieldSelector = new StringBuilder()
+                .AppendFormat("involvedObject.kind={0}", resource.Kind)
+                .Append(',')
+                .AppendFormat("involvedObject.apiVersion={0}", resource.ApiVersion)
+                .Append(',')
+                .AppendFormat("involvedObject.name={0}", resource.Metadata.Name);
+
+            if (!String.IsNullOrWhiteSpace(resource.Metadata.Uid))
+            {
+                fieldSelector
+                    .Append(',')
+                    .AppendFormat("involvedObject.uid={0}", resource.Metadata.Uid);
+            }
+
+            if (!String.IsNullOrWhiteSpace(resource.Metadata.Namespace))
+            {
+                fieldSelector
+                    .Append(',')
+                    .AppendFormat("involvedObject.namespace={0}", resource.Metadata.Namespace);
+            }
+
+            return fieldSelector.ToString();
+        }
+
     }
 }
