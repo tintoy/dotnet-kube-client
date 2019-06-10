@@ -46,7 +46,7 @@ namespace KubeClient.ResourceClients
         /// <summary>
         ///     JSON serialisation settings.
         /// </summary>
-        protected internal static JsonSerializerSettings SerializerSettings => new JsonSerializerSettings
+        public static JsonSerializerSettings SerializerSettings => new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new CamelCasePropertyNamesContractResolver(),

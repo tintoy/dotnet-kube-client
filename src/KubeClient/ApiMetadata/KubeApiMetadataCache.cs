@@ -252,7 +252,6 @@ namespace KubeClient.ApiMetadata
             Dictionary<(string kind, string apiVersion), Type> modelMetadata = ModelMetadata.KubeObject.BuildKindToTypeLookup(assembly);
 
             var loadedMetadata = new List<KubeApiMetadata>();
-
             foreach (var kindAndApiVersion in modelMetadata.Keys)
             {
                 Type modelType = modelMetadata[kindAndApiVersion];
@@ -283,10 +282,10 @@ namespace KubeClient.ApiMetadata
                 string allNamespacesPath = listApiPaths.FirstOrDefault(
                     path => !path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
                 );
-                if (!String.IsNullOrWhiteSpace(namespacedPath))
+                if (!String.IsNullOrWhiteSpace(allNamespacesPath))
                 {
                     apiPaths.Add(new KubeApiPathMetadata(
-                        path: namespacedPath,
+                        path: allNamespacesPath,
                         isNamespaced: false,
                         verbs: new string[] { "list", "post" }
                     ));

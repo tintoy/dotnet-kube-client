@@ -167,6 +167,9 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(resourceReference.Kind))
                 throw new ArgumentException($"{nameof(ObjectReferenceV1)} does not specify 'kind' field.", nameof(resourceReference));
 
+            if (String.IsNullOrWhiteSpace(resourceReference.ApiVersion))
+                resourceReference.ApiVersion = "v1";
+
             if (String.IsNullOrWhiteSpace(resourceReference.Name))
                 throw new ArgumentException($"{nameof(ObjectReferenceV1)} does not specify 'name' field.", nameof(resourceReference));
 
