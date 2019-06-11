@@ -178,5 +178,33 @@ namespace KubeClient.Models
                 selector => $"{selector.Key}={selector.Value}"
             ));
         }
+
+        /// <summary>
+        /// Create an ObjectReference (v1) representing the resource.
+        /// </summary>
+        /// <param name="resource">The <see cref="KubeResourceV1"/>.</param>
+        /// <returns>The new <see cref="ObjectReferenceV1"/>.</returns>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="resource"/> has <c>null</c> metadata.
+        /// </exception>
+        public static ObjectReferenceV1 ToObjectReference(this KubeResourceV1 resource)
+        {
+            if (resource == null)
+                throw new ArgumentNullException(nameof(resource));
+            
+            ObjectMetaV1 metadata = resource.Metadata;
+            if (metadata == null)
+                throw new ArgumentException($"{nameof(KubeResourceV1)} has no metadata.", nameof(resource));
+
+            return new ObjectReferenceV1
+            {
+                Kind = resource.Kind,
+                ApiVersion = resource.ApiVersion ?? "v1",
+                Name = metadata.Name,
+                Namespace = metadata.Namespace,
+                Uid = metadata.Uid,
+                ResourceVersion = metadata.ResourceVersion
+            };
+        }
     }
 }

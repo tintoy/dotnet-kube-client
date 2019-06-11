@@ -6,6 +6,7 @@ namespace KubeClient.Models
     /// <typeparam name="TResource">
     ///     The type of resource to which the event relates.
     /// </typeparam>
+    /// <remarks>This interface is used to support covariance on <typeparamref name="TResource"/>.</remarks>
     public interface IResourceEventV1<out TResource>
         where TResource : KubeResourceV1
     {

@@ -1,7 +1,5 @@
 ﻿using HTTPlease;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -11,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Samples.DeploymentWithRollback
 {
-    using Extensions.KubeConfig.Models;
     using Models;
 
     /// <summary>

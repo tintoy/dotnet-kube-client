@@ -47,22 +47,21 @@ namespace KubeClient.ResourceClients
             : base(client)
         {
             // Register metadata for additional model types (if any).
-            foreach (Assembly modelTypeAssembly in KubeClient.GetClientOptions().ModelTypeAssemblies)
-            {
-                var assemblyModelTypeLookup = ModelMetadata.KubeObject.BuildKindToTypeLookup(modelTypeAssembly);
-                foreach (var key in assemblyModelTypeLookup.Keys)
-                    _modelTypeLookup[key] = assemblyModelTypeLookup[key];
+            IReadOnlyList<Assembly> modelTypeAssemblies = KubeClient.GetClientOptions().ModelTypeAssemblies;
 
-                var assemblyListModelTypeLookup = ModelMetadata.KubeObject.BuildKindToListTypeLookup(modelTypeAssembly);
-                foreach (var key in assemblyListModelTypeLookup.Keys)
-                    _modelTypeLookup[key] = assemblyListModelTypeLookup[key];
-            }
+            var assemblyModelTypeLookup = ModelMetadata.KubeObject.BuildKindToTypeLookup(modelTypeAssemblies);
+            foreach (var key in assemblyModelTypeLookup.Keys)
+                _modelTypeLookup[key] = assemblyModelTypeLookup[key];
+
+            var assemblyListModelTypeLookup = ModelMetadata.KubeObject.BuildKindToListTypeLookup(modelTypeAssemblies);
+            foreach (var key in assemblyListModelTypeLookup.Keys)
+                _modelTypeLookup[key] = assemblyListModelTypeLookup[key];
         }
 
         /// <summary>
         ///     Metadata for Kubernetes resource APIs.
         /// </summary>
-        KubeApiMetadataCache ApiMetadata { get; } = new KubeApiMetadataCache();
+        public KubeApiMetadataCache ApiMetadata { get; } = new KubeApiMetadataCache();
 
         /// <summary>
         ///     Retrieve a single resource by name.
@@ -407,6 +406,11 @@ namespace KubeClient.ResourceClients
     public interface IDynamicResourceClient
         : IKubeResourceClient
     {
+        /// <summary>
+        ///     Metadata for Kubernetes resource APIs.
+        /// </summary>
+        KubeApiMetadataCache ApiMetadata { get; }
+
         /// <summary>
         ///     Retrieve a single resource by name.
         /// </summary>
