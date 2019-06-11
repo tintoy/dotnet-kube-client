@@ -8,7 +8,7 @@ Note - there is also an [official](https://github.com/kubernetes-client/csharp/)
 
 ## Prerequisites
 
-**Note:** If you need WebSocket / `exec` you'll need to target `netstandard2.1`.
+**Note:** If you need WebSocket / `exec` you'll need to target `netcoreapp2.1`.
 
 ## Packages
 

@@ -141,6 +141,25 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes Events (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IEventClientV1 EventsV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient<IEventClientV1>(
+                client => new EventClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes Ingresses (v1) resource client.
         /// </summary>
         /// <param name="kubeClient">
