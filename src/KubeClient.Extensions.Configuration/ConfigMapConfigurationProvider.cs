@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 
 namespace KubeClient.Extensions.Configuration
 {
@@ -142,9 +141,10 @@ namespace KubeClient.Extensions.Configuration
             }
             else
             {
-                Log.LogTrace("ConfigMap {ConfigMapName} was not found in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
-
                 Data = new Dictionary<string, string>();
+                
+                Log.LogTrace("ConfigMap {ConfigMapName} was not found in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+                throw new KubeClientException($"ConfigMap {_configMapName} was not found in namespace {_kubeNamespace}.");
             }
         }
 
