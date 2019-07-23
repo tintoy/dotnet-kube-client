@@ -277,6 +277,86 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to update.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to update.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        public async Task<TResource> Apply<TResource>(TResource resource, string fieldManager, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if (resource == null)
+                throw new ArgumentNullException(nameof(resource));
+
+            // TODO: Consider making the "fieldManager" parameter optional if we can automatically infer it by inspecting ObjectMetaV1.ExtensionData["managedFields"].
+
+            if (String.IsNullOrWhiteSpace(fieldManager))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(fieldManager)}.", nameof(fieldManager));
+
+            await EnsureApiMetadata(cancellationToken);
+
+            (string kind, string apiVersion) = (resource.Kind, resource.ApiVersion);
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(resource.Metadata.Namespace);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+            Type modelType = GetModelType(kind, apiVersion);
+
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}?fieldManager={fieldManager?}")
+                .WithTemplateParameters(new
+                {
+                    name = resource.Metadata.Name,
+                    @namespace = resource.Metadata.Namespace,
+                    fieldManager
+                });
+
+            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody: resource, mediaType: ApplyPatchJsonMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (TextReader responseReader = new StreamReader(responseStream))
+                    {
+                        JsonSerializer serializer = responseMessage.GetJsonSerializer();
+
+                        return (TResource)serializer.Deserialize(responseReader, modelType);
+                    }
+                }
+
+                // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
+                if (status.Reason == "NotFound")
+                {
+                    string name = resource.Metadata.Name;
+                    string kubeNamespace = resource.Metadata.Namespace;
+
+                    string errorMessage = isNamespaced ?
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' using server-side apply (resource not found)."
+                        :
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' using server-side apply (resource not found).";
+
+                    throw new KubeClientException(errorMessage);
+                }
+
+                throw new KubeClientException($"Unable to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
+                );
+            }
+        }
+
+        /// <summary>
         ///     Ensure that the API metadata cache is populated.
         /// </summary>
         /// <param name="cancellationToken">
