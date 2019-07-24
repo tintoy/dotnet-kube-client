@@ -1,3 +1,4 @@
+
 using HTTPlease;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
@@ -300,8 +301,6 @@ namespace KubeClient.ResourceClients
             if (resource == null)
                 throw new ArgumentNullException(nameof(resource));
 
-            // TODO: Consider making the "fieldManager" parameter optional if we can automatically infer it by inspecting ObjectMetaV1.ExtensionData["managedFields"].
-
             if (String.IsNullOrWhiteSpace(fieldManager))
                 throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(fieldManager)}.", nameof(fieldManager));
 
@@ -342,6 +341,94 @@ namespace KubeClient.ResourceClients
                     string name = resource.Metadata.Name;
                     string kubeNamespace = resource.Metadata.Namespace;
 
+                    string errorMessage = isNamespaced ?
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' using server-side apply (resource not found)."
+                        :
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' using server-side apply (resource not found).";
+
+                    throw new KubeClientException(errorMessage);
+                }
+
+                throw new KubeClientException($"Unable to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
+                );
+            }
+        }
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation with the specified YAML.
+        /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="yaml">
+        ///     A string containing the resource YAML.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the updated resource.
+        /// </returns>
+        public async Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if (String.IsNullOrWhiteSpace(kind))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+
+            if (String.IsNullOrWhiteSpace(apiVersion))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            if (String.IsNullOrWhiteSpace(yaml))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(yaml)}.", nameof(yaml));
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+
+            Type modelType = GetModelType(kind, apiVersion);
+
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}?fieldManager={fieldManager?}")
+                .WithTemplateParameters(new
+                {
+                    name,
+                    @namespace = kubeNamespace,
+                    fieldManager
+                });
+
+            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody: new StringContent(yaml), mediaType: ApplyPatchYamlMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (TextReader responseReader = new StreamReader(responseStream))
+                    {
+                        JsonSerializer serializer = responseMessage.GetJsonSerializer();
+
+                        return (KubeResourceV1)serializer.Deserialize(responseReader, modelType);
+                    }
+                }
+
+                // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
+                if (status.Reason == "NotFound")
+                {
                     string errorMessage = isNamespaced ?
                         $"Unable to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' using server-side apply (resource not found)."
                         :
@@ -559,5 +646,55 @@ namespace KubeClient.ResourceClients
         ///     A <see cref="KubeResourceV1"/> representing the updated resource.
         /// </returns>
         Task<KubeResourceV1> Patch(string name, string kind, string apiVersion, JsonPatchDocument patch, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to update.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to update.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        Task<TResource> Apply<TResource>(TResource resource, string fieldManager, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1;
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation with the specified YAML.
+        /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="yaml">
+        ///     A string containing the resource YAML.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the updated resource.
+        /// </returns>
+        Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, string kubeNamespace = null, CancellationToken cancellationToken = default);
     }
 }
