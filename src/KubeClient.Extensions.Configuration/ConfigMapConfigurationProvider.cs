@@ -62,7 +62,10 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="watch">
         ///     Watch the ConfigMap for changes?
         /// </param>
-        public ConfigMapConfigurationProvider(KubeApiClient client, string configMapName, string kubeNamespace, string sectionName, bool watch)
+        /// <param name="throwOnNotFound">
+        ///    Throw an exception if the ConfigMap was not found?
+        /// </param>
+        public ConfigMapConfigurationProvider(KubeApiClient client, string configMapName, string kubeNamespace, string sectionName, bool watch, bool throwOnNotFound)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
