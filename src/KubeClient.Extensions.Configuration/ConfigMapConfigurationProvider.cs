@@ -40,6 +40,11 @@ namespace KubeClient.Extensions.Configuration
         readonly bool _watch;
 
         /// <summary>
+        ///     Throw an exception if the ConfigMap is not found?
+        /// </summary>
+        readonly bool _throwOnNotFound;
+
+        /// <summary>
         ///     An <see cref="IDisposable"/> representing the subscription to events for the watched ConfigMap.
         /// </summary>
         IDisposable _watchSubscription;
@@ -79,6 +84,7 @@ namespace KubeClient.Extensions.Configuration
             _kubeNamespace = kubeNamespace;
             _sectionName = sectionName;
             _watch = watch;
+            _throwOnNotFound = throwOnNotFound;
         }
 
         /// <summary>
@@ -128,11 +134,14 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="configMap">
         ///     A <see cref="ConfigMapV1"/> representing the ConfigMap's current state, or <c>null</c> if the ConfigMap was not found.
         /// </param>
-        void Load(ConfigMapV1 configMap)
+        /// <param name="isReload">
+        ///     Is the ConfigMap is being reloaded? If <c>false</c>, then this is the initial load (and may throw an exception).
+        /// </param>
+        void Load(ConfigMapV1 configMap, bool isReload = false)
         {
             if (configMap != null)
             {
-                Log.LogTrace("Found ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+                Log.LogTrace("Found ConfigMap {ConfigMapName} in namespace {KubeNamespace} (isReload: {isReload}).", _configMapName, _kubeNamespace ?? _client.DefaultNamespace, isReload);
 
                 string sectionNamePrefix = !String.IsNullOrWhiteSpace(_sectionName) ? _sectionName + ":" : String.Empty;
 
@@ -146,8 +155,10 @@ namespace KubeClient.Extensions.Configuration
             {
                 Data = new Dictionary<string, string>();
                 
-                Log.LogTrace("ConfigMap {ConfigMapName} was not found in namespace {KubeNamespace}.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
-                throw new KubeClientException($"ConfigMap {_configMapName} was not found in namespace {_kubeNamespace}.");
+                Log.LogTrace("ConfigMap {ConfigMapName} was not found in namespace {KubeNamespace} (isReload: {isReload}).", _configMapName, _kubeNamespace ?? _client.DefaultNamespace, isReload);
+                
+                if (!isReload && _throwOnNotFound)
+                    throw new KubeClientException($"ConfigMap {_configMapName} was not found in namespace {_kubeNamespace}.");
             }
         }
 
@@ -164,10 +175,32 @@ namespace KubeClient.Extensions.Configuration
 
             Log.LogTrace("Observed {EventType} watch-event for ConfigMap {ConfigMapName} in namespace {KubeNamespace}.", configMapEvent.EventType, _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
-            if (configMapEvent.EventType != ResourceEventType.Error)
-                Load(configMapEvent.Resource);
-            else
-                Load(null); // Clear out configuration if the ConfigMap is invalid
+            switch (configMapEvent.EventType)
+            {
+                case ResourceEventType.Deleted:
+                {
+                    // Clear out configuration if the ConfigMap is has been deleted.
+                    Log.LogTrace("ConfigMap {ConfigMapName} in namespace {KubeNamespace} has been deleted.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+
+                    Load(null, isReload: true);
+
+                    break;
+                }
+                case ResourceEventType.Error:
+                {
+                    // Clear out configuration if the ConfigMap is missing or invalid.
+                    Log.LogTrace("ConfigMap {ConfigMapName} in namespace {KubeNamespace} is currently in an invalid state.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+                    Load(null, isReload: true);
+
+                    break;
+                }
+                default:
+                {
+                    Load(configMapEvent.Resource, isReload: true);
+
+                    break;
+                }
+            }
 
             Log.LogTrace("Triggering config change-token for ConfigMap {ConfigMapName} in namespace {KubeNamespace}...", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
 
