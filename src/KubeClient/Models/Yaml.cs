@@ -25,10 +25,15 @@ namespace KubeClient.Models
         static readonly Deserializer YamlDeserialiser = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
 
         /// <summary>
+        ///     The singleton YAML <see cref="Serializer"/> used by static methods on <see cref="Yaml"/>.
+        /// </summary>
+        static readonly Serializer YamlSerializer = new SerializerBuilder().Build();
+
+        /// <summary>
         ///     The singleton (JSON-compatible) YAML <see cref="Serializer"/> used by static methods on <see cref="Yaml"/>.
         /// </summary>
-        static readonly Serializer YamlJsonSerialiser = new SerializerBuilder().JsonCompatible().Build();
-        
+        static readonly Serializer YamlJsonSerializer = new SerializerBuilder().JsonCompatible().Build();
+
         /// <summary>
         ///     The singleton <see cref="JsonSerializer"/> used by static methods on <see cref="Yaml"/>.
         /// </summary>
@@ -47,14 +52,14 @@ namespace KubeClient.Models
         {
             if (yaml == null)
                 throw new ArgumentNullException(nameof(yaml));
-            
+
             object deserialisedYaml = YamlDeserialiser.Deserialize(yaml);
-            
+
             using (MemoryStream buffer = new MemoryStream())
             {
                 using (TextWriter jsonWriter = CreateTextWriter(buffer))
                 {
-                    YamlJsonSerialiser.Serialize(jsonWriter, deserialisedYaml);
+                    YamlJsonSerializer.Serialize(jsonWriter, deserialisedYaml);
                     jsonWriter.Flush();
                 }
 
@@ -83,16 +88,16 @@ namespace KubeClient.Models
         {
             if (yaml == null)
                 throw new ArgumentNullException(nameof(yaml));
-            
+
             object deserialisedYaml = YamlDeserialiser.Deserialize(
                 new StringReader(yaml)
             );
-            
+
             using (MemoryStream buffer = new MemoryStream())
             {
                 using (TextWriter jsonWriter = CreateTextWriter(buffer))
                 {
-                    YamlJsonSerialiser.Serialize(jsonWriter, deserialisedYaml);
+                    YamlJsonSerializer.Serialize(jsonWriter, deserialisedYaml);
                     jsonWriter.Flush();
                 }
 
@@ -147,6 +152,49 @@ namespace KubeClient.Models
         }
 
         /// <summary>
+        ///     Serialise a model to YAML.
+        /// </summary>
+        /// <param name="model">
+        ///     The model to serialise.
+        /// </param>
+        /// <param name="writer">
+        ///     A <see cref="TextWriter"/> that will receive the serialised YAML.
+        /// </param>
+        /// <remarks>
+        ///     Delegates the actual deserialisation to JSON.NET, before converting the JSON to YAML.
+        /// 
+        ///     Not particularly efficient, but safe and reliable.
+        /// </remarks>
+        public static void Serialize(object model, TextWriter writer)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+
+            object serializableModel;
+
+            using (MemoryStream buffer = new MemoryStream())
+            {
+                using (JsonWriter jsonWriter = CreateJsonWriter(buffer))
+                {
+                    JsonSerializer.Serialize(jsonWriter, model);
+                    jsonWriter.Flush();
+                }
+
+                buffer.Seek(0, SeekOrigin.Begin);
+
+                using (TextReader yamlReader = CreateTextReader(buffer))
+                {
+                    serializableModel = YamlDeserialiser.Deserialize(yamlReader);
+                }
+            }
+
+            YamlSerializer.Serialize(writer, serializableModel);
+        }
+
+        /// <summary>
         ///     Create a <see cref="JsonReader"/> that reads from the specified stream.
         /// </summary>
         /// <param name="stream">
@@ -159,7 +207,7 @@ namespace KubeClient.Models
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            
+
             TextReader textReader = null;
             JsonReader jsonReader = null;
 
@@ -193,7 +241,7 @@ namespace KubeClient.Models
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            
+
             TextWriter textWriter = null;
             JsonWriter jsonWriter = null;
 
@@ -227,7 +275,7 @@ namespace KubeClient.Models
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            
+
             return new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, bufferSize: StreamBufferSize, leaveOpen: true);
         }
 
@@ -244,7 +292,7 @@ namespace KubeClient.Models
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            
+
             return new StreamWriter(stream, Encoding.UTF8, bufferSize: StreamBufferSize, leaveOpen: true);
         }
     }

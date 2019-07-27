@@ -307,53 +307,25 @@ namespace KubeClient.ResourceClients
 
             await EnsureApiMetadata(cancellationToken);
 
-            (string kind, string apiVersion) = (resource.Kind, resource.ApiVersion);
-
-            bool isNamespaced = !String.IsNullOrWhiteSpace(resource.Metadata.Namespace);
-            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
-            Type modelType = GetModelType(kind, apiVersion);
-
-            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}?fieldManager={fieldManager?}")
-                .WithTemplateParameters(new
-                {
-                    name = resource.Metadata.Name,
-                    @namespace = resource.Metadata.Namespace,
-                    fieldManager
-                });
-
-            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody: resource, mediaType: ApplyPatchJsonMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
+            string resourceYaml;
+            using (StringWriter yamlWriter = new StringWriter())
             {
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
-                    using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    using (TextReader responseReader = new StreamReader(responseStream))
-                    {
-                        JsonSerializer serializer = responseMessage.GetJsonSerializer();
+                Yaml.Serialize(resource, yamlWriter);
 
-                        return (TResource)serializer.Deserialize(responseReader, modelType);
-                    }
-                }
-
-                // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
-                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
-                if (status.Reason == "NotFound")
-                {
-                    string name = resource.Metadata.Name;
-                    string kubeNamespace = resource.Metadata.Namespace;
-
-                    string errorMessage = isNamespaced ?
-                        $"Unable to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' using server-side apply (resource not found)."
-                        :
-                        $"Unable to patch {apiVersion}/{kind} resource '{name}' using server-side apply (resource not found).";
-
-                    throw new KubeClientException(errorMessage);
-                }
-
-                throw new KubeClientException($"Unable to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
-                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
-                );
+                resourceYaml = yamlWriter.ToString();
             }
+
+            KubeResourceV1 appliedResource = await ApplyYaml(
+                resource.Metadata.Name,
+                resource.Kind,
+                resource.ApiVersion,
+                resourceYaml,
+                fieldManager,
+                kubeNamespace: resource.Metadata.Namespace,
+                cancellationToken
+            );
+
+            return (TResource)appliedResource;
         }
 
         /// <summary>
