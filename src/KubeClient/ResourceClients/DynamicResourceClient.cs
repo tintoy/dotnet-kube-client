@@ -15,6 +15,7 @@ namespace KubeClient.ResourceClients
 {
     using ApiMetadata;
     using Models;
+    using System.Text;
 
     // TODO: Always prefer namespaced API paths (except for List operations) and use client's default namespace.
 
@@ -411,7 +412,8 @@ namespace KubeClient.ResourceClients
                     fieldManager
                 });
 
-            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody: new StringContent(yaml), mediaType: ApplyPatchYamlMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
+            using (StringContent patchBody = new StringContent(yaml, Encoding.UTF8, ApplyPatchYamlMediaType))
+            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody, mediaType: ApplyPatchYamlMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
             {
                 if (responseMessage.IsSuccessStatusCode)
                 {
