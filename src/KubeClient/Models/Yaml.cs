@@ -22,12 +22,12 @@ namespace KubeClient.Models
         /// <summary>
         ///     The singleton YAML <see cref="Deserializer"/> used by static methods on <see cref="Yaml"/>.
         /// </summary>
-        static readonly Deserializer YamlDeserialiser = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
+        static readonly IDeserializer YamlDeserialiser = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
 
         /// <summary>
         ///     The singleton (JSON-compatible) YAML <see cref="Serializer"/> used by static methods on <see cref="Yaml"/>.
         /// </summary>
-        static readonly Serializer YamlJsonSerialiser = new SerializerBuilder().JsonCompatible().Build();
+        static readonly ISerializer YamlJsonSerialiser = new SerializerBuilder().JsonCompatible().Build();
         
         /// <summary>
         ///     The singleton <see cref="JsonSerializer"/> used by static methods on <see cref="Yaml"/>.

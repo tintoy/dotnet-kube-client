@@ -116,7 +116,7 @@ namespace KubeClient
             if (configFile == null)
                 throw new ArgumentNullException(nameof(configFile));
 
-            Deserializer deserializer = new DeserializerBuilder()
+            IDeserializer deserializer = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .Build();
 
