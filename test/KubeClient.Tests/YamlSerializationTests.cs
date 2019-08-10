@@ -40,7 +40,7 @@ namespace KubeClient.Tests
         [Theory(DisplayName = "Can serialise Int32OrStringV1 to YAML")]
         public void Can_Serialize_Int32OrStringV1_Null(object rawValue, string renderedValue)
         {
-            Serializer serializer = CreateSerializer();
+            ISerializer serializer = CreateSerializer();
 
             Int32OrStringV1 int32OrString;
             if (rawValue is string stringValue)
@@ -88,7 +88,7 @@ namespace KubeClient.Tests
         /// <returns>
         ///     The configured <see cref="Serializer"/>.
         /// </returns>
-        static Serializer CreateSerializer() => new SerializerBuilder()
+        static ISerializer CreateSerializer() => new SerializerBuilder()
                 .WithTypeConverter(
                     new Int32OrStringV1Converter()
                 )
