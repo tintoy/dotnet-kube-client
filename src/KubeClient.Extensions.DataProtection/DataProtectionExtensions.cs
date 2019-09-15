@@ -83,32 +83,5 @@ namespace KubeClient
 
             return builder;
         }
-
-        /// <summary>
-        /// Internal Implementation 
-        /// </summary>
-        /// <param name="builder">
-        /// The <see cref="IDataProtectionBuilder"/> to Configure.
-        /// </param>
-        /// <param name="client">
-        /// <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
-        /// </param>
-        /// <param name="secretName">
-        ///  The name of the target Secret.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///  The namespace of the target Secret.
-        /// </param>
-        /// <returns>The <see cref="IDataProtectionBuilder"/> (enables method-chaining).</returns>
-        private static IDataProtectionBuilder PersistKeysToKubeSecretInternal(IDataProtectionBuilder builder, IKubeApiClient client, string secretName, string kubeNamespace = null)
-        {
-            builder.Services.Configure<KeyManagementOptions>(options =>
-            {
-                // Add KubeClientXmlRepository as KeyStore
-                options.XmlRepository = new KubeSecretXmlRepository(client, secretName, kubeNamespace);
-            });
-
-            return builder;
-        }
     }
 }
