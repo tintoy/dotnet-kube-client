@@ -20,6 +20,11 @@ namespace KubeClient.Extensions.DataProtection
         : IXmlRepository, IDisposable
     {
         /// <summary>
+        /// The default "friendly" name used for top-level elements in the repository when a friendly name is not supplied.
+        /// </summary>
+        public static readonly string DefaultElementFriendlyName = "KeyElement";
+
+        /// <summary>
         /// <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
         /// </summary>
         readonly IKubeApiClient _client;
@@ -95,23 +100,28 @@ namespace KubeClient.Extensions.DataProtection
         ILogger Log { get; }
 
         /// <summary>
-        /// Implement <see cref="IXmlRepository"/>
+        ///     Get all top-level XML elements in the repository.
         /// </summary>
+        /// <returns>
+        ///     A sequence of <see cref="XElement"/>s representing the top-level elements.
+        /// </returns>
         public IReadOnlyCollection<XElement> GetAllElements()
         {
             return GetAllElementsCore().ToArray();
         }
 
         /// <summary>
-        /// Implement <see cref="IXmlRepository"/>
+        ///     Add a top-level XML element to the repository.
         /// </summary>
+        /// <param name="element">An <see cref="XElement"/> representing the element to add.</param>
+        /// <param name="friendlyName">An optional name to be associated with the XML element.</param>
         public void StoreElement(XElement element, string friendlyName)
         {
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
 
             if (String.IsNullOrWhiteSpace(friendlyName))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'friendlyName'.", nameof(friendlyName));
+                friendlyName = DefaultElementFriendlyName;
 
             // Convert to XML String
             string xmlString = element.ToString(SaveOptions.DisableFormatting);
@@ -122,10 +132,8 @@ namespace KubeClient.Extensions.DataProtection
             );
 
             // Add XML File Extension to allow others File-Mapping
-            if (String.IsNullOrEmpty(Path.GetExtension(friendlyName)))
-            {
+            if (String.IsNullOrWhiteSpace(Path.GetExtension(friendlyName)))
                 friendlyName += ".xml";
-            }
 
             // AF: Currently, this implementation is not thread-safe (because the change-notification handler may replace the secret while this code is running).
 
@@ -137,71 +145,6 @@ namespace KubeClient.Extensions.DataProtection
             {
                 patch.Replace(e => e.Data, _keyManagementSecret.Data);
             }).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Get all Elements from Repository 
-        /// </summary>
-        /// <returns>A sequence of <see cref="XElement"/>s.</returns>
-        public IEnumerable<XElement> GetAllElementsCore()
-        {
-            // AF: Currently, this implementation is not thread-safe (because the change-notification handler may replace the secret while this code is running).
-
-            foreach (string keyName in _keyManagementSecret.Data.Keys)
-            {
-                string encodedKeyXml = _keyManagementSecret.Data[keyName];
-
-                // Convert from Base64 to XMLString
-                string keyXmlText;
-
-                try
-                {
-                    keyXmlText = Encoding.UTF8.GetString(
-                        Convert.FromBase64String(encodedKeyXml)
-                    );
-                }
-                catch (ArgumentException cannotDecodeUtf8String)
-                {
-                    Log.LogError(cannotDecodeUtf8String, "Unable to decode UTF8-encoded data for key XML {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
-                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
-                    );
-
-                    continue;
-                }
-                catch (FormatException cannotDecodeBase64String)
-                {
-                    Log.LogError(cannotDecodeBase64String, "Unable to decode Base64-encoded data for key XML {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
-                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
-                    );
-
-                    continue;
-                }
-                catch (Exception unexpectedError)
-                {
-                    Log.LogError(unexpectedError, "An unexpected error occurred while decoding data for key XML {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
-                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
-                    );
-
-                    continue;
-                }
-
-                XElement keyXml;
-
-                try
-                {
-                    keyXml = XElement.Parse(keyXmlText);
-                }
-                catch (XmlException invalidKeyXml)
-                {
-                    Log.LogError(invalidKeyXml, "Unable to parse XML for key {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
-                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
-                    );
-
-                    continue;
-                }
-
-                yield return keyXml;
-            }
         }
 
         /// <summary>
@@ -280,6 +223,71 @@ namespace KubeClient.Extensions.DataProtection
             }
 
             // AF: What happens if the secret has been deleted?
+        }
+
+        /// <summary>
+        /// Get all top-level elements from the repository 
+        /// </summary>
+        /// <returns>A sequence of <see cref="XElement"/>s.</returns>
+        IEnumerable<XElement> GetAllElementsCore()
+        {
+            // AF: Currently, this implementation is not thread-safe (because the change-notification handler may replace the secret while this code is running).
+
+            foreach (string keyName in _keyManagementSecret.Data.Keys)
+            {
+                string encodedKeyXml = _keyManagementSecret.Data[keyName];
+
+                // Convert from Base64 to XMLString
+                string keyXmlText;
+
+                try
+                {
+                    keyXmlText = Encoding.UTF8.GetString(
+                        Convert.FromBase64String(encodedKeyXml)
+                    );
+                }
+                catch (ArgumentException cannotDecodeUtf8String)
+                {
+                    Log.LogError(cannotDecodeUtf8String, "Unable to decode UTF8-encoded data for key XML {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
+                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                    );
+
+                    continue;
+                }
+                catch (FormatException cannotDecodeBase64String)
+                {
+                    Log.LogError(cannotDecodeBase64String, "Unable to decode Base64-encoded data for key XML {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
+                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                    );
+
+                    continue;
+                }
+                catch (Exception unexpectedError)
+                {
+                    Log.LogError(unexpectedError, "An unexpected error occurred while decoding data for key XML {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
+                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                    );
+
+                    continue;
+                }
+
+                XElement keyXml;
+
+                try
+                {
+                    keyXml = XElement.Parse(keyXmlText);
+                }
+                catch (XmlException invalidKeyXml)
+                {
+                    Log.LogError(invalidKeyXml, "Unable to parse XML for key {KeyName} in secret {SecretName} (namespace {SecretNamespace}); this key will be ignored.",
+                        keyName, _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                    );
+
+                    continue;
+                }
+
+                yield return keyXml;
+            }
         }
     }
 }
