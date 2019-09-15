@@ -115,6 +115,7 @@ namespace KubeClient.Extensions.DataProtection
         /// </summary>
         /// <param name="element">An <see cref="XElement"/> representing the element to add.</param>
         /// <param name="friendlyName">An optional name to be associated with the XML element.</param>
+        /// <remarks>Element friendly names must be unique per Secret.</remarks>
         public void StoreElement(XElement element, string friendlyName)
         {
             if (element == null)
@@ -131,19 +132,21 @@ namespace KubeClient.Extensions.DataProtection
                 Encoding.UTF8.GetBytes(xmlString)
             );
 
-            // Add XML File Extension to allow others File-Mapping
-            if (String.IsNullOrWhiteSpace(Path.GetExtension(friendlyName)))
-                friendlyName += ".xml";
+            // Add a file extension to simplify mounting of Secret as a volume (some consumers may want to do this).
+            const string xmlExtension = ".xml";
+            if (!String.Equals(Path.GetExtension(friendlyName), xmlExtension, StringComparison.OrdinalIgnoreCase))
+                friendlyName += xmlExtension;
 
             // AF: Currently, this implementation is not thread-safe (because the change-notification handler may replace the secret while this code is running).
 
             // Add to Data
-            _keyManagementSecret.Data[friendlyName] = base64String;
+            // AF: What exception should be thrown if an element already exists with the specified name?
+            _keyManagementSecret.Data.Add(friendlyName, base64String);
 
             // Patch the Secret
-            _client.SecretsV1().Update(_secretName, (patch) =>
+            _client.SecretsV1().Update(_secretName, patch =>
             {
-                patch.Replace(e => e.Data, _keyManagementSecret.Data);
+                patch.Replace(secret => secret.Data, _keyManagementSecret.Data);
             }).GetAwaiter().GetResult();
         }
 
