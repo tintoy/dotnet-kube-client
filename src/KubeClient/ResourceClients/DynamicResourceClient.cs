@@ -290,13 +290,16 @@ namespace KubeClient.ResourceClients
         /// <param name="fieldManager">
         ///     The name of the field manager to use when performing the server-side apply.
         /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     A <typeparamref name="TResource"/> representing the updated resource.
         /// </returns>
-        public async Task<TResource> Apply<TResource>(TResource resource, string fieldManager, CancellationToken cancellationToken = default)
+        public async Task<TResource> Apply<TResource>(TResource resource, string fieldManager, bool force = false, CancellationToken cancellationToken = default)
             where TResource : KubeResourceV1
         {
             if (resource == null)
@@ -321,6 +324,7 @@ namespace KubeClient.ResourceClients
                 resource.ApiVersion,
                 resourceYaml,
                 fieldManager,
+                force,
                 kubeNamespace: resource.Metadata.Namespace,
                 cancellationToken
             );
@@ -346,6 +350,9 @@ namespace KubeClient.ResourceClients
         /// <param name="fieldManager">
         ///     The name of the field manager to use when performing the server-side apply.
         /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The (optional) name of a Kubernetes namespace containing the resources.
         /// </param>
@@ -355,7 +362,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="KubeResourceV1"/> representing the updated resource.
         /// </returns>
-        public async Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, bool force = false, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -376,12 +383,13 @@ namespace KubeClient.ResourceClients
 
             Type modelType = GetModelType(kind, apiVersion);
 
-            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}?fieldManager={fieldManager?}")
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}?fieldManager={fieldManager?}&force={force?}")
                 .WithTemplateParameters(new
                 {
                     name,
                     @namespace = kubeNamespace,
-                    fieldManager
+                    fieldManager,
+                    force = force ? "true" : null
                 });
 
             using (StringContent patchBody = new StringContent(yaml, Encoding.UTF8, ApplyPatchYamlMediaType))
@@ -633,13 +641,16 @@ namespace KubeClient.ResourceClients
         /// <param name="fieldManager">
         ///     The name of the field manager to use when performing the server-side apply.
         /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     A <typeparamref name="TResource"/> representing the updated resource.
         /// </returns>
-        Task<TResource> Apply<TResource>(TResource resource, string fieldManager, CancellationToken cancellationToken = default)
+        Task<TResource> Apply<TResource>(TResource resource, string fieldManager, bool force = false, CancellationToken cancellationToken = default)
             where TResource : KubeResourceV1;
 
         /// <summary>
@@ -660,6 +671,9 @@ namespace KubeClient.ResourceClients
         /// <param name="fieldManager">
         ///     The name of the field manager to use when performing the server-side apply.
         /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The (optional) name of a Kubernetes namespace containing the resources.
         /// </param>
@@ -669,6 +683,6 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="KubeResourceV1"/> representing the updated resource.
         /// </returns>
-        Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, bool force = false, string kubeNamespace = null, CancellationToken cancellationToken = default);
     }
 }
