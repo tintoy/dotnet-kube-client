@@ -27,12 +27,12 @@ namespace KubeClient.Models
         /// <summary>
         ///     The singleton YAML <see cref="Serializer"/> used by static methods on <see cref="Yaml"/>.
         /// </summary>
-        static readonly Serializer YamlSerializer = new SerializerBuilder().Build();
+        static readonly Serializer YamlSerialiser = new SerializerBuilder().Build();
 
         /// <summary>
         ///     The singleton (JSON-compatible) YAML <see cref="Serializer"/> used by static methods on <see cref="Yaml"/>.
         /// </summary>
-        static readonly Serializer YamlJsonSerializer = new SerializerBuilder().JsonCompatible().Build();
+        static readonly Serializer YamlJsonSerialiser = new SerializerBuilder().JsonCompatible().Build();
 
         /// <summary>
         ///     The singleton <see cref="JsonSerializer"/> used by static methods on <see cref="Yaml"/>.
@@ -59,7 +59,7 @@ namespace KubeClient.Models
             {
                 using (TextWriter jsonWriter = CreateTextWriter(buffer))
                 {
-                    YamlJsonSerializer.Serialize(jsonWriter, deserialisedYaml);
+                    YamlJsonSerialiser.Serialize(jsonWriter, deserialisedYaml);
                     jsonWriter.Flush();
                 }
 
@@ -97,7 +97,7 @@ namespace KubeClient.Models
             {
                 using (TextWriter jsonWriter = CreateTextWriter(buffer))
                 {
-                    YamlJsonSerializer.Serialize(jsonWriter, deserialisedYaml);
+                    YamlJsonSerialiser.Serialize(jsonWriter, deserialisedYaml);
                     jsonWriter.Flush();
                 }
 
@@ -124,7 +124,7 @@ namespace KubeClient.Models
         /// </returns>
         /// <remarks>
         ///     Delegates the actual deserialisation to JSON.NET, after converting the YAML to JSON.
-        /// 
+        ///
         ///     Not particularly efficient, but safe and reliable.
         /// </remarks>
         public static TModel Deserialize<TModel>(TextReader yaml)
@@ -162,7 +162,7 @@ namespace KubeClient.Models
         /// </param>
         /// <remarks>
         ///     Delegates the actual deserialisation to JSON.NET, before converting the JSON to YAML.
-        /// 
+        ///
         ///     Not particularly efficient, but safe and reliable.
         /// </remarks>
         public static void Serialize(object model, TextWriter writer)
@@ -191,7 +191,7 @@ namespace KubeClient.Models
                 }
             }
 
-            YamlSerializer.Serialize(writer, serializableModel);
+            YamlSerialiser.Serialize(writer, serializableModel);
         }
 
         /// <summary>

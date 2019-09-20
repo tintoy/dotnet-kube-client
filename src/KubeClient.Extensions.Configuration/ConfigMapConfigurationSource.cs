@@ -8,6 +8,7 @@ namespace KubeClient.Extensions.Configuration
     sealed class ConfigMapConfigurationSource
         : IConfigurationSource
     {
+
         /// <summary>
         ///     Create a new <see cref="ConfigMapConfigurationSource"/>.
         /// </summary>
@@ -27,11 +28,12 @@ namespace KubeClient.Extensions.Configuration
         public IConfigurationProvider Build(IConfigurationBuilder configurationBuilder)
         {
             return new ConfigMapConfigurationProvider(
-                client: (KubeApiClient)configurationBuilder.Properties["KubeClient_ConfigMap_Client"],
-                configMapName: (string)configurationBuilder.Properties["KubeClient_ConfigMap_Name"],
-                kubeNamespace: (string)configurationBuilder.Properties["KubeClient_ConfigMap_Namespace"],
-                sectionName: (string)configurationBuilder.Properties["KubeClient_ConfigMap_SectionName"],
-                watch: (bool)configurationBuilder.Properties["KubeClient_ConfigMap_Watch"]                
+                client: (KubeApiClient)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Client],
+                configMapName: (string)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Name],
+                kubeNamespace: (string)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Namespace],
+                sectionName: (string)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.SectionName],
+                watch: (bool)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Watch],
+                throwOnNotFound: (bool) configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.ThrowOnNotFound]
             );
         }
     }
