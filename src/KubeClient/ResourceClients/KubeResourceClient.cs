@@ -44,6 +44,16 @@ namespace KubeClient.ResourceClients
         protected static readonly string MergePatchMediaType = "application/merge-patch+json";
 
         /// <summary>
+        ///     The media type used to indicate that request is a Kubernetes server-side-apply PATCH request in JSON format.
+        /// </summary>
+        protected static readonly string ApplyPatchJsonMediaType = "application/apply-patch+json";
+
+        /// <summary>
+        ///     The media type used to indicate that request is a Kubernetes server-side-apply PATCH request in YAML format.
+        /// </summary>
+        protected static readonly string ApplyPatchYamlMediaType = "application/apply-patch+yaml";
+
+        /// <summary>
         ///     JSON serialisation settings.
         /// </summary>
         public static JsonSerializerSettings SerializerSettings => new JsonSerializerSettings
