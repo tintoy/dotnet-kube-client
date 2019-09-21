@@ -66,6 +66,13 @@ namespace KubeClient.Models
         }
 
         /// <summary>
+        /// YAML deserialisation constructor.
+        /// </summary>
+        public Int32OrStringV1()
+        {
+        }
+
+        /// <summary>
         ///     The underlying value as an <see cref="Int32"/>.
         /// </summary>
         /// <exception cref="InvalidCastException">
@@ -196,6 +203,9 @@ namespace KubeClient.Models
                     throw new YamlException($"Unexpected parser event '{parser.Current.GetType().Name}'.");
                 }
             }
+
+            // Leave the parser on the next token (we're done parsing this one).
+            parser.MoveNext();
         }
 
         /// <summary>
