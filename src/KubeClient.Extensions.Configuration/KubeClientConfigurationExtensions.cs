@@ -1,8 +1,10 @@
-using System;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace KubeClient.Extensions.Configuration
 {
+    using Settings;
+
     /// <summary>
     ///     <see cref="IConfigurationBuilder"/> extension methods for Kubernetes ConfigMaps and Secrets.
     /// </summary>
@@ -29,6 +31,9 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the ConfigMap changes?
         /// </param>
+        /// <param name="throwOnNotFound">
+        ///     Throw an exception if the ConfigMap was not found when the configuration is first loaded?
+        /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
@@ -41,8 +46,7 @@ namespace KubeClient.Extensions.Configuration
 
             KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return configurationBuilder.AddKubeConfigMap(client, configMapName, kubeNamespace, sectionName,
-                reloadOnChange, throwOnNotFound);
+            return configurationBuilder.AddKubeConfigMap(client, configMapName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound);
         }
 
         /// <summary>
@@ -67,7 +71,7 @@ namespace KubeClient.Extensions.Configuration
         ///     Reload the configuration if the ConfigMap changes?
         /// </param>
         /// <param name="throwOnNotFound">
-        ///    Throw an exception if the ConfigMap was not found.
+        ///    Throw an exception if the ConfigMap was not found when the configuration is first loaded?
         /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
@@ -79,16 +83,9 @@ namespace KubeClient.Extensions.Configuration
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
 
-            configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Client] = client;
-            configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Name] = configMapName;
-            configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Namespace] = kubeNamespace;
-            configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.SectionName] = sectionName;
-            configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Watch] = reloadOnChange;
-            configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.ThrowOnNotFound] = throwOnNotFound;
-
-            return configurationBuilder.Add(
-                new ConfigMapConfigurationSource()
-            );
+            return configurationBuilder.Add(new ConfigMapConfigurationSource(
+                new ConfigMapConfigurationSettings(client, configMapName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound)
+            ));
         }
 
         /// <summary>
@@ -158,15 +155,9 @@ namespace KubeClient.Extensions.Configuration
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
 
-            configurationBuilder.Properties["KubeClient_Secret_Client"] = client;
-            configurationBuilder.Properties["KubeClient_Secret_Name"] = secretName;
-            configurationBuilder.Properties["KubeClient_Secret_Namespace"] = kubeNamespace;
-            configurationBuilder.Properties["KubeClient_Secret_SectionName"] = sectionName;
-            configurationBuilder.Properties["KubeClient_Secret_Watch"] = reloadOnChange;
-
-            return configurationBuilder.Add(
-                new SecretConfigurationSource()
-            );
+            return configurationBuilder.Add(new SecretConfigurationSource(
+                new SecretConfigurationSettings(client, secretName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound: false /* not implemented yet */)
+            ));
         }
     }
 }
