@@ -1,5 +1,8 @@
-using System;
 using Newtonsoft.Json;
+using System;
+using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Models
 {
@@ -13,17 +16,22 @@ namespace KubeClient.Models
     /// </remarks>
     [JsonConverter(typeof(Int32OrStringV1Converter))]
     public class Int32OrStringV1
-        : IEquatable<Int32OrStringV1>, IEquatable<int>, IEquatable<string>
+        : IEquatable<Int32OrStringV1>, IEquatable<int>, IEquatable<string>, IYamlConvertible
     {
+        /// <summary>
+        /// The CLR <see cref="Type"/> representing <see cref="Int32OrStringV1"/>.
+        /// </summary>
+        static readonly Type Int32OrStringV1Type = typeof(Int32OrStringV1);
+
         /// <summary>
         ///     The underlying value (if it is an <see cref="Int32"/>).
         /// </summary>
-        readonly int? _intValue;
+        int? _intValue;
 
         /// <summary>
         ///     The underlying value (if it not an <see cref="Int32"/>).
         /// </summary>
-        readonly string _stringValue;
+        string _stringValue;
 
         /// <summary>
         ///     Wrap an <see cref="Int32"/> in an <see cref="Int32OrStringV1"/>.
@@ -148,6 +156,65 @@ namespace KubeClient.Models
         ///     Get a string representation of the <see cref="Int32OrStringV1"/>.
         /// </summary>
         public override string ToString() => StringValue;
+
+        /// <summary>
+        /// Read the <see cref="Int32OrStringV1"/>'s value from YAML.
+        /// </summary>
+        /// <param name="parser">The YAML parser to read from.</param>
+        /// <param name="expectedType">The expected type to deserialise into (must be <see cref="Int32OrStringV1"/>).</param>
+        /// <param name="nestedObjectDeserializer">An <see cref="ObjectDeserializer"/> that can be used to deserialise nested objects (unused for <see cref="Int32OrStringV1"/> since it's a scalar data-type).</param>
+        void IYamlConvertible.Read(IParser parser, Type expectedType, ObjectDeserializer nestedObjectDeserializer)
+        {
+            if ( parser == null )
+                throw new ArgumentNullException(nameof(parser));
+
+            if ( expectedType == null )
+                throw new ArgumentNullException(nameof(expectedType));
+
+            if (expectedType != Int32OrStringV1Type)
+                throw new NotSupportedException($"The {nameof(IYamlConvertible)} implementation of {nameof(Int32OrStringV1)} can only handle values of type '{Int32OrStringV1Type.FullName}'.");
+
+            switch ( parser.Current )
+            {
+                case Scalar scalar:
+                {
+                    if ( Int32.TryParse(scalar.Value, out int intValue) )
+                    {
+                        _intValue = intValue;
+                        _stringValue = null;
+                    }
+                    else
+                    {
+                        _stringValue = scalar.Value;
+                        _intValue = null;
+                    }
+
+                    break;
+                }
+                default:
+                {
+                    throw new YamlException($"Unexpected parser event '{parser.Current.GetType().Name}'.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Write the <see cref="Int32OrStringV1"/>'s value to YAML.
+        /// </summary>
+        /// <param name="emitter">The YAML emitter that the value will be written to.</param>
+        /// <param name="nestedObjectSerializer">An <see cref="ObjectSerializer"/> that can be used to serialise nested objects (unused for <see cref="Int32OrStringV1"/>).</param>
+        void IYamlConvertible.Write(IEmitter emitter, ObjectSerializer nestedObjectSerializer)
+        {
+            if ( emitter == null )
+                throw new ArgumentNullException(nameof(emitter));
+
+            if ( nestedObjectSerializer == null )
+                throw new ArgumentNullException(nameof(nestedObjectSerializer));
+
+            emitter.Emit(new Scalar(
+                value: ToString()
+            ));
+        }
 
         /// <summary>
         ///     Explicitly convert an <see cref="Int32OrStringV1"/> to an <see cref="Int32"/>.

@@ -38,7 +38,7 @@ namespace KubeClient.Tests
         [InlineData("567tcp", "567tcp")]
         [InlineData("567 tcp", "567 tcp")]
         [Theory(DisplayName = "Can serialise Int32OrStringV1 to YAML")]
-        public void Can_Serialize_Int32OrStringV1_Null(object rawValue, string renderedValue)
+        public void Can_Serialize_Int32OrStringV1(object rawValue, string renderedValue)
         {
             ISerializer serializer = CreateSerializer();
 
@@ -88,11 +88,7 @@ namespace KubeClient.Tests
         /// <returns>
         ///     The configured <see cref="Serializer"/>.
         /// </returns>
-        static ISerializer CreateSerializer() => new SerializerBuilder()
-                .WithTypeConverter(
-                    new Int32OrStringV1Converter()
-                )
-                .Build();
+        static ISerializer CreateSerializer() => new SerializerBuilder().Build();
 
         /// <summary>
         ///     Model used for serialisation tests.
