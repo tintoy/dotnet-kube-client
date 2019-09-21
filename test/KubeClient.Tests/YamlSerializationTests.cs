@@ -1,15 +1,12 @@
 using System;
-using System.Linq;
-using System.Reflection;
-using YamlDotNet.RepresentationModel;
-using YamlDotNet.Serialization;
+using System.IO;
 using Xunit;
 using Xunit.Abstractions;
+using YamlDotNet.Serialization;
 
 namespace KubeClient.Tests
 {
     using Models;
-    using Models.Converters;
     using TestCommon;
 
     /// <summary>
@@ -38,7 +35,7 @@ namespace KubeClient.Tests
         [InlineData("567tcp", "567tcp")]
         [InlineData("567 tcp", "567 tcp")]
         [Theory(DisplayName = "Can serialise Int32OrStringV1 to YAML")]
-        public void Can_Serialize_Int32OrStringV1_Null(object rawValue, string renderedValue)
+        public void Can_Serialize_Int32OrStringV1(object rawValue, string renderedValue)
         {
             ISerializer serializer = CreateSerializer();
 
@@ -70,6 +67,66 @@ namespace KubeClient.Tests
         }
 
         /// <summary>
+        ///     Verify that an <see cref="Int32OrStringV1"/> can be correctly deserialised from YAML (regardless of whether it's a number or string).
+        /// </summary>
+        [InlineData("", null)]
+        [InlineData("mixed: 567", 567)]
+        [Theory(DisplayName = "Can deserialise Int32OrStringV1 from YAML")]
+        public void Can_Deserialize_Int32OrStringV1(string yaml, object expectedValue)
+        {
+            Int32OrStringV1 expectedMixed;
+
+            switch (expectedValue)
+            {
+                case int intValue:
+                {
+                    expectedMixed = intValue;
+
+                    break;
+                }
+                case string stringValue:
+                {
+                    expectedMixed = stringValue;
+
+                    break;
+                }
+                case null:
+                {
+                    expectedMixed = null;
+
+                    break;
+                }
+                default:
+                {
+                    throw new NotSupportedException( $"Expected value is of unsupported type '{expectedValue.GetType().FullName}'." );
+                }
+            }
+
+            // Other properties
+            const int expectedNumber = 123;
+            const string expectedText = "hello";
+            yaml = $"number: {expectedNumber}\ntext: {expectedText}\n{yaml}\n";
+
+            // Cross-platform compatibility ;-)
+            yaml = NormalizeLineEndings(yaml);
+
+            IDeserializer deserializer = CreateDeserializer();
+
+            TestModel model;
+
+            using (TextReader yamlReader = new StringReader(yaml))
+            {
+                model = deserializer.Deserialize<TestModel>(yamlReader);
+            }
+
+            Assert.NotNull(model);
+
+            Assert.Equal(expectedNumber, model.Number);
+            Assert.Equal(expectedText, model.Text);
+            Assert.Equal(expectedMixed, model.Mixed);
+        }
+
+        /// <summary>
         ///     Normalise line-endings to match the local environment.
         /// </summary>
         /// <param name="text">The text to normalise.</param>
@@ -86,13 +143,17 @@ namespace KubeClient.Tests
         ///     Create a YAML <see cref="Serializer"/> for use in tests.
         /// </summary>
         /// <returns>
-        ///     The configured <see cref="Serializer"/>.
+        ///     The configured <see cref="ISerializer"/>.
         /// </returns>
-        static ISerializer CreateSerializer() => new SerializerBuilder()
-                .WithTypeConverter(
-                    new Int32OrStringV1Converter()
-                )
-                .Build();
+        static ISerializer CreateSerializer() => new SerializerBuilder().Build();
+
+        /// <summary>
+        ///     Create a YAML <see cref="Deserializer"/> for use in tests.
+        /// </summary>
+        /// <returns>
+        ///     The configured <see cref="IDeserializer"/>.
+        /// </returns>
+        static IDeserializer CreateDeserializer() => new DeserializerBuilder().Build();
 
         /// <summary>
         ///     Model used for serialisation tests.

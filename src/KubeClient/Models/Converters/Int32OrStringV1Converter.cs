@@ -1,8 +1,5 @@
 using System;
 using Newtonsoft.Json;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
-using YamlDotNet.Serialization;
 
 namespace KubeClient.Models.Converters
 {
@@ -10,7 +7,7 @@ namespace KubeClient.Models.Converters
     ///     JSON converter for <see cref="Int32OrStringV1"/>.
     /// </summary>
     public class Int32OrStringV1Converter
-        : JsonConverter, IYamlTypeConverter
+        : JsonConverter
     {
         /// <summary>
         ///     The CLR <see cref="Type"/> corresponding to <see cref="Int32OrStringV1"/>.
@@ -120,93 +117,6 @@ namespace KubeClient.Models.Converters
             }
             else
                 writer.WriteNull();
-        }
-
-        /// <summary>
-        ///     Determine whether the converter can convert an object of the specified type to / from YAML.
-        /// </summary>
-        /// <param name="type">
-        ///     The target object <see cref="Type"/>.
-        /// </param>
-        /// <returns>
-        ///     <c>true</c>, if the converter can convert an object of the specified type; otherwise, <c>false</c>.
-        /// </returns>
-        bool IYamlTypeConverter.Accepts(Type type) => CanConvert(type);
-
-        /// <summary>
-        ///     Read (deserialise) an object of the specified type from YAML.
-        /// </summary>
-        /// <param name="parser">
-        ///     An <see cref="IParser"/> used to read the YAML.
-        /// </param>
-        /// <param name="objectType">
-        ///     The target object <see cref="Type"/>.
-        /// </param>
-        /// <returns>
-        ///     The deserialised object.
-        /// </returns>
-        object IYamlTypeConverter.ReadYaml(IParser parser, Type objectType)
-        {
-            if (parser == null)
-                throw new ArgumentNullException(nameof(parser));
-
-            if (objectType == null)
-                throw new ArgumentNullException(nameof(objectType));
-            
-            if (objectType != Int32OrStringV1Type)
-                throw new NotSupportedException($"{GetType().FullName} cannot deserialise a value of type '{objectType.FullName}'.");
-
-            switch (parser.Current)
-            {
-                case Scalar scalar:
-                {
-                    if (scalar.Value == null)
-                        return null;
-
-                    return new Int32OrStringV1(scalar.Value);
-                }
-                default:
-                {
-                    throw new YamlException($"Unexpected parser event '{parser.Current.GetType().Name}'.");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Write (serialise) an object to YAML.
-        /// </summary>
-        /// <param name="emitter">
-        ///     An <see cref="IEmitter"/> used to generate the YAML.
-        /// </param>
-        /// <param name="value">
-        ///     The target object to serialise.
-        /// </param>
-        /// <param name="objectType">
-        ///     The target object <see cref="Type"/>.
-        /// </param>
-        void IYamlTypeConverter.WriteYaml(IEmitter emitter, object value, Type objectType)
-        {
-            if (emitter == null)
-                throw new ArgumentNullException(nameof(emitter));
-            
-            if (objectType == null)
-                throw new ArgumentNullException(nameof(objectType));
-            
-            if (objectType != Int32OrStringV1Type)
-                throw new NotSupportedException($"{GetType().FullName} cannot serialise a value of type '{objectType.FullName}'.");
-
-            if (value is Int32OrStringV1 int32OrStringV1)
-            {
-                emitter.Emit(new Scalar(
-                    value: int32OrStringV1.ToString()
-                ));
-            }
-            else
-            {
-                emitter.Emit(new Scalar(
-                    value: null
-                ));
-            }
         }
     }
 }
