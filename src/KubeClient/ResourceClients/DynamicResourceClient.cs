@@ -426,6 +426,65 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Request deletion of the specified resource.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="kind">
+        ///     The kind of resource to delete.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The API version of the resource to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="PodV1"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        public async Task<KubeResourceResultV1<KubeResourceV1>> Delete(string name, string kind, string apiVersion, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
+        {
+            if ( String.IsNullOrWhiteSpace(name) )
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if ( String.IsNullOrWhiteSpace(kind) )
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+
+            if ( String.IsNullOrWhiteSpace(apiVersion) )
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+
+            Type modelType = GetModelType(kind, apiVersion);
+
+            string operationDescription = $"delete {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}'";
+
+            return await Http
+                .DeleteAsJsonAsync(
+                    request: KubeRequest.Create(apiPath).WithRelativeUri("{name}").WithTemplateParameters(new
+                    {
+                        name,
+                        @namespace = kubeNamespace
+                    }),
+                    deleteBody: new DeleteOptionsV1
+                    {
+                        PropagationPolicy = propagationPolicy
+                    }
+                )
+                .ReadContentAsResourceOrStatusV1(modelType, operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
         ///     Ensure that the API metadata cache is populated.
         /// </summary>
         /// <param name="cancellationToken">
@@ -684,5 +743,31 @@ namespace KubeClient.ResourceClients
         ///     A <see cref="KubeResourceV1"/> representing the updated resource.
         /// </returns>
         Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, bool force = false, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request deletion of the specified resource.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="kind">
+        ///     The kind of resource to delete.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The API version of the resource to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="PodV1"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        Task<KubeResourceResultV1<KubeResourceV1>> Delete(string name, string kind, string apiVersion, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }
