@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using System;
+using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
 
@@ -26,7 +26,7 @@ namespace KubeClient.Models
         ///     Data contains the secret data. Each key must consist of alphanumeric characters, '-', '_' or '.'. The serialized form of the secret data is a base64 encoded string, representing the arbitrary (possibly non-string) data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
         /// </summary>
         [YamlMember(Alias = "data")]
-        [JsonProperty("data", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        [JsonProperty("data", ObjectCreationHandling = ObjectCreationHandling.Reuse, NamingStrategyType = typeof(DefaultNamingStrategy))]
         public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
 
         /// <summary>
