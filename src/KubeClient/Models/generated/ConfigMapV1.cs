@@ -38,7 +38,7 @@ namespace KubeClient.Models
         ///     Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'. Values with non-UTF-8 byte sequences must use the BinaryData field. The keys stored in Data must not overlap with the keys in the BinaryData field, this is enforced during validation process.
         /// </summary>
         [YamlMember(Alias = "data")]
-        [JsonProperty("data", ObjectCreationHandling = ObjectCreationHandling.Reuse, NamingStrategyType = typeof(DefaultNamingStrategy))]
+        [JsonProperty("data", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
 
         /// <summary>

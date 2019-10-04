@@ -89,6 +89,82 @@ namespace KubeClient.Tests
         }
 
         /// <summary>
+        /// Verify that the casing of keys in <see cref="SecretV1.Data"/> are preserved.
+        /// </summary>
+        [Theory]
+        [InlineData("abc")]
+        [InlineData("Abc")]
+        [InlineData("ABC")]
+        public void SecretV1_Data_PreserveKeyCase(string key)
+        {
+            var model = new SecretV1
+            {
+                Data =
+                {
+                    [key] = key
+                }
+            };
+
+            JObject rootObject;
+            using ( JTokenWriter writer = new JTokenWriter() )
+            {
+                JsonSerializer.Create(KubeResourceClient.SerializerSettings).Serialize(writer, model);
+                writer.Flush();
+
+                rootObject = (JObject) writer.Token;
+            }
+
+            Log.LogInformation("Serialized:\n{JSON:l}",
+                rootObject.ToString(Formatting.Indented)
+            );
+
+            JObject data = rootObject.Value<JObject>("data");
+            Assert.NotNull(data);
+
+            Assert.Equal(key,
+                data.Value<string>(key)
+            );
+        }
+
+        /// <summary>
+        /// Verify that the casing of keys in <see cref="ConfigMapV1.Data"/> are preserved.
+        /// </summary>
+        [Theory]
+        [InlineData("abc")]
+        [InlineData("Abc")]
+        [InlineData("ABC")]
+        public void ConfigMapV1_Data_PreserveKeyCase(string key)
+        {
+            var model = new ConfigMapV1
+            {
+                Data =
+                {
+                    [key] = key
+                }
+            };
+
+            JObject rootObject;
+            using ( JTokenWriter writer = new JTokenWriter() )
+            {
+                JsonSerializer.Create(KubeResourceClient.SerializerSettings).Serialize(writer, model);
+                writer.Flush();
+
+                rootObject = (JObject) writer.Token;
+            }
+
+            Log.LogInformation("Serialized:\n{JSON:l}",
+                rootObject.ToString(Formatting.Indented)
+            );
+
+            JObject data = rootObject.Value<JObject>("data");
+            Assert.NotNull(data);
+
+            Assert.Equal(key,
+                data.Value<string>(key)
+            );
+        }
+
+        /// <summary>
         /// Verify that an <see cref="Int32OrStringV1"/> with a <c>null</c> value deserialises correctly.
         /// </summary>
         [Fact]
