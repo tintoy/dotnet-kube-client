@@ -19,6 +19,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace KubeClient.ResourceClients
 {
+    using KubeClient.Models.ContractResolvers;
     using Models;
     using Models.Converters;
 
@@ -59,7 +60,7 @@ namespace KubeClient.ResourceClients
         public static JsonSerializerSettings SerializerSettings => new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new KubeContractResolver(),
             Converters =
             {
                 new StringEnumConverter(),

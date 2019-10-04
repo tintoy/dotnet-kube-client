@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using System;
+using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
 
