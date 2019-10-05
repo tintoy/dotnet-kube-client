@@ -29,6 +29,9 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the ConfigMap changes?
         /// </param>
+        /// <param name="throwOnNotFound">
+        ///     Throw an exception if the ConfigMap cannot be found?
+        /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
