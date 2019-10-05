@@ -41,9 +41,15 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(secretName))
                 throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(secretName)}.", nameof(secretName));
 
-            KubeApiClient client = KubeApiClient.Create(clientOptions);
+            builder.Services.Configure<KeyManagementOptions>(options =>
+            {
+                KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return builder.PersistKeysToKubeSecret(client, secretName, kubeNamespace);
+                // Persist secret data in the target K8s secret.
+                options.XmlRepository = new KubeSecretXmlRepository(client, secretName, kubeNamespace ?? client.DefaultNamespace);
+            });
+
+            return builder;
         }
 
         /// <summary>
@@ -77,7 +83,7 @@ namespace KubeClient
 
             builder.Services.Configure<KeyManagementOptions>(options =>
             {
-                // Add KubeClientXmlRepository as KeyStore
+                // Persist secret data in the target K8s secret.
                 options.XmlRepository = new KubeSecretXmlRepository(client, secretName, kubeNamespace ?? client.DefaultNamespace);
             });
 
