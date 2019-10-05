@@ -14,52 +14,57 @@ namespace KubeClient.Extensions.DataProtection
     using Models;
 
     /// <summary>
-    /// An <see cref="IXmlRepository"/> implementation that uses a Kubernetes Secret to store data-protection keys.
+    ///     An <see cref="IXmlRepository"/> implementation that uses a Kubernetes Secret to store data-protection keys.
     /// </summary>
     public sealed class KubeSecretXmlRepository
         : IXmlRepository, IDisposable
     {
         /// <summary>
-        /// The default "friendly" name used for top-level elements in the repository when a friendly name is not supplied.
+        ///     The default "friendly" name used for top-level elements in the repository when a friendly name is not supplied.
         /// </summary>
         public static readonly string DefaultElementFriendlyName = "KeyElement";
 
         /// <summary>
-        /// <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
+        ///     An <see cref="Object"/> used to synchronise access to repository state.
+        /// </summary>
+        readonly object _stateLock = new object();
+
+        /// <summary>
+        ///     <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
         /// </summary>
         readonly IKubeApiClient _client;
 
         /// <summary>
-        ///  The name of the target Secret.
+        ///     The name of the target Secret.
         /// </summary>
         readonly string _secretName;
 
         /// <summary>
-        ///  The namespace of the target Secret.
+        ///     The namespace of the target Secret.
         /// </summary>
         readonly string _kubeNamespace;
 
         /// <summary>
-        /// A <see cref="SecretV1"/> representing the Secret used to store the XML keys.
+        ///     A <see cref="SecretV1"/> representing the Secret used to store the XML keys.
         /// </summary>
         SecretV1 _keyManagementSecret;
 
         /// <summary>
-        /// An <see cref="IDisposable"/> representing the subscription to change notifications for the key-management secret.
+        ///     An <see cref="IDisposable"/> representing the subscription to change notifications for the key-management secret.
         /// </summary>
         IDisposable _watchSubscription;
 
         /// <summary>
-        /// An XML repository backed by KubeClient.
+        ///     An XML repository backed by KubeClient.
         /// </summary>
         /// <param name="client">
-        /// <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
+        ///     An <see cref="IKubeApiClient"/> used to communicate with the Kubernetes API.
         /// </param>
         /// <param name="secretName">
-        ///  The name of the target Secret.
+        ///     The name of the target Secret.
         /// </param>
         /// <param name="kubeNamespace">
-        ///  The namespace of the target Secret.
+        ///     The namespace of the target Secret.
         /// </param>
         public KubeSecretXmlRepository(IKubeApiClient client, string secretName, string kubeNamespace = null)
         {
@@ -81,7 +86,7 @@ namespace KubeClient.Extensions.DataProtection
         }
 
         /// <summary>
-        /// Dispose of resources being used by the <see cref="KubeSecretXmlRepository"/>.
+        ///     Dispose of resources being used by the <see cref="KubeSecretXmlRepository"/>.
         /// </summary>
         public void Dispose()
         {
@@ -105,10 +110,7 @@ namespace KubeClient.Extensions.DataProtection
         /// <returns>
         ///     A sequence of <see cref="XElement"/>s representing the top-level elements.
         /// </returns>
-        public IReadOnlyCollection<XElement> GetAllElements()
-        {
-            return GetAllElementsCore().ToArray();
-        }
+        public IReadOnlyCollection<XElement> GetAllElements() => GetAllElementsCore().ToArray();
 
         /// <summary>
         ///     Add a top-level XML element to the repository.
@@ -137,17 +139,15 @@ namespace KubeClient.Extensions.DataProtection
             if (!String.Equals(Path.GetExtension(friendlyName), xmlExtension, StringComparison.OrdinalIgnoreCase))
                 friendlyName += xmlExtension;
 
-            // AF: Currently, this implementation is not thread-safe (because the change-notification handler may replace the secret while this code is running).
-
-            // Add to Data
-            // AF: What exception should be thrown if an element already exists with the specified name?
-            _keyManagementSecret.Data.Add(friendlyName, encodedElementXml);
-
-            // Patch the Secret
-            _client.SecretsV1().Update(_secretName, patch =>
+            lock (_stateLock)
             {
-                patch.Replace(secret => secret.Data, _keyManagementSecret.Data);
-            }).GetAwaiter().GetResult();
+                _keyManagementSecret.Data[friendlyName] = encodedElementXml;
+
+                _client.SecretsV1().Update(_secretName, patch =>
+                {
+                    patch.Replace(secret => secret.Data, _keyManagementSecret.Data);
+                }).GetAwaiter().GetResult();
+            }
         }
 
         /// <summary>
@@ -217,15 +217,30 @@ namespace KubeClient.Extensions.DataProtection
             if (secretEvent.Resource == null)
                 throw new ArgumentNullException(nameof(secretEvent.Resource));
 
-            // AF: Currently, this implementation is not thread-safe (because we may read or modify the secret while this handler is running).
+            // AF: Currently, this implementation is not entirely thread-safe (because we may read or modify the secret while this handler is running).
 
-            if (secretEvent.EventType == ResourceEventType.Modified)
+            switch (secretEvent.EventType)
             {
-                // Attach the changed Secret
-                _keyManagementSecret = secretEvent.Resource;
-            }
+                case ResourceEventType.Added:
+                case ResourceEventType.Modified:
+                {
+                    // Attach the changed Secret
+                    lock (_stateLock)
+                    {
+                        _keyManagementSecret = secretEvent.Resource;
+                    }
 
-            // AF: What happens if the secret has been deleted?
+                    break;
+                }
+                case ResourceEventType.Deleted:
+                {
+                    // TODO: How do we handle the underlying Secret being deleted?
+
+                    Log.LogWarning("Secret {SecretName} in namespace {SecretNamespace} (which is used for persistence of data-protection key material) has been deleted.", _secretName, _kubeNamespace);
+
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -234,12 +249,20 @@ namespace KubeClient.Extensions.DataProtection
         /// <returns>A sequence of <see cref="XElement"/>s.</returns>
         IEnumerable<XElement> GetAllElementsCore()
         {
-            // AF: Currently, this implementation is not thread-safe (because the change-notification handler may replace the secret while this code is running).
+            // Create a snapshot of secret data to work with (since the underlying Secret can be asynchronously modified by the watch subscription).
+            (string elementFriendlyName, string encodedElementXml)[] secretData;
 
-            foreach (string elementFriendlyName in _keyManagementSecret.Data.Keys)
+            lock (_stateLock)
             {
-                string encodedElementXml = _keyManagementSecret.Data[elementFriendlyName];
+                secretData = _keyManagementSecret.Data
+                    .Select(
+                        item => (elementFriendlyName: item.Key, encodedElementXml: item.Value)
+                    )
+                    .ToArray();
+            }
 
+            foreach ((string elementFriendlyName, string encodedElementXml) in secretData)
+            {
                 // Convert from Base64 to XMLString
                 string elementXml;
 
