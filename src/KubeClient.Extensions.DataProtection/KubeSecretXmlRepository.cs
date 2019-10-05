@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.Extensions.Logging;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,9 +26,9 @@ namespace KubeClient.Extensions.DataProtection
         public static readonly string DefaultElementFriendlyName = "KeyElement";
 
         /// <summary>
-        ///     An <see cref="Object"/> used to synchronise access to repository state.
+        ///     An async-friendly lock used to synchronise access to repository state.
         /// </summary>
-        readonly object _stateLock = new object();
+        readonly AsyncLock _stateLock = new AsyncLock();
 
         /// <summary>
         ///     <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
@@ -115,10 +116,126 @@ namespace KubeClient.Extensions.DataProtection
         /// <summary>
         ///     Add a top-level XML element to the repository.
         /// </summary>
-        /// <param name="element">An <see cref="XElement"/> representing the element to add.</param>
-        /// <param name="friendlyName">An optional name to be associated with the XML element.</param>
-        /// <remarks>Element friendly names must be unique per Secret.</remarks>
-        public void StoreElement(XElement element, string friendlyName)
+        /// <param name="element">
+        ///     An <see cref="XElement"/> representing the element to add.
+        /// </param>
+        /// <param name="friendlyName">
+        ///     An optional name to be associated with the XML element.
+        /// </param>
+        /// <remarks>
+        ///     Element friendly names must be unique per Secret.
+        /// </remarks>
+        public void StoreElement(XElement element, string friendlyName) => StoreElementCore(element, friendlyName).GetAwaiter().GetResult();
+
+        /// <summary>
+        ///     Load or Create the Kubernetes Secret used for persistence.
+        /// </summary>
+        async Task LoadOrCreateSecret()
+        {
+            using (await _stateLock.LockAsync())
+            {
+                Log.LogDebug("Attempting to load Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys...",
+                    _secretName, _kubeNamespace
+                );
+
+                SecretV1 secret = await _client.SecretsV1().Get(_secretName, _kubeNamespace);
+                if (secret == null)
+                {
+                    Log.LogDebug("Secret {SecretName} was not found in namespace {SecretNamespace} for persistence of data-protection keys; creating...",
+                        _secretName, _kubeNamespace
+                    );
+
+                    secret = await _client.SecretsV1().Create(new SecretV1
+                    {
+                        Metadata = new ObjectMetaV1
+                        {
+                            Name = _secretName,
+                            Namespace = _kubeNamespace
+                        }
+                    });
+
+                    Log.LogDebug("Successfully created Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys.",
+                        _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                    );
+                }
+                else
+                {
+                    Log.LogDebug("Successfully loaded Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys.",
+                        _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                    );
+                }
+
+                _keyManagementSecret = secret;
+            }
+        }
+
+        /// <summary>
+        /// Attach the Watcher to the Secret for Changes
+        /// </summary>
+        void AttachWatcher()
+        {
+            _watchSubscription = _client.SecretsV1()
+                .Watch(_secretName, _kubeNamespace)
+                .Subscribe(OnKeyManagementSecretChanged);
+        }
+
+        /// <summary>
+        ///     Called by the watch subscription when the key-management secret has changed.
+        /// </summary>
+        /// <param name="secretEvent">
+        ///     An <see cref="IResourceEventV1{TResource}"/> containing information about the changed Secret.
+        /// </param>
+        /// <remarks>
+        ///     If the Secret <see cref="ResourceEventType"/> is Modified, the internal properties will be reset.
+        /// </remarks>
+        void OnKeyManagementSecretChanged(IResourceEventV1<SecretV1> secretEvent)
+        {
+            if (secretEvent == null)
+                throw new ArgumentNullException(nameof(secretEvent));
+
+            if (secretEvent.Resource == null)
+                throw new ArgumentNullException(nameof(secretEvent.Resource));
+
+            switch (secretEvent.EventType)
+            {
+                case ResourceEventType.Added:
+                case ResourceEventType.Modified:
+                {
+                    // Attach the changed Secret
+                    using (_stateLock.Lock())
+                    {
+                        _keyManagementSecret = secretEvent.Resource;
+                    }
+
+                    break;
+                }
+                case ResourceEventType.Deleted:
+                {
+                    // TODO: How do we handle the underlying Secret being deleted?
+
+                    Log.LogWarning("Secret {SecretName} in namespace {SecretNamespace} (which is used for persistence of data-protection key material) has been deleted.", _secretName, _kubeNamespace);
+
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Add a top-level XML element to the repository.
+        /// </summary>
+        /// <param name="element">
+        ///     An <see cref="XElement"/> representing the element to add.
+        /// </param>
+        /// <param name="friendlyName">
+        ///     An optional name to be associated with the XML element.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="Task"/> representing the asynchronous operation.
+        /// </returns>
+        /// <remarks>
+        ///     Element friendly names must be unique per Secret.
+        /// </remarks>
+        async Task StoreElementCore(XElement element, string friendlyName)
         {
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
@@ -139,107 +256,14 @@ namespace KubeClient.Extensions.DataProtection
             if (!String.Equals(Path.GetExtension(friendlyName), xmlExtension, StringComparison.OrdinalIgnoreCase))
                 friendlyName += xmlExtension;
 
-            lock (_stateLock)
+            using (await _stateLock.LockAsync())
             {
                 _keyManagementSecret.Data[friendlyName] = encodedElementXml;
 
-                _client.SecretsV1().Update(_secretName, patch =>
+                await _client.SecretsV1().Update(_secretName, patch =>
                 {
                     patch.Replace(secret => secret.Data, _keyManagementSecret.Data);
-                }).GetAwaiter().GetResult();
-            }
-        }
-
-        /// <summary>
-        /// Load or Create the Kubernetes Secret
-        /// </summary>
-        async Task LoadOrCreateSecret()
-        {
-            // Try to get the Secret
-            Log.LogDebug("Attempting to load Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys...",
-                _secretName, _kubeNamespace
-            );
-
-            SecretV1 secret = await _client.SecretsV1().Get(_secretName, _kubeNamespace).ConfigureAwait(false);
-            if (secret == null)
-            {
-                // Create a new Secret
-                Log.LogDebug("Secret {SecretName} was not found in namespace {SecretNamespace} for persistence of data-protection keys; creating...",
-                    _secretName, _kubeNamespace
-                );
-
-                secret = await _client.SecretsV1().Create(new SecretV1
-                {
-                    Metadata = new ObjectMetaV1
-                    {
-                        Name = _secretName,
-                        Namespace = _kubeNamespace
-                    }
-                }).ConfigureAwait(false);
-
-                Log.LogDebug("Successfully created Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys.",
-                    _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
-                );
-            }
-            else
-            {
-                Log.LogDebug("Successfully loaded Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys.",
-                    _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
-                );
-            }
-
-            // Use the Secret
-            _keyManagementSecret = secret;
-        }
-
-        /// <summary>
-        /// Attach the Watcher to the Secret for Changes
-        /// </summary>
-        void AttachWatcher()
-        {
-            _watchSubscription = _client.SecretsV1()
-                .Watch(_secretName, _kubeNamespace)
-                .Subscribe(OnKeyManagementSecretChanged);
-        }
-
-        /// <summary>
-        /// Called when the key-management secret has changed.
-        /// </summary>
-        /// <param name="secretEvent">
-        /// An <see cref="IResourceEventV1{TResource}"/> containing information about the changed Secret.
-        /// </param>
-        /// <remarks>If the Secret <see cref="ResourceEventType"/> is Modified, the internal properties will be reset.</remarks>
-        void OnKeyManagementSecretChanged(IResourceEventV1<SecretV1> secretEvent)
-        {
-            if (secretEvent == null)
-                throw new ArgumentNullException(nameof(secretEvent));
-
-            if (secretEvent.Resource == null)
-                throw new ArgumentNullException(nameof(secretEvent.Resource));
-
-            // AF: Currently, this implementation is not entirely thread-safe (because we may read or modify the secret while this handler is running).
-
-            switch (secretEvent.EventType)
-            {
-                case ResourceEventType.Added:
-                case ResourceEventType.Modified:
-                {
-                    // Attach the changed Secret
-                    lock (_stateLock)
-                    {
-                        _keyManagementSecret = secretEvent.Resource;
-                    }
-
-                    break;
-                }
-                case ResourceEventType.Deleted:
-                {
-                    // TODO: How do we handle the underlying Secret being deleted?
-
-                    Log.LogWarning("Secret {SecretName} in namespace {SecretNamespace} (which is used for persistence of data-protection key material) has been deleted.", _secretName, _kubeNamespace);
-
-                    break;
-                }
+                });
             }
         }
 
@@ -249,20 +273,22 @@ namespace KubeClient.Extensions.DataProtection
         /// <returns>A sequence of <see cref="XElement"/>s.</returns>
         IEnumerable<XElement> GetAllElementsCore()
         {
-            // Create a snapshot of secret data to work with (since the underlying Secret can be asynchronously modified by the watch subscription).
-            (string elementFriendlyName, string encodedElementXml)[] secretData;
+            // Use a snapshot of the underlying secret data so we don't tie up the state lock while consumers are enumerating elements.
+            (string elementFriendlyName, string encodedElementXml)[] elements;
 
-            lock (_stateLock)
+            using (_stateLock.Lock())
             {
-                secretData = _keyManagementSecret.Data
+                elements = _keyManagementSecret.Data
                     .Select(
                         item => (elementFriendlyName: item.Key, encodedElementXml: item.Value)
                     )
                     .ToArray();
             }
 
-            foreach ((string elementFriendlyName, string encodedElementXml) in secretData)
+            foreach (string elementFriendlyName in _keyManagementSecret.Data.Keys)
             {
+                string encodedElementXml = _keyManagementSecret.Data[elementFriendlyName];
+
                 // Convert from Base64 to XMLString
                 string elementXml;
 
