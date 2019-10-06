@@ -7,6 +7,7 @@ using System.Linq;
 namespace KubeClient.Extensions.Configuration
 {
     using Models;
+    using Settings;
 
     /// <summary>
     ///     Provider for configuration that comes from a Kubernetes ConfigMap.
@@ -17,7 +18,7 @@ namespace KubeClient.Extensions.Configuration
         /// <summary>
         ///     The <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
         /// </summary>
-        readonly KubeApiClient _client;
+        readonly IKubeApiClient _client;
 
         /// <summary>
         ///     The name of the target ConfigMap.
@@ -52,39 +53,22 @@ namespace KubeClient.Extensions.Configuration
         /// <summary>
         ///     Create a new <see cref="ConfigMapConfigurationProvider"/>.
         /// </summary>
-        /// <param name="client">
-        ///     The <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
+        /// <param name="providerSettings">
+        ///     The <see cref="ConfigMapConfigurationSettings"/> used to configure the provider.
         /// </param>
-        /// <param name="configMapName">
-        ///     The name of the target ConfigMap.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The Kubernetes namespace that contains the target ConfigMap.
-        /// </param>
-        /// <param name="sectionName">
-        ///     The name of the target configuration section (if any).
-        /// </param>
-        /// <param name="watch">
-        ///     Watch the ConfigMap for changes?
-        /// </param>
-        /// <param name="throwOnNotFound">
-        ///    Throw an exception if the ConfigMap was not found?
-        /// </param>
-        public ConfigMapConfigurationProvider(KubeApiClient client, string configMapName, string kubeNamespace, string sectionName, bool watch, bool throwOnNotFound)
+        public ConfigMapConfigurationProvider(ConfigMapConfigurationSettings providerSettings)
         {
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
+            if ( providerSettings == null )
+                throw new ArgumentNullException(nameof(providerSettings));
 
-            if (String.IsNullOrWhiteSpace(configMapName))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'configMapName'.", nameof(configMapName));
-            
-            _client = client;
+            _client = providerSettings.Client;
+            _configMapName = providerSettings.ConfigMapName;
+            _kubeNamespace = providerSettings.KubeNamespace;
+            _sectionName = providerSettings.SectionName;
+            _watch = providerSettings.Watch;
+            _throwOnNotFound = providerSettings.ThrowOnNotFound;
+
             Log = _client.LoggerFactory.CreateLogger<ConfigMapConfigurationProvider>();
-            _configMapName = configMapName;
-            _kubeNamespace = kubeNamespace;
-            _sectionName = sectionName;
-            _watch = watch;
-            _throwOnNotFound = throwOnNotFound;
         }
 
         /// <summary>

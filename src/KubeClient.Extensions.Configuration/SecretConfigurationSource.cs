@@ -2,6 +2,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace KubeClient.Extensions.Configuration
 {
+    using Settings;
+    using System;
+
     /// <summary>
     ///     Source for configuration that comes from a Kubernetes Secret.
     /// </summary>
@@ -11,9 +14,21 @@ namespace KubeClient.Extensions.Configuration
         /// <summary>
         ///     Create a new <see cref="SecretConfigurationSource"/>.
         /// </summary>
-        public SecretConfigurationSource()
+        /// <param name="settings">
+        ///     The <see cref="SecretConfigurationSettings"/> used to create configuration providers.
+        /// </param>
+        public SecretConfigurationSource(SecretConfigurationSettings settings)
         {
+            if ( settings == null )
+                throw new ArgumentNullException(nameof(settings));
+
+            Settings = settings;
         }
+
+        /// <summary>
+        ///     The <see cref="SecretConfigurationSettings"/> used to create configuration providers.
+        /// </summary>
+        public SecretConfigurationSettings Settings { get; }
 
         /// <summary>
         ///     Build a configuration provider with configured options.
@@ -24,15 +39,6 @@ namespace KubeClient.Extensions.Configuration
         /// <returns>
         ///     The new <see cref="IConfigurationProvider"/>.
         /// </returns>
-        public IConfigurationProvider Build(IConfigurationBuilder configurationBuilder)
-        {
-            return new SecretConfigurationProvider(
-                client: (KubeApiClient)configurationBuilder.Properties["KubeClient_Secret_Client"],
-                secretName: (string)configurationBuilder.Properties["KubeClient_Secret_Name"],
-                kubeNamespace: (string)configurationBuilder.Properties["KubeClient_Secret_Namespace"],
-                sectionName: (string)configurationBuilder.Properties["KubeClient_Secret_SectionName"],
-                watch: (bool)configurationBuilder.Properties["KubeClient_Secret_Watch"]                
-            );
-        }
+        public IConfigurationProvider Build(IConfigurationBuilder configurationBuilder) => new SecretConfigurationProvider(Settings);
     }
 }

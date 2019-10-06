@@ -37,7 +37,8 @@ namespace KubeClient.Samples.ConfigFromConfigMap
 
             try
             {
-                const string configMapName = "config-from-configmap";
+                const string configMap1Name = "config-from-configmap-1";
+                const string configMap2Name = "config-from-configmap-2";
                 const string configMapNamespace = "default";
 
                 KubeClientOptions clientOptions = K8sConfig.Load().ToKubeClientOptions(defaultKubeNamespace: configMapNamespace, loggerFactory: loggerFactory);
@@ -47,35 +48,68 @@ namespace KubeClient.Samples.ConfigFromConfigMap
 
                 KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-                Log.Information("Checking for existing ConfigMap...");
-                ConfigMapV1 configMap = await client.ConfigMapsV1().Get(configMapName, configMapNamespace);
-                if (configMap != null)
+                Log.Information("Checking for existing ConfigMaps...");
+
+                ConfigMapV1 configMap1 = await client.ConfigMapsV1().Get(configMap1Name, configMapNamespace);
+                if (configMap1 != null)
                 {
-                    Log.Information("Deleting existing ConfigMap...");
-                    await client.ConfigMapsV1().Delete(configMapName);
-                    Log.Information("Existing ConfigMap deleted.");
+                    Log.Information("Deleting existing ConfigMap {ConfigMapName}...", configMap1Name);
+                    await client.ConfigMapsV1().Delete(configMap1Name);
+                    Log.Information("Deleted existing ConfigMap {ConfigMapName}.", configMap1Name);
                 }
 
-                Log.Information("Creating new ConfigMap...");
-                configMap = await client.ConfigMapsV1().Create(new ConfigMapV1
+                ConfigMapV1 configMap2 = await client.ConfigMapsV1().Get(configMap2Name, configMapNamespace);
+                if ( configMap2 != null )
+                {
+                    Log.Information("Deleting existing ConfigMap {ConfigMapName}...", configMap2Name);
+                    await client.ConfigMapsV1().Delete(configMap2Name);
+                    Log.Information("Deleted existing ConfigMap {ConfigMapName}.", configMap2Name);
+                }
+
+                Log.Information("Creating ConfigMaps...");
+
+                Log.Information("Creating ConfigMap {ConfigMapName}...", configMap1Name);
+                configMap1 = await client.ConfigMapsV1().Create(new ConfigMapV1
                 {
                     Metadata = new ObjectMetaV1
                     {
-                        Name = configMapName,
+                        Name = configMap1Name,
                         Namespace = configMapNamespace
                     },
                     Data =
                     {
-                        ["Key1"] = "One",
-                        ["Key2"] = "Two"
+                        ["Key1"] = "OneA",
+                        ["Key2"] = "TwoA",
+                        ["Key3"] = "ThreeA"
                     }
                 });
-                Log.Information("New ConfigMap created.");
+
+                Log.Information("Creating ConfigMap {ConfigMapName}...", configMap2Name);
+                configMap2 = await client.ConfigMapsV1().Create(new ConfigMapV1
+                {
+                    Metadata = new ObjectMetaV1
+                    {
+                        Name = configMap2Name,
+                        Namespace = configMapNamespace
+                    },
+                    Data =
+                    {
+                        ["Key1"] = "OneB",
+                        ["Key2"] = "TwoB",
+                        ["Key4"] = "FourB"
+                    }
+                });
+
+                Log.Information("ConfigMaps created.");
 
                 Log.Information("Building configuration...");
                 IConfiguration configuration = new ConfigurationBuilder()
                     .AddKubeConfigMap(clientOptions,
-                        configMapName: "config-from-configmap",
+                        configMapName: configMap1Name,
+                        reloadOnChange: true
+                    )
+                    .AddKubeConfigMap(clientOptions,
+                        configMapName: configMap2Name,
                         reloadOnChange: true
                     )
                     .Build();
@@ -84,7 +118,7 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                 Log.Information("Got configuration:");
                 Dump(configuration);
 
-                Log.Information("Press enter to update ConfigMap...");
+                Log.Information("Press enter to update ConfigMaps {ConfigMap1Name} and {ConfigMap2Name}:", configMap1Name, configMap2Name);
 
                 Console.ReadLine();
 
@@ -105,26 +139,47 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                 using (configurationChanged)
                 using (reloadNotifications)
                 {
-                    Log.Information("Updating ConfigMap...");
+                    Log.Information("Updating ConfigMap {ConfigMapName}...", configMap1Name);
 
-                    configMap.Data["One"] = "1";
-                    configMap.Data["Two"] = "2";
+                    configMap1.Data["key5"] = "FiveA";
+                    configMap1.Data["key6"] = "SixA";
 
                     // Replace the entire Data dictionary (to modify only some of the data, you'll need to use an untyped JsonPatchDocument).
-                    await client.ConfigMapsV1().Update(configMapName, patch =>
+                    await client.ConfigMapsV1().Update(configMap1Name, patch =>
                     {
                         patch.Replace(patchConfigMap => patchConfigMap.Data,
-                            value: configMap.Data
+                            value: configMap1.Data
                         );
                     });
 
-                    Log.Information("Updated ConfigMap.");
+                    Log.Information("Updated ConfigMap {ConfigMapName}.", configMap1Name);
 
                     Log.Information("Waiting for configuration change...");
 
                     configurationChanged.WaitOne();
 
-                    Log.Information("Configuration changed.");
+                    Log.Information("Configuration changed via ConfigMap {ConfigMapName}.", configMap1Name);
+
+                    configurationChanged.Reset();
+
+                    Log.Information("Updating ConfigMap {ConfigMapName}...", configMap2Name);
+
+                    configMap2.Data["key5"] = "FiveB";
+                    configMap2.Data["key6"] = "SixB";
+
+                    // Replace the entire Data dictionary (to modify only some of the data, you'll need to use an untyped JsonPatchDocument).
+                    await client.ConfigMapsV1().Update(configMap2Name, patch =>
+                    {
+                        patch.Replace(patchConfigMap => patchConfigMap.Data,
+                            value: configMap2.Data
+                        );
+                    });
+
+                    Log.Information("Updated ConfigMap {ConfigMapName}.", configMap2Name);
+
+                    configurationChanged.WaitOne();
+
+                    Log.Information("Configuration changed via ConfigMap {ConfigMapName}.", configMap2Name);
                 }
 
                 return ExitCodes.Success;
@@ -152,8 +207,8 @@ namespace KubeClient.Samples.ConfigFromConfigMap
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            foreach (var item in configuration.AsEnumerable())
-                Log.Information("\t'{Key}' = '{Value}'", item.Key, item.Value);
+            foreach ((string key, string value) in configuration.AsEnumerable().OrderBy(item => item.Key))
+                Log.Information("\t'{Key}' = '{Value}'", key, value);
         }
 
         /// <summary>
