@@ -27,6 +27,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// <summary>
         ///     Environment variables (if any) to set when running the plugin command.
         /// </summary>
+        [YamlMember(Alias = "env")]
         public List<EnvVarV1> EnvironmentVariables { get; } = new List<EnvVarV1>();
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// <summary>
         ///     Command-line arguments (if any) to pass to the plugin command.
         /// </summary>
+        [YamlMember(Alias = "args")]
         public List<string> Arguments { get; } = new List<string>();
 
         /// <summary>
