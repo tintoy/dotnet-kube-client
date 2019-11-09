@@ -24,6 +24,12 @@ namespace KubeClient.Extensions.KubeConfig.Models
         public AuthProviderConfig AuthProvider { get; set; }
 
         /// <summary>
+        ///     Optional configuration for a client-go credential plugin.
+        /// </summary>
+        [YamlMember(Alias = "exec")]
+        public CredentialPluginConfig Exec { get; set; }
+
+        /// <summary>
         ///     A file containing the PEM-encoded client certificate to use.
         /// </summary>
         [YamlMember(Alias = "client-certificate")]
