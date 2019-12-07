@@ -223,6 +223,11 @@ namespace KubeClient
         /// <summary>
         ///     A bearer token obtained by an authentication provider (i.e. running an external command).
         /// </summary>
-        BearerTokenProvider
+        BearerTokenProvider,
+
+        /// <summary>
+        ///     Client credentials obtained by a client-go credential plugin (i.e. running an external command).
+        /// </summary>
+        CredentialPlugin
     }
 }
