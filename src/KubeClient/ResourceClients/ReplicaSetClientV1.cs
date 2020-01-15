@@ -206,12 +206,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ReplicaSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection   = KubeRequest.Create("/apis/apps/v1/namespaces/{Namespace}/replicasets?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name ReplicaSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("/apis/extensions/v1beta1/namespaces/{Namespace}/replicasets/{Name}");
+            public static readonly HttpRequest ByName       = KubeRequest.Create("/apis/apps/v1/namespaces/{Namespace}/replicasets/{Name}");
         }
     }
 
