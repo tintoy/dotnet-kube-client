@@ -203,6 +203,12 @@ namespace KubeClient
                     kubeClientOptions.AccessToken = accessToken;
                     kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerToken;
                 }
+                else if (!String.IsNullOrEmpty(targetUser.Config.Username) && !String.IsNullOrEmpty(targetUser.Config.Password))
+                {
+                    kubeClientOptions.Username = targetUser.Config.Username;
+                    kubeClientOptions.Password = targetUser.Config.Password;
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.Basic;
+                }
                 else
                 {
                     kubeClientOptions.AuthStrategy = KubeAuthStrategy.None;

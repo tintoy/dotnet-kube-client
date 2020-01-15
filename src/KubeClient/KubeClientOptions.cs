@@ -49,6 +49,16 @@ namespace KubeClient
         public string AccessToken { get; set; }
 
         /// <summary>
+        ///     The username used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
+        ///     The password used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         ///     The command used to generate an access token for authenticating to the Kubernetes API.
         /// </summary>
         public string AccessTokenCommand { get; set; }
@@ -214,6 +224,11 @@ namespace KubeClient
         ///     Client certificate (i.e. mutual SSL) authentication.
         /// </summary>
         ClientCertificate,
+
+        /// <summary>
+        ///     Username/Password authentication.
+        /// </summary>
+        Basic,
 
         /// <summary>
         ///     A pre-defined (static) bearer token.

@@ -52,6 +52,18 @@ namespace KubeClient.Extensions.KubeConfig.Models
         /// </summary>
         [YamlMember(Alias = "client-key-data")]
         public string ClientKeyData { get; set; }
+        
+        /// <summary>
+        ///     The username to use.
+        /// </summary>
+        [YamlMember(Alias = "username")]
+        public string Username { get; set; }
+
+        /// <summary>
+        ///     The password to use.
+        /// </summary>
+        [YamlMember(Alias = "password")]
+        public string Password { get; set; }
 
         /// <summary>
         ///     Get the raw Kubernetes authentication token (if any).
