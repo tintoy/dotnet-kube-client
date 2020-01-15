@@ -129,6 +129,14 @@ namespace KubeClient
 
             switch (options.AuthStrategy)
             {
+                case KubeAuthStrategy.Basic:
+                {
+                    clientBuilder = clientBuilder.AddHandler(
+                        () => new BasicAuthenticationHandler(options.Username, options.Password)
+                    );
+
+                    break;
+                }
                 case KubeAuthStrategy.BearerToken:
                 {
                     clientBuilder = clientBuilder.AddHandler(
