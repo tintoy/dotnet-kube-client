@@ -1,4 +1,3 @@
-
 using HTTPlease;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
@@ -15,7 +15,6 @@ namespace KubeClient.ResourceClients
 {
     using ApiMetadata;
     using Models;
-    using System.Text;
 
     // TODO: Always prefer namespaced API paths (except for List operations) and use client's default namespace.
 
@@ -276,6 +275,59 @@ namespace KubeClient.ResourceClients
                     innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
                 );
             }
+        }
+
+        /// <summary>
+        ///     Create a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to create.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to create.
+        /// </param>
+        /// <param name="isNamespaced">
+        ///     Is the resource type commonly namespaced?
+        ///     
+        ///     In other words, does the resource's API path contain a "{namespace}" segment?
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the newly-created resource.
+        /// </returns>
+        public async Task<TResource> Create<TResource>(TResource resource, bool isNamespaced = true, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if ( resource == null )
+                throw new ArgumentNullException(nameof(resource));
+
+            await EnsureApiMetadata(cancellationToken);
+
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+
+            HttpRequest request = KubeRequest.Create(apiPath);
+            if (isNamespaced)
+            {
+                request = request.WithTemplateParameters(new
+                {
+                    Namespace = resource.Metadata?.Namespace ?? KubeClient.DefaultNamespace
+                });
+            }
+
+            return await Http
+                .PostAsJsonAsync(request,
+                    postBody: resource,
+                    cancellationToken: cancellationToken
+                )
+                .ReadContentAsObjectV1Async<TResource>(
+                    operationDescription: isNamespaced ?
+                        $"create {apiVersion}/{kind} resource in namespace {resource?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}"
+                        :
+                        $"create {apiVersion}/{kind} resource"
+                );
         }
 
         /// <summary>
@@ -661,6 +713,29 @@ namespace KubeClient.ResourceClients
         ///     The resource list (can be cast to <see cref="KubeResourceListV1{TResource}"/> for access to individual resources).
         /// </returns>
         Task<KubeResourceListV1> List(string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Create a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to create.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to create.
+        /// </param>
+        /// <param name="isNamespaced">
+        ///     Is the resource namespaced?
+        ///     
+        ///     In other words, does the resource's API path contain a "{namespace}" segment?
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        Task<TResource> Create<TResource>(TResource resource, bool isNamespaced = true, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1;
 
         /// <summary>
         ///     Perform a JSON patch operation on a Kubernetes resource.
