@@ -350,6 +350,25 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes NetworkPolicy (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static INetworkPolicyClientV1 NetworkPolicyV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient<INetworkPolicyClientV1>(
+                client => new NetworkPolicyClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes StatefulSets (v1) resource client.
         /// </summary>
         /// <param name="kubeClient">
@@ -360,7 +379,7 @@ namespace KubeClient
         /// </returns>
         public static IStatefulSetClientV1 StatefulSetV1(this IKubeApiClient kubeClient)
         {
-            if (kubeClient == null)
+            if ( kubeClient == null )
                 throw new ArgumentNullException(nameof(kubeClient));
 
             return kubeClient.ResourceClient<IStatefulSetClientV1>(
