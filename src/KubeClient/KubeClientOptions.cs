@@ -44,59 +44,9 @@ namespace KubeClient
         public Uri ApiEndPoint { get; set; }
 
         /// <summary>
-        ///     The access token used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string AccessToken { get; set; }
-
-        /// <summary>
-        ///     The username used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        ///     The password used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        ///     The command used to generate an access token for authenticating to the Kubernetes API.
-        /// </summary>
-        public string AccessTokenCommand { get; set; }
-
-        /// <summary>
-        ///     The command arguments used to generate an access token for authenticating to the Kubernetes API.
-        /// </summary>
-        public string AccessTokenCommandArguments { get; set; }
-
-        /// <summary>
-        ///     The Go-style selector used to retrieve the access token from the command output.
-        /// </summary>
-        public string AccessTokenSelector { get; set; }
-
-        /// <summary>
-        ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
-        /// </summary>
-        public string AccessTokenExpirySelector { get; set; }
-        
-        /// <summary>
-        ///     The initial access token used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string InitialAccessToken { get; set; }
-        
-        /// <summary>
-        ///     The initial token expiry used to authenticate to the Kubernetes API.
-        /// </summary>
-        public DateTime? InitialTokenExpiryUtc { get; set; }
-        
-        /// <summary>
         ///     The strategy used for authenticating to the Kubernetes API.
         /// </summary>
         public KubeAuthStrategy AuthStrategy { get; set; }
-
-        /// <summary>
-        ///     The client certificate used to authenticate to the Kubernetes API.
-        /// </summary>
-        public X509Certificate2 ClientCertificate { get; set; }
 
         /// <summary>
         ///     The expected CA certificate used by the Kubernetes API.
@@ -136,23 +86,16 @@ namespace KubeClient
         {
             var clonedOptions = new KubeClientOptions
             {
-                AccessToken = AccessToken,
-                AccessTokenCommand = AccessTokenCommand,
-                AccessTokenCommandArguments = AccessTokenCommandArguments,
-                AccessTokenExpirySelector = AccessTokenExpirySelector,
-                AccessTokenSelector = AccessTokenSelector,
                 AllowInsecure = AllowInsecure,
                 ApiEndPoint = ApiEndPoint,
-                AuthStrategy = AuthStrategy,
+                AuthStrategy = AuthStrategy?.Clone(),
                 CertificationAuthorityCertificate = CertificationAuthorityCertificate,
-                ClientCertificate = ClientCertificate,
-                InitialAccessToken = InitialAccessToken,
-                InitialTokenExpiryUtc = InitialTokenExpiryUtc,
                 KubeNamespace = KubeNamespace,
                 LoggerFactory = LoggerFactory,
                 LogHeaders = LogHeaders,
                 LogPayloads = LogPayloads
             };
+            
             clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
 
             return clonedOptions;
@@ -169,8 +112,8 @@ namespace KubeClient
             if (ApiEndPoint == null || !ApiEndPoint.IsAbsoluteUri)
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid API end-point.");
 
-            if (ClientCertificate != null && !ClientCertificate.HasPrivateKey)
-                throw new KubeClientException("Invalid KubeClientOptions: the private key for the supplied client certificate is not available.");
+            if (AuthStrategy != null)
+                AuthStrategy.Validate();
 
             if (String.IsNullOrWhiteSpace(KubeNamespace))
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid default namespace.");
@@ -203,46 +146,45 @@ namespace KubeClient
             return new KubeClientOptions
             {
                 ApiEndPoint = new Uri(apiEndPoint),
-                AuthStrategy = KubeAuthStrategy.BearerToken,
-                AccessToken = accessToken,
+                AuthStrategy = KubeAuthStrategy.BearerToken(accessToken),
                 CertificationAuthorityCertificate = kubeCACertificate
             };
         }
     }
 
-    /// <summary>
-    ///     Represents a strategy for authenticating to the Kubernetes API.
-    /// </summary>
-    public enum KubeAuthStrategy
-    {
-        /// <summary>
-        ///     No authentication (e.g. via "kubectl proxy").
-        /// </summary>
-        None,
+    ///// <summary>
+    /////     Represents a strategy for authenticating to the Kubernetes API.
+    ///// </summary>
+    //public enum KubeAuthStrategy
+    //{
+    //    /// <summary>
+    //    ///     No authentication (e.g. via "kubectl proxy").
+    //    /// </summary>
+    //    None,
 
-        /// <summary>
-        ///     Client certificate (i.e. mutual SSL) authentication.
-        /// </summary>
-        ClientCertificate,
+    //    /// <summary>
+    //    ///     Client certificate (i.e. mutual SSL) authentication.
+    //    /// </summary>
+    //    ClientCertificate,
 
-        /// <summary>
-        ///     Username/Password authentication.
-        /// </summary>
-        Basic,
+    //    /// <summary>
+    //    ///     Username/Password authentication.
+    //    /// </summary>
+    //    Basic,
 
-        /// <summary>
-        ///     A pre-defined (static) bearer token.
-        /// </summary>
-        BearerToken,
+    //    /// <summary>
+    //    ///     A pre-defined (static) bearer token.
+    //    /// </summary>
+    //    BearerToken,
 
-        /// <summary>
-        ///     A bearer token obtained by an authentication provider (i.e. running an external command).
-        /// </summary>
-        BearerTokenProvider,
+    //    /// <summary>
+    //    ///     A bearer token obtained by an authentication provider (i.e. running an external command).
+    //    /// </summary>
+    //    BearerTokenProvider,
 
-        /// <summary>
-        ///     Client credentials obtained by a client-go credential plugin (i.e. running an external command).
-        /// </summary>
-        CredentialPlugin
-    }
+    //    /// <summary>
+    //    ///     Client credentials obtained by a client-go credential plugin (i.e. running an external command).
+    //    /// </summary>
+    //    CredentialPlugin
+    //}
 }

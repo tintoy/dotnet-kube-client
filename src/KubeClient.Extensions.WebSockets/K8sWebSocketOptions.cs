@@ -1,3 +1,4 @@
+using KubeClient.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,11 +86,27 @@ namespace KubeClient.Extensions.WebSockets
 
             KubeClientOptions clientOptions = client.GetClientOptions();
             
-            if (!String.IsNullOrWhiteSpace(clientOptions.AccessToken))
-                socketOptions.RequestHeaders["Authorization"] = $"Bearer {clientOptions.AccessToken}";
+            switch (clientOptions.AuthStrategy)
+            {
+                case BearerTokenAuthStrategy bearerTokenAuthentication:
+                {
+                    bearerTokenAuthentication.Validate();
 
-            if (clientOptions.ClientCertificate != null)
-                socketOptions.ClientCertificates.Add(clientOptions.ClientCertificate);
+                    socketOptions.RequestHeaders["Authorization"] = $"Bearer {bearerTokenAuthentication.Token}";
+
+                    break;
+                }
+                case KubeCertificateAuthStrategy certificateAuthentication:
+                {
+                    certificateAuthentication.Validate();
+
+                    socketOptions.ClientCertificates.Add(certificateAuthentication.Certificate);
+
+                    break;
+                }
+                
+                // TODO: Consider whether it's practical to support other authentication strategies here.
+            }
 
             if (clientOptions.CertificationAuthorityCertificate != null)
             {

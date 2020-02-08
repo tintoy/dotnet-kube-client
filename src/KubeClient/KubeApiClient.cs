@@ -127,49 +127,8 @@ namespace KubeClient
             
             var clientBuilder = new ClientBuilder();
 
-            switch (options.AuthStrategy)
-            {
-                case KubeAuthStrategy.Basic:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new BasicAuthenticationHandler(options.Username, options.Password)
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.BearerToken:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new StaticBearerTokenHandler(options.AccessToken)
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.BearerTokenProvider:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new CommandBearerTokenHandler(
-                            accessTokenCommand: options.AccessTokenCommand,
-                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
-                            accessTokenSelector: options.AccessTokenSelector,
-                            accessTokenExpirySelector: options.AccessTokenExpirySelector,
-                            initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc
-                        )
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.ClientCertificate:
-                {
-                    if (options.ClientCertificate == null)
-                        throw new KubeClientException("Cannot specify ClientCertificate authentication strategy without supplying a client certificate.");
-
-                    clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
-
-                    break;
-                }
-            }
+            if (options.AuthStrategy != null)
+                clientBuilder = options.AuthStrategy.Configure(clientBuilder);
 
             if (options.AllowInsecure)
                 clientBuilder = clientBuilder.AcceptAnyServerCertificate();
@@ -259,8 +218,7 @@ namespace KubeClient
             return Create(new KubeClientOptions
             {
                 ApiEndPoint = new Uri(apiEndPoint),
-                AuthStrategy = KubeAuthStrategy.BearerToken,
-                AccessToken = accessToken,
+                AuthStrategy = KubeAuthStrategy.BearerToken(accessToken),
                 CertificationAuthorityCertificate = expectServerCertificate,
                 LoggerFactory = loggerFactory
             });
@@ -289,8 +247,7 @@ namespace KubeClient
             return Create(new KubeClientOptions
             {
                 ApiEndPoint = new Uri(apiEndPoint),
-                AuthStrategy = KubeAuthStrategy.ClientCertificate,
-                ClientCertificate = clientCertificate,
+                AuthStrategy = KubeAuthStrategy.ClientCertificate(clientCertificate),
                 CertificationAuthorityCertificate = expectServerCertificate,
                 LoggerFactory = loggerFactory
             });
