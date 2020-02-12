@@ -9,13 +9,13 @@ namespace KubeClient.Authentication
     /// <summary>
     ///     A Kubernetes API authentication strategy that uses HTTP Basic (username / password) authentication.
     /// </summary>
-    public class KubeBasicAuthStrategy
+    public class BasicAuthStrategy
         : KubeAuthStrategy
     {
         /// <summary>
-        ///     Create a new <see cref="KubeBasicAuthStrategy"/>.
+        ///     Create a new <see cref="BasicAuthStrategy"/>.
         /// </summary>
-        public KubeBasicAuthStrategy()
+        public BasicAuthStrategy()
         {
         }
 
@@ -73,7 +73,7 @@ namespace KubeClient.Authentication
         /// </returns>
         public override KubeAuthStrategy Clone()
         {
-            return new KubeBasicAuthStrategy
+            return new BasicAuthStrategy
             {
                 UserName = UserName,
                 Password = Password

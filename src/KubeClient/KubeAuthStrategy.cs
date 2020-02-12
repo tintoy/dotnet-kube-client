@@ -42,7 +42,7 @@ namespace KubeClient
         /// <summary>
         ///     Don't attempt to authenticate (i.e. anonymous access).
         /// </summary>
-        public static KubeAuthStrategy None => KubeNoneAuthStrategy.Instance;
+        public static KubeAuthStrategy None => NoneAuthStrategy.Instance;
 
         /// <summary>
         ///     Use an X.509 client certificate for authentication.
@@ -51,9 +51,9 @@ namespace KubeClient
         ///     The X.509 certificate for authentication.
         /// </param>
         /// <returns>
-        ///     The configured <see cref="KubeCertificateAuthStrategy"/>.
+        ///     The configured <see cref="CertificateAuthStrategy"/>.
         /// </returns>
-        public static KubeCertificateAuthStrategy ClientCertificate(X509Certificate2 certificate) => new KubeCertificateAuthStrategy
+        public static CertificateAuthStrategy ClientCertificate(X509Certificate2 certificate) => new CertificateAuthStrategy
         {
             Certificate = certificate
         };
@@ -68,9 +68,9 @@ namespace KubeClient
         ///     The password for authentication.
         /// </param>
         /// <returns>
-        ///     The configured <see cref="KubeBasicAuthStrategy"/>.
+        ///     The configured <see cref="BasicAuthStrategy"/>.
         /// </returns>
-        public static KubeBasicAuthStrategy Basic(string userName, string password) => new KubeBasicAuthStrategy
+        public static BasicAuthStrategy Basic(string userName, string password) => new BasicAuthStrategy
         {
             UserName = userName,
             Password = password

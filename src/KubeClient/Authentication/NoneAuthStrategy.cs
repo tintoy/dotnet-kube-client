@@ -6,18 +6,18 @@ namespace KubeClient.Authentication
     /// <summary>
     ///     A Kubernetes API authentication strategy that makes no attempt to authenticate (i.e. anonymous access).
     /// </summary>
-    public class KubeNoneAuthStrategy
+    public class NoneAuthStrategy
         : KubeAuthStrategy
     {
         /// <summary>
-        ///     The singleton instance of <see cref="KubeNoneAuthStrategy"/>.
+        ///     The singleton instance of <see cref="NoneAuthStrategy"/>.
         /// </summary>
-        public static readonly KubeNoneAuthStrategy Instance = new KubeNoneAuthStrategy();
+        public static readonly NoneAuthStrategy Instance = new NoneAuthStrategy();
 
         /// <summary>
-        ///     Create a new <see cref="KubeNoneAuthStrategy"/>.
+        ///     Create a new <see cref="NoneAuthStrategy"/>.
         /// </summary>
-        KubeNoneAuthStrategy()
+        NoneAuthStrategy()
         {
         }
 
@@ -49,6 +49,6 @@ namespace KubeClient.Authentication
         /// <returns>
         ///     The cloned <see cref="KubeAuthStrategy"/>.
         /// </returns>
-        public override KubeAuthStrategy Clone() => KubeNoneAuthStrategy.Instance; // Singleton.
+        public override KubeAuthStrategy Clone() => NoneAuthStrategy.Instance; // Singleton.
     }
 }

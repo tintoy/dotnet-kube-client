@@ -96,7 +96,7 @@ namespace KubeClient.Extensions.WebSockets
 
                     break;
                 }
-                case KubeCertificateAuthStrategy certificateAuthentication:
+                case CertificateAuthStrategy certificateAuthentication:
                 {
                     certificateAuthentication.Validate();
 

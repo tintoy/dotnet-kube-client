@@ -8,13 +8,13 @@ namespace KubeClient.Authentication
     /// <summary>
     ///     A Kubernetes API authentication strategy that uses an X.509 client certificate.
     /// </summary>
-    public class KubeCertificateAuthStrategy
+    public class CertificateAuthStrategy
         : KubeAuthStrategy
     {
         /// <summary>
-        ///     Create a new <see cref="KubeCertificateAuthStrategy"/>.
+        ///     Create a new <see cref="CertificateAuthStrategy"/>.
         /// </summary>
-        public KubeCertificateAuthStrategy()
+        public CertificateAuthStrategy()
         {
         }
 
@@ -65,7 +65,7 @@ namespace KubeClient.Authentication
         /// </returns>
         public override KubeAuthStrategy Clone()
         {
-            return new KubeCertificateAuthStrategy
+            return new CertificateAuthStrategy
             {
                 Certificate = Certificate
             };
