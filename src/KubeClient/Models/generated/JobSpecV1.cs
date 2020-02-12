@@ -58,5 +58,12 @@ namespace KubeClient.Models
         [YamlMember(Alias = "backoffLimit")]
         [JsonProperty("backoffLimit", NullValueHandling = NullValueHandling.Ignore)]
         public int? BackoffLimit { get; set; }
+
+        /// <summary>
+        ///     Limits the lifetime of a Job that has finished execution (either Complete or Failed). If this field is set, ttlSecondsAfterFinished after the Job finishes, it is eligible to be automatically deleted. When the Job is being deleted, its lifecycle guarantees (e.g. finalizers) will be honored. If this field is unset, the Job won't be automatically deleted. If this field is set to zero, the Job becomes eligible to be deleted immediately after it finishes. This field is alpha-level and is only honored by servers that enable the TTLAfterFinished feature.
+        /// </summary>
+        [YamlMember(Alias = "ttlSecondsAfterFinished")]
+        [JsonProperty("ttlSecondsAfterFinished", NullValueHandling = NullValueHandling.Ignore)]
+        public int? TtlSecondsAfterFinished { get; set; }
     }
 }
