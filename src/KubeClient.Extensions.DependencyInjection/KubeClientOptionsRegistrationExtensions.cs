@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
 {
     using Extensions.KubeConfig.Models;
-    
+
     /// <summary>
     ///     Extension methods for registering Kubernetes client options.
     /// </summary>
@@ -72,9 +72,16 @@ namespace KubeClient
                 kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                 kubeClientOptions.KubeNamespace = defaultKubeNamespace;
                 
-                kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
+                kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
                 kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+
+                X509Certificate2 clientCertificate = targetUser.Config.GetClientCertificate();
+                if (clientCertificate != null)
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.ClientCertificate(clientCertificate);
+
+                string staticAccessToken = targetUser.Config.GetRawToken();
+                if (!string.IsNullOrWhiteSpace(staticAccessToken))
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerToken(staticAccessToken);
             });
 
             return services;
@@ -144,10 +151,17 @@ namespace KubeClient
 
                 kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                 kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-                kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
+
                 kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
                 kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+
+                X509Certificate2 clientCertificate = targetUser.Config.GetClientCertificate();
+                if ( clientCertificate != null )
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.ClientCertificate(clientCertificate);
+
+                string staticAccessToken = targetUser.Config.GetRawToken();
+                if ( !string.IsNullOrWhiteSpace(staticAccessToken) )
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerToken(staticAccessToken);
             });
 
             return services;
@@ -201,10 +215,17 @@ namespace KubeClient
 
                     kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                     kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-                    
-                    kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
+
+                    kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
                     kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                    kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+
+                    X509Certificate2 clientCertificate = targetUser.Config.GetClientCertificate();
+                    if ( clientCertificate != null )
+                        kubeClientOptions.AuthStrategy = KubeAuthStrategy.ClientCertificate(clientCertificate);
+
+                    string staticAccessToken = targetUser.Config.GetRawToken();
+                    if ( !string.IsNullOrWhiteSpace(staticAccessToken) )
+                        kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerToken(staticAccessToken);
                 });
             }
 
