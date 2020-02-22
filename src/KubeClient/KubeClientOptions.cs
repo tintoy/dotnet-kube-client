@@ -189,15 +189,19 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Create new <see cref="KubeClientOptions"/> using pod-level configuration.
+        ///     Create new <see cref="KubeClientOptions"/> using pod-level configuration. 
         /// </summary>
+        /// <param name="serviceAccountPath">
+        ///     The location of the volume containing service account token and CA certificate 
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeClientOptions"/>.
         /// </returns>
         /// <remarks>
         ///     Only works from within a container running in a Kubernetes Pod.
         /// </remarks>
-        public static KubeClientOptions FromPodServiceAccount()
+        /// <exception cref="InvalidOperationException"></exception>
+        public static KubeClientOptions FromPodServiceAccount(string serviceAccountPath = "/var/run/secrets/kubernetes.io/serviceaccount")
         {
             string kubeServiceHost = Environment.GetEnvironmentVariable(KubernetesServiceHost);
             string kubeServicePort = Environment.GetEnvironmentVariable(KubernetesServicePort);
@@ -205,9 +209,9 @@ namespace KubeClient
                 throw new InvalidOperationException($"KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod ({KubernetesServiceHost} and/or {KubernetesServicePort} environment variable is not defined).");
 
             string apiEndPoint = $"https://{kubeServiceHost}:{kubeServicePort}/";
-            string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
+            string accessToken = File.ReadAllText(Path.Combine(serviceAccountPath, "token"));
             var kubeCACertificate = new X509Certificate2(
-                File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+                File.ReadAllBytes(Path.Combine(serviceAccountPath, "ca.crt"))
             );
 
             return new KubeClientOptions
