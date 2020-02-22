@@ -21,6 +21,11 @@ namespace KubeClient
         /// Environment Variable set in a Kubernetes Pod containing the port of the API Service
         /// </summary>
         public const string KubernetesServicePort = "KUBERNETES_SERVICE_PORT";
+
+        /// <summary>
+        /// Default path of volume containing Kubernetes service account token and CA certificate
+        /// </summary>
+        public const string DefaultServiceAccountPath = "/var/run/secrets/kubernetes.io/serviceaccount";
         
         /// <summary>
         ///     Create new <see cref="KubeClientOptions"/>.
@@ -201,7 +206,7 @@ namespace KubeClient
         ///     Only works from within a container running in a Kubernetes Pod.
         /// </remarks>
         /// <exception cref="InvalidOperationException"></exception>
-        public static KubeClientOptions FromPodServiceAccount(string serviceAccountPath = "/var/run/secrets/kubernetes.io/serviceaccount")
+        public static KubeClientOptions FromPodServiceAccount(string serviceAccountPath = DefaultServiceAccountPath)
         {
             string kubeServiceHost = Environment.GetEnvironmentVariable(KubernetesServiceHost);
             string kubeServicePort = Environment.GetEnvironmentVariable(KubernetesServicePort);
