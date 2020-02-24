@@ -13,21 +13,6 @@ namespace KubeClient
     public class KubeClientOptions
     {
         /// <summary>
-        /// Environment Variable set in a Kubernetes Pod containing the host name of the API Service
-        /// </summary>
-        public const string KubernetesServiceHost = "KUBERNETES_SERVICE_HOST";
-        
-        /// <summary>
-        /// Environment Variable set in a Kubernetes Pod containing the port of the API Service
-        /// </summary>
-        public const string KubernetesServicePort = "KUBERNETES_SERVICE_PORT";
-
-        /// <summary>
-        /// Default path of volume containing Kubernetes service account token and CA certificate
-        /// </summary>
-        public const string DefaultServiceAccountPath = "/var/run/secrets/kubernetes.io/serviceaccount";
-        
-        /// <summary>
         ///     Create new <see cref="KubeClientOptions"/>.
         /// </summary>
         public KubeClientOptions()
@@ -206,12 +191,12 @@ namespace KubeClient
         ///     Only works from within a container running in a Kubernetes Pod.
         /// </remarks>
         /// <exception cref="InvalidOperationException"></exception>
-        public static KubeClientOptions FromPodServiceAccount(string serviceAccountPath = DefaultServiceAccountPath)
+        public static KubeClientOptions FromPodServiceAccount(string serviceAccountPath = KubeClientConstants.DefaultServiceAccountPath)
         {
-            string kubeServiceHost = Environment.GetEnvironmentVariable(KubernetesServiceHost);
-            string kubeServicePort = Environment.GetEnvironmentVariable(KubernetesServicePort);
+            string kubeServiceHost = Environment.GetEnvironmentVariable(KubeClientConstants.KubernetesServiceHost);
+            string kubeServicePort = Environment.GetEnvironmentVariable(KubeClientConstants.KubernetesServicePort);
             if (String.IsNullOrWhiteSpace(kubeServiceHost) || String.IsNullOrWhiteSpace(kubeServicePort))
-                throw new InvalidOperationException($"KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod ({KubernetesServiceHost} and/or {KubernetesServicePort} environment variable is not defined).");
+                throw new InvalidOperationException($"KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod ({KubeClientConstants.KubernetesServiceHost} and/or {KubeClientConstants.KubernetesServicePort} environment variable is not defined).");
 
             string apiEndPoint = $"https://{kubeServiceHost}:{kubeServicePort}/";
             string accessToken = File.ReadAllText(Path.Combine(serviceAccountPath, "token"));
