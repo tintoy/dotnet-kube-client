@@ -29,7 +29,8 @@ namespace KubeClient.MessageHandlers
 
             _encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes(username + ":" + password));
         }
-        
+
+        /// <inheritdoc />
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", _encoded);
