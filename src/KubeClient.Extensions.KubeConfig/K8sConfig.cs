@@ -242,6 +242,19 @@ namespace KubeClient
                         );
                     }
                 }
+
+                CredentialPluginConfig execProvider = targetUser.Config.Exec;
+                if (execProvider != null)
+                {
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.CredentialPlugin;
+                    kubeClientOptions.AccessTokenCommand = execProvider.Command;
+                    kubeClientOptions.AccessTokenCommandArguments = string.Join(" ", execProvider.Arguments);
+                    kubeClientOptions.AccessTokenSelector = ".status.token";
+                    kubeClientOptions.AccessTokenExpirySelector = ".status.expirationTimestamp";
+                    if (execProvider.EnvironmentVariables?.Count > 0)
+                        foreach (var envVar in execProvider.EnvironmentVariables)
+                            Environment.SetEnvironmentVariable(envVar.Name, envVar.Value);
+                }
             }
             else
                 kubeClientOptions.AuthStrategy = KubeAuthStrategy.ClientCertificate;

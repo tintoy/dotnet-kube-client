@@ -28,7 +28,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         ///     Environment variables (if any) to set when running the plugin command.
         /// </summary>
         [YamlMember(Alias = "env")]
-        public List<EnvVarV1> EnvironmentVariables { get; } = new List<EnvVarV1>();
+        public List<EnvVarV1> EnvironmentVariables { get; set; } = new List<EnvVarV1>();
 
         /// <summary>
         ///     Should <see cref="EnvironmentVariables"/> be serialised?
@@ -42,7 +42,7 @@ namespace KubeClient.Extensions.KubeConfig.Models
         ///     Command-line arguments (if any) to pass to the plugin command.
         /// </summary>
         [YamlMember(Alias = "args")]
-        public List<string> Arguments { get; } = new List<string>();
+        public List<string> Arguments { get; set; } = new List<string>();
 
         /// <summary>
         ///     Should <see cref="Arguments"/> be serialised?

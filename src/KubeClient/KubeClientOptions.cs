@@ -127,6 +127,11 @@ namespace KubeClient
         /// An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; }
+        
+        /// <summary>
+        ///     Environment variables passed to external commands
+        /// </summary>
+        public Dictionary<string, string> EnvironmentVariables { get; set; }
 
         /// <summary>
         /// Create a copy of the <see cref="KubeClientOptions"/>.
@@ -151,7 +156,8 @@ namespace KubeClient
                 KubeNamespace = KubeNamespace,
                 LoggerFactory = LoggerFactory,
                 LogHeaders = LogHeaders,
-                LogPayloads = LogPayloads
+                LogPayloads = LogPayloads,
+                EnvironmentVariables = EnvironmentVariables
             };
             clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
 
