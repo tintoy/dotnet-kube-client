@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
@@ -51,6 +52,11 @@ namespace KubeClient.MessageHandlers
         DateTime? _accessTokenExpiresUtc;
 
         /// <summary>
+        ///     Environment variables assigned to the executed command
+        /// </summary>
+        private readonly Dictionary<string, string> _environmentVariables;
+
+        /// <summary>
         ///     Create a new <see cref="CommandBearerTokenHandler"/>.
         /// </summary>
         /// <param name="accessTokenCommand">
@@ -71,7 +77,10 @@ namespace KubeClient.MessageHandlers
         /// <param name="initialTokenExpiryUtc">
         ///     The UTC date / time the the initial access token (if any) expires.
         /// </param>
-        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, DateTime? initialTokenExpiryUtc = null)
+        /// <param name="environmentVariables">
+        ///     Environment variables assigned to the executed command
+        /// </param>
+        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, DateTime? initialTokenExpiryUtc = null, Dictionary<string, string> environmentVariables = null)
         {
             if (String.IsNullOrWhiteSpace(accessTokenCommand))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'accessTokenCommand'.", nameof(accessTokenCommand));
@@ -91,6 +100,7 @@ namespace KubeClient.MessageHandlers
                 _accessToken = initialAccessToken;
 
             _accessTokenExpiresUtc = initialTokenExpiryUtc;
+            _environmentVariables = environmentVariables;
         }
 
         /// <summary>
@@ -126,6 +136,9 @@ namespace KubeClient.MessageHandlers
                 RedirectStandardError = true,
                 UseShellExecute = false,
             };
+            if (_environmentVariables?.Count > 0)
+                foreach (var environmentVariable in _environmentVariables)
+                    accessTokenCommandInfo.Environment.Add(environmentVariable.Key, environmentVariable.Value);
 
             using (Process accessTokenCommand = Process.Start(accessTokenCommandInfo))
             {

@@ -154,10 +154,27 @@ namespace KubeClient
                             accessTokenSelector: options.AccessTokenSelector,
                             accessTokenExpirySelector: options.AccessTokenExpirySelector,
                             initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc
+                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
+                            environmentVariables: options.EnvironmentVariables
                         )
                     );
 
+                    break;
+                }
+                case KubeAuthStrategy.CredentialPlugin:
+                {
+                    clientBuilder = clientBuilder.AddHandler(
+                        () => new CommandBearerTokenHandler(
+                            accessTokenCommand: options.AccessTokenCommand,
+                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
+                            accessTokenSelector: options.AccessTokenSelector ?? ".status.token",
+                            accessTokenExpirySelector: options.AccessTokenExpirySelector ?? ".status.expirationTimestamp",
+                            initialAccessToken: options.InitialAccessToken,
+                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
+                            environmentVariables: options.EnvironmentVariables
+                        )
+                    );
+                    
                     break;
                 }
                 case KubeAuthStrategy.ClientCertificate:
