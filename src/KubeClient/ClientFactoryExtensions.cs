@@ -236,6 +236,44 @@ namespace KubeClient
         }
 
         /// <summary>
+        ///     Get the Kubernetes Roles (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IRoleClientV1 RolesV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient<IRoleClientV1>(
+                client => new RoleClientV1(client)
+            );
+        }
+
+        /// <summary>
+        ///     Get the Kubernetes Role Bindings (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IRoleBindingClientV1 RoleBindingsV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
+
+            return kubeClient.ResourceClient<IRoleBindingClientV1>(
+                client => new RoleBindingClientV1(client)
+            );
+        }
+
+        /// <summary>
         ///     Get the Kubernetes Secrets (v1) resource client.
         /// </summary>
         /// <param name="kubeClient">
@@ -253,7 +291,26 @@ namespace KubeClient
                 client => new SecretClientV1(client)
             );
         }
+        
+        /// <summary>
+        ///     Get the Kubernetes Service Accounts (v1) resource client.
+        /// </summary>
+        /// <param name="kubeClient">
+        ///     The Kubernetes API client.
+        /// </param>
+        /// <returns>
+        ///     The resource client.
+        /// </returns>
+        public static IServiceAccountClientV1 ServiceAccountsV1(this IKubeApiClient kubeClient)
+        {
+            if (kubeClient == null)
+                throw new ArgumentNullException(nameof(kubeClient));
 
+            return kubeClient.ResourceClient<IServiceAccountClientV1>(
+                client => new ServiceAccountClientV1(client)
+            );
+        }
+        
         /// <summary>
         ///     Get the Kubernetes Services (v1) resource client.
         /// </summary>
@@ -379,7 +436,7 @@ namespace KubeClient
         /// </returns>
         public static IStatefulSetClientV1 StatefulSetV1(this IKubeApiClient kubeClient)
         {
-            if ( kubeClient == null )
+            if (kubeClient == null)
                 throw new ArgumentNullException(nameof(kubeClient));
 
             return kubeClient.ResourceClient<IStatefulSetClientV1>(
