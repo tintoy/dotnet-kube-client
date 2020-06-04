@@ -12,25 +12,25 @@ namespace KubeClient.ResourceClients
     /// <summary>
     ///     A client for the Kubernetes Nodes (v1) API.
     /// </summary>
-    public class RoleClientV1
-        : KubeResourceClient, IRoleClientV1
+    public class ServiceAccountClientV1
+        : KubeResourceClient, IServiceAccountClientV1
     {
         /// <summary>
-        ///     Create a new <see cref="RoleClientV1"/>.
+        ///     Create a new <see cref="ServiceAccountClientV1"/>.
         /// </summary>
         /// <param name="client">
         ///     The Kubernetes API client.
         /// </param>
-        public RoleClientV1(IKubeApiClient client)
+        public ServiceAccountClientV1(IKubeApiClient client)
             : base(client)
         {
         }
 
         /// <summary>
-        ///     Get the Role with the specified name.
+        ///     Get the ServiceAccount with the specified name.
         /// </summary>
         /// <param name="name">
-        ///     The name of the Role to retrieve.
+        ///     The name of the ServiceAccount to retrieve.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -39,14 +39,14 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleV1"/> representing the current state for the Role, or <c>null</c> if no Role was found with the specified name and namespace.
+        ///     A <see cref="ServiceAccountV1"/> representing the current state for the ServiceAccount, or <c>null</c> if no ServiceAccount was found with the specified name and namespace.
         /// </returns>
-        public async Task<RoleV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<ServiceAccountV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            return await GetSingleResource<RoleV1>(
+            return await GetSingleResource<ServiceAccountV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
                     Name = name,
@@ -57,10 +57,10 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Get all Roles in the specified namespace, optionally matching a label selector.
+        ///     Get all ServiceAccounts in the specified namespace, optionally matching a label selector.
         /// </summary>
         /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Roles.
+        ///     An optional Kubernetes label selector expression used to filter the ServiceAccounts.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -69,11 +69,11 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleListV1"/> containing the roles.
+        ///     A <see cref="ServiceAccountListV1"/> containing the service accounts.
         /// </returns>
-        public async Task<RoleListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<ServiceAccountListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
-            return await GetResourceList<RoleListV1>(
+            return await GetResourceList<ServiceAccountListV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
@@ -84,10 +84,10 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Watch for events relating to a specific Role.
+        ///     Watch for events relating to a specific ServiceAccount.
         /// </summary>
         /// <param name="name">
-        ///     The name of the Role to watch.
+        ///     The name of the ServiceAccount to watch.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -95,57 +95,57 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<IResourceEventV1<RoleV1>> Watch(string name, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<ServiceAccountV1>> Watch(string name, string kubeNamespace = null)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            return ObserveEvents<RoleV1>(
+            return ObserveEvents<ServiceAccountV1>(
                 Requests.WatchByName.WithTemplateParameters(new
                 {
                     Name = name,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
                 }),
-                operationDescription: $"watch v1/Role '{name}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
+                operationDescription: $"watch v1/ServiceAccount '{name}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
         /// <summary>
-        ///     Request creation of a <see cref="RoleV1"/>.
+        ///     Request creation of a <see cref="ServiceAccountV1"/>.
         /// </summary>
-        /// <param name="newRole">
-        ///     A <see cref="RoleV1"/> representing the Role to create.
+        /// <param name="newServiceAccount">
+        ///     A <see cref="ServiceAccountV1"/> representing the ServiceAccount to create.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleV1"/> representing the current state for the newly-created Role.
+        ///     A <see cref="ServiceAccountV1"/> representing the current state for the newly-created ServiceAccount.
         /// </returns>
-        public async Task<RoleV1> Create(RoleV1 newRole, CancellationToken cancellationToken = default)
+        public async Task<ServiceAccountV1> Create(ServiceAccountV1 newServiceAccount, CancellationToken cancellationToken = default)
         {
-            if (newRole == null)
-                throw new ArgumentNullException(nameof(newRole));
+            if (newServiceAccount == null)
+                throw new ArgumentNullException(nameof(newServiceAccount));
 
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
                     {
-                        Namespace = newRole?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
+                        Namespace = newServiceAccount?.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                     }),
-                    postBody: newRole,
+                    postBody: newServiceAccount,
                     cancellationToken: cancellationToken
                 )
-                .ReadContentAsObjectV1Async<RoleV1>(
-                    operationDescription: $"create v1/Role resource in namespace '{newRole?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}'"
+                .ReadContentAsObjectV1Async<ServiceAccountV1>(
+                    operationDescription: $"create v1/ServiceAccount resource in namespace '{newServiceAccount?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}'"
                 );
         }
 
         /// <summary>
-        ///     Request update (PATCH) of a <see cref="RoleV1"/>.
+        ///     Request update (PATCH) of a <see cref="ServiceAccountV1"/>.
         /// </summary>
         /// <param name="name">
-        ///     The name of the target Role.
+        ///     The name of the target ServiceAccount.
         /// </param>
         /// <param name="patchAction">
         ///     A delegate that customises the patch operation.
@@ -157,9 +157,9 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleV1"/> representing the current state for the updated Role.
+        ///     A <see cref="ServiceAccountV1"/> representing the current state for the updated ServiceAccount.
         /// </returns>
-        public async Task<RoleV1> Update(string name, Action<JsonPatchDocument<RoleV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<ServiceAccountV1> Update(string name, Action<JsonPatchDocument<ServiceAccountV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -178,10 +178,10 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
-        ///     Request deletion of the specified Role.
+        ///     Request deletion of the specified ServiceAccount.
         /// </summary>
         /// <param name="name">
-        ///     The name of the Role to delete.
+        ///     The name of the ServiceAccount to delete.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -204,44 +204,44 @@ namespace KubeClient.ResourceClients
                     cancellationToken: cancellationToken
                 )
                 .ReadContentAsObjectV1Async<StatusV1>(
-                    $"delete v1/Role resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
+                    $"delete v1/ServiceAccount resource '{name}' in namespace '{kubeNamespace ?? KubeClient.DefaultNamespace}'",
                     HttpStatusCode.OK, HttpStatusCode.NotFound
                 );
         }
 
         /// <summary>
-        ///     Request templates for the Role (v1) API.
+        ///     Request templates for the ServiceAccount (v1) API.
         /// </summary>
         static class Requests
         {
             /// <summary>
-            ///     A collection-level Role (v1) request.
+            ///     A collection-level ServiceAccount (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection = KubeRequest.Create("apis/rbac.authorization.k8s.io/v1/namespaces/{Namespace}/roles?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/serviceaccounts?labelSelector={LabelSelector?}");
 
             /// <summary>
-            ///     A get-by-name Role (v1) request.
+            ///     A get-by-name ServiceAccount (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName = KubeRequest.Create("apis/rbac.authorization.k8s.io/v1/namespaces/{Namespace}/roles/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/serviceaccounts/{Name}");
 
             /// <summary>
-            ///     A watch-by-name Role (v1) request.
+            ///     A watch-by-name ServiceAccount (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName = KubeRequest.Create("apis/rbac.authorization.k8s.io/v1/namespaces/{Namespace}/roles/{Name}");
+            public static readonly HttpRequest WatchByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/serviceaccounts/{Name}");
         }
     }
 
     /// <summary>
     ///     A client for the Kubernetes Nodes (v1) API.
     /// </summary>
-    public interface IRoleClientV1
+    public interface IServiceAccountClientV1
         : IKubeResourceClient
     {
         /// <summary>
-        ///     Get the Role with the specified name.
+        ///     Get the ServiceAccount with the specified name.
         /// </summary>
         /// <param name="name">
-        ///     The name of the Role to retrieve.
+        ///     The name of the ServiceAccount to retrieve.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -250,15 +250,15 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleV1"/> representing the current state for the Role, or <c>null</c> if no Role was found with the specified name and namespace.
+        ///     A <see cref="ServiceAccountV1"/> representing the current state for the ServiceAccount, or <c>null</c> if no ServiceAccount was found with the specified name and namespace.
         /// </returns>
-        Task<RoleV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<ServiceAccountV1> Get(string name, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Get all Roles in the specified namespace, optionally matching a label selector.
+        ///     Get all ServiceAccounts in the specified namespace, optionally matching a label selector.
         /// </summary>
         /// <param name="labelSelector">
-        ///     An optional Kubernetes label selector expression used to filter the Roles.
+        ///     An optional Kubernetes label selector expression used to filter the ServiceAccounts.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -267,15 +267,15 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleListV1"/> containing the Roles.
+        ///     A <see cref="ServiceAccountListV1"/> containing the ServiceAccounts.
         /// </returns>
-        Task<RoleListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<ServiceAccountListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Watch for events relating to a specific Role.
+        ///     Watch for events relating to a specific ServiceAccount.
         /// </summary>
         /// <param name="name">
-        ///     The name of the Role to watch.
+        ///     The name of the ServiceAccount to watch.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
@@ -283,27 +283,27 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        IObservable<IResourceEventV1<RoleV1>> Watch(string name, string kubeNamespace = null);
+        IObservable<IResourceEventV1<ServiceAccountV1>> Watch(string name, string kubeNamespace = null);
 
         /// <summary>
-        ///     Request creation of a <see cref="RoleV1"/>.
+        ///     Request creation of a <see cref="ServiceAccountV1"/>.
         /// </summary>
-        /// <param name="newRole">
-        ///     A <see cref="RoleV1"/> representing the Role to create.
+        /// <param name="newServiceAccount">
+        ///     A <see cref="ServiceAccountV1"/> representing the ServiceAccount to create.
         /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleV1"/> representing the current state for the newly-created Role.
+        ///     A <see cref="ServiceAccountV1"/> representing the current state for the newly-created ServiceAccount.
         /// </returns>
-        Task<RoleV1> Create(RoleV1 newRole, CancellationToken cancellationToken = default);
+        Task<ServiceAccountV1> Create(ServiceAccountV1 newServiceAccount, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Request update (PATCH) of a <see cref="RoleV1"/>.
+        ///     Request update (PATCH) of a <see cref="ServiceAccountV1"/>.
         /// </summary>
         /// <param name="name">
-        ///     The name of the target Role.
+        ///     The name of the target ServiceAccount.
         /// </param>
         /// <param name="patchAction">
         ///     A delegate that customises the patch operation.
@@ -315,15 +315,15 @@ namespace KubeClient.ResourceClients
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
-        ///     A <see cref="RoleV1"/> representing the current state for the updated Role.
+        ///     A <see cref="ServiceAccountV1"/> representing the current state for the updated ServiceAccount.
         /// </returns>
-        Task<RoleV1> Update(string name, Action<JsonPatchDocument<RoleV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<ServiceAccountV1> Update(string name, Action<JsonPatchDocument<ServiceAccountV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Request deletion of the specified Role.
+        ///     Request deletion of the specified ServiceAccount.
         /// </summary>
         /// <param name="name">
-        ///     The name of the Role to delete.
+        ///     The name of the ServiceAccount to delete.
         /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
