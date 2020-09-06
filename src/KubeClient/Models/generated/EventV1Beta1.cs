@@ -40,8 +40,8 @@ namespace KubeClient.Models
         ///     Required. Time when this Event was first observed.
         /// </summary>
         [YamlMember(Alias = "eventTime")]
-        [JsonProperty("eventTime", NullValueHandling = NullValueHandling.Include)]
-        public MicroTimeV1 EventTime { get; set; }
+        [JsonProperty("eventTime", NullValueHandling = NullValueHandling.Ignore)]
+        public MicroTimeV1? EventTime { get; set; }
 
         /// <summary>
         ///     Optional. A human-readable description of the status of this operation. Maximal length of the note is 1kB, but libraries should be prepared to handle values up to 64kB.
