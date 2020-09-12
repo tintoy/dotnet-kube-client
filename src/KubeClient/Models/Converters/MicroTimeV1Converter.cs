@@ -15,6 +15,11 @@ namespace KubeClient.Models.Converters
         static readonly Type MicroTimeV1Type = typeof(MicroTimeV1);
 
         /// <summary>
+        ///     The CLR <see cref="Type"/> corresponding to <see cref="MicroTimeV1"/>.
+        /// </summary>
+        static readonly Type NullableMicroTimeV1Type = typeof(MicroTimeV1?);
+
+        /// <summary>
         ///     Create a new <see cref="MicroTimeV1"/>.
         /// </summary>
         public MicroTimeV1Converter()
@@ -58,14 +63,23 @@ namespace KubeClient.Models.Converters
             if (objectType == null)
                 throw new ArgumentNullException(nameof(objectType));
             
-            if (objectType != MicroTimeV1Type)
+            if (objectType != MicroTimeV1Type && objectType != NullableMicroTimeV1Type)
                 throw new NotSupportedException($"{GetType().FullName} cannot deserialise a value of type '{objectType.FullName}'.");
 
             switch (reader.TokenType)
             {
                 case JsonToken.Null:
                 {
-                    return null;
+                    if (objectType == NullableMicroTimeV1Type)
+                        return null;
+                    
+                    return default(MicroTimeV1);
+                }
+                case JsonToken.Date:
+                {
+                    return new MicroTimeV1(
+                        (DateTime)reader.Value
+                    );
                 }
                 case JsonToken.String:
                 {
@@ -77,7 +91,7 @@ namespace KubeClient.Models.Converters
                 }
                 default:
                 {
-                    throw new JsonException($"Unexpected token type '{reader.TokenType}' for {nameof(MicroTimeV1)} (expected one of [{JsonToken.Null}, {JsonToken.Integer}, {JsonToken.String}]).");
+                    throw new JsonException($"Unexpected token type '{reader.TokenType}' for {nameof(MicroTimeV1)} (expected one of [{JsonToken.Null}, {JsonToken.Date}, {JsonToken.String}]).");
                 }
             }
         }

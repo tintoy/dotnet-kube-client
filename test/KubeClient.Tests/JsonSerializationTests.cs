@@ -265,6 +265,38 @@ namespace KubeClient.Tests
         }
 
         /// <summary>
+        /// Verify that an <see cref="MicroTimeV1"/> with a <c>null</c> value deserialises correctly.
+        /// </summary>
+        [Fact]
+        public void MicroTimeWithNullDeserializesCorrectly()
+        {
+            string json = "null";
+            MicroTimeV1? microTime = JsonConvert.DeserializeObject<MicroTimeV1?>(json);
+            
+            Assert.Null(microTime);
+        }
+
+        /// <summary>
+        /// Verify that an <see cref="MicroTimeV1"/> with an integer value deserialises correctly.
+        /// </summary>
+        [Fact]
+        public void MicroTimeWithStringDeserializesCorrectly()
+        {
+            string json = "\"2020-09-11T14:59:24.491964Z\"";
+            MicroTimeV1 microTime = JsonConvert.DeserializeObject<MicroTimeV1>(json);
+            
+            Assert.NotNull(microTime);
+            Assert.Equal(2020, microTime.Value.Year);
+            Assert.Equal(9, microTime.Value.Month);
+            Assert.Equal(11, microTime.Value.Day);
+            Assert.Equal(14, microTime.Value.Hour);
+            Assert.Equal(59, microTime.Value.Minute);
+            Assert.Equal(24, microTime.Value.Second);
+
+            // TODO: Validate microsecond-level precision.            
+        }
+
+        /// <summary>
         ///     Verify that a <see cref="ResourceEventV1{TResource}"/> can be correctly deserialised from JSON.
         /// </summary>
         /// <param name="resourceType">The type of <see cref="KubeResourceV1"/> to be deserialised via <see cref="ResourceEventV1{TResource}.Resource"/>.</param>
