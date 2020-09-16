@@ -313,7 +313,7 @@ namespace KubeClient.ResourceClients
             {
                 request = request.WithTemplateParameters(new
                 {
-                    Namespace = resource.Metadata?.Namespace ?? KubeClient.DefaultNamespace
+                    @namespace = resource.Metadata?.Namespace ?? KubeClient.DefaultNamespace
                 });
             }
 
