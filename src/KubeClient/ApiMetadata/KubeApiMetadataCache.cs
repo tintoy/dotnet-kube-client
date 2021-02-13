@@ -262,33 +262,17 @@ namespace KubeClient.ApiMetadata
 
                 KubeApiAttribute[] apiAttributes = modelType.GetTypeInfo().GetCustomAttributes<KubeApiAttribute>().ToArray();
 
-                string[] listApiPaths =
-                    apiAttributes.Where(
-                        api => api.Action == KubeAction.List
-                    )
-                    .SelectMany(api => api.Paths)
-                    .ToArray();
-                string namespacedPath = listApiPaths.FirstOrDefault(
-                    path => path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
-                );
-                if (!String.IsNullOrWhiteSpace(namespacedPath))
+                foreach (KubeApiAttribute apiAttribute in apiAttributes)
                 {
-                    apiPaths.Add(new KubeApiPathMetadata(
-                        path: namespacedPath,
-                        isNamespaced: true,
-                        verbs: new string[] { "list", "get", "put", "patch" }
-                    ));
-                }
-                string allNamespacesPath = listApiPaths.FirstOrDefault(
-                    path => !path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
-                );
-                if (!String.IsNullOrWhiteSpace(allNamespacesPath))
-                {
-                    apiPaths.Add(new KubeApiPathMetadata(
-                        path: allNamespacesPath,
-                        isNamespaced: false,
-                        verbs: new string[] { "list", "post" }
-                    ));
+                    foreach (string apiPath in apiAttribute.Paths)
+                    {
+                        bool isNamespaced = apiPath.Contains("namespaces/{namespace}");
+                        apiPaths.Add(new KubeApiPathMetadata(
+                            apiPath,
+                            isNamespaced,
+                            verbs: GetVerbs(apiAttribute.Action, isNamespaced)
+                        ));
+                    }
                 }
 
                 if (apiPaths.Count == 0)
@@ -580,6 +564,63 @@ namespace KubeClient.ApiMetadata
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
             return $"{apiVersion}/{kind}";
+        }
+
+        /// <summary>
+        ///     Get the verbs (HTTP methods) associated with the specified <see cref="KubeAction"/> value.
+        /// </summary>
+        /// <param name="apiAction">
+        ///     A <see cref="KubeAction"/> value representing the target API action.
+        /// </param>
+        /// <param name="isNamespaced">
+        ///     Is the request namespaced?
+        /// </param>
+        /// <returns>
+        ///     An array of verbs (HTTP methods).
+        /// </returns>
+        /// <remarks>
+        ///     AF: Consider making this extensible.
+        /// </remarks>
+        static string[] GetVerbs(KubeAction apiAction, bool isNamespaced)
+        {
+            switch (apiAction)
+            {
+                case KubeAction.Get:
+                case KubeAction.List:
+                {
+                    return new string[] { "get" };
+                }
+                case KubeAction.Create:
+                {
+                    return new string[] { "post" };
+                }
+                case KubeAction.Patch:
+                {
+                    return new string[] { "patch" };
+                }
+                case KubeAction.Update:
+                {
+                    return new string[] { "patch", "put" };
+                }
+                case KubeAction.Delete:
+                case KubeAction.DeleteCollection:
+                {
+                    return new string[] { "delete" };
+                }
+                case KubeAction.Watch:
+                case KubeAction.WatchList:
+                {
+                    return new string[] { "get" };
+                }
+                case KubeAction.Connect:
+                {
+                    return new string[] { "get" };
+                }
+                default:
+                {
+                    throw new NotSupportedException($"Unsupported API action: '{apiAction}'.");
+                }
+            }
         }
     }
 }

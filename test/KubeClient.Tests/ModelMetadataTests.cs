@@ -1,9 +1,10 @@
-using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace KubeClient.Tests
 {
+    using KubeClient.ApiMetadata;
     using Models;
     using TestCommon;
 
@@ -44,6 +45,44 @@ namespace KubeClient.Tests
                 typeof(ComponentStatusV1).GetProperty("Conditions")
             );
             Assert.True(isMergeProperty);
+        }
+
+        /// <summary>
+        ///     Verify that API metadata can be statically discovered from resource models.
+        /// </summary>
+        [Fact(DisplayName = "Discover static API metadata from resource models")]
+        public void Discover_ApiMetadata_Static_From_ResourceModels()
+        {
+            KubeApiMetadataCache metadataCache = new KubeApiMetadataCache();
+            metadataCache.LoadFromMetadata(
+                typeof(PodV1).Assembly,
+                clearExisting: true
+            );
+        }
+
+        /// <summary>
+        ///     Verify that API metadata can be statically discovered from a write-only resource model.
+        /// </summary>
+        [Fact(DisplayName = "Discover static API metadata from write-only resource model")]
+        public void Discover_ApiMetadata_Static_From_ResourceModels_WriteOnly()
+        {
+            KubeApiMetadataCache metadataCache = new KubeApiMetadataCache();
+            metadataCache.LoadFromMetadata(
+                typeof(TokenReviewV1).Assembly,
+                clearExisting: true
+            );
+
+            KubeApiMetadata apiMetadata = metadataCache.Get<TokenReviewV1>();
+            Assert.NotNull(apiMetadata);
+            Assert.Equal(1, apiMetadata.PathMetadata.Count);
+
+            KubeApiPathMetadata pathMetadata = apiMetadata.PathMetadata[0];
+            Assert.False(pathMetadata.IsNamespaced);
+            Assert.Equal("apis/authentication.k8s.io/v1/tokenreviews", pathMetadata.Path);
+            Assert.Equal(1, pathMetadata.Verbs.Count);
+            Assert.Equal("post",
+                pathMetadata.Verbs.First()
+            );
         }
     }
 }

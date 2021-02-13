@@ -1,0 +1,54 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  solution: '$(Build.SourcesDirectory)/KubeClient.sln'
+
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+  msbuildConfigSwitches: '/p:Configuration="$(buildConfiguration)" /p:Platform="$(buildPlatform)"'
+  msbuildVersionSwitches: '/p:VersionPrefix="$(GitVersion.Major).$(GitVersion.Minor).$(GitVersion.Build)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)" /p:AssemblyInformationalVersion="$(GitVersion.InformationalVersion)"'
+
+steps:
+
+- task: gitversion/setup@0
+  inputs:
+    versionSpec: '5.x'
+
+- task: gitversion/execute@0
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: '$(solution)'
+    restoreArguments: '$(msbuildConfigSwitches) $(msbuildVersionSwitches)'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(solution)'
+    arguments: '--no-restore $(msbuildConfigSwitches) $(msbuildVersionSwitches)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '$(solution)'
+    arguments: '--no-build $(msbuildConfigSwitches)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    projects: '$(solution)'
+    arguments: '-o "$(Build.ArtifactStagingDirectory)/out/packages" --no-restore $(msbuildConfigSwitches) $(msbuildVersionSwitches)'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/packages/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '3f9c4d5c-b6c5-4bfa-b547-2c1af592b791/06ccd91a-5590-467d-a216-68b8cb1ff6d9'

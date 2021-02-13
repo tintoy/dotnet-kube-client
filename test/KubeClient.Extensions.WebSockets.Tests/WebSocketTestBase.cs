@@ -156,7 +156,7 @@
                 Log.LogInformation("Closing client socket...");
 
                 await clientSocket.CloseAsync(closeStatus, closeStatusDescription, TestCancellation).ConfigureAwait(false);
-                Assert.Equal(WebSocketState.Aborted, clientSocket.State); // AF: Not sure whether or not this is a bug in CoreFX. See if it occurs when we directly use ClientWebSocket.
+                Assert.Equal(WebSocketState.Closed, clientSocket.State);
                 
                 Log.LogInformation("Client socket closed (CloseStatus = '{CloseStatus}', CloseStatusDescription = '{CloseStatusDescription}').", clientSocket.CloseStatus, clientSocket.CloseStatusDescription);
                 

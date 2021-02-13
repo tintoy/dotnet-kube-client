@@ -285,7 +285,6 @@ namespace KubeClient.Tests
             string json = "\"2020-09-11T14:59:24.491964Z\"";
             MicroTimeV1 microTime = JsonConvert.DeserializeObject<MicroTimeV1>(json);
             
-            Assert.NotNull(microTime);
             Assert.Equal(2020, microTime.Value.Year);
             Assert.Equal(9, microTime.Value.Month);
             Assert.Equal(11, microTime.Value.Day);

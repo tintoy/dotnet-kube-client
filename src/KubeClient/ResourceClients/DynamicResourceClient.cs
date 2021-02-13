@@ -592,6 +592,8 @@ namespace KubeClient.ResourceClients
             if (apiMetadata == null)
                 throw new KubeClientException($"Cannot find resource API for kind '{kind}', apiVersion '{apiVersion}'.");
 
+            // NOTE: If API metadata is loaded by statically scanning resource models,
+            // then the primary path below is effectively dependent on which [KubeApi] attribute appears first on the model class declaration.
             KubeApiPathMetadata apiPathMetadata = namespaced ? apiMetadata.PrimaryNamespacedPathMetadata : apiMetadata.PrimaryPathMetadata;
 
             if (apiPathMetadata == null)

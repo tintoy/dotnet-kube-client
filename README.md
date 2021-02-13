@@ -2,13 +2,13 @@
 
 [![Build Status (Travis CI)](https://travis-ci.org/tintoy/dotnet-kube-client.svg?branch=develop)](https://travis-ci.org/tintoy/dotnet-kube-client)
 
-KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard1.4`).
+KubeClient is an extensible Kubernetes API client for .NET (targets `netstandard1.4` / `netcoreapp3.1`).
 
 Note - there is also an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (both clients actually share code in a couple of places). These two clients are philosophically-different (from a design perspective) but either can be bent to fit your needs. For more information about how KubeClient differs from the official client, see the section below on [extensibility](#extensibility).
 
 ## Prerequisites
 
-**Note:** If you need WebSocket / `exec` you'll need to target `netcoreapp2.1`.
+**Note:** If you need WebSocket / `exec` you'll need to target `netcoreapp3.1`.
 
 ## Packages
 
@@ -28,7 +28,7 @@ Note - there is also an [official](https://github.com/kubernetes-client/csharp/)
   Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).   
   This package also extends resource clients to add support for those APIs.  
   
-  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).  
+  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp3.1` (which requires SDK version `3.1.201` or newer) and therefore only works on _.NET Core_ 3.1 / _.NET_ 5.0, or newer (it won't work on the full .NET Framework 4.x or older).  
   [![KubeClient.Extensions.WebSockets](https://img.shields.io/nuget/v/KubeClient.Extensions.WebSockets.svg)](https://www.nuget.org/packages/KubeClient.Extensions.WebSockets)
 
 If you want to use the latest (development) builds of KubeClient, add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
@@ -73,10 +73,10 @@ KubeApiClient client = KubeApiClient.Create("http://localhost:8001", loggers);
 
 ### Configure the client from ~/.kube/config
 
-```csharp
 using KubeClient.Extensions.KubeConfig;
 
 KubeClientOptions clientOptions = K8sConfig.Load(kubeConfigFile).ToKubeClientOptions(
+```csharp
     kubeContextName: "my-cluster",
     defaultKubeNamespace: "kube-system"
 );
