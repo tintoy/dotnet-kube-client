@@ -80,7 +80,7 @@ namespace KubeClient.Tests
             Assert.False(pathMetadata.IsNamespaced);
             Assert.Equal("apis/authentication.k8s.io/v1/tokenreviews", pathMetadata.Path);
             Assert.Equal(1, pathMetadata.Verbs.Count);
-            Assert.Equal("post",
+            Assert.Equal("create",
                 pathMetadata.Verbs.First()
             );
         }
