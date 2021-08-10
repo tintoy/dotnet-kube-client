@@ -188,7 +188,7 @@ namespace KubeClient
         ///     Create new <see cref="KubeClientOptions"/> using pod-level configuration. 
         /// </summary>
         /// <param name="serviceAccountPath">
-        ///     The location of the volume containing service account token and CA certificate 
+        ///     The location of the volume containing service account token, CA certificate, and default namespace.
         /// </param>
         /// <returns>
         ///     The configured <see cref="KubeClientOptions"/>.
@@ -204,6 +204,8 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(kubeServiceHost) || String.IsNullOrWhiteSpace(kubeServicePort))
                 throw new InvalidOperationException($"KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod ({KubeClientConstants.KubernetesServiceHost} and/or {KubeClientConstants.KubernetesServicePort} environment variable is not defined).");
 
+            string defaultNamespace = File.ReadAllText(Path.Combine(serviceAccountPath, "namespace")).Trim();
+
             string apiEndPoint = $"https://{kubeServiceHost}:{kubeServicePort}/";
             string accessToken = File.ReadAllText(Path.Combine(serviceAccountPath, "token"));
             var kubeCACertificate = new X509Certificate2(
@@ -215,7 +217,8 @@ namespace KubeClient
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.BearerToken,
                 AccessToken = accessToken,
-                CertificationAuthorityCertificate = kubeCACertificate
+                CertificationAuthorityCertificate = kubeCACertificate,
+                KubeNamespace = defaultNamespace
             };
         }
     }
