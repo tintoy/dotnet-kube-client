@@ -34,7 +34,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "eventTime")]
         [JsonProperty("eventTime", NullValueHandling = NullValueHandling.Ignore)]
-        public MicroTimeV1 EventTime { get; set; }
+        public MicroTimeV1? EventTime { get; set; }
 
         /// <summary>
         ///     A human-readable description of the status of this operation.

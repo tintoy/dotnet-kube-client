@@ -11,6 +11,7 @@ ROOT_NAMESPACE = 'KubeClient.Models'
 IGNORE_MODELS = {
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
     'io.k8s.apimachinery.pkg.apis.meta.v1.Time',
+    'io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime',
     'io.k8s.apimachinery.pkg.api.resource.Quantity',
     'io.k8s.apimachinery.pkg.util.intstr.IntOrString',
 

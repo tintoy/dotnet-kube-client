@@ -111,6 +111,31 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Watch for events relating to Secrets.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Secrets.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<IResourceEventV1<SecretV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        {
+            return ObserveEvents<SecretV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector,
+                    Watch = true
+                }),
+                operationDescription: $"watch all v1/Secrets with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
+            );
+        }
+
+        /// <summary>
         ///     Request creation of a <see cref="SecretV1"/>.
         /// </summary>
         /// <param name="newSecret">
@@ -284,6 +309,20 @@ namespace KubeClient.ResourceClients
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
         IObservable<IResourceEventV1<SecretV1>> Watch(string name, string kubeNamespace = null);
+
+        /// <summary>
+        ///     Watch for events relating to Secrets.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the Secrets.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        IObservable<IResourceEventV1<SecretV1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
 
         /// <summary>
         ///     Request creation of a <see cref="SecretV1"/>.
