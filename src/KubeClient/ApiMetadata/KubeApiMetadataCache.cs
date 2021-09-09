@@ -21,6 +21,11 @@ namespace KubeClient.ApiMetadata
         public static readonly IReadOnlyCollection<string> ApiGroupPrefixes = new string[] { "api", "apis" };
 
         /// <summary>
+        /// The character used as a separator between a resource type's groupVersion and kind.
+        /// </summary>
+        const char ResourceTypeSeparator = ':';
+
+        /// <summary>
         ///     An object used to synchronise access to cache state.
         /// </summary>
         readonly object _stateLock = new object();
@@ -466,7 +471,7 @@ namespace KubeClient.ApiMetadata
                 }
 
                 apiMetadata.Add(
-                    new KubeApiMetadata(kind, groupVersion.Version ?? groupVersion.GroupVersion, singularName, shortNames, isPreferredVersion, apiPaths)
+                    new KubeApiMetadata(kind, groupVersion.GroupVersion ?? groupVersion.Version, singularName, shortNames, isPreferredVersion, apiPaths)
                 );
             }
 
@@ -495,20 +500,25 @@ namespace KubeClient.ApiMetadata
         /// </returns>
         public (string kind, string apiVersion)[] GetKnownResourceKinds()
         {
+            List<(string kind, string apiVersion)> knownResourceKinds = new List<(string kind, string apiVersion)>();
+
             lock (_stateLock)
             {
-                return _metadata.Keys
-                    .Where(
-                        key => key.IndexOf('/') != -1
-                    )
-                    .Select(
-                        key => key.Split('/')
-                    )
-                    .Select(
-                        keyParts => (kind: keyParts[0], apiVersion: keyParts[1])
-                    )
-                    .ToArray();
+                foreach (string cacheKey in _metadata.Keys)
+                {
+                    string[] keyComponents = cacheKey.Split(new char[] { ResourceTypeSeparator }, count: 2);
+
+                    // Ignore aliases for resource types from preferred versions (i.e. ones without a groupVersion).
+                    if (keyComponents.Length != 2)
+                        continue;
+                    
+                    knownResourceKinds.Add(
+                        (kind: keyComponents[1], apiVersion: keyComponents[0])
+                    );
+                }
             }
+
+            return knownResourceKinds.ToArray();
         }
 
         /// <summary>
@@ -579,7 +589,7 @@ namespace KubeClient.ApiMetadata
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
-            return $"{apiVersion}/{kind}";
+            return $"{apiVersion}{ResourceTypeSeparator}{kind}";
         }
     }
 }
