@@ -144,7 +144,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A string containing the logs.
         /// </returns>
-        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, bool? previous = false, CancellationToken cancellationToken = default)
+        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, bool? previous = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
