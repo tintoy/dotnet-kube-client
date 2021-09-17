@@ -62,6 +62,9 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the Pods.
         /// </param>
+        /// <param name="fieldSelector">
+        ///     An optional Kubernetes field selector expression used to filter the Pods.
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
@@ -71,13 +74,14 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="PodListV1"/> containing the Pods.
         /// </returns>
-        public async Task<PodListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        public async Task<PodListV1> List(string labelSelector = null, string fieldSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default)
         {
             return await GetResourceList<PodListV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
-                    LabelSelector = labelSelector
+                    LabelSelector = labelSelector,
+                    FieldSelector = fieldSelector
                 }),
                 cancellationToken: cancellationToken
             );
@@ -89,22 +93,26 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the Pods.
         /// </param>
+        /// <param name="fieldSelector">
+        ///     An optional Kubernetes field selector expression used to filter the Pods.
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<IResourceEventV1<PodV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        public IObservable<IResourceEventV1<PodV1>> WatchAll(string labelSelector = null, string fieldSelector = null, string kubeNamespace = null)
         {
             return ObserveEvents<PodV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LabelSelector = labelSelector,
+                    FieldSelector = fieldSelector,
                     Watch = true
                 }),
-                operationDescription: $"watch all v1/Pods with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
+                operationDescription: $"watch all v1/Pods with label selector '{labelSelector ?? "<none>"}' and field selector '{fieldSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
             );
         }
 
@@ -270,7 +278,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Pod (v1) request.
@@ -313,6 +321,9 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the Pods.
         /// </param>
+        /// <param name="fieldSelector">
+        ///     An optional Kubernetes field selector expression used to filter the Pods.
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
@@ -322,7 +333,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="PodListV1"/> containing the Pods.
         /// </returns>
-        Task<PodListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
+        Task<PodListV1> List(string labelSelector = null, string fieldSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Watch for events relating to Pods.
@@ -330,13 +341,16 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the Pods.
         /// </param>
+        /// <param name="fieldSelector">
+        ///     An optional Kubernetes field selector expression used to filter the Pods.
+        /// </param>
         /// <param name="kubeNamespace">
         ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
         /// </param>
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        IObservable<IResourceEventV1<PodV1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
+        IObservable<IResourceEventV1<PodV1>> WatchAll(string labelSelector = null, string fieldSelector = null, string kubeNamespace = null);
 
         /// <summary>
         ///     Get the combined logs for the Pod with the specified name.

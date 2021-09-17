@@ -23,7 +23,7 @@ namespace KubeClient
         public const string KubernetesServicePort = "KUBERNETES_SERVICE_PORT";
 
         /// <summary>
-        ///     Default path of mounted volume containing Kubernetes service account token and CA certificate
+        ///     Default path of mounted volume containing Kubernetes service account token, CA certificate, and default namespace.
         /// </summary>
         public const string DefaultServiceAccountPath = "/var/run/secrets/kubernetes.io/serviceaccount";
     }
