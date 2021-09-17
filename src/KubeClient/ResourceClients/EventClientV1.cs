@@ -130,7 +130,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Event (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection       = KubeRequest.Create("/api/v1/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={fieldSelector?}&resourceVersion={ResourceVersion?}");
+            public static readonly HttpRequest Collection       = KubeRequest.Create("/api/v1/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&resourceVersion={ResourceVersion?}");
 
             /// <summary>
             ///     A get-by-name Event (v1) request.
@@ -140,7 +140,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Event watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("/api/v1/watch/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={fieldSelector?}&resourceVersion={ResourceVersion?}");
+            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("/api/v1/watch/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&resourceVersion={ResourceVersion?}");
         }
     }
 
