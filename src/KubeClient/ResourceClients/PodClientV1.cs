@@ -144,7 +144,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A string containing the logs.
         /// </returns>
-        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, CancellationToken cancellationToken = default)
+        public async Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, bool? previous = null, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
@@ -156,7 +156,8 @@ namespace KubeClient.ResourceClients
                     ContainerName = containerName,
                     Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
                     LimitBytes = limitBytes,
-                    TailLines = tailLines
+                    TailLines = tailLines,
+                    Previous = previous?.ToString().ToLowerInvariant()
                 }),
                 cancellationToken
             );
@@ -288,7 +289,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?container={ContainerName?}&follow={Follow?}&limitBytes={LimitBytes?}&tailLines={TailLines?}");
+            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?container={ContainerName?}&follow={Follow?}&limitBytes={LimitBytes?}&tailLines={TailLines?}&previous={Previous?}");
         }
     }
 
