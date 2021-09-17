@@ -138,6 +138,9 @@ namespace KubeClient.ResourceClients
         /// 
         ///     If not specified, logs are since from the creation of the container.
         /// </param>
+        /// <param name="previous">
+        ///     Return previous terminated container logs (defaults to <c>false</c>)?
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
@@ -375,13 +378,16 @@ namespace KubeClient.ResourceClients
         /// 
         ///     If not specified, logs are since from the creation of the container.
         /// </param>
+        /// <param name="previous">
+        ///     Return previous terminated container logs (defaults to <c>false</c>)?
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     A string containing the logs.
         /// </returns>
-        Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, CancellationToken cancellationToken = default);
+        Task<string> Logs(string name, string containerName = null, string kubeNamespace = null, int? limitBytes = null, int? tailLines = null, bool? previous = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Stream the combined logs for the Pod with the specified name.
