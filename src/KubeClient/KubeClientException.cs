@@ -1,16 +1,12 @@
-using HTTPlease;
 using System;
+using System.Runtime.Serialization;
 
 namespace KubeClient
 {
-    using Models;
-
     /// <summary>
     ///     Exception raised when an error is encountered by the Kubernetes API client.
     /// </summary>
-#if NETSTANDARD20
     [Serializable]
-#endif // NETSTANDARD20
     public class KubeClientException
         : Exception
     {
@@ -44,8 +40,6 @@ namespace KubeClient
         {
         }
 
-#if NETSTANDARD2_0   
-
         /// <summary>
         ///     Deserialisation constructor.
         /// </summary>
@@ -59,7 +53,5 @@ namespace KubeClient
             : base(info, context)
         {
         }
-
-#endif // NETSTANDARD2_0
     }
 }

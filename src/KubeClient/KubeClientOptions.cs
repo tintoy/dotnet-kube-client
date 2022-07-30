@@ -215,47 +215,11 @@ namespace KubeClient
             return new KubeClientOptions
             {
                 ApiEndPoint = new Uri(apiEndPoint),
-                AuthStrategy = KubeAuthStrategy.BearerToken,
+                AuthStrategy = KubeAuthStrategy.BearerToken(accessToken),
                 AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate,
                 KubeNamespace = defaultNamespace
             };
         }
-    }
-
-    /// <summary>
-    ///     Represents a strategy for authenticating to the Kubernetes API.
-    /// </summary>
-    public enum KubeAuthStrategy
-    {
-        /// <summary>
-        ///     No authentication (e.g. via "kubectl proxy").
-        /// </summary>
-        None,
-
-        /// <summary>
-        ///     Client certificate (i.e. mutual SSL) authentication.
-        /// </summary>
-        ClientCertificate,
-
-        /// <summary>
-        ///     Username/Password authentication.
-        /// </summary>
-        Basic,
-
-        /// <summary>
-        ///     A pre-defined (static) bearer token.
-        /// </summary>
-        BearerToken,
-
-        /// <summary>
-        ///     A bearer token obtained by an authentication provider (i.e. running an external command).
-        /// </summary>
-        BearerTokenProvider,
-
-        /// <summary>
-        ///     Client credentials obtained by a client-go credential plugin (i.e. running an external command).
-        /// </summary>
-        CredentialPlugin
     }
 }

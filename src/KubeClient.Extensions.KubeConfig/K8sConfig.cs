@@ -8,7 +8,9 @@ using YamlDotNet.Serialization;
 namespace KubeClient
 {
     using Extensions.KubeConfig.Models;
+    using KubeClient.Authentication;
     using Microsoft.Extensions.Logging;
+    using System.Security.Cryptography.X509Certificates;
 
     /// <summary>
     ///     Kubernetes client configuration.
@@ -194,70 +196,52 @@ namespace KubeClient
             kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
             kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
 
+            X509Certificate2 clientCertificate = targetUser.Config.GetClientCertificate();
+
             // Mixed authentication types are not supported.
-            if (kubeClientOptions.ClientCertificate == null)
+            if (clientCertificate == null)
             {
                 string accessToken = targetUser.Config.GetRawToken();
                 if (!String.IsNullOrWhiteSpace(accessToken))
-                {
-                    kubeClientOptions.AccessToken = accessToken;
-                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerToken;
-                }
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerToken(accessToken);
                 else if (!String.IsNullOrEmpty(targetUser.Config.Username) && !String.IsNullOrEmpty(targetUser.Config.Password))
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.Basic(targetUser.Config.Username, targetUser.Config.Password);
+                else if (targetUser.Config.AuthProvider != null)
                 {
-                    kubeClientOptions.Username = targetUser.Config.Username;
-                    kubeClientOptions.Password = targetUser.Config.Password;
-                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.Basic;
-                }
-                else
-                {
-                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.None;
-                }
+                    BearerTokenProviderAuthStrategy authStrategy = new BearerTokenProviderAuthStrategy();
 
-                AuthProviderConfig authProvider = targetUser.Config.AuthProvider;
-                if (authProvider != null)
-                {
-                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.BearerTokenProvider;
+                    AuthProviderConfig authProvider = targetUser.Config.AuthProvider;
 
                     if (authProvider.Config.TryGetValue("cmd-path", out object accessTokenCommand))
-                        kubeClientOptions.AccessTokenCommand = (string)accessTokenCommand;
+                        authStrategy.Command = (string)accessTokenCommand;
 
                     if (authProvider.Config.TryGetValue("cmd-args", out object accessTokenCommandArguments))
-                        kubeClientOptions.AccessTokenCommandArguments = (string)accessTokenCommandArguments;
+                        authStrategy.Arguments = (string)accessTokenCommandArguments;
 
                     if (authProvider.Config.TryGetValue("token-key", out object accessTokenSelector))
-                        kubeClientOptions.AccessTokenSelector = (string)accessTokenSelector;
+                        authStrategy.Selector = (string)accessTokenSelector;
 
                     if (authProvider.Config.TryGetValue("expiry-key", out object accessTokenExpirySelector))
-                        kubeClientOptions.AccessTokenExpirySelector = (string)accessTokenExpirySelector;
+                        authStrategy.ExpirySelector = (string)accessTokenExpirySelector;
 
                     if (authProvider.Config.TryGetValue("access-token", out object initialAccessToken))
-                        kubeClientOptions.InitialAccessToken = (string)initialAccessToken;
+                        authStrategy.InitialToken = (string)initialAccessToken;
 
                     if (authProvider.Config.TryGetValue("expiry", out object initialTokenExpiry))
                     {
-                        kubeClientOptions.InitialTokenExpiryUtc = DateTime.Parse((string)initialTokenExpiry,
+                        authStrategy.InitialTokenExpiryUtc = DateTime.Parse((string)initialTokenExpiry,
                             provider: CultureInfo.InvariantCulture,
                             styles: DateTimeStyles.AssumeUniversal
                         );
                     }
-                }
 
-                CredentialPluginConfig execProvider = targetUser.Config.Exec;
-                if (execProvider != null)
-                {
-                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.CredentialPlugin;
-                    kubeClientOptions.AccessTokenCommand = execProvider.Command;
-                    kubeClientOptions.AccessTokenCommandArguments = string.Join(" ", execProvider.Arguments);
-                    kubeClientOptions.AccessTokenSelector = ".status.token";
-                    kubeClientOptions.AccessTokenExpirySelector = ".status.expirationTimestamp";
-                    if (execProvider.EnvironmentVariables?.Count > 0)
-                        foreach (var envVar in execProvider.EnvironmentVariables)
-                            Environment.SetEnvironmentVariable(envVar.Name, envVar.Value);
+                    kubeClientOptions.AuthStrategy = authStrategy;
                 }
+                else
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.None;
             }
             else
-                kubeClientOptions.AuthStrategy = KubeAuthStrategy.ClientCertificate;
+                kubeClientOptions.AuthStrategy = KubeAuthStrategy.ClientCertificate(clientCertificate);
 
             return kubeClientOptions;
         }

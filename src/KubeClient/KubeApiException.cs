@@ -1,5 +1,6 @@
 using HTTPlease;
 using System;
+using System.Runtime.Serialization;
 
 namespace KubeClient
 {
@@ -8,9 +9,7 @@ namespace KubeClient
     /// <summary>
     ///     Exception raised when an error result is returned by the Kubernetes API.
     /// </summary>
-#if NETSTANDARD20
     [Serializable]
-#endif // NETSTANDARD20
     public class KubeApiException
         : KubeClientException
     {
@@ -95,8 +94,6 @@ namespace KubeClient
             Status = requestException.Response;
         }
 
-#if NETSTANDARD2_0   
-
         /// <summary>
         ///     Deserialisation constructor.
         /// </summary>
@@ -106,12 +103,10 @@ namespace KubeClient
         /// <param name="context">
         ///     A <see cref="StreamingContext"/> containing information about the origin of the serialised data.
         /// </param>
-        protected KubeClientException(SerializationInfo info, StreamingContext context)
+        protected KubeApiException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-
-#endif // NETSTANDARD2_0
 
         /// <summary>
         ///     A Kubernetes <see cref="StatusV1"/> model that (if present) contains more information about the error.

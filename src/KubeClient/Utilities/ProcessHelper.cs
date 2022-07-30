@@ -16,47 +16,16 @@ namespace KubeClient.Utilities
         /// <param name="process">
         ///     The target <see cref="Process"/>.
         /// </param>
-        /// <returns>
-        ///     The process exit code.
-        /// </returns>
-        public static Task<int> WaitForExitAsync(this Process process)
-        {
-            return process.WaitForExitAsync(CancellationToken.None);
-        }
-        
-        /// <summary>
-        ///     Asynchronously wait for the process to exit.
-        /// </summary>
-        /// <param name="process">
-        ///     The target <see cref="Process"/>.
-        /// </param>
         /// <param name="cancellationToken">
         ///     A <see cref="CancellationToken"/> that can be used to cancel the wait.
         /// </param>
         /// <returns>
         ///     The process exit code.
         /// </returns>
-        public static Task<int> WaitForExitAsync(this Process process, CancellationToken cancellationToken)
-        {
-            return process.WaitForExitAsync(cancellationToken, killIfCancelled: false);
-        }
-
-        /// <summary>
-        ///     Asynchronously wait for the process to exit.
-        /// </summary>
-        /// <param name="process">
-        ///     The target <see cref="Process"/>.
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     A <see cref="CancellationToken"/> that can be used to cancel the wait.
-        /// </param>
-        /// <param name="killIfCancelled">
-        ///     Kill the process if the <paramref name="cancellationToken"/> is cancelled?
-        /// </param>
-        /// <returns>
-        ///     The process exit code.
-        /// </returns>
-        public static Task<int> WaitForExitAsync(this Process process, CancellationToken cancellationToken, bool killIfCancelled)
+        /// <remarks>
+        ///     The process will be killed if the <paramref name="cancellationToken"/> is cancelled.
+        /// </remarks>
+        public static Task<int> WaitForExitAndKillIfCancelledAsync(this Process process, CancellationToken cancellationToken)
         {
             if (process == null)
                 throw new ArgumentNullException(nameof(process));
@@ -71,7 +40,7 @@ namespace KubeClient.Utilities
             {
                 try
                 {
-                    if (killIfCancelled && !process.HasExited)
+                    if (!process.HasExited)
                         process.Kill();
                 }
                 finally

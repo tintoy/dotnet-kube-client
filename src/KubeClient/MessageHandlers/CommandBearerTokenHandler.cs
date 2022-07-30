@@ -142,7 +142,7 @@ namespace KubeClient.MessageHandlers
 
             using (Process accessTokenCommand = Process.Start(accessTokenCommandInfo))
             {
-                int exitCode = await accessTokenCommand.WaitForExitAsync(cancellationToken, killIfCancelled: true);
+                int exitCode = await accessTokenCommand.WaitForExitAndKillIfCancelledAsync(cancellationToken);
                 if (exitCode != 0)
                 {
                     // We omit the command's STDOUT / STDERR from this exception message because they may contain sensitive information!
