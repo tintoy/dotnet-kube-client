@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace KubeClient
 {
     using Authentication;
+    using System.Collections.Generic;
 
     /// <summary>
     ///     The base class for implementations of authentication to the Kubernetes API.
@@ -123,5 +124,51 @@ namespace KubeClient
             InitialToken = initialToken,
             InitialTokenExpiryUtc = initialTokenExpiryUtc
         };
+
+        /// <summary>
+        ///     Use a client-go credential plugin ("exec" in the K8s config).
+        /// </summary>
+        /// <param name="pluginApiVersion">
+        ///     The plugin API version.
+        ///     
+        ///     <para>
+        ///         The API version returned by the plugin MUST match the version specified here.
+        ///     </para>
+        /// </param>
+        /// <param name="command">
+        ///     The command used to generate an access token for authenticating to the Kubernetes API.
+        /// </param>
+        /// <param name="arguments">
+        ///     The arguments (if any) for the command used to generate an access token for authenticating to the Kubernetes API.
+        /// </param>
+        /// <param name="environmentVariables">
+        ///     The environment variables arguments (if any) for the command used to generate an access token for authenticating to the Kubernetes API.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="CredentialPluginAuthStrategy"/>.
+        /// </returns>
+        public static CredentialPluginAuthStrategy CredentialPlugin(string pluginApiVersion, string command, IReadOnlyList<string> arguments = null, IReadOnlyDictionary<string, string> environmentVariables = null)
+        {
+            if (arguments == null)
+                throw new ArgumentNullException(nameof(arguments));
+
+            var authStrategy = new CredentialPluginAuthStrategy
+            {
+                PluginApiVersion = pluginApiVersion,
+                Command = command,
+            };
+
+            if (arguments != null)
+                authStrategy.Arguments.AddRange(arguments);
+
+            if (environmentVariables != null)
+            {
+                foreach ((string variableName, string variableValue) in authStrategy.EnvironmentVariables)
+                    authStrategy.EnvironmentVariables.Add(variableName, variableValue);
+            }
+
+            return authStrategy;
+        }
+
     }
 }

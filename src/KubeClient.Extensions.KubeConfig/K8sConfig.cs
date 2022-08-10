@@ -1,16 +1,17 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using YamlDotNet.Serialization;
 
 namespace KubeClient
 {
     using Extensions.KubeConfig.Models;
     using KubeClient.Authentication;
-    using Microsoft.Extensions.Logging;
-    using System.Security.Cryptography.X509Certificates;
 
     /// <summary>
     ///     Kubernetes client configuration.
@@ -65,16 +66,16 @@ namespace KubeClient
             //Mirror the logic that kubectl and other Kubernetes tools use for homedir resolution: https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/util/homedir/homedir.go
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var home = Environment.GetEnvironmentVariable("HOME");
+                string home = Environment.GetEnvironmentVariable("HOME");
                 if (!String.IsNullOrEmpty(home))
                     return Path.Combine(home, ".kube", "config");
 
-                var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-                var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+                string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+                string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
                 if (!String.IsNullOrEmpty(homeDrive) && !String.IsNullOrEmpty(homePath))
                     return Path.Combine(homeDrive + homePath, ".kube", "config");
 
-                var userProfile = Environment.GetEnvironmentVariable("USERPROFILE");
+                string userProfile = Environment.GetEnvironmentVariable("USERPROFILE");
                 if (!String.IsNullOrEmpty(userProfile))
                     return Path.Combine(userProfile, ".kube", "config");
             }
@@ -192,7 +193,6 @@ namespace KubeClient
 
             kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
             kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-            kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
             kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
             kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
 
@@ -236,6 +236,17 @@ namespace KubeClient
                     }
 
                     kubeClientOptions.AuthStrategy = authStrategy;
+                }
+                else if (targetUser.Config.Exec != null)
+                {
+                    CredentialPluginConfig credentialPluginConfig = targetUser.Config.Exec;
+
+                    kubeClientOptions.AuthStrategy = KubeAuthStrategy.CredentialPlugin(
+                        pluginApiVersion: credentialPluginConfig.ApiVersion,
+                        command: credentialPluginConfig.Command,
+                        arguments: credentialPluginConfig.Arguments,
+                        environmentVariables: credentialPluginConfig.EnvironmentVariables.ToDictionary(variable => variable.Name, variable => variable.Value)
+                    );
                 }
                 else
                     kubeClientOptions.AuthStrategy = KubeAuthStrategy.None;

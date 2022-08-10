@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using KubeClient.Utilities;
@@ -13,7 +14,7 @@ namespace KubeClient.MessageHandlers
     /// <summary>
     ///     HTTP message handler that runs a command to obtain a bearer token and adds it to outgoing requests.
     /// </summary>
-    public class CommandBearerTokenHandler
+    public class ExecCommandBearerTokenHandler
         : BearerTokenHandler
     {
         /// <summary>
@@ -54,10 +55,10 @@ namespace KubeClient.MessageHandlers
         /// <summary>
         ///     Environment variables assigned to the executed command
         /// </summary>
-        private readonly Dictionary<string, string> _environmentVariables;
+        private readonly IReadOnlyDictionary<string, string> _environmentVariables;
 
         /// <summary>
-        ///     Create a new <see cref="CommandBearerTokenHandler"/>.
+        ///     Create a new <see cref="ExecCommandBearerTokenHandler"/>.
         /// </summary>
         /// <param name="accessTokenCommand">
         ///     The command to execute in order to obtain the access token for outgoing requests.
@@ -80,7 +81,7 @@ namespace KubeClient.MessageHandlers
         /// <param name="environmentVariables">
         ///     Environment variables assigned to the executed command
         /// </param>
-        public CommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, DateTime? initialTokenExpiryUtc = null, Dictionary<string, string> environmentVariables = null)
+        public ExecCommandBearerTokenHandler(string accessTokenCommand, string accessTokenCommandArguments, string accessTokenSelector, string accessTokenExpirySelector, string initialAccessToken = null, DateTime? initialTokenExpiryUtc = null, IReadOnlyDictionary<string, string> environmentVariables = null)
         {
             if (String.IsNullOrWhiteSpace(accessTokenCommand))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'accessTokenCommand'.", nameof(accessTokenCommand));
@@ -100,7 +101,7 @@ namespace KubeClient.MessageHandlers
                 _accessToken = initialAccessToken;
 
             _accessTokenExpiresUtc = initialTokenExpiryUtc;
-            _environmentVariables = environmentVariables;
+            _environmentVariables = environmentVariables?.ToDictionary(entry => entry.Key, entry => entry.Value, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

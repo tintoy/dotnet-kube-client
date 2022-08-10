@@ -1,3 +1,4 @@
+using KubeClient.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -61,7 +62,7 @@ namespace KubeClient.Extensions.WebSockets
         ///     Default is <see cref="SslProtocols.None"/>, which lets the platform select the most appropriate protocol.
         /// </remarks>
         public SslProtocols EnabledSslProtocols { get; set; } = SslProtocols.None;
-        
+
         /// <summary>
         ///     The WebSocket keep-alive interval.
         /// </summary>
@@ -80,44 +81,75 @@ namespace KubeClient.Extensions.WebSockets
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
-            
-            var socketOptions = new K8sWebSocketOptions();
 
             KubeClientOptions clientOptions = client.GetClientOptions();
-            
-            if (!String.IsNullOrWhiteSpace(clientOptions.AccessToken))
-                socketOptions.RequestHeaders["Authorization"] = $"Bearer {clientOptions.AccessToken}";
 
-            if (clientOptions.ClientCertificate != null)
-                socketOptions.ClientCertificates.Add(clientOptions.ClientCertificate);
+            return FromClientOptions(clientOptions);
+        }
+
+        /// <summary>
+        ///     Create <see cref="K8sWebSocketOptions"/> using the client's authentication settings.
+        /// </summary>
+        /// <param name="clientOptions">
+        ///     The <see cref="KubeClientOptions"/>.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="K8sWebSocketOptions"/>.
+        /// </returns>
+        public static K8sWebSocketOptions FromClientOptions(KubeClientOptions clientOptions)
+        {
+            if (clientOptions == null)
+                throw new ArgumentNullException(nameof(clientOptions));
+
+            var socketOptions = new K8sWebSocketOptions();
+
+            // TODO: Expose functionality for obtaining access token via KubeAuthStrategy and call it from here, rather than using the special-case credential configuration logic below.
+
+            switch (clientOptions.AuthStrategy)
+            {
+                case CertificateAuthStrategy certificateAuthStrategy:
+                {
+                    if (certificateAuthStrategy.Certificate != null)
+                        socketOptions.ClientCertificates.Add(certificateAuthStrategy.Certificate);
+
+                    break;
+                }
+                case BearerTokenAuthStrategy bearerTokenAuthStrategy:
+                {
+                    if (!String.IsNullOrWhiteSpace(bearerTokenAuthStrategy.Token))
+                        socketOptions.RequestHeaders["Authorization"] = $"Bearer {bearerTokenAuthStrategy.Token}";
+
+                    break;
+                }
+            }
 
             if (clientOptions.CertificationAuthorityCertificate != null)
             {
                 socketOptions.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
-				{
-					if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors)
-						return false;
+                {
+                    if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors)
+                        return false;
 
-					try
-					{
-						using (X509Chain certificateChain = new X509Chain())
-						{
-							certificateChain.ChainPolicy.ExtraStore.Add(clientOptions.CertificationAuthorityCertificate);
-							certificateChain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
-							certificateChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-							
-							return certificateChain.Build(
+                    try
+                    {
+                        using (X509Chain certificateChain = new X509Chain())
+                        {
+                            certificateChain.ChainPolicy.ExtraStore.Add(clientOptions.CertificationAuthorityCertificate);
+                            certificateChain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+                            certificateChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+
+                            return certificateChain.Build(
                                 (X509Certificate2)certificate
                             );
-						}
-					}
-					catch (Exception chainException)
-					{
+                        }
+                    }
+                    catch (Exception chainException)
+                    {
                         Debug.WriteLine(chainException);
 
-						return false;
-					}
-				};
+                        return false;
+                    }
+                };
             }
             else if (clientOptions.AllowInsecure)
                 socketOptions.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;

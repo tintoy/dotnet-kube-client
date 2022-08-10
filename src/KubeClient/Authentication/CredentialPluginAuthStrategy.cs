@@ -105,13 +105,9 @@ namespace KubeClient.Authentication
 
             clonedStrategy.Arguments.AddRange(Arguments);
 
-            foreach ( string variableName in EnvironmentVariables.Keys )
-            {
-                clonedStrategy.EnvironmentVariables.Add(variableName,
-                    value: EnvironmentVariables[variableName]
-                );
-            }
-
+            foreach ((string variableName, string variableValue) in EnvironmentVariables)
+                clonedStrategy.EnvironmentVariables.Add(variableName, variableValue);
+            
             return clonedStrategy;
         }
     }

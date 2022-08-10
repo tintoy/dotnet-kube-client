@@ -81,7 +81,7 @@ namespace KubeClient.MessageHandlers
             _expectedApiVersion = expectedApiVersion;
             _pluginCommand = pluginCommand;
             _pluginCommandArguments = pluginCommandArguments?.ToArray() ?? new string[0];
-            _pluginCommandEnvironment = pluginCommandEnvironment?.ToDictionary(entry => entry.Key, entry => entry.Value) ?? new Dictionary<string, string>();
+            _pluginCommandEnvironment = pluginCommandEnvironment?.ToDictionary(entry => entry.Key, entry => entry.Value, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

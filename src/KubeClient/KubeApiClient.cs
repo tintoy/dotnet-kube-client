@@ -219,7 +219,6 @@ namespace KubeClient
             {
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.BearerToken(accessToken),
-                AccessToken = accessToken,
                 CertificationAuthorityCertificate = expectServerCertificate,
                 LoggerFactory = loggerFactory
             });
@@ -249,7 +248,6 @@ namespace KubeClient
             {
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.ClientCertificate(clientCertificate),
-                ClientCertificate = clientCertificate,
                 CertificationAuthorityCertificate = expectServerCertificate,
                 LoggerFactory = loggerFactory
             });

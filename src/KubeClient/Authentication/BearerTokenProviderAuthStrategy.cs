@@ -7,7 +7,7 @@ namespace KubeClient.Authentication
     using MessageHandlers;
 
     /// <summary>
-    ///     A Kubernetes API authentication strategy that uses an access token provided by a legacy authentication provider ("auth-provider" in the K8s config).
+    ///     A Kubernetes API authentication strategy that uses an access token provided by a authentication provider ("auth-provider" in the K8s config).
     /// </summary>
     public class BearerTokenProviderAuthStrategy
         : KubeAuthStrategy
@@ -84,7 +84,7 @@ namespace KubeClient.Authentication
             Validate();
 
             return clientBuilder.AddHandler(
-                () => new CommandBearerTokenHandler(Command, Arguments, Selector, ExpirySelector, InitialToken, InitialTokenExpiryUtc)
+                () => new ExecCommandBearerTokenHandler(Command, Arguments, Selector, ExpirySelector, InitialToken, InitialTokenExpiryUtc)
             );
         }
 

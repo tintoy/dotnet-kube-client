@@ -44,59 +44,9 @@ namespace KubeClient
         public Uri ApiEndPoint { get; set; }
 
         /// <summary>
-        ///     The access token used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string AccessToken { get; set; }
-
-        /// <summary>
-        ///     The username used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        ///     The password used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        ///     The command used to generate an access token for authenticating to the Kubernetes API.
-        /// </summary>
-        public string AccessTokenCommand { get; set; }
-
-        /// <summary>
-        ///     The command arguments used to generate an access token for authenticating to the Kubernetes API.
-        /// </summary>
-        public string AccessTokenCommandArguments { get; set; }
-
-        /// <summary>
-        ///     The Go-style selector used to retrieve the access token from the command output.
-        /// </summary>
-        public string AccessTokenSelector { get; set; }
-
-        /// <summary>
-        ///     The Go-style selector used to retrieve the access token's expiry date/time from the command output.
-        /// </summary>
-        public string AccessTokenExpirySelector { get; set; }
-        
-        /// <summary>
-        ///     The initial access token used to authenticate to the Kubernetes API.
-        /// </summary>
-        public string InitialAccessToken { get; set; }
-        
-        /// <summary>
-        ///     The initial token expiry used to authenticate to the Kubernetes API.
-        /// </summary>
-        public DateTime? InitialTokenExpiryUtc { get; set; }
-        
-        /// <summary>
         ///     The strategy used for authenticating to the Kubernetes API.
         /// </summary>
         public KubeAuthStrategy AuthStrategy { get; set; }
-
-        /// <summary>
-        ///     The client certificate used to authenticate to the Kubernetes API.
-        /// </summary>
-        public X509Certificate2 ClientCertificate { get; set; }
 
         /// <summary>
         ///     The expected CA certificate used by the Kubernetes API.
@@ -141,18 +91,10 @@ namespace KubeClient
         {
             var clonedOptions = new KubeClientOptions
             {
-                AccessToken = AccessToken,
-                AccessTokenCommand = AccessTokenCommand,
-                AccessTokenCommandArguments = AccessTokenCommandArguments,
-                AccessTokenExpirySelector = AccessTokenExpirySelector,
-                AccessTokenSelector = AccessTokenSelector,
                 AllowInsecure = AllowInsecure,
                 ApiEndPoint = ApiEndPoint,
                 AuthStrategy = AuthStrategy,
                 CertificationAuthorityCertificate = CertificationAuthorityCertificate,
-                ClientCertificate = ClientCertificate,
-                InitialAccessToken = InitialAccessToken,
-                InitialTokenExpiryUtc = InitialTokenExpiryUtc,
                 KubeNamespace = KubeNamespace,
                 LoggerFactory = LoggerFactory,
                 LogHeaders = LogHeaders,
@@ -174,9 +116,6 @@ namespace KubeClient
         {
             if (ApiEndPoint == null || !ApiEndPoint.IsAbsoluteUri)
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid API end-point.");
-
-            if (ClientCertificate != null && !ClientCertificate.HasPrivateKey)
-                throw new KubeClientException("Invalid KubeClientOptions: the private key for the supplied client certificate is not available.");
 
             if (String.IsNullOrWhiteSpace(KubeNamespace))
                 throw new KubeClientException("Invalid KubeClientOptions: must specify a valid default namespace.");
@@ -216,7 +155,6 @@ namespace KubeClient
             {
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.BearerToken(accessToken),
-                AccessToken = accessToken,
                 CertificationAuthorityCertificate = kubeCACertificate,
                 KubeNamespace = defaultNamespace
             };
