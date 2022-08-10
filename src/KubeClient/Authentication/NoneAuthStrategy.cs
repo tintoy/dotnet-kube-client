@@ -1,4 +1,5 @@
 ﻿using HTTPlease;
+using System;
 using System.Net.Http;
 
 namespace KubeClient.Authentication
@@ -41,7 +42,29 @@ namespace KubeClient.Authentication
         /// <returns>
         ///     The configured <see cref="ClientBuilder"/>.
         /// </returns>
-        public override ClientBuilder Configure(ClientBuilder clientBuilder) => clientBuilder;
+        public override ClientBuilder Configure(ClientBuilder clientBuilder)
+        {
+            if (clientBuilder == null)
+                throw new ArgumentNullException(nameof(clientBuilder));
+
+            Validate();
+
+            return clientBuilder;
+        }
+
+        /// <summary>
+        ///     Configure client authentication.
+        /// </summary>
+        /// <param name="clientAuthenticationConfig">
+        ///     The client authentication configuration.
+        /// </param>
+        public override void Configure(IClientAuthenticationConfig clientAuthenticationConfig)
+        {
+            if (clientAuthenticationConfig == null)
+                throw new ArgumentNullException(nameof(clientAuthenticationConfig));
+
+            Validate();
+        }
 
         /// <summary>
         ///     Create a deep clone of the authentication strategy.

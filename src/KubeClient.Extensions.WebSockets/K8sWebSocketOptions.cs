@@ -12,6 +12,7 @@ namespace KubeClient.Extensions.WebSockets
     ///     Options for connecting to Kubernetes web sockets.
     /// </summary>
     public class K8sWebSocketOptions
+        : IClientAuthenticationConfig
     {
         /// <summary>
         ///     The default size (in bytes) for WebSocket send / receive buffers.
@@ -69,6 +70,40 @@ namespace KubeClient.Extensions.WebSockets
         public TimeSpan KeepAliveInterval { get; set; } = TimeSpan.FromSeconds(5);
 
         /// <summary>
+        ///     Add a client certificate for authentication to the Kubernetes API.
+        /// </summary>
+        /// <param name="certificate">
+        ///     An <see cref="X509Certificate2"/> representing the client certificate to use.
+        /// </param>
+        void IClientAuthenticationConfig.AddClientCertificate(X509Certificate2 certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            ClientCertificates.Add(certificate);
+        }
+
+        /// <summary>
+        ///     Configure the HTTP "Authorization" header for authentication to the Kubernetes API.
+        /// </summary>
+        /// <param name="scheme">
+        ///     The authentication scheme (e.g. "Basic", "Bearer", etc).
+        /// </param>
+        /// <param name="value">
+        ///     The authentication value.
+        /// </param>
+        void IClientAuthenticationConfig.SetAuthorizationHeader(string scheme, string value)
+        {
+            if (String.IsNullOrWhiteSpace(scheme))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(scheme)}.", nameof(scheme));
+
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
+            RequestHeaders[HttpKnownHeaderNames.Authorization] = $"{scheme} ${value}";
+        }
+
+        /// <summary>
         ///     Create <see cref="K8sWebSocketOptions"/> using the client's authentication settings.
         /// </summary>
         /// <param name="client">
@@ -103,7 +138,9 @@ namespace KubeClient.Extensions.WebSockets
 
             var socketOptions = new K8sWebSocketOptions();
 
-            // TODO: Expose functionality for obtaining access token via KubeAuthStrategy and call it from here, rather than using the special-case credential configuration logic below.
+            // NOTE: Not all authentication strategies are supported yet.
+            if (clientOptions.AuthStrategy != null)
+                clientOptions.AuthStrategy.Configure(socketOptions);
 
             switch (clientOptions.AuthStrategy)
             {

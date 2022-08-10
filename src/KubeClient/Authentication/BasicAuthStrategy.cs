@@ -66,6 +66,23 @@ namespace KubeClient.Authentication
         }
 
         /// <summary>
+        ///     Configure client authentication.
+        /// </summary>
+        /// <param name="clientAuthenticationConfig">
+        ///     The client authentication configuration.
+        /// </param>
+        public override void Configure(IClientAuthenticationConfig clientAuthenticationConfig)
+        {
+            if (clientAuthenticationConfig == null)
+                throw new ArgumentNullException(nameof(clientAuthenticationConfig));
+
+            clientAuthenticationConfig.SetAuthorizationHeader(
+                scheme: "Basic",
+                value: BasicAuthenticationHandler.EncodeHeaderValue(UserName, Password)
+            );
+        }
+
+        /// <summary>
         ///     Create a deep clone of the authentication strategy.
         /// </summary>
         /// <returns>

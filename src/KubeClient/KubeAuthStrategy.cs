@@ -33,6 +33,14 @@ namespace KubeClient
         public abstract ClientBuilder Configure(ClientBuilder clientBuilder);
 
         /// <summary>
+        ///     Configure client authentication.
+        /// </summary>
+        /// <param name="clientAuthenticationConfig">
+        ///     The client authentication configuration.
+        /// </param>
+        public abstract void Configure(IClientAuthenticationConfig clientAuthenticationConfig);
+
+        /// <summary>
         ///     Create a deep clone of the authentication strategy.
         /// </summary>
         /// <returns>
