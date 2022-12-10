@@ -1,7 +1,7 @@
 dist: trusty
 language: csharp
 mono: none
-dotnet: 6.0.11
+dotnet: 6.0.403
 git:
   depth: 9999999
 branches:
