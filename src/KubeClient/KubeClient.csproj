@@ -10,7 +10,7 @@
       <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
       <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
       <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="1.1.2" />
-      <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
       <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
       <PackageReference Include="System.Reactive" Version="3.1.1" />
       <PackageReference Include="System.ValueTuple" Version="4.4.0" />
