@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HTTPlease.Core" Version="1.8.9" />
-    <PackageReference Include="HTTPlease.Diagnostics" Version="1.8.9" />
-    <PackageReference Include="HTTPlease.Formatters.Json" Version="1.8.9" />
-    <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.8.9" />
+    <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>
