@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <Description>WebSockets support for KubeClient</Description>
   </PropertyGroup>
@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
+      <PackageReference Include="HTTPlease.Core" Version="1.8.9" />
       <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0-pre-05" />
   </ItemGroup>
 
