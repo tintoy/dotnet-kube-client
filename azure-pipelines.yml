@@ -36,7 +36,7 @@ steps:
   
   inputs:
     command: 'restore'
-    projects: './KubeClient.sln'
+    projects: '$(Build.SourcesDirectory)/KubeClient.sln'
     restoreArguments: '/p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
 
 - task: DotNetCoreCLI@2
@@ -44,7 +44,7 @@ steps:
   
   inputs:
     command: 'build'
-    projects: './test/*.Tests/*.Tests.csproj'
+    projects: '$(Build.SourcesDirectory)/KubeClient.sln'
     arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
 
 - task: DotNetCoreCLI@2
@@ -52,7 +52,7 @@ steps:
   
   inputs:
     command: 'test'
-    projects: './KubeClient.sln'
+    projects: '$(Build.SourcesDirectory)/test/KubeClient.*.Tests/*.csproj'
     arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
 
 - task: DotNetCoreCLI@2
@@ -60,7 +60,7 @@ steps:
   
   inputs:
     command: 'pack'
-    projects: './KubeClient.sln'
+    projects: '$(Build.SourcesDirectory)/KubeClient.sln'
     arguments: '--configuration "$(buildConfiguration)" -o "$(Build.ArtifactStagingDirectory)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
     modifyOutputPath: false
 
