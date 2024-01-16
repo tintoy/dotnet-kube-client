@@ -2,6 +2,8 @@ trigger:
   branches:
     include:
       - master
+      - develop
+      - release/*
 
   tags:
     include:
