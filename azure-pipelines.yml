@@ -61,8 +61,8 @@ steps:
   inputs:
     command: 'pack'
     projects: '$(Build.SourcesDirectory)/KubeClient.sln'
-    arguments: '--configuration "$(buildConfiguration)" -o "$(Build.ArtifactStagingDirectory)/packages" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
-    modifyOutputPath: false
+    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+    outputDir: '$(Build.ArtifactStagingDirectory)/packages'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish packages as artifact'
