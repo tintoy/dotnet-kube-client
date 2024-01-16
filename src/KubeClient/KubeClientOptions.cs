@@ -134,34 +134,49 @@ namespace KubeClient
         public Dictionary<string, string> EnvironmentVariables { get; set; }
 
         /// <summary>
-        /// Create a copy of the <see cref="KubeClientOptions"/>.
+        ///     Create a copy of the <see cref="KubeClientOptions"/>.
         /// </summary>
-        /// <returns>The new <see cref="KubeClientOptions"/>.</returns>
+        /// <returns>
+        ///     The new <see cref="KubeClientOptions"/>.
+        /// </returns>
         public KubeClientOptions Clone()
         {
-            var clonedOptions = new KubeClientOptions
-            {
-                AccessToken = AccessToken,
-                AccessTokenCommand = AccessTokenCommand,
-                AccessTokenCommandArguments = AccessTokenCommandArguments,
-                AccessTokenExpirySelector = AccessTokenExpirySelector,
-                AccessTokenSelector = AccessTokenSelector,
-                AllowInsecure = AllowInsecure,
-                ApiEndPoint = ApiEndPoint,
-                AuthStrategy = AuthStrategy,
-                CertificationAuthorityCertificate = CertificationAuthorityCertificate,
-                ClientCertificate = ClientCertificate,
-                InitialAccessToken = InitialAccessToken,
-                InitialTokenExpiryUtc = InitialTokenExpiryUtc,
-                KubeNamespace = KubeNamespace,
-                LoggerFactory = LoggerFactory,
-                LogHeaders = LogHeaders,
-                LogPayloads = LogPayloads,
-                EnvironmentVariables = EnvironmentVariables
-            };
-            clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
-
+            var clonedOptions = new KubeClientOptions();
+            
+            CopyTo(clonedOptions);
+            
             return clonedOptions;
+        }
+
+        /// <summary>
+        ///     Copy all properties from the <see cref="KubeClientOptions"/> to other <see cref="KubeClientOptions"/>.
+        /// </summary>
+        /// <param name="toOptions">
+        ///     The target <see cref="KubeClientOptions"/>.
+        /// </param>
+        public void CopyTo(KubeClientOptions toOptions)
+        {
+            if (toOptions == null)
+                throw new ArgumentNullException(nameof(toOptions));
+
+            toOptions.AccessToken = AccessToken;
+            toOptions.AccessTokenCommand = AccessTokenCommand;
+            toOptions.AccessTokenCommandArguments = AccessTokenCommandArguments;
+            toOptions.AccessTokenExpirySelector = AccessTokenExpirySelector;
+            toOptions.AccessTokenSelector = AccessTokenSelector;
+            toOptions.AllowInsecure = AllowInsecure;
+            toOptions.ApiEndPoint = ApiEndPoint;
+            toOptions.AuthStrategy = AuthStrategy;
+            toOptions.CertificationAuthorityCertificate = CertificationAuthorityCertificate;
+            toOptions.ClientCertificate = ClientCertificate;
+            toOptions.InitialAccessToken = InitialAccessToken;
+            toOptions.InitialTokenExpiryUtc = InitialTokenExpiryUtc;
+            toOptions.KubeNamespace = KubeNamespace;
+            toOptions.LoggerFactory = LoggerFactory;
+            toOptions.LogHeaders = LogHeaders;
+            toOptions.LogPayloads = LogPayloads;
+            toOptions.EnvironmentVariables = EnvironmentVariables;
+            toOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
         }
 
         /// <summary>
