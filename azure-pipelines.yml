@@ -31,6 +31,13 @@ steps:
   displayName: 'Determine build version'
   name: GitVersion
 
+- script: |
+    BUILD_SEMVER="$(GitVersion.FullSemVer)"
+    
+    echo "##vso[task.setvariable variable=BUILD_SEMVER]$BUILD_SEMVER"
+    echo "BUILD_SEMVER='$BUILD_SEMVER'"
+  displayName: Set environment variables from build version
+
 - task: DotNetCoreCLI@2
   displayName: 'Restore packages'
   
@@ -61,8 +68,11 @@ steps:
   inputs:
     command: 'pack'
     projects: '$(Build.SourcesDirectory)/KubeClient.sln'
-    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+
+    arguments: '--configuration "$(buildConfiguration)"'
     outputDir: '$(Build.ArtifactStagingDirectory)/packages'
+    versioningScheme: byEnvVar
+    versionEnvVar: BUILD_SEMVER
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish packages as artifact'
