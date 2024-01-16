@@ -44,7 +44,7 @@ steps:
   
   inputs:
     command: 'build'
-    projects: './KubeClient.sln'
+    projects: './test/*.Tests/*.Tests.csproj'
     arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
 
 - task: DotNetCoreCLI@2
