@@ -61,14 +61,14 @@ steps:
   inputs:
     command: 'pack'
     projects: '$(Build.SourcesDirectory)/KubeClient.sln'
-    arguments: '--configuration "$(buildConfiguration)" -o "$(Build.ArtifactStagingDirectory)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+    arguments: '--configuration "$(buildConfiguration)" -o "$(Build.ArtifactStagingDirectory)/packages" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
     modifyOutputPath: false
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish packages as artifact'
   
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/packages'
     ArtifactName: 'packages'
     publishLocation: 'Container'
 
@@ -85,5 +85,5 @@ steps:
     tagSource: 'gitTag'
     tagPattern: '^v\d+\.\d+.\d+(-[A-Za-z0-9%\.]+)?$'
     addChangeLog: true
-    assets: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    assets: '$(Build.ArtifactStagingDirectory)/packages/*.nupkg'
     assetUploadMode: replace
