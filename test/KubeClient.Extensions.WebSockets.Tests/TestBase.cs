@@ -50,7 +50,7 @@ namespace KubeClient.Extensions.WebSockets.Tests
             Assert.True(CurrentTest != null, "Cannot retrieve current test from ITestOutputHelper.");
 
             Disposal.Add(
-                Log.BeginScope("CurrentTest", CurrentTest.DisplayName)
+                Log.BeginScope("CurrentTest {CurrentTest}", CurrentTest.DisplayName)
             );
         }
 

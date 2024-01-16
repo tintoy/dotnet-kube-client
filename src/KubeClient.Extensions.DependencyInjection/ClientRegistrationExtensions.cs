@@ -155,41 +155,6 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Add named <see cref="KubeClientOptions"/> to the service collection.
-        /// </summary>
-        /// <param name="services">
-        ///     The service collection to configure.
-        /// </param>
-        /// <param name="name">
-        ///     A name used to resolve the options.
-        /// </param>
-        /// <param name="configure">
-        ///     A delegate that performs required configuration of the <see cref="KubeClientOptions"/>.
-        /// </param>
-        /// <returns>
-        ///     The configured service collection.
-        /// </returns>
-        public static IServiceCollection AddKubeClientOptions(this IServiceCollection services, string name, Action<KubeClientOptions> configure)
-        {
-            if (services == null)
-                throw new ArgumentNullException(nameof(services));
-
-            if (String.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-
-            if (configure == null)
-                throw new ArgumentNullException(nameof(configure));
-            
-            services.Configure<KubeClientOptions>(name, options =>
-            {
-                configure(options);
-                options.EnsureValid();
-            });
-
-            return services;
-        }
-
-        /// <summary>
         ///     Add support for named Kubernetes client instances.
         /// </summary>
         /// <param name="services">
