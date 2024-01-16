@@ -1,0 +1,87 @@
+trigger:
+  branches:
+    include:
+      - master
+
+  tags:
+    include:
+      - 'v*'
+
+pr:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: gitversion/setup@0
+  displayName: 'Install GitVersion'
+
+  inputs:
+   versionSpec: 5.x
+
+- task: GitVersion/execute@0
+  displayName: 'Determine build version'
+  name: GitVersion
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore packages'
+  
+  inputs:
+    command: 'restore'
+    projects: './KubeClient.sln'
+    restoreArguments: '/p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  
+  inputs:
+    command: 'build'
+    projects: './KubeClient.sln'
+    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests'
+  
+  inputs:
+    command: 'test'
+    projects: './KubeClient.sln'
+    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Create packages'
+  
+  inputs:
+    command: 'pack'
+    projects: './KubeClient.sln'
+    arguments: '--configuration "$(buildConfiguration)" -o "$(Build.ArtifactStagingDirectory)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+    modifyOutputPath: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish packages as artifact'
+  
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    ArtifactName: 'packages'
+    publishLocation: 'Container'
+
+- task: GitHubRelease@1
+  displayName: 'Create GitHub release from tag'
+
+  condition: contains(variables['Build.SourceBranch'], 'refs/tags/v')
+  
+  inputs:
+    gitHubConnection: 'github.com_tintoy'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'gitTag'
+    tagPattern: '^v\d+\.\d+.\d+(-[A-Za-z0-9%\.]+)?$'
+    addChangeLog: true
+    assets: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    assetUploadMode: replace
