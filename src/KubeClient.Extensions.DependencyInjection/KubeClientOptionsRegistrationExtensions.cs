@@ -330,7 +330,7 @@ namespace KubeClient
         /// </returns>
         static FileInfo GetKubeConfigFile(string kubeConfigFileName)
         {
-            if (!String.IsNullOrWhiteSpace(kubeConfigFileName))
+            if (String.IsNullOrWhiteSpace(kubeConfigFileName))
                 kubeConfigFileName = K8sConfig.Locate();
 
             return new FileInfo(kubeConfigFileName);
