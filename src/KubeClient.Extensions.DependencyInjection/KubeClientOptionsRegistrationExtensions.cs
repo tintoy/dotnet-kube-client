@@ -108,29 +108,9 @@ namespace KubeClient
             services.Configure<KubeClientOptions>(kubeClientOptions =>
             {
                 K8sConfig config = K8sConfig.Load(kubeConfigFile);
+                KubeClientOptions optionsForTargetContext = config.ToKubeClientOptions(kubeContextName, defaultKubeNamespace);
 
-                string targetContextName = kubeContextName ?? config.CurrentContextName;
-                if (String.IsNullOrWhiteSpace(targetContextName))
-                    throw new InvalidOperationException("The kubeContextName parameter was not specified, and the Kubernetes client configuration does not specify a current context.");
-
-                Context targetContext = config.Contexts.Find(context => context.Name == targetContextName);
-                if (targetContext == null)
-                    throw new InvalidOperationException($"Cannot find a context in the Kubernetes client configuration named '{targetContextName}'.");
-
-                Cluster targetCluster = config.Clusters.Find(cluster => cluster.Name == targetContext.Config.ClusterName);
-                if (targetCluster == null)
-                    throw new InvalidOperationException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
-
-                UserIdentity targetUser = config.UserIdentities.Find(user => user.Name == targetContext.Config.UserName);
-                if (targetUser == null)
-                    throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
-
-                kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
-                kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-
-                kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
-                kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+                optionsForTargetContext.CopyTo(kubeClientOptions);
             });
 
             return services;
@@ -173,29 +153,9 @@ namespace KubeClient
             services.AddKubeClientOptions(name, kubeClientOptions =>
             {
                 K8sConfig config = K8sConfig.Load(kubeConfigFile);
+                KubeClientOptions optionsForTargetContext = config.ToKubeClientOptions(kubeContextName, defaultKubeNamespace);
 
-                string targetContextName = kubeContextName ?? config.CurrentContextName;
-                if (String.IsNullOrWhiteSpace(targetContextName))
-                    throw new K8sConfigException("The kubeContextName parameter was not specified, and the Kubernetes client configuration does not specify a current context.");
-
-                Context targetContext = config.Contexts.Find(context => context.Name == targetContextName);
-                if (targetContext == null)
-                    throw new K8sConfigException($"Cannot find a context in the Kubernetes client configuration named '{targetContextName}'.");
-
-                Cluster targetCluster = config.Clusters.Find(cluster => cluster.Name == targetContext.Config.ClusterName);
-                if (targetCluster == null)
-                    throw new K8sConfigException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
-
-                UserIdentity targetUser = config.UserIdentities.Find(user => user.Name == targetContext.Config.UserName);
-                if (targetUser == null)
-                    throw new K8sConfigException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
-
-                kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
-                kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-                kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
-                kubeClientOptions.AllowInsecure = targetCluster.Config.AllowInsecure;
-                kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
+                optionsForTargetContext.CopyTo(kubeClientOptions);
             });
 
             return services;
