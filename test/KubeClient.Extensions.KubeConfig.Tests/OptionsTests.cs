@@ -36,8 +36,8 @@ namespace KubeClient.Extensions.KubeConfig.Tests
             ServiceCollection services = new ServiceCollection();
             services.AddOptions();
             services.AddKubeClientOptionsFromKubeConfig(
-                Path.Combine("Configurations", $"{configName}.yml"),
-                kubeContextName
+                kubeConfigFileName: Path.Combine("Configurations", $"{configName}.yml"),
+                kubeContextName: kubeContextName
             );
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
