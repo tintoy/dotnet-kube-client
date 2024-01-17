@@ -6,7 +6,7 @@ using System.IO;
 namespace KubeClient
 {
     using Extensions.KubeConfig.Models;
-    
+
     /// <summary>
     ///     Extension methods for registering Kubernetes client options.
     /// </summary>
@@ -83,7 +83,7 @@ namespace KubeClient
         ///     The service collection to configure.
         /// </param>
         /// <param name="kubeConfigFileName">
-        ///     The optional name of a specific configuration file to use (defaults to "$HOME/.kube/config").
+        ///     The optional name of a specific configuration file to use (if not specified, defaults to the path returned by <see cref="K8sConfig.Locate"/>).
         /// </param>
         /// <param name="kubeContextName">
         ///     The optional name of a specific Kubernetes client context to use.
@@ -127,7 +127,7 @@ namespace KubeClient
 
                 kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                 kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-                
+
                 kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
                 kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
                 kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
@@ -146,7 +146,7 @@ namespace KubeClient
         ///     The name used to resolve these options.
         /// </param>
         /// <param name="kubeConfigFileName">
-        ///     The optional name of a specific configuration file to use (defaults to "$HOME/.kube/config").
+        ///     The optional name of a specific configuration file to use (if not specified, defaults to the path returned by <see cref="K8sConfig.Locate"/>).
         /// </param>
         /// <param name="kubeContextName">
         ///     The optional name of a specific Kubernetes client context to use.
@@ -208,7 +208,7 @@ namespace KubeClient
         ///     The service collection to configure.
         /// </param>
         /// <param name="kubeConfigFileName">
-        ///     The optional name of a specific configuration file to use (defaults to "$HOME/.kube/config").
+        ///     The optional name of a specific configuration file to use (if not specified, defaults to the path returned by <see cref="K8sConfig.Locate"/>).
         /// </param>
         /// <param name="defaultKubeNamespace">
         ///     The default namespace to use (if not specified, "default" is used).
@@ -241,7 +241,7 @@ namespace KubeClient
 
                     kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                     kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-                    
+
                     kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
                     kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
                     kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
@@ -323,7 +323,7 @@ namespace KubeClient
         ///     Get a <see cref="FileInfo"/> representing a Kubernetes client configuration file.
         /// </summary>
         /// <param name="kubeConfigFileName">
-        ///     The full path to the configuration file, or <c>null</c> to use the default config file (~/.kube/config).
+        ///     The full path to the configuration file, or <c>null</c> to use the default config file (via <see cref="K8sConfig.Locate"/>).
         /// </param>
         /// <returns>
         ///     A <see cref="FileInfo"/> representing the configuration file.
@@ -331,26 +331,9 @@ namespace KubeClient
         static FileInfo GetKubeConfigFile(string kubeConfigFileName)
         {
             if (!String.IsNullOrWhiteSpace(kubeConfigFileName))
-                kubeConfigFileName = GetDefaultKubeConfigPath();
+                kubeConfigFileName = K8sConfig.Locate();
 
             return new FileInfo(kubeConfigFileName);
-        }
-
-        /// <summary>
-        ///     Determine the full path to the default Kubernetes client configuration file (~/.kube/config).
-        /// </summary>
-        /// <returns>
-        ///     The full path to the configuration file.
-        /// </returns>
-        static string GetDefaultKubeConfigPath()
-        {
-            string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-            return Path.GetFullPath(Path.Combine(
-                homeDirectory,
-                ".kube",
-                "config"
-            ));
         }
     }
 }
