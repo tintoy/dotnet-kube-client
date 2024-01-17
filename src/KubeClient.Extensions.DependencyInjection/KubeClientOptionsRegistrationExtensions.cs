@@ -281,19 +281,26 @@ namespace KubeClient
         /// <param name="services">
         ///     The service collection to configure.
         /// </param>
+        /// <param name="defaultKubeNamespace">
+        ///     The default namespace to use (if not specified, "default" is used).
+        /// </param>
         /// <returns>
         ///     The configured service collection.
         /// </returns>
-        public static IServiceCollection AddKubeClientOptionsFromPodServiceAccount(this IServiceCollection services)
+        public static IServiceCollection AddKubeClientOptionsFromPodServiceAccount(this IServiceCollection services, string defaultKubeNamespace = "default")
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
+            if (String.IsNullOrWhiteSpace(defaultKubeNamespace))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(defaultKubeNamespace)}.", nameof(defaultKubeNamespace));
+
             services.AddKubeClientOptions(kubeClientOptions =>
             {
                 KubeClientOptions fromPodServiceAccount = KubeClientOptions.FromPodServiceAccount();
-
                 fromPodServiceAccount.CopyTo(kubeClientOptions);
+
+                kubeClientOptions.KubeNamespace = defaultKubeNamespace;
             });
 
             return services;
@@ -308,10 +315,13 @@ namespace KubeClient
         /// <param name="name">
         ///     The name used to resolve these options.
         /// </param>
+        /// <param name="defaultKubeNamespace">
+        ///     The default namespace to use (if not specified, "default" is used).
+        /// </param>
         /// <returns>
         ///     The configured service collection.
         /// </returns>
-        public static IServiceCollection AddKubeClientOptionsFromPodServiceAccount(this IServiceCollection services, string name)
+        public static IServiceCollection AddKubeClientOptionsFromPodServiceAccount(this IServiceCollection services, string name, string defaultKubeNamespace = "default")
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -319,11 +329,15 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(name)}.", nameof(name));
 
+            if (String.IsNullOrWhiteSpace(defaultKubeNamespace))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(defaultKubeNamespace)}.", nameof(defaultKubeNamespace));
+
             services.AddKubeClientOptions(name, kubeClientOptions =>
             {
                 KubeClientOptions fromPodServiceAccount = KubeClientOptions.FromPodServiceAccount();
-
                 fromPodServiceAccount.CopyTo(kubeClientOptions);
+
+                kubeClientOptions.KubeNamespace = defaultKubeNamespace;
             });
 
             return services;
