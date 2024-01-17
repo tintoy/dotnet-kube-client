@@ -102,15 +102,7 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(defaultKubeNamespace))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'defaultNamespace'.", nameof(defaultKubeNamespace));
 
-            if (String.IsNullOrWhiteSpace(kubeConfigFileName))
-            {
-                kubeConfigFileName = Path.GetFullPath(Path.Combine(
-                    Environment.GetEnvironmentVariable("HOME"),
-                    ".kube",
-                    "config"
-                ));
-            }
-            FileInfo kubeConfigFile = new FileInfo(kubeConfigFileName);
+            FileInfo kubeConfigFile = GetKubeConfigFile(kubeConfigFileName);
 
             // IOptions<KubeClientOptions>
             services.Configure<KubeClientOptions>(kubeClientOptions =>
@@ -176,15 +168,7 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(defaultKubeNamespace))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'defaultNamespace'.", nameof(defaultKubeNamespace));
 
-            if (String.IsNullOrWhiteSpace(kubeConfigFileName))
-            {
-                kubeConfigFileName = Path.GetFullPath(Path.Combine(
-                    Environment.GetEnvironmentVariable("HOME"),
-                    ".kube",
-                    "config"
-                ));
-            }
-            FileInfo kubeConfigFile = new FileInfo(kubeConfigFileName);
+            FileInfo kubeConfigFile = GetKubeConfigFile(kubeConfigFileName);
 
             services.AddKubeClientOptions(name, kubeClientOptions =>
             {
@@ -240,15 +224,7 @@ namespace KubeClient
             if (String.IsNullOrWhiteSpace(defaultKubeNamespace))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'defaultNamespace'.", nameof(defaultKubeNamespace));
 
-            if (String.IsNullOrWhiteSpace(kubeConfigFileName))
-            {
-                kubeConfigFileName = Path.GetFullPath(Path.Combine(
-                    Environment.GetEnvironmentVariable("HOME"),
-                    ".kube",
-                    "config"
-                ));
-            }
-            FileInfo kubeConfigFile = new FileInfo(kubeConfigFileName);
+            FileInfo kubeConfigFile = GetKubeConfigFile(kubeConfigFileName);
 
             K8sConfig config = K8sConfig.Load(kubeConfigFile);
             foreach (Context targetContext in config.Contexts) // AF: List of contexts is static for application lifetime, but config for those contexts is dynamic.
@@ -341,6 +317,40 @@ namespace KubeClient
             });
 
             return services;
+        }
+
+        /// <summary>
+        ///     Get a <see cref="FileInfo"/> representing a Kubernetes client configuration file.
+        /// </summary>
+        /// <param name="kubeConfigFileName">
+        ///     The full path to the configuration file, or <c>null</c> to use the default config file (~/.kube/config).
+        /// </param>
+        /// <returns>
+        ///     A <see cref="FileInfo"/> representing the configuration file.
+        /// </returns>
+        static FileInfo GetKubeConfigFile(string kubeConfigFileName)
+        {
+            if (!String.IsNullOrWhiteSpace(kubeConfigFileName))
+                kubeConfigFileName = GetDefaultKubeConfigPath();
+
+            return new FileInfo(kubeConfigFileName);
+        }
+
+        /// <summary>
+        ///     Determine the full path to the default Kubernetes client configuration file (~/.kube/config).
+        /// </summary>
+        /// <returns>
+        ///     The full path to the configuration file.
+        /// </returns>
+        static string GetDefaultKubeConfigPath()
+        {
+            string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            return Path.GetFullPath(Path.Combine(
+                homeDirectory,
+                ".kube",
+                "config"
+            ));
         }
     }
 }
