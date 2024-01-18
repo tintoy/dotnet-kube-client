@@ -111,6 +111,8 @@ namespace KubeClient
                 KubeClientOptions optionsForTargetContext = config.ToKubeClientOptions(kubeContextName, defaultKubeNamespace);
 
                 optionsForTargetContext.CopyTo(kubeClientOptions);
+
+                kubeClientOptions.KubeNamespace = defaultKubeNamespace;
             });
 
             return services;
@@ -156,6 +158,8 @@ namespace KubeClient
                 KubeClientOptions optionsForTargetContext = config.ToKubeClientOptions(kubeContextName, defaultKubeNamespace);
 
                 optionsForTargetContext.CopyTo(kubeClientOptions);
+
+                kubeClientOptions.KubeNamespace = defaultKubeNamespace;
             });
 
             return services;
@@ -186,25 +190,20 @@ namespace KubeClient
 
             FileInfo kubeConfigFile = GetKubeConfigFile(kubeConfigFileName);
 
+            // List of contexts is static for application lifetime...
             K8sConfig config = K8sConfig.Load(kubeConfigFile);
-            foreach (Context targetContext in config.Contexts) // AF: List of contexts is static for application lifetime, but config for those contexts is dynamic.
+
+            foreach (Context targetContext in config.Contexts)
             {
                 services.AddKubeClientOptions(targetContext.Name, kubeClientOptions =>
                 {
-                    Cluster targetCluster = config.Clusters.Find(cluster => cluster.Name == targetContext.Config.ClusterName);
-                    if (targetCluster == null)
-                        throw new InvalidOperationException($"Cannot find a cluster in the Kubernetes client configuration named '{targetContext.Config.ClusterName}'.");
+                    // ...but config for those contexts is dynamic.
+                    K8sConfig currentConfig = K8sConfig.Load(kubeConfigFile);
 
-                    UserIdentity targetUser = config.UserIdentities.Find(user => user.Name == targetContext.Config.UserName);
-                    if (targetUser == null)
-                        throw new InvalidOperationException($"Cannot find a user identity in the Kubernetes client configuration named '{targetContext.Config.UserName}'.");
+                    KubeClientOptions optionsForTargetContext = currentConfig.ToKubeClientOptions(targetContext.Name, defaultKubeNamespace);
+                    optionsForTargetContext.CopyTo(kubeClientOptions);
 
-                    kubeClientOptions.ApiEndPoint = new Uri(targetCluster.Config.Server);
                     kubeClientOptions.KubeNamespace = defaultKubeNamespace;
-
-                    kubeClientOptions.ClientCertificate = targetUser.Config.GetClientCertificate();
-                    kubeClientOptions.CertificationAuthorityCertificate = targetCluster.Config.GetCACertificate();
-                    kubeClientOptions.AccessToken = targetUser.Config.GetRawToken();
                 });
             }
 
