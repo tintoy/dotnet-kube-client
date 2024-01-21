@@ -38,19 +38,19 @@ namespace KubeClient.Extensions.Configuration.Utilities
                 return keyPath;
 
             char[] buffer = null;
-            for (int bufferIndex = 0; bufferIndex < buffer.Length; bufferIndex++)
+            for (int pathIndex = 0; pathIndex < keyPath.Length; pathIndex++)
             { 
-                char current = keyPath[bufferIndex];
+                char current = keyPath[pathIndex];
                 if (delimiters.Contains(current))
                 {
                     if (buffer == null)
                         buffer = keyPath.ToCharArray();
 
-                    buffer[bufferIndex] = ConfigurationPathDelimiter;
+                    buffer[pathIndex] = ConfigurationPathDelimiter;
                 }
             }
 
-            if (buffer == null)
+            if (buffer != null)
                 return new string(buffer);
 
             return keyPath;
