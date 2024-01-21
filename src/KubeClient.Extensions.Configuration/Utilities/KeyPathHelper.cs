@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text;
 
 namespace KubeClient.Extensions.Configuration.Utilities
 {
@@ -39,21 +37,20 @@ namespace KubeClient.Extensions.Configuration.Utilities
             if (delimiters.Count == 0)
                 return keyPath;
 
-            bool modified = false;
-
-            char[] buffer = keyPath.ToCharArray();
+            char[] buffer = null;
             for (int bufferIndex = 0; bufferIndex < buffer.Length; bufferIndex++)
             { 
-                char current = buffer[bufferIndex];
+                char current = keyPath[bufferIndex];
                 if (delimiters.Contains(current))
                 {
+                    if (buffer == null)
+                        buffer = keyPath.ToCharArray();
+
                     buffer[bufferIndex] = ConfigurationPathDelimiter;
-                    
-                    modified = true;
                 }
             }
 
-            if (modified)
+            if (buffer == null)
                 return new string(buffer);
 
             return keyPath;
