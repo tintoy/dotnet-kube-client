@@ -4,6 +4,8 @@ using System;
 namespace KubeClient.Extensions.Configuration
 {
     using Settings;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     /// <summary>
     ///     <see cref="IConfigurationBuilder"/> extension methods for Kubernetes ConfigMaps and Secrets.
@@ -34,19 +36,20 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="throwOnNotFound">
         ///     Throw an exception if the ConfigMap was not found when the configuration is first loaded?
         /// </param>
+        /// <param name="keyPathDelimiters">
+        ///     Characters (if any) that represent delimiters between segments of key paths (e.g. '.' in "foo.bar.baz").
+        /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder,
-            KubeClientOptions clientOptions, string configMapName, string kubeNamespace = null,
-            string sectionName = null, bool reloadOnChange = false, bool throwOnNotFound = false)
+        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string configMapName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false, bool throwOnNotFound = false, IEnumerable<char> keyPathDelimiters = null)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
 
             KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return configurationBuilder.AddKubeConfigMap(client, configMapName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound);
+            return configurationBuilder.AddKubeConfigMap(client, configMapName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound, keyPathDelimiters);
         }
 
         /// <summary>
@@ -73,18 +76,25 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="throwOnNotFound">
         ///    Throw an exception if the ConfigMap was not found when the configuration is first loaded?
         /// </param>
+        /// <param name="keyPathDelimiters">
+        ///     Characters (if any) that represent delimiters between segments of key paths (e.g. '.' in "foo.bar.baz").
+        /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder,
-            KubeApiClient client, string configMapName, string kubeNamespace = null, string sectionName = null,
-            bool reloadOnChange = false, bool throwOnNotFound = false)
+        public static IConfigurationBuilder AddKubeConfigMap(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string configMapName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false, bool throwOnNotFound = false, IEnumerable<char> keyPathDelimiters = null)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
 
+            IImmutableSet<char> configuredKeyPathDelimiters;
+            if (keyPathDelimiters != null)
+                configuredKeyPathDelimiters = ImmutableHashSet.CreateRange(keyPathDelimiters);
+            else
+                configuredKeyPathDelimiters = ConfigMapConfigurationSettings.DefaultKeyPathDelimiters;
+
             return configurationBuilder.Add(new ConfigMapConfigurationSource(
-                new ConfigMapConfigurationSettings(client, configMapName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound)
+                new ConfigMapConfigurationSettings(client, configMapName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound, configuredKeyPathDelimiters)
             ));
         }
 
@@ -109,19 +119,23 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the Secret changes?
         /// </param>
+        /// <param name="throwOnNotFound">
+        ///    Throw an exception if the Secret was not found when the configuration is first loaded?
+        /// </param>
+        /// <param name="keyPathDelimiters">
+        ///     Characters (if any) that represent delimiters between segments of key paths (e.g. '.' in "foo.bar.baz").
+        /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder,
-            KubeClientOptions clientOptions, string secretName, string kubeNamespace = null, string sectionName = null,
-            bool reloadOnChange = false)
+        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeClientOptions clientOptions, string secretName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false, bool throwOnNotFound = false, IEnumerable<char> keyPathDelimiters = null)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
 
             KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, sectionName, reloadOnChange);
+            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound);
         }
 
         /// <summary>
@@ -145,18 +159,28 @@ namespace KubeClient.Extensions.Configuration
         /// <param name="reloadOnChange">
         ///     Reload the configuration if the Secret changes?
         /// </param>
+        /// <param name="throwOnNotFound">
+        ///    Throw an exception if the Secret was not found when the configuration is first loaded?
+        /// </param>
+        /// <param name="keyPathDelimiters">
+        ///     Characters (if any) that represent delimiters between segments of key paths (e.g. '.' in "foo.bar.baz").
+        /// </param>
         /// <returns>
         ///     The configured <see cref="IConfigurationBuilder"/>.
         /// </returns>
-        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder,
-            KubeApiClient client, string secretName, string kubeNamespace = null, string sectionName = null,
-            bool reloadOnChange = false)
+        public static IConfigurationBuilder AddKubeSecret(this IConfigurationBuilder configurationBuilder, KubeApiClient client, string secretName, string kubeNamespace = null, string sectionName = null, bool reloadOnChange = false, bool throwOnNotFound = false, IEnumerable<char> keyPathDelimiters = null)
         {
             if (configurationBuilder == null)
                 throw new ArgumentNullException(nameof(configurationBuilder));
 
+            IImmutableSet<char> configuredKeyPathDelimiters;
+            if (keyPathDelimiters != null)
+                configuredKeyPathDelimiters = ImmutableHashSet.CreateRange(keyPathDelimiters);
+            else
+                configuredKeyPathDelimiters = ConfigMapConfigurationSettings.DefaultKeyPathDelimiters;
+
             return configurationBuilder.Add(new SecretConfigurationSource(
-                new SecretConfigurationSettings(client, secretName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound: false /* not implemented yet */)
+                new SecretConfigurationSettings(client, secretName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound, configuredKeyPathDelimiters)
             ));
         }
     }

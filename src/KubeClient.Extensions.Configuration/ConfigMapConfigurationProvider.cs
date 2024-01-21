@@ -6,8 +6,10 @@ using System.Linq;
 
 namespace KubeClient.Extensions.Configuration
 {
+    using KubeClient.Extensions.Configuration.Utilities;
     using Models;
     using Settings;
+    using System.Collections.Immutable;
 
     /// <summary>
     ///     Provider for configuration that comes from a Kubernetes ConfigMap.
@@ -41,9 +43,14 @@ namespace KubeClient.Extensions.Configuration
         readonly bool _watch;
 
         /// <summary>
-        ///     Throw an exception if the ConfigMap is not found?
+        ///     Throw an exception if the ConfigMap is not found during the initial load?
         /// </summary>
         readonly bool _throwOnNotFound;
+
+        /// <summary>
+        ///     Characters (if any) that represent delimiters between segments of key paths (e.g. '.' in "foo.bar.baz").
+        /// </summary>
+        readonly IImmutableSet<char> _keyPathDelimiters;
 
         /// <summary>
         ///     An <see cref="IDisposable"/> representing the subscription to events for the watched ConfigMap.
@@ -67,6 +74,7 @@ namespace KubeClient.Extensions.Configuration
             _sectionName = providerSettings.SectionName;
             _watch = providerSettings.Watch;
             _throwOnNotFound = providerSettings.ThrowOnNotFound;
+            _keyPathDelimiters = providerSettings.KeyPathDelimiters;
 
             Log = _client.LoggerFactory.CreateLogger<ConfigMapConfigurationProvider>();
         }
@@ -86,7 +94,7 @@ namespace KubeClient.Extensions.Configuration
         }
 
         /// <summary>
-        /// The configuration provider's logger.
+        ///     The configuration provider's logger.
         /// </summary>
         ILogger Log { get; }
 
@@ -127,10 +135,10 @@ namespace KubeClient.Extensions.Configuration
             {
                 Log.LogTrace("Found ConfigMap {ConfigMapName} in namespace {KubeNamespace} (isReload: {isReload}).", _configMapName, _kubeNamespace ?? _client.DefaultNamespace, isReload);
 
-                string sectionNamePrefix = !String.IsNullOrWhiteSpace(_sectionName) ? _sectionName + ":" : String.Empty;
+                string sectionNamePrefix = !String.IsNullOrWhiteSpace(_sectionName) ? _sectionName + KeyPathHelper.ConfigurationPathDelimiter : String.Empty;
 
                 Data = configMap.Data.ToDictionary(
-                    entry => sectionNamePrefix + entry.Key.Replace('.', ':'),
+                    entry => sectionNamePrefix + KeyPathHelper.ToConfigurationPath(entry.Key, _keyPathDelimiters),
                     entry => entry.Value,
                     StringComparer.OrdinalIgnoreCase
                 );
@@ -142,7 +150,7 @@ namespace KubeClient.Extensions.Configuration
                 Log.LogTrace("ConfigMap {ConfigMapName} was not found in namespace {KubeNamespace} (isReload: {isReload}).", _configMapName, _kubeNamespace ?? _client.DefaultNamespace, isReload);
                 
                 if (!isReload && _throwOnNotFound)
-                    throw new KubeClientException($"ConfigMap {_configMapName} was not found in namespace {_kubeNamespace}.");
+                    throw new KubeClientException($"ConfigMap {_configMapName} was not found in namespace {_kubeNamespace ?? _client.DefaultNamespace}.");
             }
         }
 
@@ -174,6 +182,7 @@ namespace KubeClient.Extensions.Configuration
                 {
                     // Clear out configuration if the ConfigMap is missing or invalid.
                     Log.LogTrace("ConfigMap {ConfigMapName} in namespace {KubeNamespace} is currently in an invalid state.", _configMapName, _kubeNamespace ?? _client.DefaultNamespace);
+                    
                     Load(null, isReload: true);
 
                     break;
