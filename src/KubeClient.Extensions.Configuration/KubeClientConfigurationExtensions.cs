@@ -135,7 +135,7 @@ namespace KubeClient.Extensions.Configuration
 
             KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound);
+            return configurationBuilder.AddKubeSecret(client, secretName, kubeNamespace, sectionName, reloadOnChange, throwOnNotFound, keyPathDelimiters);
         }
 
         /// <summary>
