@@ -82,6 +82,14 @@ steps:
     ArtifactName: 'packages'
     publishLocation: 'Container'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Publish packages to MyGet package feed'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/packages/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'myget-tintoy'
+
 - task: GitHubRelease@1
   displayName: 'Create GitHub release from tag'
 
