@@ -129,6 +129,14 @@ namespace KubeClient
 
             switch (options.AuthStrategy)
             {
+                case KubeAuthStrategy.Basic:
+                {
+                    clientBuilder = clientBuilder.AddHandler(
+                        () => new BasicAuthenticationHandler(options.Username, options.Password)
+                    );
+
+                    break;
+                }
                 case KubeAuthStrategy.BearerToken:
                 {
                     clientBuilder = clientBuilder.AddHandler(
@@ -146,10 +154,27 @@ namespace KubeClient
                             accessTokenSelector: options.AccessTokenSelector,
                             accessTokenExpirySelector: options.AccessTokenExpirySelector,
                             initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc
+                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
+                            environmentVariables: options.EnvironmentVariables
                         )
                     );
 
+                    break;
+                }
+                case KubeAuthStrategy.CredentialPlugin:
+                {
+                    clientBuilder = clientBuilder.AddHandler(
+                        () => new CommandBearerTokenHandler(
+                            accessTokenCommand: options.AccessTokenCommand,
+                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
+                            accessTokenSelector: options.AccessTokenSelector ?? ".status.token",
+                            accessTokenExpirySelector: options.AccessTokenExpirySelector ?? ".status.expirationTimestamp",
+                            initialAccessToken: options.InitialAccessToken,
+                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
+                            environmentVariables: options.EnvironmentVariables
+                        )
+                    );
+                    
                     break;
                 }
                 case KubeAuthStrategy.ClientCertificate:

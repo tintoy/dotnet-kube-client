@@ -111,6 +111,31 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Watch for events relating to ConfigMaps.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ConfigMaps.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        public IObservable<IResourceEventV1<ConfigMapV1>> WatchAll(string labelSelector = null, string kubeNamespace = null)
+        {
+            return ObserveEvents<ConfigMapV1>(
+                Requests.Collection.WithTemplateParameters(new
+                {
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace,
+                    LabelSelector = labelSelector,
+                    Watch = true
+                }),
+                operationDescription: $"watch all v1/ConfigMaps with label selector '{labelSelector ?? "<none>"}' in namespace {kubeNamespace ?? KubeClient.DefaultNamespace}"
+            );
+        }
+
+        /// <summary>
         ///     Request creation of a <see cref="ConfigMapV1"/>.
         /// </summary>
         /// <param name="newConfigMap">
@@ -281,6 +306,20 @@ namespace KubeClient.ResourceClients
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
         IObservable<IResourceEventV1<ConfigMapV1>> Watch(string name, string kubeNamespace = null);
+
+        /// <summary>
+        ///     Watch for events relating to ConfigMaps.
+        /// </summary>
+        /// <param name="labelSelector">
+        ///     An optional Kubernetes label selector expression used to filter the ConfigMaps.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IObservable{T}"/> representing the event stream.
+        /// </returns>
+        IObservable<IResourceEventV1<ConfigMapV1>> WatchAll(string labelSelector = null, string kubeNamespace = null);
 
         /// <summary>
         ///     Request creation of a <see cref="ConfigMapV1"/>.

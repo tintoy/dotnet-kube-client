@@ -89,6 +89,82 @@ namespace KubeClient.Tests
         }
 
         /// <summary>
+        /// Verify that the casing of keys in <see cref="SecretV1.Data"/> are preserved.
+        /// </summary>
+        [Theory]
+        [InlineData("abc")]
+        [InlineData("Abc")]
+        [InlineData("ABC")]
+        public void SecretV1_Data_PreserveKeyCase(string key)
+        {
+            var model = new SecretV1
+            {
+                Data =
+                {
+                    [key] = key
+                }
+            };
+
+            JObject rootObject;
+            using ( JTokenWriter writer = new JTokenWriter() )
+            {
+                JsonSerializer.Create(KubeResourceClient.SerializerSettings).Serialize(writer, model);
+                writer.Flush();
+
+                rootObject = (JObject) writer.Token;
+            }
+
+            Log.LogInformation("Serialized:\n{JSON:l}",
+                rootObject.ToString(Formatting.Indented)
+            );
+
+            JObject data = rootObject.Value<JObject>("data");
+            Assert.NotNull(data);
+
+            Assert.Equal(key,
+                data.Value<string>(key)
+            );
+        }
+
+        /// <summary>
+        /// Verify that the casing of keys in <see cref="ConfigMapV1.Data"/> are preserved.
+        /// </summary>
+        [Theory]
+        [InlineData("abc")]
+        [InlineData("Abc")]
+        [InlineData("ABC")]
+        public void ConfigMapV1_Data_PreserveKeyCase(string key)
+        {
+            var model = new ConfigMapV1
+            {
+                Data =
+                {
+                    [key] = key
+                }
+            };
+
+            JObject rootObject;
+            using ( JTokenWriter writer = new JTokenWriter() )
+            {
+                JsonSerializer.Create(KubeResourceClient.SerializerSettings).Serialize(writer, model);
+                writer.Flush();
+
+                rootObject = (JObject) writer.Token;
+            }
+
+            Log.LogInformation("Serialized:\n{JSON:l}",
+                rootObject.ToString(Formatting.Indented)
+            );
+
+            JObject data = rootObject.Value<JObject>("data");
+            Assert.NotNull(data);
+
+            Assert.Equal(key,
+                data.Value<string>(key)
+            );
+        }
+
+        /// <summary>
         /// Verify that an <see cref="Int32OrStringV1"/> with a <c>null</c> value deserialises correctly.
         /// </summary>
         [Fact]
@@ -186,6 +262,38 @@ namespace KubeClient.Tests
             var propertyValue = rootObject.Property(propertyName)?.Value as JValue;
             Assert.NotNull(propertyValue);
             Assert.Equal(renderedValue, propertyValue.Value);
+        }
+
+        /// <summary>
+        /// Verify that an <see cref="MicroTimeV1"/> with a <c>null</c> value deserialises correctly.
+        /// </summary>
+        [Fact]
+        public void MicroTimeWithNullDeserializesCorrectly()
+        {
+            string json = "null";
+            MicroTimeV1? microTime = JsonConvert.DeserializeObject<MicroTimeV1?>(json);
+            
+            Assert.Null(microTime);
+        }
+
+        /// <summary>
+        /// Verify that an <see cref="MicroTimeV1"/> with an integer value deserialises correctly.
+        /// </summary>
+        [Fact]
+        public void MicroTimeWithStringDeserializesCorrectly()
+        {
+            string json = "\"2020-09-11T14:59:24.491964Z\"";
+            MicroTimeV1 microTime = JsonConvert.DeserializeObject<MicroTimeV1>(json);
+            
+            Assert.NotNull(microTime);
+            Assert.Equal(2020, microTime.Value.Year);
+            Assert.Equal(9, microTime.Value.Month);
+            Assert.Equal(11, microTime.Value.Day);
+            Assert.Equal(14, microTime.Value.Hour);
+            Assert.Equal(59, microTime.Value.Minute);
+            Assert.Equal(24, microTime.Value.Second);
+
+            // TODO: Validate microsecond-level precision.            
         }
 
         /// <summary>

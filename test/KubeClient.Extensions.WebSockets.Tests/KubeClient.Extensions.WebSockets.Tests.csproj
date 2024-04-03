@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -17,7 +17,7 @@
       <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.0" />
       <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.0" />
-      <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.1.0" />
+      <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.1.7" />
   </ItemGroup>
 
   <ItemGroup>

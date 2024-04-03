@@ -49,6 +49,16 @@ namespace KubeClient
         public string AccessToken { get; set; }
 
         /// <summary>
+        ///     The username used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
+        ///     The password used to authenticate to the Kubernetes API.
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         ///     The command used to generate an access token for authenticating to the Kubernetes API.
         /// </summary>
         public string AccessTokenCommand { get; set; }
@@ -117,35 +127,56 @@ namespace KubeClient
         /// An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; }
+        
+        /// <summary>
+        ///     Environment variables passed to external commands
+        /// </summary>
+        public Dictionary<string, string> EnvironmentVariables { get; set; }
 
         /// <summary>
-        /// Create a copy of the <see cref="KubeClientOptions"/>.
+        ///     Create a copy of the <see cref="KubeClientOptions"/>.
         /// </summary>
-        /// <returns>The new <see cref="KubeClientOptions"/>.</returns>
+        /// <returns>
+        ///     The new <see cref="KubeClientOptions"/>.
+        /// </returns>
         public KubeClientOptions Clone()
         {
-            var clonedOptions = new KubeClientOptions
-            {
-                AccessToken = AccessToken,
-                AccessTokenCommand = AccessTokenCommand,
-                AccessTokenCommandArguments = AccessTokenCommandArguments,
-                AccessTokenExpirySelector = AccessTokenExpirySelector,
-                AccessTokenSelector = AccessTokenSelector,
-                AllowInsecure = AllowInsecure,
-                ApiEndPoint = ApiEndPoint,
-                AuthStrategy = AuthStrategy,
-                CertificationAuthorityCertificate = CertificationAuthorityCertificate,
-                ClientCertificate = ClientCertificate,
-                InitialAccessToken = InitialAccessToken,
-                InitialTokenExpiryUtc = InitialTokenExpiryUtc,
-                KubeNamespace = KubeNamespace,
-                LoggerFactory = LoggerFactory,
-                LogHeaders = LogHeaders,
-                LogPayloads = LogPayloads
-            };
-            clonedOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
-
+            var clonedOptions = new KubeClientOptions();
+            
+            CopyTo(clonedOptions);
+            
             return clonedOptions;
+        }
+
+        /// <summary>
+        ///     Copy all properties from the <see cref="KubeClientOptions"/> to other <see cref="KubeClientOptions"/>.
+        /// </summary>
+        /// <param name="toOptions">
+        ///     The target <see cref="KubeClientOptions"/>.
+        /// </param>
+        public void CopyTo(KubeClientOptions toOptions)
+        {
+            if (toOptions == null)
+                throw new ArgumentNullException(nameof(toOptions));
+
+            toOptions.AccessToken = AccessToken;
+            toOptions.AccessTokenCommand = AccessTokenCommand;
+            toOptions.AccessTokenCommandArguments = AccessTokenCommandArguments;
+            toOptions.AccessTokenExpirySelector = AccessTokenExpirySelector;
+            toOptions.AccessTokenSelector = AccessTokenSelector;
+            toOptions.AllowInsecure = AllowInsecure;
+            toOptions.ApiEndPoint = ApiEndPoint;
+            toOptions.AuthStrategy = AuthStrategy;
+            toOptions.CertificationAuthorityCertificate = CertificationAuthorityCertificate;
+            toOptions.ClientCertificate = ClientCertificate;
+            toOptions.InitialAccessToken = InitialAccessToken;
+            toOptions.InitialTokenExpiryUtc = InitialTokenExpiryUtc;
+            toOptions.KubeNamespace = KubeNamespace;
+            toOptions.LoggerFactory = LoggerFactory;
+            toOptions.LogHeaders = LogHeaders;
+            toOptions.LogPayloads = LogPayloads;
+            toOptions.EnvironmentVariables = EnvironmentVariables;
+            toOptions.ModelTypeAssemblies.AddRange(ModelTypeAssemblies);
         }
 
         /// <summary>
@@ -169,25 +200,31 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Create new <see cref="KubeClientOptions"/> using pod-level configuration.
+        ///     Create new <see cref="KubeClientOptions"/> using pod-level configuration. 
         /// </summary>
+        /// <param name="serviceAccountPath">
+        ///     The location of the volume containing service account token, CA certificate, and default namespace.
+        /// </param>
         /// <returns>
         ///     The configured <see cref="KubeClientOptions"/>.
         /// </returns>
         /// <remarks>
         ///     Only works from within a container running in a Kubernetes Pod.
         /// </remarks>
-        public static KubeClientOptions FromPodServiceAccount()
+        /// <exception cref="InvalidOperationException"></exception>
+        public static KubeClientOptions FromPodServiceAccount(string serviceAccountPath = KubeClientConstants.DefaultServiceAccountPath)
         {
-            string kubeServiceHost = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
-            string kubeServicePort = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_PORT");
+            string kubeServiceHost = Environment.GetEnvironmentVariable(KubeClientConstants.KubernetesServiceHost);
+            string kubeServicePort = Environment.GetEnvironmentVariable(KubeClientConstants.KubernetesServicePort);
             if (String.IsNullOrWhiteSpace(kubeServiceHost) || String.IsNullOrWhiteSpace(kubeServicePort))
-                throw new InvalidOperationException("KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod (KUBERNETES_SERVICE_HOST and/or KUBERNETES_SERVICE_PORT environment variable is not defined).");
+                throw new InvalidOperationException($"KubeApiClient.CreateFromPodServiceAccount can only be called when running in a Kubernetes Pod ({KubeClientConstants.KubernetesServiceHost} and/or {KubeClientConstants.KubernetesServicePort} environment variable is not defined).");
+
+            string defaultNamespace = File.ReadAllText(Path.Combine(serviceAccountPath, "namespace")).Trim();
 
             string apiEndPoint = $"https://{kubeServiceHost}:{kubeServicePort}/";
-            string accessToken = File.ReadAllText("/var/run/secrets/kubernetes.io/serviceaccount/token");
+            string accessToken = File.ReadAllText(Path.Combine(serviceAccountPath, "token"));
             var kubeCACertificate = new X509Certificate2(
-                File.ReadAllBytes("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+                File.ReadAllBytes(Path.Combine(serviceAccountPath, "ca.crt"))
             );
 
             return new KubeClientOptions
@@ -195,7 +232,8 @@ namespace KubeClient
                 ApiEndPoint = new Uri(apiEndPoint),
                 AuthStrategy = KubeAuthStrategy.BearerToken,
                 AccessToken = accessToken,
-                CertificationAuthorityCertificate = kubeCACertificate
+                CertificationAuthorityCertificate = kubeCACertificate,
+                KubeNamespace = defaultNamespace
             };
         }
     }
@@ -216,6 +254,11 @@ namespace KubeClient
         ClientCertificate,
 
         /// <summary>
+        ///     Username/Password authentication.
+        /// </summary>
+        Basic,
+
+        /// <summary>
         ///     A pre-defined (static) bearer token.
         /// </summary>
         BearerToken,
@@ -223,6 +266,11 @@ namespace KubeClient
         /// <summary>
         ///     A bearer token obtained by an authentication provider (i.e. running an external command).
         /// </summary>
-        BearerTokenProvider
+        BearerTokenProvider,
+
+        /// <summary>
+        ///     Client credentials obtained by a client-go credential plugin (i.e. running an external command).
+        /// </summary>
+        CredentialPlugin
     }
 }

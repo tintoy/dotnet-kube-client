@@ -1,20 +1,34 @@
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace KubeClient.Extensions.Configuration
 {
+    using Settings;
+
     /// <summary>
     ///     Source for configuration that comes from a Kubernetes ConfigMap.
     /// </summary>
     sealed class ConfigMapConfigurationSource
         : IConfigurationSource
     {
-
         /// <summary>
         ///     Create a new <see cref="ConfigMapConfigurationSource"/>.
         /// </summary>
-        public ConfigMapConfigurationSource()
+        /// <param name="settings">
+        ///     The <see cref="ConfigMapConfigurationSettings"/> used to create configuration providers.
+        /// </param>
+        public ConfigMapConfigurationSource(ConfigMapConfigurationSettings settings)
         {
+            if ( settings == null )
+                throw new ArgumentNullException(nameof(settings));
+
+            Settings = settings;
         }
+
+        /// <summary>
+        ///     The <see cref="ConfigMapConfigurationSettings"/> used to create configuration providers.
+        /// </summary>
+        public ConfigMapConfigurationSettings Settings { get; }
 
         /// <summary>
         ///     Build a configuration provider with configured options.
@@ -25,16 +39,6 @@ namespace KubeClient.Extensions.Configuration
         /// <returns>
         ///     The new <see cref="IConfigurationProvider"/>.
         /// </returns>
-        public IConfigurationProvider Build(IConfigurationBuilder configurationBuilder)
-        {
-            return new ConfigMapConfigurationProvider(
-                client: (KubeApiClient)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Client],
-                configMapName: (string)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Name],
-                kubeNamespace: (string)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Namespace],
-                sectionName: (string)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.SectionName],
-                watch: (bool)configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.Watch],
-                throwOnNotFound: (bool) configurationBuilder.Properties[ConfigMapBuilderPropertyConstants.ThrowOnNotFound]
-            );
-        }
+        public IConfigurationProvider Build(IConfigurationBuilder configurationBuilder) => new ConfigMapConfigurationProvider(Settings);
     }
 }

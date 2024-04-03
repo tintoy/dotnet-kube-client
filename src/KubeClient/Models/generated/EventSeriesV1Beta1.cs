@@ -15,7 +15,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "lastObservedTime")]
         [JsonProperty("lastObservedTime", NullValueHandling = NullValueHandling.Include)]
-        public MicroTimeV1 LastObservedTime { get; set; }
+        public MicroTimeV1? LastObservedTime { get; set; }
 
         /// <summary>
         ///     Information whether this series is ongoing or finished.

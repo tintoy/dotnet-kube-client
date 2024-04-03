@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
@@ -277,6 +278,265 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Create a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to create.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to create.
+        /// </param>
+        /// <param name="isNamespaced">
+        ///     Is the resource type commonly namespaced?
+        ///     
+        ///     In other words, does the resource's API path contain a "{namespace}" segment?
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the newly-created resource.
+        /// </returns>
+        public async Task<TResource> Create<TResource>(TResource resource, bool isNamespaced = true, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if ( resource == null )
+                throw new ArgumentNullException(nameof(resource));
+
+            await EnsureApiMetadata(cancellationToken);
+
+            (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+
+            HttpRequest request = KubeRequest.Create(apiPath);
+            if (isNamespaced)
+            {
+                request = request.WithTemplateParameters(new
+                {
+                    @namespace = resource.Metadata?.Namespace ?? KubeClient.DefaultNamespace
+                });
+            }
+
+            return await Http
+                .PostAsJsonAsync(request,
+                    postBody: resource,
+                    cancellationToken: cancellationToken
+                )
+                .ReadContentAsObjectV1Async<TResource>(
+                    operationDescription: isNamespaced ?
+                        $"create {apiVersion}/{kind} resource in namespace {resource?.Metadata?.Namespace ?? KubeClient.DefaultNamespace}"
+                        :
+                        $"create {apiVersion}/{kind} resource"
+                );
+        }
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to update.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to update.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        public async Task<TResource> Apply<TResource>(TResource resource, string fieldManager, bool force = false, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1
+        {
+            if (resource == null)
+                throw new ArgumentNullException(nameof(resource));
+
+            if (String.IsNullOrWhiteSpace(fieldManager))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(fieldManager)}.", nameof(fieldManager));
+
+            await EnsureApiMetadata(cancellationToken);
+
+            string resourceYaml;
+            using (StringWriter yamlWriter = new StringWriter())
+            {
+                Yaml.Serialize(resource, yamlWriter);
+
+                resourceYaml = yamlWriter.ToString();
+            }
+
+            KubeResourceV1 appliedResource = await ApplyYaml(
+                resource.Metadata.Name,
+                resource.Kind,
+                resource.ApiVersion,
+                resourceYaml,
+                fieldManager,
+                force,
+                kubeNamespace: resource.Metadata.Namespace,
+                cancellationToken
+            );
+
+            return (TResource)appliedResource;
+        }
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation with the specified YAML.
+        /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="yaml">
+        ///     A string containing the resource YAML.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the updated resource.
+        /// </returns>
+        public async Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, bool force = false, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if (String.IsNullOrWhiteSpace(kind))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+
+            if (String.IsNullOrWhiteSpace(apiVersion))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            if (String.IsNullOrWhiteSpace(yaml))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(yaml)}.", nameof(yaml));
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+
+            Type modelType = GetModelType(kind, apiVersion);
+
+            HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}?fieldManager={fieldManager?}&force={force?}")
+                .WithTemplateParameters(new
+                {
+                    name,
+                    @namespace = kubeNamespace,
+                    fieldManager,
+                    force = force ? "true" : null
+                });
+
+            using (StringContent patchBody = new StringContent(yaml, Encoding.UTF8, ApplyPatchYamlMediaType))
+            using (HttpResponseMessage responseMessage = await Http.PatchAsync(request, patchBody, mediaType: ApplyPatchYamlMediaType, cancellationToken: cancellationToken).ConfigureAwait(false))
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (TextReader responseReader = new StreamReader(responseStream))
+                    {
+                        JsonSerializer serializer = responseMessage.GetJsonSerializer();
+
+                        return (KubeResourceV1)serializer.Deserialize(responseReader, modelType);
+                    }
+                }
+
+                // Ensure that HttpStatusCode.NotFound actually refers to the target resource.
+                StatusV1 status = await responseMessage.ReadContentAsStatusV1Async(HttpStatusCode.NotFound).ConfigureAwait(false);
+                if (status.Reason == "NotFound")
+                {
+                    string errorMessage = isNamespaced ?
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}' using server-side apply (resource not found)."
+                        :
+                        $"Unable to patch {apiVersion}/{kind} resource '{name}' using server-side apply (resource not found).";
+
+                    throw new KubeClientException(errorMessage);
+                }
+
+                throw new KubeClientException($"Unable to patch {apiVersion}/{kind} resource (HTTP status {responseMessage.StatusCode}).",
+                    innerException: new HttpRequestException<StatusV1>(responseMessage.StatusCode, status)
+                );
+            }
+        }
+
+        /// <summary>
+        ///     Request deletion of the specified resource.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="kind">
+        ///     The kind of resource to delete.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The API version of the resource to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        public async Task<KubeResourceResultV1<KubeResourceV1>> Delete(string name, string kind, string apiVersion, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
+        {
+            if ( String.IsNullOrWhiteSpace(name) )
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if ( String.IsNullOrWhiteSpace(kind) )
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
+
+            if ( String.IsNullOrWhiteSpace(apiVersion) )
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
+
+            await EnsureApiMetadata(cancellationToken);
+            string apiPath = GetApiPath(kind, apiVersion, isNamespaced);
+
+            Type modelType = GetModelType(kind, apiVersion);
+
+            string operationDescription = $"delete {apiVersion}/{kind} resource '{name}' in namespace '{kubeNamespace}'";
+
+            return await Http
+                .DeleteAsJsonAsync(
+                    request: KubeRequest.Create(apiPath).WithRelativeUri("{name}").WithTemplateParameters(new
+                    {
+                        name,
+                        @namespace = kubeNamespace
+                    }),
+                    deleteBody: new DeleteOptionsV1
+                    {
+                        PropagationPolicy = propagationPolicy
+                    }
+                )
+                .ReadContentAsResourceOrStatusV1(modelType, operationDescription, HttpStatusCode.OK, HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
         ///     Ensure that the API metadata cache is populated.
         /// </summary>
         /// <param name="cancellationToken">
@@ -455,6 +715,29 @@ namespace KubeClient.ResourceClients
         Task<KubeResourceListV1> List(string kind, string apiVersion, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        ///     Create a Kubernetes resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to create.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to create.
+        /// </param>
+        /// <param name="isNamespaced">
+        ///     Is the resource namespaced?
+        ///     
+        ///     In other words, does the resource's API path contain a "{namespace}" segment?
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        Task<TResource> Create<TResource>(TResource resource, bool isNamespaced = true, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1;
+
+        /// <summary>
         ///     Perform a JSON patch operation on a Kubernetes resource.
         /// </summary>
         /// <param name="name">
@@ -479,5 +762,87 @@ namespace KubeClient.ResourceClients
         ///     A <see cref="KubeResourceV1"/> representing the updated resource.
         /// </returns>
         Task<KubeResourceV1> Patch(string name, string kind, string apiVersion, JsonPatchDocument patch, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of resource to update.
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource to update.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the updated resource.
+        /// </returns>
+        Task<TResource> Apply<TResource>(TResource resource, string fieldManager, bool force = false, CancellationToken cancellationToken = default)
+            where TResource : KubeResourceV1;
+
+        /// <summary>
+        ///     Update a Kubernetes resource using a server-side apply operation with the specified YAML.
+        /// </summary>
+        /// <param name="name">
+        ///     The resource name.
+        /// </param>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <param name="yaml">
+        ///     A string containing the resource YAML.
+        /// </param>
+        /// <param name="fieldManager">
+        ///     The name of the field manager to use when performing the server-side apply.
+        /// </param>
+        /// <param name="force">
+        ///     Allow the field manager to take ownership of fields if required?
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The (optional) name of a Kubernetes namespace containing the resources.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the updated resource.
+        /// </returns>
+        Task<KubeResourceV1> ApplyYaml(string name, string kind, string apiVersion, string yaml, string fieldManager, bool force = false, string kubeNamespace = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request deletion of the specified resource.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the resource to delete.
+        /// </param>
+        /// <param name="kind">
+        ///     The kind of resource to delete.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The API version of the resource to delete.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="propagationPolicy">
+        ///     A <see cref="DeletePropagationPolicy"/> indicating how child resources should be deleted (if at all).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="KubeResourceV1"/> representing the resource's most recent state before it was deleted, if <paramref name="propagationPolicy"/> is <see cref="DeletePropagationPolicy.Foreground"/>; otherwise, a <see cref="StatusV1"/> indicating the operation result.
+        /// </returns>
+        Task<KubeResourceResultV1<KubeResourceV1>> Delete(string name, string kind, string apiVersion, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default);
     }
 }

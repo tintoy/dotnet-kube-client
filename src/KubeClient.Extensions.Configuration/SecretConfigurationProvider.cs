@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
+using System.Linq;
+using System.Text;
 
 namespace KubeClient.Extensions.Configuration
 {
-    using System.Linq;
-    using System.Text;
     using Models;
+    using Settings;
 
     /// <summary>
     ///     Provider for configuration that comes from a Kubernetes Secret.
@@ -19,7 +19,7 @@ namespace KubeClient.Extensions.Configuration
         /// <summary>
         ///     The <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
         /// </summary>
-        readonly KubeApiClient _client;
+        readonly IKubeApiClient _client;
 
         /// <summary>
         ///     The name of the target Secret.
@@ -49,35 +49,21 @@ namespace KubeClient.Extensions.Configuration
         /// <summary>
         ///     Create a new <see cref="SecretConfigurationProvider"/>.
         /// </summary>
-        /// <param name="client">
-        ///     The <see cref="KubeApiClient"/> used to communicate with the Kubernetes API.
+        /// <param name="providerSettings">
+        ///     The <see cref="ConfigMapConfigurationSettings"/> used to configure the provider.
         /// </param>
-        /// <param name="secretName">
-        ///     The name of the target Secret.
-        /// </param>
-        /// <param name="kubeNamespace">
-        ///     The Kubernetes namespace that contains the target Secret.
-        /// </param>
-        /// <param name="sectionName">
-        ///     The name of the target configuration section (if any).
-        /// </param>
-        /// <param name="watch">
-        ///     Watch the Secret for changes?
-        /// </param>
-        public SecretConfigurationProvider(KubeApiClient client, string secretName, string kubeNamespace, string sectionName, bool watch)
+        public SecretConfigurationProvider(SecretConfigurationSettings providerSettings)
         {
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
+            if ( providerSettings == null )
+                throw new ArgumentNullException(nameof(providerSettings));
 
-            if (String.IsNullOrWhiteSpace(secretName))
-                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'secretName'.", nameof(secretName));
-            
-            _client = client;
+            _client = providerSettings.Client;
+            _secretName = providerSettings.SecretName;
+            _kubeNamespace = providerSettings.KubeNamespace;
+            _sectionName = providerSettings.SectionName;
+            _watch = providerSettings.Watch;
+
             Log = _client.LoggerFactory.CreateLogger<SecretConfigurationProvider>();
-            _secretName = secretName;
-            _kubeNamespace = kubeNamespace;
-            _sectionName = sectionName;
-            _watch = watch;
         }
 
         /// <summary>
