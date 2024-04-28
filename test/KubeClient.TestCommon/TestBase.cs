@@ -36,7 +36,9 @@ namespace KubeClient.TestCommon
             }
 
             TestOutput = testOutput;
-            LoggerFactory = new LoggerFactory().AddTestOutput(TestOutput, MinLogLevel);
+            LoggerFactory = new LoggerFactory()
+                .AddDebug()
+                .AddTestOutput(TestOutput, MinLogLevel);
             Log = LoggerFactory.CreateLogger("CurrentTest");
 
             // Ugly hack to get access to the current test.

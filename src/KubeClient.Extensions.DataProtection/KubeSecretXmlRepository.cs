@@ -155,13 +155,13 @@ namespace KubeClient.Extensions.DataProtection
                     });
 
                     Log.LogDebug("Successfully created Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys.",
-                        _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                        secret.Metadata.Name, secret.Metadata.Namespace
                     );
                 }
                 else
                 {
                     Log.LogDebug("Successfully loaded Secret {SecretName} in namespace {SecretNamespace} for persistence of data-protection keys.",
-                        _keyManagementSecret.Metadata.Name, _keyManagementSecret.Metadata.Namespace
+                        secret.Metadata.Name, secret.Metadata.Namespace
                     );
                 }
 

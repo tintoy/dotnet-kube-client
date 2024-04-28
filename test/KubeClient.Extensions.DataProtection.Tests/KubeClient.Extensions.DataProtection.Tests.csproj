@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
+    <ProjectReference Include="..\..\src\KubeClient.Extensions.DataProtection\KubeClient.Extensions.DataProtection.csproj" />
+    <ProjectReference Include="..\..\src\KubeClient.Extensions.DependencyInjection\KubeClient.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KubeClient.TestCommon\KubeClient.TestCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="System.Reactive" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <Import Project="..\Common.props" />
+
+</Project>
