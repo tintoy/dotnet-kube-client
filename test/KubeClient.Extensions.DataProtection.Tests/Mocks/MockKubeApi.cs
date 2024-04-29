@@ -20,15 +20,35 @@ using Xunit.Abstractions;
 
 namespace KubeClient.Extensions.DataProtection.Tests.Mocks
 {
+    /// <summary>
+    ///     A mock implementation of the Kubernetes API.
+    /// </summary>
     public sealed class MockKubeApi
         : IAsyncDisposable
     {
+        /// <summary>
+        ///     The underlying <see cref="WebApplication"/> that hosts the mock API.
+        /// </summary>
         readonly WebApplication _webApplication;
 
+        /// <summary>
+        ///     The <see cref="TestServer"/> that provides in-process access to the hosted <see cref="WebApplication"/>.
+        /// </summary>
         readonly TestServer _testServer;
 
+        /// <summary>
+        ///     Has the <see cref="MockKubeApi"/> been disposed?
+        /// </summary>
         int _isDisposed;
 
+        #region Construction / Disposal
+
+        /// <summary>
+        ///     Create a new <see cref="MockKubeApi"/>.
+        /// </summary>
+        /// <param name="webApplication">
+        ///     The underlying <see cref="WebApplication"/> that hosts the mock API.
+        /// </param>
         MockKubeApi(WebApplication webApplication)
         {
             if (webApplication == null)
@@ -38,6 +58,12 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             _testServer = webApplication.GetTestServer();
         }
 
+        /// <summary>
+        ///     Asynchronously dispose of resources being used by the mock API.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="ValueTask"/> representing the disposal operation.
+        /// </returns>
         public async ValueTask DisposeAsync()
         {
             int wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
@@ -60,6 +86,11 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                 throw new ObjectDisposedException(GetType().Name);
         }
 
+        #endregion // Construction / Disposal
+
+        /// <summary>
+        ///     The base address of the mock API.
+        /// </summary>
         public Uri BaseAddress
         {
             get
@@ -127,6 +158,27 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             return _testServer.CreateRequest(path);
         }
 
+        /// <summary>
+        ///     Start a new <see cref="MockKubeApi"/> instance.
+        /// </summary>
+        /// <param name="testOutput">
+        ///     An <see cref="ITestOutputHelper"/> representing the output for the current test.
+        /// </param>
+        /// <param name="configureApp">
+        ///     An optional delegate to configure the request-processing pipeline (i.e. API end-points).
+        /// </param>
+        /// <param name="configureServices">
+        ///     An optional delegate to configure server-side components and services (<see cref="IServiceCollection"/>, etc).
+        /// </param>
+        /// <param name="configureConfiguration">
+        ///     An optional delegate to configure server-side configuration (<see cref="IConfiguration"/>, etc).
+        /// </param>
+        /// <param name="minLogLevel">
+        ///     An optional minimum level to log at (defaults to <see cref="LogLevel.Information"/>).
+        /// </param>
+        /// <returns>
+        ///     The configured (and running) <see cref="MockKubeApi"/>.
+        /// </returns>
         public static MockKubeApi Create(ITestOutputHelper testOutput, Action<WebApplication> configureApp = null, Action<WebHostBuilderContext, IServiceCollection> configureServices = null, Action<ConfigurationManager> configureConfiguration = null, LogLevel? minLogLevel = null)
         {
             if (testOutput == null)
@@ -150,6 +202,27 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             }
         }
 
+        /// <summary>
+        ///     Build a <see cref="WebApplication"/> to host the mock API.
+        /// </summary>
+        /// <param name="testOutput">
+        ///     An <see cref="ITestOutputHelper"/> representing the output for the current test.
+        /// </param>
+        /// <param name="configureApp">
+        ///     An optional delegate to configure the server-side request-processing pipeline (i.e. API end-points).
+        /// </param>
+        /// <param name="configureServices">
+        ///     An optional delegate to configure server-side components and services (<see cref="IServiceCollection"/>, etc).
+        /// </param>
+        /// <param name="configureConfiguration">
+        ///     An optional delegate to configure server-side configuration (<see cref="IConfiguration"/>, etc).
+        /// </param>
+        /// <param name="minLogLevel">
+        ///     An optional minimum level to log at (defaults to <see cref="LogLevel.Information"/>).
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="WebApplication"/>.
+        /// </returns>
         static WebApplication BuildWebApplication(ITestOutputHelper testOutput, Action<WebApplication> configureApp, Action<WebHostBuilderContext, IServiceCollection> configureServices, Action<ConfigurationManager> configureConfiguration, LogLevel? minLogLevel)
         {
             if (testOutput == null)
@@ -185,12 +258,27 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             return webApp;
         }
 
+        /// <summary>
+        ///     Default server-side configuration for the mock API.
+        /// </summary>
+        /// <param name="configuration">
+        ///     The <see cref="ConfigurationManager"/> to configure.
+        /// </param>
         public static void DefaultConfiguration(ConfigurationManager configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
         }
 
+        /// <summary>
+        ///     Default server-side dependency-injection configuration for the mock API.
+        /// </summary>
+        /// <param name="context">
+        ///     Contextual information about the web host being build.
+        /// </param>
+        /// <param name="services">
+        ///     The <see cref="IServiceCollection"/> to configure.
+        /// </param>
         public static void DefaultServices(WebHostBuilderContext context, IServiceCollection services)
         {
             if (context == null)
@@ -200,6 +288,12 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                 throw new ArgumentNullException(nameof(services));
         }
 
+        /// <summary>
+        ///     Default configuration for the server-side request-processing pipeline (i.e. API end-points).
+        /// </summary>
+        /// <param name="webApp">
+        ///     The <see cref="WebApplication"/> to configure.
+        /// </param>
         public static void DefaultApplication(WebApplication webApp)
         {
             if (webApp == null)
