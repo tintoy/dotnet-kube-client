@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reactive.Subjects;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,6 +20,161 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
 
     public static class MockKubeApiExtensions
     {
+        public static WebApplication HandleSingleResource<TResource>(this WebApplication mockKubeApiApp, string resourcePath)
+            where TResource : KubeResourceV1
+        {
+            if (String.IsNullOrWhiteSpace(resourcePath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourcePath)}.", nameof(resourcePath));
+
+            TResource resourceState = null;
+
+            string resourcesPath = GetPathParent(resourcePath);
+
+            mockKubeApiApp.HandleResourceGet(resourcePath, () => resourceState);
+            mockKubeApiApp.HandleResourceCreate(resourcesPath, (TResource initialResource) =>
+            {
+                resourceState = initialResource;
+
+                return resourceState;
+            });
+            mockKubeApiApp.HandleResourceUpdate(resourcesPath, (TResource updatedResource) =>
+            {
+                resourceState = updatedResource;
+
+                return resourceState;
+            });
+            mockKubeApiApp.HandleResourcePatch(resourcePath, (JArray patchRequest) =>
+            {
+                resourceState = resourceState.ApplyJsonPatch(patchRequest);
+
+                return resourceState;
+            });
+
+            return mockKubeApiApp;
+        }
+
+        public static WebApplication HandleSingleResource<TResource>(this WebApplication mockKubeApiApp, string resourcePath, string watchPath)
+            where TResource : KubeResourceV1
+        {
+            if (String.IsNullOrWhiteSpace(resourcePath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourcePath)}.", nameof(resourcePath));
+
+            if (String.IsNullOrWhiteSpace(watchPath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(watchPath)}.", nameof(watchPath));
+
+            TResource resourceState = null;
+
+            string resourcesPath = GetPathParent(resourcePath);
+
+            Subject<TResource> watchSubject = new Subject<TResource>();
+
+            mockKubeApiApp.Lifetime.ApplicationStopping.Register(() =>
+            {
+                using (watchSubject)
+                {
+                    watchSubject.OnCompleted();
+                }
+            });
+
+            mockKubeApiApp.HandleResourceGet(resourcePath, () => resourceState);
+            mockKubeApiApp.HandleResourceCreate(resourcesPath, (TResource initialResource) =>
+            {
+                resourceState = initialResource;
+                watchSubject.OnNext(resourceState);
+
+                return resourceState;
+            });
+            mockKubeApiApp.HandleResourceUpdate(resourcesPath, (TResource updatedResource) =>
+            {
+                resourceState = updatedResource;
+                watchSubject.OnNext(resourceState);
+
+                return resourceState;
+            });
+            mockKubeApiApp.HandleResourcePatch(resourcePath, (JArray patchRequest) =>
+            {
+                resourceState = resourceState.ApplyJsonPatch(patchRequest);
+                watchSubject.OnNext(resourceState);
+
+                return resourceState;
+            });
+            mockKubeApiApp.HandleResourceWatch(watchPath, watchSubject);
+
+            return mockKubeApiApp;
+        }
+
+        public static WebApplication HandleSingleResource<TResource>(this WebApplication mockKubeApiApp, string resourcePath, Func<TResource> loadResource, Func<TResource, TResource> saveResource)
+            where TResource : KubeResourceV1
+        {
+            if (String.IsNullOrWhiteSpace(resourcePath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourcePath)}.", nameof(resourcePath));
+
+            string resourcesPath = GetPathParent(resourcePath);
+
+            mockKubeApiApp.HandleResourceGet(resourcePath, handler: loadResource);
+            mockKubeApiApp.HandleResourceCreate(resourcesPath, (TResource initialResource) =>
+            {
+                return saveResource(initialResource);
+            });
+            mockKubeApiApp.HandleResourceUpdate(resourcesPath, (TResource updatedResource) =>
+            {
+                return saveResource(updatedResource);
+            });
+            mockKubeApiApp.HandleResourcePatchAsync(resourcePath, (JArray patchRequest) =>
+            {
+                TResource resource = loadResource();
+                TResource patchedResource = resource.ApplyJsonPatch(patchRequest);
+                TResource persistedResource = saveResource(patchedResource);
+
+                return Task.FromResult(persistedResource);
+            });
+
+            return mockKubeApiApp;
+        }
+
+        public static WebApplication HandleSingleResource<TResource>(this WebApplication mockKubeApiApp, string resourcePath, string watchPath, Func<TResource> loadResource, Func<TResource, TResource> saveResource, ISubject<TResource> watchSubject)
+            where TResource : KubeResourceV1
+        {
+            if (String.IsNullOrWhiteSpace(resourcePath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourcePath)}.", nameof(resourcePath));
+
+            if (String.IsNullOrWhiteSpace(watchPath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(watchPath)}.", nameof(watchPath));
+
+            if (watchSubject == null)
+                throw new ArgumentNullException(nameof(watchSubject));
+
+            string resourcesPath = GetPathParent(resourcePath);
+
+            mockKubeApiApp.HandleResourceGet(resourcePath, handler: loadResource);
+            mockKubeApiApp.HandleResourceCreate(resourcesPath, (TResource initialResource) =>
+            {
+                TResource persistedResource = saveResource(initialResource);
+                watchSubject.OnNext(persistedResource);
+
+                return persistedResource;
+            });
+            mockKubeApiApp.HandleResourceUpdate(resourcesPath, (TResource updatedState) =>
+            {
+                TResource persistedResource = saveResource(updatedState);
+                watchSubject.OnNext(persistedResource);
+
+                return persistedResource;
+            });
+            mockKubeApiApp.HandleResourcePatchAsync(resourcePath, (JArray patchRequest) =>
+            {
+                TResource resource = loadResource();
+                TResource patchedResource = resource.ApplyJsonPatch(patchRequest);
+                TResource persistedResource = saveResource(patchedResource);
+
+                return Task.FromResult(persistedResource);
+            });
+
+            mockKubeApiApp.HandleResourceWatch(watchPath, watchSubject);
+
+            return mockKubeApiApp;
+        }
+
         public static WebApplication HandleResourceGet<TResource>(this WebApplication mockKubeApiApp, string resourcePath, Func<TResource> handler)
             where TResource : KubeResourceV1
         {
@@ -56,6 +214,19 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                 .MapGet(resourcePath, async () =>
                 {
                     TResource responseBody = await handler();
+                    if (responseBody == null)
+                    {
+                        (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+                        string resourceName = Path.GetFileNameWithoutExtension(resourcePath);
+
+                        return Results.Content(
+                            content: JsonConvert.SerializeObject(
+                                StatusV1.Failure($"{apiVersion}/{kind} resource '{resourceName}' was not found.", "NotFound")
+                            ),
+                            contentType: "application/json",
+                            statusCode: StatusCodes.Status404NotFound
+                        );
+                    }
 
                     return Results.Content(
                         content: JsonConvert.SerializeObject(responseBody),
@@ -101,12 +272,25 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
 
             if (handler == null)
                 throw new ArgumentNullException(nameof(handler));
-
+            
             mockKubeApiApp
                 .MapPost(resourcePath, async (HttpRequest request) =>
                 {
                     TResource requestBody = request.ReadAsNewtonsoftJson<TResource>();
                     TResource responseBody = await handler(requestBody);
+                    if (responseBody == null)
+                    {
+                        (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+                        string resourceName = Path.GetFileNameWithoutExtension(resourcePath);
+
+                        return Results.Content(
+                            content: JsonConvert.SerializeObject(
+                                StatusV1.Failure($"{apiVersion}/{kind} resource '{resourceName}' was not found.", "NotFound")
+                            ),
+                            contentType: "application/json",
+                            statusCode: StatusCodes.Status404NotFound
+                        );
+                    }
 
                     return Results.Content(
                         content: JsonConvert.SerializeObject(responseBody),
@@ -158,6 +342,19 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                 {
                     TResource requestBody = request.ReadAsNewtonsoftJson<TResource>();
                     TResource responseBody = await handler(requestBody);
+                    if (responseBody == null)
+                    {
+                        (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+                        string resourceName = Path.GetFileNameWithoutExtension(resourcePath);
+
+                        return Results.Content(
+                            content: JsonConvert.SerializeObject(
+                                StatusV1.Failure($"{apiVersion}/{kind} resource '{resourceName}' was not found.", "NotFound")
+                            ),
+                            contentType: "application/json",
+                            statusCode: StatusCodes.Status404NotFound
+                        );
+                    }
 
                     return Results.Content(
                         content: JsonConvert.SerializeObject(responseBody),
@@ -207,8 +404,25 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             mockKubeApiApp
                 .MapPatch(resourcePath, async (HttpRequest request) =>
                 {
+                    ILogger logger = request.CreateLogger("MockKubeApi.ResourcePatchHandler");
+
                     JArray patchRequest = request.ReadAsNewtonsoftJArray();
+                    logger.LogInformation("Patch request: {PatchRequest}", patchRequest.ToString(Formatting.None));
+
                     TResource responseBody = await handler(patchRequest);
+                    if (responseBody == null)
+                    {
+                        (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
+                        string resourceName = Path.GetFileNameWithoutExtension(resourcePath);
+
+                        return Results.Content(
+                            content: JsonConvert.SerializeObject(
+                                StatusV1.Failure($"{apiVersion}/{kind} resource '{resourceName}' was not found.", "NotFound")
+                            ),
+                            contentType: "application/json",
+                            statusCode: StatusCodes.Status404NotFound
+                        );
+                    }
 
                     return Results.Content(
                         content: JsonConvert.SerializeObject(responseBody),
@@ -220,20 +434,20 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             return mockKubeApiApp;
         }
 
-        public static WebApplication HandleResourceWatch<TResource>(this WebApplication mockKubeApiApp, string resourcePath, IObservable<TResource> resourceStates)
+        public static WebApplication HandleResourceWatch<TResource>(this WebApplication mockKubeApiApp, string resourceWatchPath, IObservable<TResource> resourceStates)
             where TResource : KubeResourceV1
         {
             if (mockKubeApiApp == null)
                 throw new ArgumentNullException(nameof(mockKubeApiApp));
 
-            if (String.IsNullOrWhiteSpace(resourcePath))
-                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourcePath)}.", nameof(resourcePath));
+            if (String.IsNullOrWhiteSpace(resourceWatchPath))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourceWatchPath)}.", nameof(resourceWatchPath));
 
             if (resourceStates == null)
                 throw new ArgumentNullException(nameof(resourceStates));
 
             mockKubeApiApp
-                .MapGet(resourcePath, async context =>
+                .MapGet(resourceWatchPath, async context =>
                 {
                     // Used to block the request from completing until either the resourceStates sequence is completed/faulted, or the request is aborted.
                     using SemaphoreSlim requestCompleted = new SemaphoreSlim(initialCount: 0, maxCount: 1);
@@ -294,6 +508,29 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                 });
 
             return mockKubeApiApp;
+        }
+
+        public static ILogger CreateLogger(this HttpRequest request, string name)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(name)}.", nameof(name));
+
+            return request.HttpContext.CreateLogger(name);
+        }
+
+        public static ILogger CreateLogger(this HttpContext httpContext, string name)
+        {
+            if (httpContext == null)
+                throw new ArgumentNullException(nameof(httpContext));
+
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(name)}.", nameof(name));
+
+
+            return httpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(name);
         }
 
         public static TBody ReadAsNewtonsoftJson<TBody>(this HttpRequest request)
@@ -481,6 +718,29 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                     return '$' + jsonPatchPath.Replace('/', '.');
                 }
             }
+        }
+
+        static string GetPathParent(string path)
+        {
+            ReadOnlySpan<char> parent = GetPathParent(path.AsSpan());
+            if (parent.Length == path.Length)
+                return path;
+
+            return new String(parent);
+        }
+
+        static ReadOnlySpan<char> GetPathParent(ReadOnlySpan<char> path)
+        {
+            path = path.TrimEnd('/');
+
+            if (path.IsEmpty)
+                return path;
+
+            int lastSeparatorIndex = path.LastIndexOf('/');
+            if (lastSeparatorIndex == -1)
+                return path;
+            
+            return path[..lastSeparatorIndex];
         }
     }
 }

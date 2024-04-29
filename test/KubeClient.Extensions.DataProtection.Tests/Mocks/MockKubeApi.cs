@@ -215,7 +215,7 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     context.Response.ContentType = "application/json";
 
-                    StatusV1 responseBody = StatusV1.Failure($"Unexpected error  handler is registered for {context.Request.Method} requests on '{context.Request.Path}'.",
+                    StatusV1 responseBody = StatusV1.Failure($"An unexpected error occurred while handling {context.Request.Method} request on '{context.Request.Path}'.",
                         reason: "InternalServerError",
                         code: StatusCodes.Status500InternalServerError
                     );
@@ -233,6 +233,10 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
 
             webApp.MapFallback((HttpContext context) =>
             {
+                ILogger logger = context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("MockKubeApi.FallbackHandler");
+
+                logger.LogWarning("Unhandled {RequestMethod} request to {RequestPath}.", context.Request.Method, context.Request.Path);
+
                 return Results.Content(
                     JsonConvert.SerializeObject(
                         StatusV1.Failure($"No handler is registered for {context.Request.Method} requests on '{context.Request.Path}'.",

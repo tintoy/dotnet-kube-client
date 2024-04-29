@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -34,17 +33,20 @@ namespace KubeClient.Extensions.DataProtection.Tests
             await using MockKubeApi mockApi = MockKubeApi.Create(TestOutput, api =>
             {
                 const string secretUri = "api/v1/namespaces/default/secrets/test-secret";
-                const string secretsUri = "api/v1/namespaces/default/secrets";
                 const string secretWatchUri = "api/v1/watch/namespaces/default/secrets/test-secret";
 
-                api.HandleResourceGet(secretUri, () => secretResource);
-                api.HandleResourceCreate(secretsUri, (SecretV1 initialSecretData) =>
-                {
-                    secretResource = initialSecretData;
+                api.HandleSingleResource<SecretV1>(
+                    resourcePath: secretUri,
+                    watchPath: secretWatchUri,
+                    loadResource: () => secretResource,
+                    saveResource: (SecretV1 persistedSecretResource) =>
+                    {
+                        secretResource = persistedSecretResource;
 
-                    return secretResource;
-                });
-                api.HandleResourceWatch(secretWatchUri, secretWatchSource);
+                        return secretResource;
+                    },
+                    watchSubject: secretWatchSource
+                );
             });
             
             using ServiceProvider serviceProvider = BuildServiceProvider(mockApi);
@@ -66,25 +68,20 @@ namespace KubeClient.Extensions.DataProtection.Tests
             await using MockKubeApi mockApi = MockKubeApi.Create(TestOutput, api =>
             {
                 const string secretUri = "api/v1/namespaces/default/secrets/test-secret";
-                const string secretsUri = "api/v1/namespaces/default/secrets";
                 const string secretWatchUri = "api/v1/watch/namespaces/default/secrets/test-secret";
 
-                api.HandleResourceGet(secretUri, () => secretResource);
-                api.HandleResourceCreate(secretsUri, (SecretV1 initialSecretData) =>
-                {
-                    secretResource = initialSecretData;
+                api.HandleSingleResource<SecretV1>(
+                    resourcePath: secretUri,
+                    watchPath: secretWatchUri,
+                    loadResource: () => secretResource,
+                    saveResource: (SecretV1 persistedSecretResource) =>
+                    {
+                        secretResource = persistedSecretResource;
 
-                    return secretResource;
-                });
-                api.HandleResourcePatchAsync(secretUri, (JArray patchRequest) =>
-                {
-                    Log.LogInformation("Patch request: {PatchRequest}", patchRequest.ToString(Newtonsoft.Json.Formatting.None));
-
-                    secretResource = secretResource.ApplyJsonPatch(patchRequest);
-
-                    return Task.FromResult(secretResource);
-                });
-                api.HandleResourceWatch(secretWatchUri, secretWatchSource);
+                        return secretResource;
+                    },
+                    watchSubject: secretWatchSource
+                );
             });
 
             using ServiceProvider serviceProvider = BuildServiceProvider(mockApi);
@@ -111,25 +108,20 @@ namespace KubeClient.Extensions.DataProtection.Tests
             await using MockKubeApi mockApi = MockKubeApi.Create(TestOutput, api =>
             {
                 const string secretUri = "api/v1/namespaces/default/secrets/test-secret";
-                const string secretsUri = "api/v1/namespaces/default/secrets";
                 const string secretWatchUri = "api/v1/watch/namespaces/default/secrets/test-secret";
 
-                api.HandleResourceGet(secretUri, () => secretResource);
-                api.HandleResourceCreate(secretsUri, (SecretV1 initialSecretData) =>
-                {
-                    secretResource = initialSecretData;
+                api.HandleSingleResource<SecretV1>(
+                    resourcePath: secretUri,
+                    watchPath: secretWatchUri,
+                    loadResource: () => secretResource,
+                    saveResource: (SecretV1 persistedSecretResource) =>
+                    {
+                        secretResource = persistedSecretResource;
 
-                    return secretResource;
-                });
-                api.HandleResourcePatchAsync(secretUri, (JArray patchRequest) =>
-                {
-                    Log.LogInformation("Patch request: {PatchRequest}", patchRequest.ToString(Newtonsoft.Json.Formatting.None));
-
-                    secretResource = secretResource.ApplyJsonPatch(patchRequest);
-
-                    return Task.FromResult(secretResource);
-                });
-                api.HandleResourceWatch(secretWatchUri, secretWatchSource);
+                        return secretResource;
+                    },
+                    watchSubject: secretWatchSource
+                );
             });
 
             using ServiceProvider serviceProvider = BuildServiceProvider(mockApi);
