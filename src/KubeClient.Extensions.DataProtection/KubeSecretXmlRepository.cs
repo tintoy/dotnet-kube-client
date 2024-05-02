@@ -260,7 +260,7 @@ namespace KubeClient.Extensions.DataProtection
             {
                 _keyManagementSecret.Data[friendlyName] = encodedElementXml;
 
-                await _client.SecretsV1().Update(_secretName, patch =>
+                await _client.SecretsV1().Update(_secretName, kubeNamespace: _kubeNamespace, patchAction: patch =>
                 {
                     patch.Replace(secret => secret.Data, _keyManagementSecret.Data);
                 });
