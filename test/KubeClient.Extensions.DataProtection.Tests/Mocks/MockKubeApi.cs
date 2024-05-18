@@ -159,6 +159,46 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
         }
 
         /// <summary>
+        ///     Get a simple dictionary key to identify a resource.
+        /// </summary>
+        /// <param name="resourceMetadata">
+        ///     The resource metadata.
+        /// </param>
+        /// <returns>
+        ///     A string that can be used as a dictionary key to identify the resource.
+        /// </returns>
+        public static string GetResourceKey(ObjectMetaV1 resourceMetadata)
+        {
+            if (resourceMetadata == null)
+                throw new ArgumentNullException(nameof(resourceMetadata));
+
+            return GetResourceKey(resourceMetadata.Name, resourceMetadata.Namespace);
+        }
+
+        /// <summary>
+        ///     Get a simple dictionary key to identify a resource.
+        /// </summary>
+        /// <param name="resourceName">
+        ///     The resource name.
+        /// </param>
+        /// <param name="resourceNamespace">
+        ///     The resource namespace.
+        /// </param>
+        /// <returns>
+        ///     A string that can be used as a dictionary key to identify the resource.
+        /// </returns>
+        public static string GetResourceKey(string resourceName, string resourceNamespace)
+        {
+            if (String.IsNullOrWhiteSpace(resourceName))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(resourceName)}.", nameof(resourceName));
+
+            if (resourceNamespace != null)
+                return $"{resourceNamespace}/{resourceName}";
+
+            return resourceName;
+        }
+
+        /// <summary>
         ///     Start a new <see cref="MockKubeApi"/> instance.
         /// </summary>
         /// <param name="testOutput">
@@ -343,5 +383,51 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
                 );
             });
         }
+
+        public delegate TResourceList ListResourcesHandler<TResource, TResourceList>()
+            where TResource : KubeResourceV1
+            where TResourceList : KubeResourceListV1<TResource>;
+
+        public delegate TResourceList ListNamespacedResourcesHandler<TResource, TResourceList>(string resourceNamespace)
+            where TResource : KubeResourceV1
+            where TResourceList : KubeResourceListV1<TResource>;
+
+        public delegate Task<TResourceList> AsyncListResourcesHandler<TResource, TResourceList>()
+            where TResource : KubeResourceV1
+            where TResourceList : KubeResourceListV1<TResource>;
+
+        public delegate Task<TResourceList> AsyncListNamespacedResourcesHandler<TResource, TResourceList>(string resourceNamespace)
+            where TResource : KubeResourceV1
+            where TResourceList : KubeResourceListV1<TResource>;
+
+        public delegate TResource LoadResourceHandler<TResource>(string resourceName)
+            where TResource : KubeResourceV1;
+
+        public delegate TResource LoadNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace)
+            where TResource : KubeResourceV1;
+
+        public delegate Task<TResource> AsyncLoadResourceHandler<TResource>(string resourceName)
+            where TResource : KubeResourceV1;
+
+        public delegate Task<TResource> AsyncLoadNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace)
+            where TResource : KubeResourceV1;
+
+        public delegate TResource SaveResourceHandler<TResource>(TResource resource)
+            where TResource : KubeResourceV1;
+
+        public delegate Task<TResource> AsyncSaveResourceHandler<TResource>(TResource resource)
+            where TResource : KubeResourceV1;
+
+        public delegate TResource PatchResourceHandler<TResource>(string resourceName, JsonPatchOperation[] patchRequest)
+            where TResource : KubeResourceV1;
+
+        public delegate TResource PatchNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace, JsonPatchOperation[] patchRequest)
+            where TResource : KubeResourceV1;
+
+        public delegate Task<TResource> AsyncPatchResourceHandler<TResource>(string resourceName, JsonPatchOperation[] patchRequest)
+            where TResource : KubeResourceV1;
+
+        public delegate Task<TResource> AsyncPatchNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace, JsonPatchOperation[] patchRequest)
+            where TResource : KubeResourceV1;
     }
 }
