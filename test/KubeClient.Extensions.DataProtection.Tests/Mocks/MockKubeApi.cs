@@ -384,49 +384,232 @@ namespace KubeClient.Extensions.DataProtection.Tests.Mocks
             });
         }
 
+        /// <summary>
+        ///     Synchronous delegate for listing all resources of a given (non-namespaced) resource type.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <typeparam name="TResourceList">
+        ///     The type of model representing a list of <typeparamref name="TResource"/>s (must derive from <see cref="KubeResourceListV1{TResource}"/>).
+        /// </typeparam>
+        /// <returns>
+        ///     The list of resources.
+        /// </returns>
         public delegate TResourceList ListResourcesHandler<TResource, TResourceList>()
             where TResource : KubeResourceV1
             where TResourceList : KubeResourceListV1<TResource>;
 
+        /// <summary>
+        ///     Synchronous delegate for listing all resources of a given (namespaced) resource type.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <typeparam name="TResourceList">
+        ///     The type of model representing a list of <typeparamref name="TResource"/>s (must derive from <see cref="KubeResourceListV1{TResource}"/>).
+        /// </typeparam>
+        /// <returns>
+        ///     The list of resources.
+        /// </returns>
         public delegate TResourceList ListNamespacedResourcesHandler<TResource, TResourceList>(string resourceNamespace)
             where TResource : KubeResourceV1
             where TResourceList : KubeResourceListV1<TResource>;
 
+        /// <summary>
+        ///     Asynchronous delegate for listing all resources of a given (non-namespaced) resource type.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <typeparam name="TResourceList">
+        ///     The type of model representing a list of <typeparamref name="TResource"/>s (must derive from <see cref="KubeResourceListV1{TResource}"/>).
+        /// </typeparam>
+        /// <returns>
+        ///     The list of resources.
+        /// </returns>
         public delegate Task<TResourceList> AsyncListResourcesHandler<TResource, TResourceList>()
             where TResource : KubeResourceV1
             where TResourceList : KubeResourceListV1<TResource>;
 
+        /// <summary>
+        ///     Aynchronous delegate for listing all resources of a given (namespaced) resource type.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <typeparam name="TResourceList">
+        ///     The type of model representing a list of <typeparamref name="TResource"/>s (must derive from <see cref="KubeResourceListV1{TResource}"/>).
+        /// </typeparam>
+        /// <param name="resourceNamespace">
+        ///     The name of the target namespace.
+        /// </param>
+        /// <returns>
+        ///     The list of resources.
+        /// </returns>
         public delegate Task<TResourceList> AsyncListNamespacedResourcesHandler<TResource, TResourceList>(string resourceNamespace)
             where TResource : KubeResourceV1
             where TResourceList : KubeResourceListV1<TResource>;
 
+        /// <summary>
+        ///     Synchronous delegate for retrieving persisted state for a single (non-namespaced) resource instance.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <returns>
+        ///     The resource, or <c>null</c> if no persisted state exists for the resource with the specified name.
+        /// </returns>
         public delegate TResource LoadResourceHandler<TResource>(string resourceName)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Synchronous delegate for retrieving persisted state for a single (namespaced) resource instance.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <param name="resourceNamespace">
+        ///     The name of the target resource's namespace.
+        /// </param>
+        /// <returns>
+        ///     The resource, or <c>null</c> if no persisted state exists for the resource with the specified name and namespace.
+        /// </returns>
         public delegate TResource LoadNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Asynchronous delegate for retrieving persisted state for a single (non-namespaced) resource instance.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <returns>
+        ///     The resource, or <c>null</c> if no persisted state exists for the resource with the specified name.
+        /// </returns>
         public delegate Task<TResource> AsyncLoadResourceHandler<TResource>(string resourceName)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Asynchronous delegate for retrieving persisted state for a single (namespaced) resource instance.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <param name="resourceNamespace">
+        ///     The name of the target resource's namespace.
+        /// </param>
+        /// <returns>
+        ///     The resource, or <c>null</c> if no persisted state exists for the resource with the specified name and namespace.
+        /// </returns>
         public delegate Task<TResource> AsyncLoadNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Synchronous delegate for persisting state for a single resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource state to persist.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the persisted resource state.
+        /// </returns>
         public delegate TResource SaveResourceHandler<TResource>(TResource resource)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Asynchronous delegate for persisting state for a single resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resource">
+        ///     A <typeparamref name="TResource"/> representing the resource state to persist.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the persisted resource state.
+        /// </returns>
         public delegate Task<TResource> AsyncSaveResourceHandler<TResource>(TResource resource)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Synchronous delegate for applying a patch request to persisted state for a single (non-namespaced) resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the modified (and persisted) resource state, or <c>null</c> if no persisted state exists for the resource with the specified name.
+        /// </returns>
         public delegate TResource PatchResourceHandler<TResource>(string resourceName, JsonPatchOperation[] patchRequest)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Synchronous delegate for applying a patch request to persisted state for a single (namespaced) resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <param name="resourceNamespace">
+        ///     The name of the target resource's namespace.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the modified (and persisted) resource state, or <c>null</c> if no persisted state exists for the resource with the specified name and namespace.
+        /// </returns>
         public delegate TResource PatchNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace, JsonPatchOperation[] patchRequest)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Asynchronous delegate for applying a patch request to persisted state for a single (non-namespaced) resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the modified (and persisted) resource state, or <c>null</c> if no persisted state exists for the resource with the specified name.
+        /// </returns>
         public delegate Task<TResource> AsyncPatchResourceHandler<TResource>(string resourceName, JsonPatchOperation[] patchRequest)
             where TResource : KubeResourceV1;
 
+        /// <summary>
+        ///     Asynchronous delegate for applying a patch request to persisted state for a single (non-namespaced) resource.
+        /// </summary>
+        /// <typeparam name="TResource">
+        ///     The type of model representing the target resource type (must derive from <see cref="KubeResourceV1"/>).
+        /// </typeparam>
+        /// <param name="resourceName">
+        ///     The name of the target resource.
+        /// </param>
+        /// <param name="resourceNamespace">
+        ///     The name of the target resource's namespace.
+        /// </param>
+        /// <returns>
+        ///     A <typeparamref name="TResource"/> representing the modified (and persisted) resource state, or <c>null</c> if no persisted state exists for the resource with the specified name and namespace.
+        /// </returns>
         public delegate Task<TResource> AsyncPatchNamespacedResourceHandler<TResource>(string resourceName, string resourceNamespace, JsonPatchOperation[] patchRequest)
             where TResource : KubeResourceV1;
     }
