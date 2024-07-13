@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
@@ -21,7 +22,6 @@ namespace KubeClient.ResourceClients
     using KubeClient.Models.ContractResolvers;
     using Models;
     using Models.Converters;
-    using System.Reactive;
 
     /// <summary>
     ///     The base class for Kubernetes resource API clients.
@@ -747,27 +747,29 @@ namespace KubeClient.ResourceClients
             HttpRequest currentRequest = requestFactory();
 
             return ObserveLines(requestFactory, operationDescription, bufferSize)
-                .RetryWhen(exceptions => Observable.Create((IObserver<Unit> retrySignal, CancellationToken subscriptionCancellation) =>
+                .RetryWhen(exceptions => Observable.Create((IObserver<Unit> retrySignal) =>
                 {
-                    exceptions.Subscribe(
-                        onNext: exception =>
+                    return exceptions.Subscribe(
+                        onNext: (Exception sourceError) =>
                         {
-                            if (!subscriptionCancellation.IsCancellationRequested && shouldRetry(exception))
+                            if (shouldRetry(sourceError))
                                 retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
                             else
-                                retrySignal.OnError(exception); // Bubble up (this will terminate the sequence with an error).
+                                retrySignal.OnError(sourceError); // Bubble up (this will terminate the sequence with an error).
+                        },
+                        onError: (Exception exceptionSourceError) =>
+                        {
+                            // Under normal circumstances this should not be called, and so we never retry from here.
+                            retrySignal.OnError(exceptionSourceError); // Bubble up (this will terminate the sequence with an error).
                         },
                         onCompleted: () =>
                         {
-                            if (!subscriptionCancellation.IsCancellationRequested && shouldRetry(null))
+                            if (shouldRetry(null))
                                 retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
                             else
                                 retrySignal.OnCompleted(); // Bubble up (this will terminate the sequence).
-                        },
-                        subscriptionCancellation // Automatically propagate termination of subscription.
+                        }
                     );
-
-                    return Task.CompletedTask;
                 }));
         }
 
