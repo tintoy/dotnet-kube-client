@@ -1,6 +1,12 @@
 using HTTPlease;
 using System;
 
+#if NETSTANDARD2_0
+
+using System.Runtime.Serialization;
+
+#endif // NETSTANDARD2_0
+
 namespace KubeClient
 {
     using Models;
@@ -8,9 +14,9 @@ namespace KubeClient
     /// <summary>
     ///     Exception raised when an error result is returned by the Kubernetes API.
     /// </summary>
-#if NETSTANDARD20
+#if NETSTANDARD2_0
     [Serializable]
-#endif // NETSTANDARD20
+#endif // NETSTANDARD2_0
     public class KubeApiException
         : KubeClientException
     {
@@ -106,7 +112,7 @@ namespace KubeClient
         /// <param name="context">
         ///     A <see cref="StreamingContext"/> containing information about the origin of the serialised data.
         /// </param>
-        protected KubeClientException(SerializationInfo info, StreamingContext context)
+        protected KubeApiException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
