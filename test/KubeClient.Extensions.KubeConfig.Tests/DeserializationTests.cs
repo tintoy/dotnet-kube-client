@@ -5,7 +5,6 @@ using Xunit.Abstractions;
 
 namespace KubeClient.Extensions.KubeConfig.Tests
 {
-    using Models;
     using TestCommon;
 
     /// <summary>
