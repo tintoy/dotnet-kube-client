@@ -18,6 +18,25 @@ namespace KubeClient.Extensions.KubeConfig
     static class CryptoHelper
     {
         /// <summary>
+        ///     Convert a BouncyCastle X.509 certificate to a native (System.Security.Cryptography) certificate.
+        /// </summary>
+        /// <param name="certificate">
+        ///     The <see cref="BCX509Certificate"/> to convert.
+        /// </param>
+        /// <returns>
+        ///     The converted <see cref="X509Certificate2"/>.
+        /// </returns>
+        public static X509Certificate2 ToNativeX509Certificate(this BCX509Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            byte[] derEncodedCertificate = certificate.GetEncoded();
+
+            return new X509Certificate2(derEncodedCertificate);
+        }
+
+        /// <summary>
         ///     Get the thumbprint of a BouncyCastle X.509 certificate.
         /// </summary>
         /// <param name="certificate">
@@ -26,11 +45,12 @@ namespace KubeClient.Extensions.KubeConfig
         /// <returns>
         ///     The certificate thumbprint.
         /// </returns>
-        public static string GetThumbprint(BCX509Certificate certificate)
+        public static string GetThumbprint(this BCX509Certificate certificate)
         {
-            byte[] derEncodedCertificate = certificate.GetEncoded();
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
 
-            using (X509Certificate2 nativeCertificate = new X509Certificate2(derEncodedCertificate))
+            using (X509Certificate2 nativeCertificate = certificate.ToNativeX509Certificate())
             {
                 return nativeCertificate.Thumbprint;
             }

@@ -6,9 +6,13 @@ using Xunit;
 using Xunit.Abstractions;
 
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
+using X509Certificate2 = System.Security.Cryptography.X509Certificates.X509Certificate2;
 
 namespace KubeClient.Extensions.KubeConfig.Tests
 {
+    using KubeClient.Extensions.KubeConfig.Models;
+    using System.Linq;
+    using System.Text;
     using TestCommon;
 
     /// <summary>
@@ -26,6 +30,42 @@ namespace KubeClient.Extensions.KubeConfig.Tests
         public CryptoHelperTests(ITestOutputHelper testOutput)
             : base(testOutput)
         {
+        }
+
+        /// <summary>
+        ///     Verify that <see cref="CryptoHelper"/> can load a native X509Certificate2 via PFX from the contents of PEM blocks.
+        /// </summary>
+        [Fact(DisplayName = "Can load certificate via PFX from PEM")]
+        public void CanBuildPfx()
+        {
+            FileInfo configFile = new FileInfo(
+                Path.Combine("Configurations", "valid1.yml")
+            );
+
+            K8sConfig kubeConfig = K8sConfig.Load(configFile);
+            UserIdentity targetUserIdentity = kubeConfig.UserIdentities.FirstOrDefault(userIdentity => userIdentity.Name == "docker-for-desktop");
+            Assert.NotNull(targetUserIdentity);
+            Assert.NotNull(targetUserIdentity.Config);
+            Assert.NotNull(targetUserIdentity.Config.ClientCertificateData);
+            Assert.NotNull(targetUserIdentity.Config.ClientKeyData);
+
+            string certificatePem = Encoding.ASCII.GetString(
+                Convert.FromBase64String(targetUserIdentity.Config.ClientCertificateData)
+            );
+            string keyPem = Encoding.ASCII.GetString(
+                Convert.FromBase64String(targetUserIdentity.Config.ClientKeyData)
+            );
+
+            string pfxPassword = "test_password";
+
+            byte[] pfxData = CryptoHelper.BuildPfx(certificatePem, keyPem, pfxPassword);
+            Assert.NotNull(pfxData);
+            Assert.NotEmpty(pfxData);
+
+            using (X509Certificate2 nativeCertificate = new X509Certificate2(pfxData, pfxPassword))
+            {
+                Assert.True(nativeCertificate.HasPrivateKey);
+            }
         }
 
         /// <summary>
