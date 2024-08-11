@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
 
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +21,7 @@
       <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
       <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
       <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="System.Reactive" Version="3.1.1" />
+      <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -82,6 +82,25 @@ steps:
     ArtifactName: 'packages'
     publishLocation: 'Container'
 
+- task: NuGetCommand@2
+  displayName: 'Publish packages to MyGet package feed'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/packages/*.nupkg;!$(Build.ArtifactStagingDirectory)/packages/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'myget-tintoy'
+
+- task: NuGetCommand@2
+  displayName: 'Publish packages to NuGet package feed'
+  
+  condition: contains(variables['Build.SourceBranch'], 'refs/tags/v')
+  
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/packages/*.nupkg;!$(Build.ArtifactStagingDirectory)/packages/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'nuget-tintoy'
+
 - task: GitHubRelease@1
   displayName: 'Create GitHub release from tag'
 

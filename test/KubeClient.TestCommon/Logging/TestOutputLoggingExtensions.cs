@@ -9,6 +9,8 @@ namespace KubeClient.TestCommon.Logging
     /// </summary>
     public static class TestOutputLoggingExtensions
     {
+        static readonly LogLevel DefaultMinLogLevel = LogLevel.Information;
+
         /// <summary>
         ///     Log to test output.
         /// </summary>
@@ -21,7 +23,7 @@ namespace KubeClient.TestCommon.Logging
         /// <param name="minLogLevel">
         ///     The minimum level to log at.
         /// </param>
-        public static void AddTestOutput(this ILoggingBuilder logging, ITestOutputHelper testOutput, LogLevel minLogLevel = LogLevel.Information)
+        public static void AddTestOutput(this ILoggingBuilder logging, ITestOutputHelper testOutput, LogLevel? minLogLevel = null)
         {
             if (logging == null)
                 throw new ArgumentNullException(nameof(logging));
@@ -30,7 +32,7 @@ namespace KubeClient.TestCommon.Logging
                 throw new ArgumentNullException(nameof(testOutput));
             
             logging.AddProvider(
-                new TestOutputLoggerProvider(testOutput, minLogLevel)
+                new TestOutputLoggerProvider(testOutput, minLogLevel ?? DefaultMinLogLevel)
             );
         }
 
@@ -49,7 +51,7 @@ namespace KubeClient.TestCommon.Logging
         /// <returns>
         ///     The logger factory (enables inline use / method-chaining).
         /// </returns>
-        public static ILoggerFactory AddTestOutput(this ILoggerFactory loggers, ITestOutputHelper testOutput, LogLevel minLogLevel = LogLevel.Information)
+        public static ILoggerFactory AddTestOutput(this ILoggerFactory loggers, ITestOutputHelper testOutput, LogLevel? minLogLevel = null)
         {
             if (loggers == null)
                 throw new ArgumentNullException(nameof(loggers));
@@ -58,7 +60,7 @@ namespace KubeClient.TestCommon.Logging
                 throw new ArgumentNullException(nameof(testOutput));
             
             loggers.AddProvider(
-                new TestOutputLoggerProvider(testOutput, minLogLevel)
+                new TestOutputLoggerProvider(testOutput, minLogLevel ?? DefaultMinLogLevel)
             );
 
             return loggers;

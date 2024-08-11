@@ -8,6 +8,7 @@ using System.IO;
 using System.Security.Cryptography;
 
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
+using X509Certificate2 = System.Security.Cryptography.X509Certificates.X509Certificate2;
 
 namespace KubeClient.Extensions.KubeConfig
 {
@@ -16,6 +17,45 @@ namespace KubeClient.Extensions.KubeConfig
     /// </summary>
     static class CryptoHelper
     {
+        /// <summary>
+        ///     Convert a BouncyCastle X.509 certificate to a native (System.Security.Cryptography) certificate.
+        /// </summary>
+        /// <param name="certificate">
+        ///     The <see cref="BCX509Certificate"/> to convert.
+        /// </param>
+        /// <returns>
+        ///     The converted <see cref="X509Certificate2"/>.
+        /// </returns>
+        public static X509Certificate2 ToNativeX509Certificate(this BCX509Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            byte[] derEncodedCertificate = certificate.GetEncoded();
+
+            return new X509Certificate2(derEncodedCertificate);
+        }
+
+        /// <summary>
+        ///     Get the thumbprint of a BouncyCastle X.509 certificate.
+        /// </summary>
+        /// <param name="certificate">
+        ///     The <see cref="BCX509Certificate"/>.
+        /// </param>
+        /// <returns>
+        ///     The certificate thumbprint.
+        /// </returns>
+        public static string GetThumbprint(this BCX509Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            using (X509Certificate2 nativeCertificate = certificate.ToNativeX509Certificate())
+            {
+                return nativeCertificate.Thumbprint;
+            }
+        }
+
         /// <summary>
         ///     Build a PFX (PKCS12) store containing the specified certificate and private key.
         /// </summary>
@@ -106,20 +146,22 @@ namespace KubeClient.Extensions.KubeConfig
             if (String.IsNullOrWhiteSpace(pemPassword))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'password'.", nameof(pemPassword));
 
+            var passwordStore = new StaticPasswordStore(pemPassword);
+
             foreach (string pemBlock in pemBlocks)
             {
                 if (String.IsNullOrWhiteSpace(pemBlock))
                     continue;
 
-                PemReader pemReader = new PemReader(
-                    new StringReader(pemBlock),
-                    new StaticPasswordStore(pemPassword)
-                );
+                using (StringReader pemBlockReader = new StringReader(pemBlock))
+                {
+                    PemReader pemReader = new PemReader(pemBlockReader, passwordStore);
 
-                object pemObject;
-                while ((pemObject = pemReader.ReadObject()) != null)
-                    yield return pemObject;
+                    object pemObject;
+                    while ((pemObject = pemReader.ReadObject()) != null)
+                        yield return pemObject;
                 }
+            }
         }
 
         /// <summary>

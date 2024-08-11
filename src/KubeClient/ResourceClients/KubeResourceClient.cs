@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace KubeClient.ResourceClients
 {
@@ -29,6 +29,11 @@ namespace KubeClient.ResourceClients
     public abstract class KubeResourceClient
         : IKubeResourceClient
     {
+        /// <summary>
+        ///     The default even
+        /// </summary>
+        public static readonly EventId DefaultEventId = new EventId(8500, typeof(KubeResourceClient).FullName);
+
         /// <summary>
         ///     The default buffer size to use when streaming data from the Kubernetes API.
         /// </summary>
@@ -93,7 +98,7 @@ namespace KubeClient.ResourceClients
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
-            
+
             KubeClient = client;
         }
 
@@ -137,7 +142,7 @@ namespace KubeClient.ResourceClients
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
-            
+
             using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken).ConfigureAwait(false))
             {
                 if (responseMessage.IsSuccessStatusCode)
@@ -183,7 +188,7 @@ namespace KubeClient.ResourceClients
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
-            
+
             using (HttpResponseMessage responseMessage = await Http.GetAsync(request, cancellationToken).ConfigureAwait(false))
             {
                 if (responseMessage.IsSuccessStatusCode)
@@ -227,13 +232,13 @@ namespace KubeClient.ResourceClients
         {
             if (patchAction == null)
                 throw new ArgumentNullException(nameof(patchAction));
-            
+
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
             // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
-            
+
             var patch = new JsonPatchDocument<TResource>();
 
             patchAction(patch);
@@ -273,13 +278,13 @@ namespace KubeClient.ResourceClients
         {
             if (patchAction == null)
                 throw new ArgumentNullException(nameof(patchAction));
-            
+
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
             // If possible, tell the consumer which resource type we had a problem with (helpful when all you find is the error message in the log).
             (string kind, string apiVersion) = KubeObjectV1.GetKubeKind<TResource>();
-            
+
             var patch = new JsonPatchDocument();
             patchAction(patch);
 
@@ -324,13 +329,13 @@ namespace KubeClient.ResourceClients
         {
             if (resourceByNameRequestTemplate == null)
                 throw new ArgumentNullException(nameof(resourceByNameRequestTemplate));
-            
+
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
             if (String.IsNullOrWhiteSpace(kubeNamespace))
                 kubeNamespace = KubeClient.DefaultNamespace;
-            
+
             var response = Http.DeleteAsJsonAsync(
                 resourceByNameRequestTemplate.WithTemplateParameters(new
                 {
@@ -376,7 +381,7 @@ namespace KubeClient.ResourceClients
         {
             if (resourceByNameNoNamespaceRequestTemplate == null)
                 throw new ArgumentNullException(nameof(resourceByNameNoNamespaceRequestTemplate));
-            
+
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
@@ -424,13 +429,34 @@ namespace KubeClient.ResourceClients
 
             JsonSerializerSettings serializerSettings = request.GetFormatters().Values.GetJsonSerializerSettings();
 
-            return ObserveLines(request, operationDescription)
+            ILogger logger = LoggerFactory.CreateLogger(GetType());
+
+            // If we have already observed any events, we only want to see ones newer than the last one we have seen so far.
+            string lastObservedResourceVersion = null;
+
+            return
+                ObserveLinesWithRetry(operationDescription,
+                    requestFactory: () =>
+                    {
+                        HttpRequest currentRequest = request;
+
+                        if (!String.IsNullOrWhiteSpace(lastObservedResourceVersion))
+                            currentRequest = currentRequest.WithQueryParameter("resourceVersion", lastObservedResourceVersion);
+
+                        return currentRequest;
+                    },
+                    shouldRetry: exception => exception == null // Only retry if there was no exception
+                )
                 .Do(
                     line => CheckForEventError(line, operationDescription)
                 )
                 .Select(
-                    line => (IResourceEventV1<TResource>) JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, serializerSettings)
-                );
+                    line => (IResourceEventV1<TResource>)JsonConvert.DeserializeObject<ResourceEventV1<TResource>>(line, serializerSettings)
+                )
+                .Do(resourceEvent =>
+                {
+                    lastObservedResourceVersion = resourceEvent.Resource.Metadata.ResourceVersion;
+                });
         }
 
         /// <summary>
@@ -462,8 +488,25 @@ namespace KubeClient.ResourceClients
                     KubeClient.GetClientOptions().ModelTypeAssemblies
                 )
             );
-            
-            return ObserveLines(request, operationDescription)
+
+            ILogger logger = LoggerFactory.CreateLogger(GetType());
+
+            // If we have already observed any events, we only want to see ones newer than the last one we have seen so far.
+            string lastObservedResourceVersion = null;
+
+            return
+                ObserveLinesWithRetry(operationDescription,
+                    requestFactory: () =>
+                    {
+                        HttpRequest currentRequest = request;
+
+                        if (!String.IsNullOrWhiteSpace(lastObservedResourceVersion))
+                            currentRequest = currentRequest.WithQueryParameter("resourceVersion", lastObservedResourceVersion);
+
+                        return currentRequest;
+                    },
+                    shouldRetry: exception => exception == null // Only retry if there was no exception
+                )
                 .Do(
                     line => CheckForEventError(line, operationDescription)
                 )
@@ -478,6 +521,10 @@ namespace KubeClient.ResourceClients
                     }
 
                     return resourceEvent;
+                })
+                .Do(resourceEvent =>
+                {
+                    lastObservedResourceVersion = resourceEvent.Resource.Metadata.ResourceVersion;
                 });
         }
 
@@ -505,12 +552,52 @@ namespace KubeClient.ResourceClients
 
             if (String.IsNullOrWhiteSpace(operationDescription))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
+
+            return ObserveLines(
+                requestFactory: () => request,
+                operationDescription,
+                bufferSize
+            );
+        }
+
+        /// <summary>
+        ///     Get an <see cref="IObservable{T}"/> for lines streamed from an HTTP GET request.
+        /// </summary>
+        /// <param name="requestFactory">
+        ///     A delegate that produces the <see cref="HttpRequest"/> to execute.
+        /// </param>
+        /// <param name="operationDescription">
+        ///     A short description of the operation (used in error messages if the request fails).
+        /// </param>
+        /// <param name="bufferSize">
+        ///     The buffer size to use when streaming data.
+        /// 
+        ///     Default is 2048 bytes.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="IObservable{T}"/>.
+        /// </returns>
+        protected IObservable<string> ObserveLines(Func<HttpRequest> requestFactory, string operationDescription, int bufferSize = DefaultStreamingBufferSize)
+        {
+            if (requestFactory == null)
+                throw new ArgumentNullException(nameof(requestFactory));
+
+            if (String.IsNullOrWhiteSpace(operationDescription))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
             
-            return Observable.Create<string>(async (subscriber, cancellationToken) =>
+            return Observable.Create<string>(async (subscriber, subscriptionCancellationToken) =>
             {
+                // NOTE: The CancellationToken above represents the subscriber (i.e. IObserver) subscription to this sequence (i.e. IObservable), and is canceled only when their subscription is disposed.
+
+                ILogger logger = LoggerFactory.CreateLogger(GetType());
+
                 try
                 {
-                    using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, cancellationToken).ConfigureAwait(false))
+                    HttpRequest request = requestFactory();
+
+                    logger.LogDebug("Start streaming {RequestMethod} request for {RequestUri}...", HttpMethod.Get.Method, request.Uri.PathAndQuery);
+
+                    using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, subscriptionCancellationToken).ConfigureAwait(false))
                     {
                         if (!responseMessage.IsSuccessStatusCode)
                         {
@@ -533,9 +620,9 @@ namespace KubeClient.ResourceClients
                         using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                         {
                             StringBuilder lineBuilder = new StringBuilder();
-                            
+
                             byte[] buffer = new byte[bufferSize];
-                            int bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                            int bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, subscriptionCancellationToken).ConfigureAwait(false);
                             while (bytesRead > 0)
                             {
                                 // AF: Slightly inefficient because we wind up scanning the buffer twice.
@@ -578,7 +665,7 @@ namespace KubeClient.ResourceClients
                                     }
                                 }
 
-                                bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                                bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, subscriptionCancellationToken).ConfigureAwait(false);
                             }
 
                             // If stream doesn't end with a line-terminator sequence, publish trailing characters as the last line.
@@ -591,31 +678,99 @@ namespace KubeClient.ResourceClients
                         }
                     }
                 }
-                catch (OperationCanceledException operationCanceled) when (operationCanceled.CancellationToken != cancellationToken)
+                catch (OperationCanceledException operationCanceled) when (operationCanceled.CancellationToken == subscriptionCancellationToken)
                 {
-                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
-                        subscriber.OnError(operationCanceled);
+                    // Don't bother publishing if subscriber has already disconnected (this CancellationToken represents the subscription).
                 }
                 catch (HttpRequestException<StatusV1> requestError)
                 {
-                    if (!cancellationToken.IsCancellationRequested)
+                    logger.LogError(new EventId(0, "NoEventId"), requestError, "Unexpected error while streaming from the Kubernetes API to {operationDescription}.", operationDescription);
+
+                    if (!subscriptionCancellationToken.IsCancellationRequested)
                     {
                         subscriber.OnError(
-                            new KubeClientException($"Unable to {operationDescription} (unexpected error while streaming from the Kubernetes API).", requestError)
+                            new KubeClientException($"Unexpected error while streaming from the Kubernetes API to {operationDescription}.", requestError)
                         );
                     }
                 }
                 catch (Exception exception)
                 {
-                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                    logger.LogError(new EventId(0, "NoEventId"), exception, "Unexpected error while streaming from the Kubernetes API to {operationDescription}.", operationDescription);
+
+                    if (!subscriptionCancellationToken.IsCancellationRequested)
                         subscriber.OnError(exception);
                 }
                 finally
                 {
-                    if (!cancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
+                    if (!subscriptionCancellationToken.IsCancellationRequested) // Don't bother publishing if subscriber has already disconnected.
                         subscriber.OnCompleted();
                 }
             });
+        }
+
+        /// <summary>
+        ///     Get an <see cref="IObservable{T}"/> (with automatic retry) for lines streamed from an HTTP GET request.
+        /// </summary>
+        /// <param name="operationDescription">
+        ///     A short description of the operation (used in error messages if the request fails).
+        /// </param>
+        /// <param name="requestFactory">
+        ///     A delegate that produces the <see cref="HttpRequest"/> to execute.
+        /// </param>
+        /// <param name="shouldRetry">
+        ///     A delegate that returns <c>true</c>, if the operation should be retried (i.e. sequence continues); otherwise, <c>false</c>.
+        ///     
+        ///     <para>
+        ///         If the retry is due to successful completion of the underlying sequence of lines (<see cref="IObserver{T}.OnCompleted"/>), the exception passed to the delegate be <c>null</c>.
+        ///         If the retry is due to an exception (<see cref="IObserver{T}.OnError(Exception)"/>), the exception will be passed to the delegate.
+        ///     </para>
+        /// </param>
+        /// <param name="bufferSize">
+        ///     The buffer size to use when streaming data.
+        /// 
+        ///     Default is 2048 bytes.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="IObservable{T}"/>.
+        /// </returns>
+        protected IObservable<string> ObserveLinesWithRetry(string operationDescription, Func<HttpRequest> requestFactory, Func<Exception, bool> shouldRetry, int bufferSize = DefaultStreamingBufferSize)
+        {
+            if (requestFactory == null)
+                throw new ArgumentNullException(nameof(requestFactory));
+
+            if (String.IsNullOrWhiteSpace(operationDescription))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(operationDescription)}.", nameof(operationDescription));
+
+            if (shouldRetry == null)
+                throw new ArgumentNullException(nameof(shouldRetry));
+
+            HttpRequest currentRequest = requestFactory();
+
+            return ObserveLines(requestFactory, operationDescription, bufferSize)
+                .RetryWhen(exceptions => Observable.Create((IObserver<Unit> retrySignal) =>
+                {
+                    return exceptions.Subscribe(
+                        onNext: (Exception sourceError) =>
+                        {
+                            if (shouldRetry(sourceError))
+                                retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
+                            else
+                                retrySignal.OnError(sourceError); // Bubble up (this will terminate the sequence with an error).
+                        },
+                        onError: (Exception exceptionSourceError) =>
+                        {
+                            // Under normal circumstances this should not be called, and so we never retry from here.
+                            retrySignal.OnError(exceptionSourceError); // Bubble up (this will terminate the sequence with an error).
+                        },
+                        onCompleted: () =>
+                        {
+                            if (shouldRetry(null))
+                                retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
+                            else
+                                retrySignal.OnCompleted(); // Bubble up (this will terminate the sequence).
+                        }
+                    );
+                }));
         }
 
         /// <summary>

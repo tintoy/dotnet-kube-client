@@ -1,15 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-
+    
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.Configuration\KubeClient.Extensions.Configuration.csproj" />
+    <ProjectReference Include="..\..\src\KubeClient.Extensions.DataProtection\KubeClient.Extensions.DataProtection.csproj" />
+    <ProjectReference Include="..\..\src\KubeClient.Extensions.DependencyInjection\KubeClient.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +23,9 @@
     <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
     <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
     <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 

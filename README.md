@@ -2,7 +2,7 @@
 
 [![Build Status (Travis CI)](https://travis-ci.org/tintoy/dotnet-kube-client.svg?branch=develop)](https://travis-ci.org/tintoy/dotnet-kube-client)
 
-KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard1.4`).
+KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard2.0`).
 
 Note - there is also an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (both clients actually share code in a couple of places). These two clients are philosophically-different (from a design perspective) but either can be bent to fit your needs. For more information about how KubeClient differs from the official client, see the section below on [extensibility](#extensibility).
 
@@ -12,7 +12,7 @@ Note - there is also an [official](https://github.com/kubernetes-client/csharp/)
 
 ## Packages
 
-* `KubeClient` (`netstandard1.4` or newer)    
+* `KubeClient` (`netstandard2.0` or newer)    
   The main client and models.  
   [![KubeClient](https://img.shields.io/nuget/v/KubeClient.svg)](https://www.nuget.org/packages/KubeClient)
 * `KubeClient.Extensions.Configuration` (`netstandard2.0` or newer)  
@@ -21,7 +21,7 @@ Note - there is also an [official](https://github.com/kubernetes-client/csharp/)
 * `KubeClient.Extensions.DependencyInjection` (`netstandard2.0` or newer)  
   Dependency-injection support.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.DependencyInjection.svg)](https://www.nuget.org/packages/KubeClient.Extensions.DependencyInjection)  
-* `KubeClient.Extensions.KubeConfig` (`netstandard1.4` or newer)  
+* `KubeClient.Extensions.KubeConfig` (`netstandard2.0` or newer)  
   Support for loading and parsing configuration from `~/.kube/config`.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.KubeConfig.svg)](https://www.nuget.org/packages/KubeClient.Extensions.KubeConfig)
 * `KubeClient.Extensions.WebSockets` (`netstandard2.1` or newer)  

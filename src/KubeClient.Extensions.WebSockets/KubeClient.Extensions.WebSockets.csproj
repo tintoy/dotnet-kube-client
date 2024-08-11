@@ -11,7 +11,7 @@
 
   <ItemGroup>
       <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0-pre-05" />
+      <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
   </ItemGroup>
 
   <Import Project="..\Common.props" />

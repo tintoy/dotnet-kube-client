@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -250,7 +249,7 @@ namespace KubeClient.ApiMetadata
                 throw new ArgumentNullException(nameof(assembly));
 
             Dictionary<(string kind, string apiVersion), Type> modelMetadata = ModelMetadata.KubeObject.BuildKindToTypeLookup(assembly);
-
+            
             var loadedMetadata = new List<KubeApiMetadata>();
             foreach (var kindAndApiVersion in modelMetadata.Keys)
             {
@@ -258,37 +257,39 @@ namespace KubeClient.ApiMetadata
 
                 // TODO: Add SingularName and ShortNames to model metadata (as custom attributes), but where do we get them from? They appear to only be available at runtime (via the API).
 
-                var apiPaths = new List<KubeApiPathMetadata>();
+                Dictionary<string, List<KubeAction>> pathActions = new Dictionary<string, List<KubeAction>>();
 
                 KubeApiAttribute[] apiAttributes = modelType.GetTypeInfo().GetCustomAttributes<KubeApiAttribute>().ToArray();
+                foreach (KubeApiAttribute apiAttribute in apiAttributes)
+                {
+                    foreach (string path in apiAttribute.Paths)
+                    {
+                        List<KubeAction> actions;
+                        if (!pathActions.TryGetValue(path, out actions))
+                        {
+                            actions = new List<KubeAction>();
+                            pathActions.Add(path, actions);
+                        }
 
-                string[] listApiPaths =
-                    apiAttributes.Where(
-                        api => api.Action == KubeAction.List
-                    )
-                    .SelectMany(api => api.Paths)
-                    .ToArray();
-                string namespacedPath = listApiPaths.FirstOrDefault(
-                    path => path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
-                );
-                if (!String.IsNullOrWhiteSpace(namespacedPath))
-                {
-                    apiPaths.Add(new KubeApiPathMetadata(
-                        path: namespacedPath,
-                        isNamespaced: true,
-                        verbs: new string[] { "list", "get", "put", "patch" }
-                    ));
+                        actions.Add(apiAttribute.Action);
+                    }
                 }
-                string allNamespacesPath = listApiPaths.FirstOrDefault(
-                    path => !path.Contains("namespaces/{namespace}") && !path.EndsWith("/{name}")
-                );
-                if (!String.IsNullOrWhiteSpace(allNamespacesPath))
+
+                var apiPaths = new List<KubeApiPathMetadata>();
+                foreach (string path in pathActions.Keys.OrderBy(path => path))
                 {
-                    apiPaths.Add(new KubeApiPathMetadata(
-                        path: allNamespacesPath,
-                        isNamespaced: false,
-                        verbs: new string[] { "list", "post" }
-                    ));
+                    bool isNamespaced = path.Contains("namespace");
+
+                    List<KubeAction> actions = pathActions[path];
+                    actions.Sort();
+
+                    string[] verbs = new string[actions.Count];
+                    for (int actionIndex = 0; actionIndex < actions.Count; actionIndex++)
+                        verbs[actionIndex] = actions[actionIndex].ToString().ToLower();
+
+                    apiPaths.Add(
+                        new KubeApiPathMetadata(path, isNamespaced, verbs)
+                    );
                 }
 
                 if (apiPaths.Count == 0)
