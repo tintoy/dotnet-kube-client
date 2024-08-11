@@ -1,6 +1,6 @@
 # KubeClient
 
-[![Build Status (Travis CI)](https://travis-ci.org/tintoy/dotnet-kube-client.svg?branch=develop)](https://travis-ci.org/tintoy/dotnet-kube-client)
+[![Build Status](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_apis/build/status%2Ftintoy.dotnet-kube-client?branchName=refs%2Ftags%2Fv2.5.9)](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_build/latest?definitionId=4&branchName=refs%2Ftags%2Fv2.5.9)
 
 KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard2.0`).
 
