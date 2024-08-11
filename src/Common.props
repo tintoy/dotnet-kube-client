@@ -3,19 +3,26 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReadmeFile>..\README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <!-- Common package properties -->
   <PropertyGroup>
-      <PackageProjectUrl>https://github.com/tintoy/dotnet-kube-client/</PackageProjectUrl>
-      <PackageLicenseUrl>https://raw.githubusercontent.com/tintoy/dotnet-kube-client/master/LICENSE</PackageLicenseUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    
+    <PackageProjectUrl>https://github.com/tintoy/dotnet-kube-client/</PackageProjectUrl>
 
-      <PackageTags>Kubernetes;Client;kubectl</PackageTags>
+    <PackageTags>Kubernetes;Client;kubectl</PackageTags>
 
-      <RepositoryType>git</RepositoryType>
-      <RepositoryUrl>https://github.com/tintoy/dotnet-kube-client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/tintoy/dotnet-kube-client</RepositoryUrl>
   </PropertyGroup>
+
+  <!-- Common package files -->
+  <ItemGroup>
+    <None Include="$(MSBuildProjectDirectory)\..\..\$(PackageReadmeFile)" Pack="true" PackagePath="\"/>
+    <None Include="$(MSBuildProjectDirectory)\..\..\$(PackageLicenseFile)" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
   <Import Project="..\DependencyVersions.props" />
 </Project>
