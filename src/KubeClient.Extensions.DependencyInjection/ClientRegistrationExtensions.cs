@@ -28,7 +28,7 @@ namespace KubeClient
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
-            
+
             if (usePodServiceAccount)
             {
                 // When running inside Kubernetes, use pod-level service account (e.g. access token from mounted Secret).

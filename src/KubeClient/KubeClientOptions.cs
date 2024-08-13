@@ -124,10 +124,15 @@ namespace KubeClient
         public List<Assembly> ModelTypeAssemblies { get; } = new List<Assembly>();
 
         /// <summary>
-        /// An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        ///     An optional <see cref="IServiceProvider"/> to use as a dependency-injection container.
+        /// </summary>
+        public IServiceProvider ServiceProvider { get; set; }
+
+        /// <summary>
+        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; }
-        
+
         /// <summary>
         ///     Environment variables passed to external commands
         /// </summary>
@@ -172,6 +177,7 @@ namespace KubeClient
             toOptions.InitialAccessToken = InitialAccessToken;
             toOptions.InitialTokenExpiryUtc = InitialTokenExpiryUtc;
             toOptions.KubeNamespace = KubeNamespace;
+            toOptions.ServiceProvider = ServiceProvider;
             toOptions.LoggerFactory = LoggerFactory;
             toOptions.LogHeaders = LogHeaders;
             toOptions.LogPayloads = LogPayloads;
