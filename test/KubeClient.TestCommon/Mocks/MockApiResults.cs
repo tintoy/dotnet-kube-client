@@ -1,7 +1,7 @@
 ﻿using KubeClient.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace KubeClient.Extensions.DataProtection.Tests.Mocks
+namespace KubeClient.TestCommon.Mocks
 {
     /// <summary>
     ///     Factory methods for well-known API results returned from minimal APIs.

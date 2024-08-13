@@ -9,8 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
-namespace KubeClient.Extensions.DataProtection.Tests.Mocks
+namespace KubeClient.TestCommon.Tests
 {
+    using Mocks;
     using Models;
     using TestCommon;
 

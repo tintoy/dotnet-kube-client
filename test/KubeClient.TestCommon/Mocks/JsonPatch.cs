@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Runtime.Serialization;
 
-namespace KubeClient.Extensions.DataProtection.Tests.Mocks
+namespace KubeClient.TestCommon.Mocks
 {
     /// <summary>
     ///     Represents a single operation within a JSON Patch request.

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 
 #pragma warning disable ASP0012 // Suggest using builder.Services over Host.ConfigureServices or WebHost.ConfigureServices
 
-namespace KubeClient.Extensions.DataProtection.Tests.Mocks
+namespace KubeClient.TestCommon.Mocks
 {
     /// <summary>
     ///     A mock implementation of the Kubernetes API.

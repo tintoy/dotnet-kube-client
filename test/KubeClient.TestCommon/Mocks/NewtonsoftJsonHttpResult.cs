@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace KubeClient.Extensions.DataProtection.Tests.Mocks
+namespace KubeClient.TestCommon.Mocks
 {
     /// <summary>
     ///     A minimal API result that serialises its value using the Newtonsoft JSON serialiser.

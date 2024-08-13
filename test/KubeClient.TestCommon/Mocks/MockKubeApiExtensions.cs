@@ -13,9 +13,10 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Xunit;
 using NJ = Newtonsoft.Json;
 
-namespace KubeClient.Extensions.DataProtection.Tests.Mocks
+namespace KubeClient.TestCommon.Mocks
 {
     using ApiMetadata;
     using Models;
