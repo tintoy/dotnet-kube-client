@@ -21,7 +21,7 @@ namespace KubeClient.Utilities
         /// </returns>
         public static Task<int> WaitForExitAsync(this Process process)
         {
-            return process.WaitForExitAsync(CancellationToken.None);
+            return process.WaitForExitAsync(CancellationToken.None, killIfCancelled: false);
         }
         
         /// <summary>

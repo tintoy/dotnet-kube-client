@@ -17,13 +17,25 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="System.Reactive" Version="4.4.1" />
+      <PackageReference Include="HTTPlease.Core" Version="1.9.2" />
+      <PackageReference Include="HTTPlease.Diagnostics" Version="1.9.2" />
+      <PackageReference Include="HTTPlease.Formatters.Json" Version="1.9.2" />
+      <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.9.2" />
+      <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
   <Import Project="..\Common.props" />
   <Import Project="..\TestProject.Common.props" />
+  <ItemGroup>
+    <PackageReference Update="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Update="xunit" Version="2.9.2" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

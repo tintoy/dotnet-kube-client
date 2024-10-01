@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Samples.NoobExec
 {
-    using Extensions.KubeConfig.Models;
     using Extensions.WebSockets;
     using Models;
 
@@ -40,7 +40,8 @@ namespace KubeClient.Samples.NoobExec
             if (options == null)
                 return showHelp ? ExitCodes.Success : ExitCodes.InvalidArguments;
 
-            ILoggerFactory loggers = ConfigureLogging(options);
+            using ServiceProvider loggingServiceProvider = ConfigureLogging(options);
+            ILoggerFactory loggers = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
             try
             {
@@ -148,26 +149,50 @@ namespace KubeClient.Samples.NoobExec
         }
 
         /// <summary>
-        ///     Configure application-level logging.
+        ///     Configure application-level logging and populate <see cref="Log"/>.
         /// </summary>
         /// <param name="options">
         ///     Program options.
         /// </param>
         /// <returns>
-        ///     The global logger factory.
+        ///     The global logging service provider.
         /// </returns>
-        static ILoggerFactory ConfigureLogging(ProgramOptions options)
+        static ServiceProvider ConfigureLogging(ProgramOptions options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            ILoggerFactory loggerFactory = new LoggerFactory().AddConsole(
-                minLevel: options.Verbose ? LogLevel.Trace : LogLevel.Information
-            );
+            ServiceProvider loggingServiceProvider = new ServiceCollection()
+                .AddLogging(logging =>
+                {
+                    logging.SetMinimumLevel(
+                        options.Verbose ? LogLevel.Trace : LogLevel.Information
+                    );
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+                .BuildServiceProvider(new ServiceProviderOptions
+                {
+                    ValidateOnBuild = true,
+                    ValidateScopes = true,
+                });
 
-            Log = loggerFactory.CreateLogger("Program");
+            try
+            {
+                ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
-            return loggerFactory;
+                Log = loggerFactory.CreateLogger(typeof(Program));
+
+                return loggingServiceProvider;
+            }
+            catch (Exception)
+            {
+                // Clean up, on failure (if possible).
+                using (loggingServiceProvider)
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>

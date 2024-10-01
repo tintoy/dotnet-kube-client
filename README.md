@@ -2,34 +2,27 @@
 
 [![Build Status](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_apis/build/status%2Ftintoy.dotnet-kube-client?branchName=refs%2Ftags%2Fv2.5.9)](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_build/latest?definitionId=4&branchName=refs%2Ftags%2Fv2.5.9)
 
-KubeClient is an extensible Kubernetes API client for .NET Core (targets `netstandard2.0`).
+KubeClient is an extensible Kubernetes API client for .NET (targets `net8.0`).
 
 Note - there is also an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (both clients actually share code in a couple of places). These two clients are philosophically-different (from a design perspective) but either can be bent to fit your needs. For more information about how KubeClient differs from the official client, see the section below on [extensibility](#extensibility).
 
-## Prerequisites
-
-**Note:** If you need WebSocket / `exec` you'll need to target `netcoreapp2.1`.
-
 ## Packages
 
-* `KubeClient` (`netstandard2.0` or newer)    
+* `KubeClient` (`net8.0` or newer)    
   The main client and models.  
   [![KubeClient](https://img.shields.io/nuget/v/KubeClient.svg)](https://www.nuget.org/packages/KubeClient)
-* `KubeClient.Extensions.Configuration` (`netstandard2.0` or newer)  
+* `KubeClient.Extensions.Configuration` (`net8.0` or newer)  
   Support for sourcing `Microsoft.Extensions.Configuration` data from Kubernetes Secrets and ConfigMaps.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.Configuration.svg)](https://www.nuget.org/packages/KubeClient.Extensions.Configuration)
-* `KubeClient.Extensions.DependencyInjection` (`netstandard2.0` or newer)  
+* `KubeClient.Extensions.DependencyInjection` (`net8.0` or newer)  
   Dependency-injection support.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.DependencyInjection.svg)](https://www.nuget.org/packages/KubeClient.Extensions.DependencyInjection)  
-* `KubeClient.Extensions.KubeConfig` (`netstandard2.0` or newer)  
+* `KubeClient.Extensions.KubeConfig` (`net8.0` or newer)  
   Support for loading and parsing configuration from `~/.kube/config`.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.KubeConfig.svg)](https://www.nuget.org/packages/KubeClient.Extensions.KubeConfig)
-* `KubeClient.Extensions.WebSockets` (`netstandard2.1` or newer)  
+* `KubeClient.Extensions.WebSockets` (`net8.0` or newer)  
   Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).   
   This package also extends resource clients to add support for those APIs.  
-  
-  Note that, due to a dependency on the new managed WebSockets implementation in .NET Core, this package targets `netcoreapp2.1` (which requires SDK version `2.1.300` or newer) and therefore only works on _.NET Core_ 2.1 or newer (it won't work on the full .NET Framework / UWP / Xamarin until they support `netstandard2.1`).  
-  [![KubeClient.Extensions.WebSockets](https://img.shields.io/nuget/v/KubeClient.Extensions.WebSockets.svg)](https://www.nuget.org/packages/KubeClient.Extensions.WebSockets)
 
 If you want to use the latest (development) builds of KubeClient, add the following feed to `NuGet.config`: https://www.myget.org/F/dotnet-kube-client/api/v3/index.json
 
@@ -301,13 +294,13 @@ using (StreamReader stdout = new StreamReader(connection.GetInputStream(1), Enco
 
 For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at the [HTTPlease](https://tintoy.github.io/HTTPlease/) documentation.
 
-#### Working out what APIs to call
+### Working out what APIs to call
 
 If you want to replicate the behaviour of a `kubectl` command you can pass the flag `--v=10` to `kubectl` and it will dump out (for each request that it makes) the request URI, request body, and response body.
 
 ### Building
 
-You will need to use v2.1.300 (or newer) of the .NET Core SDK to build KubeClient.
+You will need to use v8.0.400 (or newer) of the .NET SDK to build KubeClient.
 
 ## Questions / feedback
 

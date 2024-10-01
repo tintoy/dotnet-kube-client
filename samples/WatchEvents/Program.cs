@@ -1,7 +1,7 @@
 ﻿using HTTPlease;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Serilog;
 using System;
 using System.Reactive.Linq;
 using System.Threading;
@@ -19,6 +19,11 @@ namespace KubeClient.Samples.WatchEvents
     static class Program
     {
         /// <summary>
+        ///     The main program's logger.
+        /// </summary>
+        static ILogger Log { get; set; }
+
+        /// <summary>
         ///     The main program entry-point.
         /// </summary>
         /// <param name="commandLineArguments">
@@ -33,7 +38,8 @@ namespace KubeClient.Samples.WatchEvents
             if (options == null)
                 return ExitCodes.InvalidArguments;
 
-            ILoggerFactory loggerFactory = ConfigureLogging(options);
+            using ServiceProvider loggingServiceProvider = ConfigureLogging(options);
+            ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
             try
             {
@@ -49,8 +55,8 @@ namespace KubeClient.Samples.WatchEvents
 
                 ActionBlock<EventV1> eventProcessor = CreateEventProcessor(client);
 
-                Log.Information("Initial events:");
-                Log.Information("===============");
+                Log.LogInformation("Initial events:");
+                Log.LogInformation("===============");
 
                 if (initialEvents.Items.Count > 0)
                 {
@@ -58,9 +64,9 @@ namespace KubeClient.Samples.WatchEvents
                         eventProcessor.Post(initialEvent);
                 }
                 else
-                    Log.Information("No initial events.");
+                    Log.LogInformation("No initial events.");
 
-                Log.Information("===============");
+                Log.LogInformation("===============");
 
                 IObservable<IResourceEventV1<EventV1>> eventStream;
                 if (initialEvents.Items.Count > 0)
@@ -74,34 +80,34 @@ namespace KubeClient.Samples.WatchEvents
                 
                 IDisposable subscription = eventStream.Select(resourceEvent => resourceEvent.Resource).Subscribe(
                     subsequentEvent => eventProcessor.Post(subsequentEvent),
-                    error => Log.Error(error, "Unexpected error while streaming events.")
+                    error => Log.LogError(error, "Unexpected error while streaming events.")
                 );
 
                 using (subscription)
                 {
-                    Log.Information("Watching for new events (press enter to terminate).");
+                    Log.LogInformation("Watching for new events (press enter to terminate).");
 
                     Console.ReadLine();
                 }
 
-                Log.Information("Waiting for event processor to shut down...");
+                Log.LogInformation("Waiting for event processor to shut down...");
 
                 eventProcessor.Complete();
                 await eventProcessor.Completion;
 
-                Log.Information("Event processor has shut down.");
+                Log.LogInformation("Event processor has shut down.");
 
                 return ExitCodes.Success;
             }
             catch (HttpRequestException<StatusV1> kubeError)
             {
-                Log.Error(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
+                Log.LogError(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
 
                 return ExitCodes.UnexpectedError;
             }
             catch (Exception unexpectedError)
             {
-                Log.Error(unexpectedError, "Unexpected error.");
+                Log.LogError(unexpectedError, "Unexpected error.");
 
                 return ExitCodes.UnexpectedError;
             }
@@ -119,7 +125,7 @@ namespace KubeClient.Samples.WatchEvents
             
             ActionBlock<EventV1> eventProcessor = new ActionBlock<EventV1>(async eventToProcess =>
             {
-                Log.Information("Event: [{SourceComponent}] {EventReason:l} {EventMessage}",
+                Log.LogInformation("Event: [{SourceComponent}] {EventReason:l} {EventMessage}",
                     eventToProcess.Source?.Component,
                     eventToProcess.Reason,
                     eventToProcess.Message
@@ -132,9 +138,9 @@ namespace KubeClient.Samples.WatchEvents
             {
                 AggregateException flattened = faulted.Exception.Flatten();
                 if (flattened.InnerExceptions.Count == 1)
-                    Log.Error(flattened.InnerExceptions[0], "Unexpected error while processing event.");
+                    Log.LogError(flattened.InnerExceptions[0], "Unexpected error while processing event.");
                 else
-                    Log.Error(flattened, "Unexpected error while processing event.");
+                    Log.LogError(flattened, "Unexpected error while processing event.");
             }, TaskContinuationOptions.OnlyOnFaulted);
 
             return eventProcessor;
@@ -157,7 +163,7 @@ namespace KubeClient.Samples.WatchEvents
             KubeResourceV1 involvedResource = await client.Dynamic().Get(eventResource.InvolvedObject);
             if (involvedResource != null)
             {
-                Log.Information("\tResolved related {ResourceModelName} resource for event {EventName}.",
+                Log.LogInformation("\tResolved related {ResourceModelName} resource for event {EventName} ({EventNamespace}).",
                     involvedResource.GetType().Name,
                     eventResource.Metadata.Name,
                     eventResource.Metadata.Namespace
@@ -165,7 +171,7 @@ namespace KubeClient.Samples.WatchEvents
             }
             else
             {
-                Log.Information("\tFailed to resolve related resource for event {EventName}.",
+                Log.LogInformation("\tFailed to resolve related resource for event {EventName} ({EventNamespace}).",
                     eventResource.Metadata.Name,
                     eventResource.Metadata.Namespace
                 );
@@ -173,31 +179,50 @@ namespace KubeClient.Samples.WatchEvents
         }
 
         /// <summary>
-        ///     Configure the global application logger.
+        ///     Configure application-level logging and populate <see cref="Log"/>.
         /// </summary>
         /// <param name="options">
         ///     Program options.
         /// </param>
         /// <returns>
-        ///     The MEL-style logger factory.
+        ///     The global logging service provider.
         /// </returns>
-        static ILoggerFactory ConfigureLogging(ProgramOptions options)
+        static ServiceProvider ConfigureLogging(ProgramOptions options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            var loggerConfiguration = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.LiterateConsole(
-                    outputTemplate: "[{Level:u3}] {Message:l}{NewLine}{Exception}"
-                );
+            ServiceProvider loggingServiceProvider = new ServiceCollection()
+                .AddLogging(logging =>
+                {
+                    logging.SetMinimumLevel(
+                        options.Verbose ? LogLevel.Trace : LogLevel.Information
+                    );
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+                .BuildServiceProvider(new ServiceProviderOptions
+                {
+                    ValidateOnBuild = true,
+                    ValidateScopes = true,
+                });
 
-            if (options.Verbose)
-                loggerConfiguration.MinimumLevel.Verbose();
+            try
+            {
+                ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
-            Log.Logger = loggerConfiguration.CreateLogger();
+                Log = loggerFactory.CreateLogger(typeof(Program));
 
-            return new LoggerFactory().AddSerilog(Log.Logger);
+                return loggingServiceProvider;
+            }
+            catch (Exception)
+            {
+                // Clean up, on failure (if possible).
+                using (loggingServiceProvider)
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>
