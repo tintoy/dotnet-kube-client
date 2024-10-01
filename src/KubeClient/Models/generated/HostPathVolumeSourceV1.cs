@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class HostPathVolumeSourceV1
     {
         /// <summary>
-        ///     Type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+        ///     type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
         /// </summary>
         [YamlMember(Alias = "type")]
         [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
 
         /// <summary>
-        ///     Path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+        ///     path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
         /// </summary>
         [YamlMember(Alias = "path")]
         [JsonProperty("path", NullValueHandling = NullValueHandling.Include)]

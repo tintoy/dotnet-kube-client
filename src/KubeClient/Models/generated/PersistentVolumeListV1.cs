@@ -13,7 +13,7 @@ namespace KubeClient.Models
     public partial class PersistentVolumeListV1 : KubeResourceListV1<PersistentVolumeV1>
     {
         /// <summary>
-        ///     List of persistent volumes. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes
+        ///     items is a list of persistent volumes. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public override List<PersistentVolumeV1> Items { get; } = new List<PersistentVolumeV1>();

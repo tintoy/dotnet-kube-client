@@ -25,7 +25,7 @@ namespace KubeClient.Models
         public string Name { get; set; }
 
         /// <summary>
-        ///     Protocol for port. Must be UDP or TCP. Defaults to "TCP".
+        ///     Protocol for port. Must be UDP, TCP, or SCTP. Defaults to "TCP".
         /// </summary>
         [YamlMember(Alias = "protocol")]
         [JsonProperty("protocol", NullValueHandling = NullValueHandling.Ignore)]

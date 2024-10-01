@@ -39,6 +39,13 @@ namespace KubeClient.Models
         public string SingularName { get; set; }
 
         /// <summary>
+        ///     The hash value of the storage version, the version this resource is converted to when written to the data store. Value must be treated as opaque by clients. Only equality comparison on the value is valid. This is an alpha feature and may change or be removed in the future. The field is populated by the apiserver only if the StorageVersionHash feature gate is enabled. This field will remain optional even if it graduates.
+        /// </summary>
+        [YamlMember(Alias = "storageVersionHash")]
+        [JsonProperty("storageVersionHash", NullValueHandling = NullValueHandling.Ignore)]
+        public string StorageVersionHash { get; set; }
+
+        /// <summary>
         ///     version is the preferred version of the resource.  Empty implies the version of the containing resource list For subresources, this may have a different value, for example: v1 (while inside a v1beta1 version of the core resource's group)".
         /// </summary>
         [YamlMember(Alias = "version")]

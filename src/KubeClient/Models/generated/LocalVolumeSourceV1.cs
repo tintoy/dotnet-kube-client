@@ -11,7 +11,14 @@ namespace KubeClient.Models
     public partial class LocalVolumeSourceV1
     {
         /// <summary>
-        ///     The full path to the volume on the node. It can be either a directory or block device (disk, partition, ...). Directories can be represented only by PersistentVolume with VolumeMode=Filesystem. Block devices can be represented only by VolumeMode=Block, which also requires the BlockVolume alpha feature gate to be enabled.
+        ///     fsType is the filesystem type to mount. It applies only when the Path is a block device. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default value is to auto-select a filesystem if unspecified.
+        /// </summary>
+        [YamlMember(Alias = "fsType")]
+        [JsonProperty("fsType", NullValueHandling = NullValueHandling.Ignore)]
+        public string FsType { get; set; }
+
+        /// <summary>
+        ///     path of the full path to the volume on the node. It can be either a directory or block device (disk, partition, ...).
         /// </summary>
         [YamlMember(Alias = "path")]
         [JsonProperty("path", NullValueHandling = NullValueHandling.Include)]

@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class ScaleSpecV1
     {
         /// <summary>
-        ///     desired number of instances for the scaled object.
+        ///     replicas is the desired number of instances for the scaled object.
         /// </summary>
         [YamlMember(Alias = "replicas")]
         [JsonProperty("replicas", NullValueHandling = NullValueHandling.Ignore)]

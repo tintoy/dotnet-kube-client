@@ -52,7 +52,7 @@ namespace KubeClient.Models
         public int? ReadyReplicas { get; set; }
 
         /// <summary>
-        ///     Replicas is the most recently oberved number of replicas. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#what-is-a-replicationcontroller
+        ///     Replicas is the most recently observed number of replicas. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#what-is-a-replicationcontroller
         /// </summary>
         [YamlMember(Alias = "replicas")]
         [JsonProperty("replicas", NullValueHandling = NullValueHandling.Include)]

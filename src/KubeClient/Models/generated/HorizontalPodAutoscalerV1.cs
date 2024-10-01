@@ -26,14 +26,14 @@ namespace KubeClient.Models
     public partial class HorizontalPodAutoscalerV1 : KubeResourceV1
     {
         /// <summary>
-        ///     behaviour of autoscaler. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status.
+        ///     spec defines the behaviour of autoscaler. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public HorizontalPodAutoscalerSpecV1 Spec { get; set; }
 
         /// <summary>
-        ///     current information about the autoscaler.
+        ///     status is the current information about the autoscaler.
         /// </summary>
         [YamlMember(Alias = "status")]
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]

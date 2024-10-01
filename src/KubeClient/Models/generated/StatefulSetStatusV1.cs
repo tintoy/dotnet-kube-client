@@ -32,6 +32,13 @@ namespace KubeClient.Models
         public string UpdateRevision { get; set; }
 
         /// <summary>
+        ///     Total number of available pods (ready for at least minReadySeconds) targeted by this statefulset.
+        /// </summary>
+        [YamlMember(Alias = "availableReplicas")]
+        [JsonProperty("availableReplicas", NullValueHandling = NullValueHandling.Ignore)]
+        public int? AvailableReplicas { get; set; }
+
+        /// <summary>
         ///     Represents the latest available observations of a statefulset's current state.
         /// </summary>
         [MergeStrategy(Key = "type")]
@@ -52,7 +59,7 @@ namespace KubeClient.Models
         public int? CurrentReplicas { get; set; }
 
         /// <summary>
-        ///     readyReplicas is the number of Pods created by the StatefulSet controller that have a Ready Condition.
+        ///     readyReplicas is the number of pods created for this StatefulSet with a Ready Condition.
         /// </summary>
         [YamlMember(Alias = "readyReplicas")]
         [JsonProperty("readyReplicas", NullValueHandling = NullValueHandling.Ignore)]

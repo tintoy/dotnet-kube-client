@@ -23,5 +23,12 @@ namespace KubeClient.Models
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]
         public string Namespace { get; set; }
+
+        /// <summary>
+        ///     If specified, the port on the service that hosting webhook. Default to 443 for backward compatibility. `port` should be a valid port number (1-65535, inclusive).
+        /// </summary>
+        [YamlMember(Alias = "port")]
+        [JsonProperty("port", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Port { get; set; }
     }
 }

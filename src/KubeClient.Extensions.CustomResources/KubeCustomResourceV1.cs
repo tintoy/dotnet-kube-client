@@ -24,9 +24,9 @@ namespace KubeClient.Models
         ///     Generate a JSON schema for validating the specification model.
         /// </summary>
         /// <returns>
-        ///     The configured <see cref="JSONSchemaPropsV1Beta1"/>.
+        ///     The configured <see cref="JSONSchemaPropsV1"/>.
         /// </returns>
-        public abstract JSONSchemaPropsV1Beta1 GenerateSpecificationSchema();
+        public abstract JSONSchemaPropsV1 GenerateSpecificationSchema();
     }
 
     /// <summary>
@@ -56,8 +56,8 @@ namespace KubeClient.Models
         ///     Generate a JSON schema for validating the specification model.
         /// </summary>
         /// <returns>
-        ///     The configured <see cref="JSONSchemaPropsV1Beta1"/>.
+        ///     The configured <see cref="JSONSchemaPropsV1"/>.
         /// </returns>
-        public override JSONSchemaPropsV1Beta1 GenerateSpecificationSchema() => SchemaGenerator.GenerateSchema(modelType: typeof(TSpecification));
+        public override JSONSchemaPropsV1 GenerateSpecificationSchema() => SchemaGeneratorV1.GenerateSchema(modelType: typeof(TSpecification));
     }
 }

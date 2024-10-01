@@ -16,5 +16,18 @@ namespace KubeClient.Models
         [YamlMember(Alias = "phase")]
         [JsonProperty("phase", NullValueHandling = NullValueHandling.Ignore)]
         public string Phase { get; set; }
+
+        /// <summary>
+        ///     Represents the latest available observations of a namespace's current state.
+        /// </summary>
+        [MergeStrategy(Key = "type")]
+        [YamlMember(Alias = "conditions")]
+        [JsonProperty("conditions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<NamespaceConditionV1> Conditions { get; } = new List<NamespaceConditionV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Conditions"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeConditions() => Conditions.Count > 0;
     }
 }

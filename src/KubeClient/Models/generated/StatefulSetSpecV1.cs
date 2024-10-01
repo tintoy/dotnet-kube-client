@@ -18,7 +18,7 @@ namespace KubeClient.Models
         public string ServiceName { get; set; }
 
         /// <summary>
-        ///     template is the object that describes the pod that will be created if insufficient replicas are detected. Each pod stamped out by the StatefulSet will fulfill this Template, but have a unique identity from the rest of the StatefulSet.
+        ///     template is the object that describes the pod that will be created if insufficient replicas are detected. Each pod stamped out by the StatefulSet will fulfill this Template, but have a unique identity from the rest of the StatefulSet. Each pod will be named with the format &lt;statefulsetname&gt;-&lt;podindex&gt;. For example, a pod in a StatefulSet named "web" with index number "3" would be named "web-3". The only allowed template.spec.restartPolicy value is "Always".
         /// </summary>
         [YamlMember(Alias = "template")]
         [JsonProperty("template", NullValueHandling = NullValueHandling.Include)]
@@ -30,6 +30,20 @@ namespace KubeClient.Models
         [YamlMember(Alias = "selector")]
         [JsonProperty("selector", NullValueHandling = NullValueHandling.Include)]
         public LabelSelectorV1 Selector { get; set; }
+
+        /// <summary>
+        ///     Minimum number of seconds for which a newly created pod should be ready without any of its container crashing for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready)
+        /// </summary>
+        [YamlMember(Alias = "minReadySeconds")]
+        [JsonProperty("minReadySeconds", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MinReadySeconds { get; set; }
+
+        /// <summary>
+        ///     ordinals controls the numbering of replica indices in a StatefulSet. The default ordinals behavior assigns a "0" index to the first replica and increments the index by one for each additional replica requested.
+        /// </summary>
+        [YamlMember(Alias = "ordinals")]
+        [JsonProperty("ordinals", NullValueHandling = NullValueHandling.Ignore)]
+        public StatefulSetOrdinalsV1 Ordinals { get; set; }
 
         /// <summary>
         ///     replicas is the desired number of replicas of the given Template. These are replicas in the sense that they are instantiations of the same Template, but individual replicas also have a consistent identity. If unspecified, defaults to 1.
@@ -56,6 +70,13 @@ namespace KubeClient.Models
         [YamlMember(Alias = "revisionHistoryLimit")]
         [JsonProperty("revisionHistoryLimit", NullValueHandling = NullValueHandling.Ignore)]
         public int? RevisionHistoryLimit { get; set; }
+
+        /// <summary>
+        ///     persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent volume claims created from volumeClaimTemplates. By default, all persistent volume claims are created as needed and retained until manually deleted. This policy allows the lifecycle to be altered, for example by deleting persistent volume claims when their stateful set is deleted, or when their pod is scaled down. This requires the StatefulSetAutoDeletePVC feature gate to be enabled, which is beta.
+        /// </summary>
+        [YamlMember(Alias = "persistentVolumeClaimRetentionPolicy")]
+        [JsonProperty("persistentVolumeClaimRetentionPolicy", NullValueHandling = NullValueHandling.Ignore)]
+        public StatefulSetPersistentVolumeClaimRetentionPolicyV1 PersistentVolumeClaimRetentionPolicy { get; set; }
 
         /// <summary>
         ///     podManagementPolicy controls how pods are created during initial scale up, when replacing pods on nodes, or when scaling down. The default policy is `OrderedReady`, where pods are created in increasing order (pod-0, then pod-1, etc) and the controller will wait until each pod is ready before continuing. When scaling down, the pods are removed in the opposite order. The alternative policy is `Parallel` which will create pods in parallel to match the desired scale without waiting, and on scale down will delete all pods at once.

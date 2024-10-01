@@ -2,9 +2,9 @@
 Generate model classes from Kubernetes swagger.
 """
 
+import json
 import os.path
 import pprint
-import yaml
 
 BASE_DIRECTORY = os.path.abspath('../KubeClient/Models/generated')
 ROOT_NAMESPACE = 'KubeClient.Models'
@@ -12,6 +12,7 @@ IGNORE_MODELS = {
     'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions',
     'io.k8s.apimachinery.pkg.apis.meta.v1.Time',
     'io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime',
+
     'io.k8s.apimachinery.pkg.api.resource.Quantity',
     'io.k8s.apimachinery.pkg.util.intstr.IntOrString',
 
@@ -25,6 +26,15 @@ IGNORE_MODELS = {
     'io.k8s.api.extensions.v1beta1.PodSecurityPolicyList',
     'io.k8s.api.extensions.v1beta1.ReplicaSet',
     'io.k8s.api.extensions.v1beta1.ReplicaSetList',
+    'io.k8s.api.extensions.v1.Deployment',
+    'io.k8s.api.extensions.v1.DeploymentList',
+    'io.k8s.api.extensions.v1.DeploymentRollback',
+    'io.k8s.api.extensions.v1.NetworkPolicy',
+    'io.k8s.api.extensions.v1.NetworkPolicyList',
+    'io.k8s.api.extensions.v1.PodSecurityPolicy',
+    'io.k8s.api.extensions.v1.PodSecurityPolicyList',
+    'io.k8s.api.extensions.v1.ReplicaSet',
+    'io.k8s.api.extensions.v1.ReplicaSetList',
     'io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevision',
     'io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevisionList',
     'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSet',
@@ -39,6 +49,24 @@ IGNORE_MODELS = {
     'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSet',
     'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSetList',
     'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Scale',
+    'io.k8s.kubernetes.pkg.apis.apps.v1.ControllerRevision',
+    'io.k8s.kubernetes.pkg.apis.apps.v1.ControllerRevisionList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.DaemonSet',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.DaemonSetList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.Deployment',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.DeploymentList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.DeploymentRollback',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.NetworkPolicy',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.NetworkPolicyList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.PodSecurityPolicy',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.PodSecurityPolicyList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.ReplicaSet',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.ReplicaSetList',
+    'io.k8s.kubernetes.pkg.apis.extensions.v1.Scale',
+
+    # Special case for EventV1
+    'io.k8s.api.events.v1.Event',
+    'io.k8s.api.events.v1.EventList',
 
     # Hand-coded:
     'io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource',
@@ -211,6 +239,10 @@ class KubeModel(object):
             'beta', 'Beta'
         )
 
+        # don't double up on version in model names
+        if name.endswith(pretty_api_version):
+            name = name[:-len(pretty_api_version)]
+
         return (name, api_version, pretty_api_version)
 
     def __repr__(self):
@@ -225,7 +257,7 @@ class KubeModel(object):
 
 class KubeModelProperty(object):
     def __init__(self, name, json_name, summary, data_type, is_optional, is_merge, is_retain_keys, merge_key):
-        self.name = capitalize_name(name)
+        self.name = sanitize_name(name)
         self.json_name = json_name
         self.summary = summary or 'No summary provided'
         self.summary = self.summary.replace(
@@ -290,6 +322,8 @@ class KubeDataType(object):
 
         if 'type' in definition:
             type_name = definition['type']
+            type_format = definition.get('format')
+
             if type_name == 'array':
                 item_definition = definition['items']
                 element_type = KubeDataType.from_definition(item_definition, data_types)
@@ -301,11 +335,9 @@ class KubeDataType(object):
 
                 return KubeDictionaryDataType(element_type)
             elif type_name == 'number':
-                type_format = definition['format']
                 if type_format == 'double':
                     return KubeIntrinsicDataType('double')
             elif type_name == 'integer':
-                type_format = definition['format']
                 if type_format == 'int32':
                     return KubeIntrinsicDataType('int')
                 elif type_format == 'int64':
@@ -404,6 +436,16 @@ class KubeModelDataType(KubeDataType):
 def capitalize_name(name):
     return name[0].capitalize() + name[1:]
 
+def sanitize_name(name):
+    name_components = name.split('-')
+    if name_components[0] == 'x':
+        name_components = name_components[1:]
+
+    return ''.join([
+        capitalize_name(name_component)
+        for name_component in name_components
+    ])
+
 def get_defname_sort_key(definition_name):
     (type_name, _, _) = KubeModel.get_model_info(definition_name)
 
@@ -457,6 +499,7 @@ def get_data_types(models):
         'integer': KubeIntrinsicDataType('int'),
         'string': KubeIntrinsicDataType('string'),
         'io.k8s.apimachinery.pkg.apis.meta.v1.Time': KubeIntrinsicDataType('DateTime'),
+        'io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime': KubeIntrinsicDataType('DateTime'),
         'io.k8s.apimachinery.pkg.util.intstr.IntOrString': KubeIntrinsicDataType('Int32OrStringV1'),
         'io.k8s.apimachinery.pkg.api.resource.Quantity': KubeIntrinsicDataType('string'),
         'io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions': KubeIntrinsicDataType('DeleteOptionsV1')  # This model is hand-crafted
@@ -517,8 +560,8 @@ def main():
     except FileNotFoundError:
         os.mkdir(BASE_DIRECTORY)
 
-    with open('kube-swagger.yml') as kube_swagger_file:
-        kube_swagger = yaml.load(kube_swagger_file)
+    with open('kube-1.31-swagger.json') as kube_swagger_file:
+        kube_swagger = json.load(kube_swagger_file)
 
     paths = kube_swagger["paths"]
     apis = parse_apis(paths)
