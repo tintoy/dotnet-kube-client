@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class HTTPHeaderV1
     {
         /// <summary>
-        ///     The header field name
+        ///     The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
         /// </summary>
         [YamlMember(Alias = "name")]
         [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]

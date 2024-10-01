@@ -13,7 +13,7 @@ namespace KubeClient.Models
     public partial class APIServiceListV1 : KubeResourceListV1<APIServiceV1>
     {
         /// <summary>
-        ///     Description not provided.
+        ///     Items is the list of APIService
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public override List<APIServiceV1> Items { get; } = new List<APIServiceV1>();

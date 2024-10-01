@@ -6,26 +6,26 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     PersistentVolumeClaimCondition contails details about state of pvc
+    ///     PersistentVolumeClaimCondition contains details about state of pvc
     /// </summary>
     public partial class PersistentVolumeClaimConditionV1
     {
         /// <summary>
-        ///     Last time we probed the condition.
+        ///     lastProbeTime is the time we probed the condition.
         /// </summary>
         [YamlMember(Alias = "lastProbeTime")]
         [JsonProperty("lastProbeTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastProbeTime { get; set; }
 
         /// <summary>
-        ///     Last time the condition transitioned from one status to another.
+        ///     lastTransitionTime is the time the condition transitioned from one status to another.
         /// </summary>
         [YamlMember(Alias = "lastTransitionTime")]
         [JsonProperty("lastTransitionTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? LastTransitionTime { get; set; }
 
         /// <summary>
-        ///     Human-readable message indicating details about last transition.
+        ///     message is the human-readable message indicating details about last transition.
         /// </summary>
         [YamlMember(Alias = "message")]
         [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
@@ -39,7 +39,7 @@ namespace KubeClient.Models
         public string Type { get; set; }
 
         /// <summary>
-        ///     Unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports "ResizeStarted" that means the underlying persistent volume is being resized.
+        ///     reason is a unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports "Resizing" that means the underlying persistent volume is being resized.
         /// </summary>
         [YamlMember(Alias = "reason")]
         [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]

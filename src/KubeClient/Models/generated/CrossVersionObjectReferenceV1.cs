@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class CrossVersionObjectReferenceV1 : KubeObjectV1
     {
         /// <summary>
-        ///     Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+        ///     name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
         /// </summary>
         [YamlMember(Alias = "name")]
         [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]

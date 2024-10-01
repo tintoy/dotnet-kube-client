@@ -11,21 +11,21 @@ namespace KubeClient.Models
     public partial class GlusterfsVolumeSourceV1
     {
         /// <summary>
-        ///     Path is the Glusterfs volume path. More info: https://releases.k8s.io/HEAD/examples/volumes/glusterfs/README.md#create-a-pod
+        ///     path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
         /// </summary>
         [YamlMember(Alias = "path")]
         [JsonProperty("path", NullValueHandling = NullValueHandling.Include)]
         public string Path { get; set; }
 
         /// <summary>
-        ///     EndpointsName is the endpoint name that details Glusterfs topology. More info: https://releases.k8s.io/HEAD/examples/volumes/glusterfs/README.md#create-a-pod
+        ///     endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
         /// </summary>
         [YamlMember(Alias = "endpoints")]
         [JsonProperty("endpoints", NullValueHandling = NullValueHandling.Include)]
         public string Endpoints { get; set; }
 
         /// <summary>
-        ///     ReadOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://releases.k8s.io/HEAD/examples/volumes/glusterfs/README.md#create-a-pod
+        ///     readOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
         /// </summary>
         [YamlMember(Alias = "readOnly")]
         [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]

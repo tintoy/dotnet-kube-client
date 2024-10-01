@@ -40,7 +40,7 @@ namespace KubeClient.Models
         public StatusDetailsV1 Details { get; set; }
 
         /// <summary>
-        ///     Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+        ///     Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
         /// </summary>
         [YamlMember(Alias = "status")]
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]

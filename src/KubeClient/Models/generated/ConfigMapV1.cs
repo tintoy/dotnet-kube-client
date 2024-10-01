@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
 
@@ -45,5 +45,12 @@ namespace KubeClient.Models
         ///     Determine whether the <see cref="Data"/> property should be serialised.
         /// </summary>
         public bool ShouldSerializeData() => Data.Count > 0;
+
+        /// <summary>
+        ///     Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil.
+        /// </summary>
+        [YamlMember(Alias = "immutable")]
+        [JsonProperty("immutable", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Immutable { get; set; }
     }
 }

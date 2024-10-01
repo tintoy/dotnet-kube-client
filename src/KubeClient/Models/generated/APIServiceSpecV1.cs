@@ -11,21 +11,21 @@ namespace KubeClient.Models
     public partial class APIServiceSpecV1
     {
         /// <summary>
-        ///     CABundle is a PEM encoded CA bundle which will be used to validate an API server's serving certificate.
+        ///     CABundle is a PEM encoded CA bundle which will be used to validate an API server's serving certificate. If unspecified, system trust roots on the apiserver are used.
         /// </summary>
         [YamlMember(Alias = "caBundle")]
         [JsonProperty("caBundle", NullValueHandling = NullValueHandling.Ignore)]
         public string CaBundle { get; set; }
 
         /// <summary>
-        ///     Service is a reference to the service for this API server.  It must communicate on port 443 If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled.
+        ///     Service is a reference to the service for this API server.  It must communicate on port 443. If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled.
         /// </summary>
         [YamlMember(Alias = "service")]
-        [JsonProperty("service", NullValueHandling = NullValueHandling.Include)]
+        [JsonProperty("service", NullValueHandling = NullValueHandling.Ignore)]
         public ServiceReferenceV1 Service { get; set; }
 
         /// <summary>
-        ///     GroupPriorityMininum is the priority this group should have at least. Higher priority means that the group is preferred by clients over lower priority ones. Note that other versions of this group might specify even higher GroupPriorityMininum values such that the whole group gets a higher priority. The primary sort is based on GroupPriorityMinimum, ordered highest number to lowest (20 before 10). The secondary sort is based on the alphabetical comparison of the name of the object.  (v1.bar before v1.foo) We'd recommend something like: *.k8s.io (except extensions) at 18000 and PaaSes (OpenShift, Deis) are recommended to be in the 2000s
+        ///     GroupPriorityMinimum is the priority this group should have at least. Higher priority means that the group is preferred by clients over lower priority ones. Note that other versions of this group might specify even higher GroupPriorityMinimum values such that the whole group gets a higher priority. The primary sort is based on GroupPriorityMinimum, ordered highest number to lowest (20 before 10). The secondary sort is based on the alphabetical comparison of the name of the object.  (v1.bar before v1.foo) We'd recommend something like: *.k8s.io (except extensions) at 18000 and PaaSes (OpenShift, Deis) are recommended to be in the 2000s
         /// </summary>
         [YamlMember(Alias = "groupPriorityMinimum")]
         [JsonProperty("groupPriorityMinimum", NullValueHandling = NullValueHandling.Include)]

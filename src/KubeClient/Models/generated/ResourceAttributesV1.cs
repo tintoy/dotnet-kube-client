@@ -58,5 +58,23 @@ namespace KubeClient.Models
         [YamlMember(Alias = "group")]
         [JsonProperty("group", NullValueHandling = NullValueHandling.Ignore)]
         public string Group { get; set; }
+
+        /// <summary>
+        ///     fieldSelector describes the limitation on access based on field.  It can only limit access, not broaden it.
+        ///     
+        ///     This field  is alpha-level. To use this field, you must enable the `AuthorizeWithSelectors` feature gate (disabled by default).
+        /// </summary>
+        [YamlMember(Alias = "fieldSelector")]
+        [JsonProperty("fieldSelector", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldSelectorAttributesV1 FieldSelector { get; set; }
+
+        /// <summary>
+        ///     labelSelector describes the limitation on access based on labels.  It can only limit access, not broaden it.
+        ///     
+        ///     This field  is alpha-level. To use this field, you must enable the `AuthorizeWithSelectors` feature gate (disabled by default).
+        /// </summary>
+        [YamlMember(Alias = "labelSelector")]
+        [JsonProperty("labelSelector", NullValueHandling = NullValueHandling.Ignore)]
+        public LabelSelectorAttributesV1 LabelSelector { get; set; }
     }
 }

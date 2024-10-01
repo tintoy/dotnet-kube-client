@@ -34,7 +34,6 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "key")]
         [JsonProperty("key", NullValueHandling = NullValueHandling.Include)]
-        [MergeStrategy(Key = "key")]
         public string Key { get; set; }
     }
 }

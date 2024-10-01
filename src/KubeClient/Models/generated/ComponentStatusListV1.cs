@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     Status of all the conditions for the component as a list of ComponentStatus objects.
+    ///     Status of all the conditions for the component as a list of ComponentStatus objects. Deprecated: This API is deprecated in v1.19+
     /// </summary>
     [KubeListItem("ComponentStatus", "v1")]
     [KubeObject("ComponentStatusList", "v1")]

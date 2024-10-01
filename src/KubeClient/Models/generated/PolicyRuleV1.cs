@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class PolicyRuleV1
     {
         /// <summary>
-        ///     APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed.
+        ///     APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed. "" represents the core API group and "*" represents all API groups.
         /// </summary>
         [YamlMember(Alias = "apiGroups")]
         [JsonProperty("apiGroups", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -47,7 +47,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeResourceNames() => ResourceNames.Count > 0;
 
         /// <summary>
-        ///     Resources is a list of resources this rule applies to.  ResourceAll represents all resources.
+        ///     Resources is a list of resources this rule applies to. '*' represents all resources.
         /// </summary>
         [YamlMember(Alias = "resources")]
         [JsonProperty("resources", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -59,7 +59,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeResources() => Resources.Count > 0;
 
         /// <summary>
-        ///     Verbs is a list of Verbs that apply to ALL the ResourceKinds and AttributeRestrictions contained in this rule.  VerbAll represents all kinds.
+        ///     Verbs is a list of Verbs that apply to ALL the ResourceKinds contained in this rule. '*' represents all verbs.
         /// </summary>
         [YamlMember(Alias = "verbs")]
         [JsonProperty("verbs", ObjectCreationHandling = ObjectCreationHandling.Reuse)]

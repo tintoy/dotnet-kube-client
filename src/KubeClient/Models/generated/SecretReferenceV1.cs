@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class SecretReferenceV1
     {
         /// <summary>
-        ///     Name is unique within a namespace to reference a secret resource.
+        ///     name is unique within a namespace to reference a secret resource.
         /// </summary>
         [YamlMember(Alias = "name")]
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
-        ///     Namespace defines the space within which the secret name must be unique.
+        ///     namespace defines the space within which the secret name must be unique.
         /// </summary>
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace", NullValueHandling = NullValueHandling.Ignore)]

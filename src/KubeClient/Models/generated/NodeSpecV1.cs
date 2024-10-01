@@ -32,7 +32,7 @@ namespace KubeClient.Models
         public string PodCIDR { get; set; }
 
         /// <summary>
-        ///     If specified, the source to get node configuration from The DynamicKubeletConfig feature gate must be enabled for the Kubelet to use this field
+        ///     Deprecated: Previously used to specify the source of the node's configuration for the DynamicKubeletConfig feature. This feature is removed.
         /// </summary>
         [YamlMember(Alias = "configSource")]
         [JsonProperty("configSource", NullValueHandling = NullValueHandling.Ignore)]
@@ -44,6 +44,19 @@ namespace KubeClient.Models
         [YamlMember(Alias = "unschedulable")]
         [JsonProperty("unschedulable", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Unschedulable { get; set; }
+
+        /// <summary>
+        ///     podCIDRs represents the IP ranges assigned to the node for usage by Pods on that node. If this field is specified, the 0th entry must match the podCIDR field. It may contain at most 1 value for each of IPv4 and IPv6.
+        /// </summary>
+        [MergeStrategy]
+        [YamlMember(Alias = "podCIDRs")]
+        [JsonProperty("podCIDRs", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<string> PodCIDRs { get; } = new List<string>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="PodCIDRs"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializePodCIDRs() => PodCIDRs.Count > 0;
 
         /// <summary>
         ///     If specified, the node's taints.

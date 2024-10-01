@@ -11,21 +11,21 @@ namespace KubeClient.Models
     public partial class FCVolumeSourceV1
     {
         /// <summary>
-        ///     Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+        ///     fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
         /// </summary>
         [YamlMember(Alias = "fsType")]
         [JsonProperty("fsType", NullValueHandling = NullValueHandling.Ignore)]
         public string FsType { get; set; }
 
         /// <summary>
-        ///     Optional: FC target lun number
+        ///     lun is Optional: FC target lun number
         /// </summary>
         [YamlMember(Alias = "lun")]
         [JsonProperty("lun", NullValueHandling = NullValueHandling.Ignore)]
         public int? Lun { get; set; }
 
         /// <summary>
-        ///     Optional: FC target worldwide names (WWNs)
+        ///     targetWWNs is Optional: FC target worldwide names (WWNs)
         /// </summary>
         [YamlMember(Alias = "targetWWNs")]
         [JsonProperty("targetWWNs", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -37,7 +37,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeTargetWWNs() => TargetWWNs.Count > 0;
 
         /// <summary>
-        ///     Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+        ///     wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
         /// </summary>
         [YamlMember(Alias = "wwids")]
         [JsonProperty("wwids", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -49,7 +49,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeWwids() => Wwids.Count > 0;
 
         /// <summary>
-        ///     Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+        ///     readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
         /// </summary>
         [YamlMember(Alias = "readOnly")]
         [JsonProperty("readOnly", NullValueHandling = NullValueHandling.Ignore)]

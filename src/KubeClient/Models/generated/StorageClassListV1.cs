@@ -13,7 +13,7 @@ namespace KubeClient.Models
     public partial class StorageClassListV1 : KubeResourceListV1<StorageClassV1>
     {
         /// <summary>
-        ///     Items is the list of StorageClasses
+        ///     items is the list of StorageClasses
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public override List<StorageClassV1> Items { get; } = new List<StorageClassV1>();

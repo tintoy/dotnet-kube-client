@@ -24,14 +24,14 @@ namespace KubeClient.Models
     public partial class PersistentVolumeV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Spec defines a specification of a persistent volume owned by the cluster. Provisioned by an administrator. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
+        ///     spec defines a specification of a persistent volume owned by the cluster. Provisioned by an administrator. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public PersistentVolumeSpecV1 Spec { get; set; }
 
         /// <summary>
-        ///     Status represents the current information/status for the persistent volume. Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
+        ///     status represents the current information/status for the persistent volume. Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistent-volumes
         /// </summary>
         [YamlMember(Alias = "status")]
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]

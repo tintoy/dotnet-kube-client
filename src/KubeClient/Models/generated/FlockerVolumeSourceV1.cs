@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class FlockerVolumeSourceV1
     {
         /// <summary>
-        ///     UUID of the dataset. This is unique identifier of a Flocker dataset
+        ///     datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
         /// </summary>
         [YamlMember(Alias = "datasetUUID")]
         [JsonProperty("datasetUUID", NullValueHandling = NullValueHandling.Ignore)]
         public string DatasetUUID { get; set; }
 
         /// <summary>
-        ///     Name of the dataset stored as metadata -&gt; name on the dataset for Flocker should be considered as deprecated
+        ///     datasetName is Name of the dataset stored as metadata -&gt; name on the dataset for Flocker should be considered as deprecated
         /// </summary>
         [YamlMember(Alias = "datasetName")]
         [JsonProperty("datasetName", NullValueHandling = NullValueHandling.Ignore)]

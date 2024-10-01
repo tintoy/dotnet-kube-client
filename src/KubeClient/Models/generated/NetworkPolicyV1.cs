@@ -23,7 +23,7 @@ namespace KubeClient.Models
     public partial class NetworkPolicyV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Specification of the desired behavior for this NetworkPolicy.
+        ///     spec represents the specification of the desired behavior for this NetworkPolicy.
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]

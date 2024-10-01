@@ -13,7 +13,7 @@ namespace KubeClient.Models
     public partial class StatefulSetListV1 : KubeResourceListV1<StatefulSetV1>
     {
         /// <summary>
-        ///     Description not provided.
+        ///     Items is the list of stateful sets.
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public override List<StatefulSetV1> Items { get; } = new List<StatefulSetV1>();

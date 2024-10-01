@@ -45,14 +45,14 @@ namespace KubeClient.Models
         public int? FullyLabeledReplicas { get; set; }
 
         /// <summary>
-        ///     The number of ready replicas for this replica set.
+        ///     readyReplicas is the number of pods targeted by this ReplicaSet with a Ready Condition.
         /// </summary>
         [YamlMember(Alias = "readyReplicas")]
         [JsonProperty("readyReplicas", NullValueHandling = NullValueHandling.Ignore)]
         public int? ReadyReplicas { get; set; }
 
         /// <summary>
-        ///     Replicas is the most recently oberved number of replicas. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/#what-is-a-replicationcontroller
+        ///     Replicas is the most recently observed number of replicas. More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/#what-is-a-replicationcontroller
         /// </summary>
         [YamlMember(Alias = "replicas")]
         [JsonProperty("replicas", NullValueHandling = NullValueHandling.Include)]

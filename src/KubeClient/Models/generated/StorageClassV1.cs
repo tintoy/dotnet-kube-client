@@ -23,28 +23,28 @@ namespace KubeClient.Models
     public partial class StorageClassV1 : KubeResourceV1
     {
         /// <summary>
-        ///     VolumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.  When unset, VolumeBindingImmediate is used. This field is alpha-level and is only honored by servers that enable the VolumeScheduling feature.
+        ///     volumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.  When unset, VolumeBindingImmediate is used. This field is only honored by servers that enable the VolumeScheduling feature.
         /// </summary>
         [YamlMember(Alias = "volumeBindingMode")]
         [JsonProperty("volumeBindingMode", NullValueHandling = NullValueHandling.Ignore)]
         public string VolumeBindingMode { get; set; }
 
         /// <summary>
-        ///     AllowVolumeExpansion shows whether the storage class allow volume expand
+        ///     allowVolumeExpansion shows whether the storage class allow volume expand.
         /// </summary>
         [YamlMember(Alias = "allowVolumeExpansion")]
         [JsonProperty("allowVolumeExpansion", NullValueHandling = NullValueHandling.Ignore)]
         public bool? AllowVolumeExpansion { get; set; }
 
         /// <summary>
-        ///     Provisioner indicates the type of the provisioner.
+        ///     provisioner indicates the type of the provisioner.
         /// </summary>
         [YamlMember(Alias = "provisioner")]
         [JsonProperty("provisioner", NullValueHandling = NullValueHandling.Include)]
         public string Provisioner { get; set; }
 
         /// <summary>
-        ///     Restrict the node topologies where volumes can be dynamically provisioned. Each volume plugin defines its own supported topology specifications. An empty TopologySelectorTerm list means there is no topology restriction. This field is alpha-level and is only honored by servers that enable the DynamicProvisioningScheduling feature.
+        ///     allowedTopologies restrict the node topologies where volumes can be dynamically provisioned. Each volume plugin defines its own supported topology specifications. An empty TopologySelectorTerm list means there is no topology restriction. This field is only honored by servers that enable the VolumeScheduling feature.
         /// </summary>
         [YamlMember(Alias = "allowedTopologies")]
         [JsonProperty("allowedTopologies", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -56,7 +56,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeAllowedTopologies() => AllowedTopologies.Count > 0;
 
         /// <summary>
-        ///     Dynamically provisioned PersistentVolumes of this storage class are created with these mountOptions, e.g. ["ro", "soft"]. Not validated - mount of the PVs will simply fail if one is invalid.
+        ///     mountOptions controls the mountOptions for dynamically provisioned PersistentVolumes of this storage class. e.g. ["ro", "soft"]. Not validated - mount of the PVs will simply fail if one is invalid.
         /// </summary>
         [YamlMember(Alias = "mountOptions")]
         [JsonProperty("mountOptions", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -68,7 +68,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeMountOptions() => MountOptions.Count > 0;
 
         /// <summary>
-        ///     Parameters holds the parameters for the provisioner that should create volumes of this storage class.
+        ///     parameters holds the parameters for the provisioner that should create volumes of this storage class.
         /// </summary>
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
@@ -80,7 +80,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeParameters() => Parameters.Count > 0;
 
         /// <summary>
-        ///     Dynamically provisioned PersistentVolumes of this storage class are created with this reclaimPolicy. Defaults to Delete.
+        ///     reclaimPolicy controls the reclaimPolicy for dynamically provisioned PersistentVolumes of this storage class. Defaults to Delete.
         /// </summary>
         [YamlMember(Alias = "reclaimPolicy")]
         [JsonProperty("reclaimPolicy", NullValueHandling = NullValueHandling.Ignore)]

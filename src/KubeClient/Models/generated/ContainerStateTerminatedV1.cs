@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class ContainerStateTerminatedV1
     {
         /// <summary>
-        ///     Container's ID in the format 'docker://&lt;container_id&gt;'
+        ///     Container's ID in the format '&lt;type&gt;://&lt;container_id&gt;'
         /// </summary>
         [YamlMember(Alias = "containerID")]
         [JsonProperty("containerID", NullValueHandling = NullValueHandling.Ignore)]

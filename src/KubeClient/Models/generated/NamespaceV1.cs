@@ -24,14 +24,14 @@ namespace KubeClient.Models
     public partial class NamespaceV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Spec defines the behavior of the Namespace. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+        ///     Spec defines the behavior of the Namespace. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public NamespaceSpecV1 Spec { get; set; }
 
         /// <summary>
-        ///     Status describes the current status of a Namespace. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+        ///     Status describes the current status of a Namespace. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
         /// </summary>
         [YamlMember(Alias = "status")]
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]

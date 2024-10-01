@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class DownwardAPIVolumeFileV1
     {
         /// <summary>
-        ///     Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+        ///     Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
         /// </summary>
         [YamlMember(Alias = "mode")]
         [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
         public int? Mode { get; set; }
 
         /// <summary>
-        ///     Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+        ///     Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
         /// </summary>
         [YamlMember(Alias = "fieldRef")]
         [JsonProperty("fieldRef", NullValueHandling = NullValueHandling.Ignore)]

@@ -18,7 +18,7 @@ namespace KubeClient.Models
         public DateTime? TimeAdded { get; set; }
 
         /// <summary>
-        ///     Required. The taint value corresponding to the taint key.
+        ///     The taint value corresponding to the taint key.
         /// </summary>
         [YamlMember(Alias = "value")]
         [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]

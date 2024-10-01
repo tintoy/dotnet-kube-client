@@ -10,14 +10,17 @@ namespace KubeClient.Extensions.CustomResources
     using Models;
 
     /// <summary>
-    ///     Generator for Custom Resource Definition (CRD) validation schemas.
+    ///     Generator for v1beta1 Custom Resource Definition (CRD) validation schemas.
     /// </summary>
-    public static class SchemaGenerator
+    /// <remarks>
+    ///     Note: this type is deprecated and will be removed in a future version of dotnet-kube-client (use <see cref="SchemaGeneratorV1"/>, instead).
+    /// </remarks>
+    public static class SchemaGeneratorV1Beta1
     {
         /// <summary>
-        ///     The CLR type representing <see cref="KubeCustomResourceV1"/>.
+        ///     The CLR type representing <see cref="KubeCustomResourceV1Beta1"/>.
         /// </summary>
-        static readonly Type CustomResourceV1Type = typeof(KubeCustomResourceV1);
+        static readonly Type CustomResourceV1Type = typeof(KubeCustomResourceV1Beta1);
 
         /// <summary>
         ///     Generate the CRD validation schema for a specification model type.
@@ -29,7 +32,7 @@ namespace KubeClient.Extensions.CustomResources
         ///     The generated <see cref="JSONSchemaPropsV1Beta1"/>.
         /// </returns>
         public static JSONSchemaPropsV1Beta1 GenerateSchema<TModel>()
-            where TModel : KubeCustomResourceV1
+            where TModel : KubeCustomResourceV1Beta1
         {
             return GenerateSchema(typeof(TModel));
         }
@@ -233,7 +236,7 @@ namespace KubeClient.Extensions.CustomResources
                     continue;
 
                 // We only want properties declared on KubeCustomResourceV1 (or classes derived from it).
-                if (!typeof(KubeCustomResourceV1).IsAssignableFrom(property.DeclaringType))
+                if (!typeof(KubeCustomResourceV1Beta1).IsAssignableFrom(property.DeclaringType))
                     continue;
 
                 schemaProps.Properties[property.Name] = GenerateSchema(property.PropertyType);
