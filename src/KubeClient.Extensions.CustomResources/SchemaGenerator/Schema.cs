@@ -73,7 +73,7 @@ namespace KubeClient.Extensions.CustomResources.SchemaGenerator
     public record KubeArrayDataType(string Name, KubeDataType ElementType)
         : KubeDataType(Name, Summary: null)
     {
-        // <summary>
+        /// <summary>
         ///     Is the data-type an intrinsic data type (such as number or string)?
         /// </summary>
         public override bool IsIntrinsic => false;

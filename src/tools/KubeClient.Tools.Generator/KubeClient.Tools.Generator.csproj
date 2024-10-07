@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>kubeclient-codegen</ToolCommandName>
+
+    <PackageTags>$(PackageTags);generator;codegen</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../../KubeClient.Extensions.Configuration/KubeClient.Extensions.Configuration.csproj" />
+    <ProjectReference Include="../../KubeClient.Extensions.CustomResources/KubeClient.Extensions.CustomResources.csproj" />
+    <ProjectReference Include="../../KubeClient.Extensions.KubeConfig/KubeClient.Extensions.KubeConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+  </ItemGroup>
+
+  <Import Project="../Common.Tools.props" />
+</Project>

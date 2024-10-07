@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="../Common.props" />
+
+  <!-- Common settings for tool projects -->
+  <PropertyGroup>
+    <PackageOutputPath>$(PackageOutputPath)/packages</PackageOutputPath>
+  </PropertyGroup>
+</Project>
