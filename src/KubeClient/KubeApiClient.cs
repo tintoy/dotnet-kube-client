@@ -18,6 +18,16 @@ namespace KubeClient
         : IKubeApiClient, IDisposable
     {
         /// <summary>
+        ///     The default factory for <see cref="HttpClient"/>s used by <see cref="KubeApiClient"/>s.
+        /// </summary>
+        static readonly ClientBuilder HttpClientBuilder = new ClientBuilder();
+
+        /// <summary>
+        ///     The default factory for <see cref="HttpClient"/>s used by <see cref="KubeApiClient"/>s when using dependency injection.
+        /// </summary>
+        static readonly ClientBuilder<IServiceProvider> DependencyInjectionHttpClientBuilder = new ClientBuilder<IServiceProvider>();
+
+        /// <summary>
         ///     Kubernetes resource clients.
         /// </summary>
         readonly ConcurrentDictionary<Type, IKubeResourceClient> _clients = new ConcurrentDictionary<Type, IKubeResourceClient>();
@@ -124,93 +134,15 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(options));
 
             options.EnsureValid();
-            
-            var clientBuilder = new ClientBuilder();
 
-            switch (options.AuthStrategy)
+            HttpClient httpClient;
+            if (options.ServiceProvider != null)
             {
-                case KubeAuthStrategy.Basic:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new BasicAuthenticationHandler(options.Username, options.Password)
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.BearerToken:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new StaticBearerTokenHandler(options.AccessToken)
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.BearerTokenProvider:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new CommandBearerTokenHandler(
-                            accessTokenCommand: options.AccessTokenCommand,
-                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
-                            accessTokenSelector: options.AccessTokenSelector,
-                            accessTokenExpirySelector: options.AccessTokenExpirySelector,
-                            initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
-                            environmentVariables: options.EnvironmentVariables
-                        )
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.CredentialPlugin:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new CommandBearerTokenHandler(
-                            accessTokenCommand: options.AccessTokenCommand,
-                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
-                            accessTokenSelector: options.AccessTokenSelector ?? ".status.token",
-                            accessTokenExpirySelector: options.AccessTokenExpirySelector ?? ".status.expirationTimestamp",
-                            initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
-                            environmentVariables: options.EnvironmentVariables
-                        )
-                    );
-                    
-                    break;
-                }
-                case KubeAuthStrategy.ClientCertificate:
-                {
-                    if (options.ClientCertificate == null)
-                        throw new KubeClientException("Cannot specify ClientCertificate authentication strategy without supplying a client certificate.");
-
-                    clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
-
-                    break;
-                }
+                // TODO: services.Configure<KubeClientOptions>((serviceProvider, options) => options.ServiceProvider = serviceProvider);
+                httpClient = options.Configure(DependencyInjectionHttpClientBuilder).CreateClient(options.ServiceProvider, options.ApiEndPoint);
             }
-
-            if (options.AllowInsecure)
-                clientBuilder = clientBuilder.AcceptAnyServerCertificate();
-            else if (options.CertificationAuthorityCertificate != null)
-                clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
-
-            if (options.LoggerFactory != null)
-            {
-                LogMessageComponents logComponents = LogMessageComponents.Basic;
-                if (options.LogHeaders)
-                    logComponents |= LogMessageComponents.Headers;
-                if (options.LogPayloads)
-                    logComponents |= LogMessageComponents.Body;
-
-                clientBuilder = clientBuilder.WithLogging(
-                    logger: options.LoggerFactory.CreateLogger(
-                        typeof(KubeApiClient).FullName + ".Http"
-                    ),
-                    requestComponents: logComponents,
-                    responseComponents: logComponents
-                );
-            }
-
-            HttpClient httpClient = clientBuilder.CreateClient(options.ApiEndPoint);
+            else
+                httpClient = options.Configure(HttpClientBuilder).CreateClient(options.ApiEndPoint);
 
             return new KubeApiClient(httpClient, options);
         }

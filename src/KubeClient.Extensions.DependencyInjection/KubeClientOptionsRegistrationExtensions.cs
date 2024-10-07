@@ -94,7 +94,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured service collection.
         /// </returns>
-        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string kubeConfigFileName = null, string kubeContextName = null, string defaultKubeNamespace = "default")
+        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string? kubeConfigFileName = null, string? kubeContextName = null, string defaultKubeNamespace = "default")
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -139,7 +139,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured service collection.
         /// </returns>
-        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string name, string kubeConfigFileName = null, string kubeContextName = null, string defaultKubeNamespace = "default")
+        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string name, string? kubeConfigFileName = null, string? kubeContextName = null, string defaultKubeNamespace = "default")
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -180,7 +180,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured service collection.
         /// </returns>
-        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string kubeConfigFileName = null, string defaultKubeNamespace = "default")
+        public static IServiceCollection AddKubeClientOptionsFromKubeConfig(this IServiceCollection services, string? kubeConfigFileName = null, string defaultKubeNamespace = "default")
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -287,7 +287,7 @@ namespace KubeClient
         /// <returns>
         ///     A <see cref="FileInfo"/> representing the configuration file.
         /// </returns>
-        static FileInfo GetKubeConfigFile(string kubeConfigFileName)
+        static FileInfo GetKubeConfigFile(string? kubeConfigFileName)
         {
             if (String.IsNullOrWhiteSpace(kubeConfigFileName))
                 kubeConfigFileName = K8sConfig.Locate();
