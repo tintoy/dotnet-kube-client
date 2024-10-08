@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
@@ -41,7 +42,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "example")]
         [JsonProperty("example", NullValueHandling = NullValueHandling.Ignore)]
-        public JSONV1 Example { get; set; }
+        public object Example { get; set; }
 
         /// <summary>
         ///     Description not provided.
@@ -190,7 +191,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "enum")]
         [JsonProperty("enum", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
-        public List<JSONV1> Enum { get; } = new List<JSONV1>();
+        public List<object> Enum { get; } = new List<object>();
 
         /// <summary>
         ///     Determine whether the <see cref="Enum"/> property should be serialised.
@@ -391,7 +392,7 @@ namespace KubeClient.Models
         /// </summary>
         [YamlMember(Alias = "default")]
         [JsonProperty("default", NullValueHandling = NullValueHandling.Ignore)]
-        public JSONV1 Default { get; set; }
+        public object Default { get; set; }
 
         /// <summary>
         ///     format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:

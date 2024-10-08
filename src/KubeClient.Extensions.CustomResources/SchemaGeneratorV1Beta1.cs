@@ -201,7 +201,7 @@ namespace KubeClient.Extensions.CustomResources
             {
                 Type = "array",
                 Items = GenerateSchema(
-                    arrayType.GetElementType()
+                    arrayType.GetElementType() ?? throw new InvalidOperationException($"Cannot determine element type for CLR type '{arrayType.FullName}'.")
                 )
             };
         }

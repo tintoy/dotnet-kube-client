@@ -24,9 +24,9 @@ namespace KubeClient.Tools.Generator
             /// <returns>
             ///     The parsed <see cref="ProgramOptions"/>, or <c>null</c> if the command-line arguments could not be parsed.
             /// </returns>
-            public static ProgramOptions Parse(string[] commandLineArguments)
+            public static ProgramOptions? Parse(string[] commandLineArguments)
             {
-                ProgramOptions options = null;
+                ProgramOptions? options = null;
 
                 Parser.Default.ParseArguments<ProgramOptions>(commandLineArguments)
                     .WithParsed(parsedOptions => options = parsedOptions);

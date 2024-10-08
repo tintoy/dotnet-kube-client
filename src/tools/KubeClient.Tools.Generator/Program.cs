@@ -1,10 +1,12 @@
 ﻿using HTTPlease;
 using KubeClient.Extensions.CustomResources;
+using KubeClient.Extensions.CustomResources.Schema;
 using KubeClient.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using Newtonsoft.Json;
 
 namespace KubeClient.Tools.Generator
 {
@@ -17,11 +19,11 @@ namespace KubeClient.Tools.Generator
             Console.CancelKeyPress += OnConsoleCancellation;
         }
 
-        public static ILogger? Log { get; private set; }
+        public static ILogger Log { get; private set; } = null!;
 
         static async Task<int> Main(string[] commandLineArguments)
         {
-            ProgramOptions options = ProgramOptions.Parse(commandLineArguments);
+            ProgramOptions? options = ProgramOptions.Parse(commandLineArguments);
             if (options == null)
                 return ExitCodes.InvalidArguments;
 
@@ -32,12 +34,53 @@ namespace KubeClient.Tools.Generator
                 // TODO: Configure from ProgramOptions.
 
                 IKubeApiClient kubeApiClient = KubeApiClient.Create(
-                    K8sConfig.Load().ToKubeClientOptions()
+                    K8sConfig.Load().ToKubeClientOptions(
+                        kubeContextName: "dev",
+                        defaultKubeNamespace: "default",
+                        loggerFactory: loggingServiceProvider.GetRequiredService<ILoggerFactory>()
+                    )
                 );
 
-                CustomResourceDefinitionV1? crd = await kubeApiClient.CustomResourceDefinitionsV1().Get("kafka.strimzi.io.v1beta2.KafkaConnector", Cancellation.Token);
-                if (crd == null)
-                    throw new Exception("Cannot find CRD for KafkaConnector (v1beta2).");
+                CustomResourceDefinitionListV1 crds = await kubeApiClient.CustomResourceDefinitionsV1().List(cancellationToken: Cancellation.Token);
+                Log.LogInformation("CRD count: {CustomResourceDefinitionCount}", crds.Items.Count);
+
+                Dictionary<KubeResourceKind, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceKind, CustomResourceDefinitionV1>();
+                foreach (CustomResourceDefinitionV1 crd in crds)
+                {
+                    foreach (CustomResourceDefinitionVersionV1 crdVersion in crd.Spec.Versions)
+                    {
+                        KubeResourceKind versionedResourceType = new KubeResourceKind(
+                            Group: crd.Spec.Group,
+                            Version: crdVersion.Name,
+                            ResourceKind: crd.Spec.Names.Kind
+                        );
+                        customResourceTypes.Add(versionedResourceType, crd);
+                    }
+                }
+
+                KubeResourceKind kafaConnectorKind = new KubeResourceKind("kafka.strimzi.io", "v1beta2", "KafkaConnector");
+                if (customResourceTypes.TryGetValue(kafaConnectorKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
+                {
+                    KubeSchema schema = JsonSchemaParserV1.FromCustomResourceDefinitions(kafkaConnectorDefinition);
+                    Log!.LogInformation("Parsed schema:\n{KubeSchema:l}", 
+                        JsonConvert.SerializeObject(schema, Formatting.Indented)
+                    );
+                }
+
+                //using (HttpResponseMessage responseMessage = await kubeApiClient.Http.GetAsync($"/apis/apiextensions.k8s.io/v1/customresourcedefinitions?fieldSelector={Uri.EscapeDataString("spec.names.kind=KafkaConnector")}"))
+                //{
+                //    Log.LogInformation("HTTP status code is {HttpStatusCode}", responseMessage.StatusCode);
+
+                //    if (responseMessage.Content != null && responseMessage.Content.Headers.ContentLength > 0)
+                //    {
+                //        string responseBody = await responseMessage.Content.ReadAsStringAsync(Cancellation.Token);
+                //        Log.LogInformation("Response body:\n{ResponseBody:l}", responseBody);
+                //    }
+                //}
+
+                //CustomResourceDefinitionV1? crd = await kubeApiClient.CustomResourceDefinitionsV1().Get("kafka.strimzi.io.v1beta2.KafkaConnector", Cancellation.Token);
+                //if (crd == null)
+                //    throw new Exception("Cannot find CRD for KafkaConnector (v1beta2).");
 
                 // TODO: Generate.
 
@@ -45,13 +88,13 @@ namespace KubeClient.Tools.Generator
             }
             catch (HttpRequestException<StatusV1> kubeError)
             {
-                Log?.LogError(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
+                Log.LogError(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
 
                 return ExitCodes.UnexpectedError;
             }
             catch (Exception unexpectedError)
             {
-                Log?.LogError(unexpectedError, "An unexpected error has occurred.");
+                Log.LogError(unexpectedError, "An unexpected error has occurred.");
 
                 return ExitCodes.UnexpectedError;
             }

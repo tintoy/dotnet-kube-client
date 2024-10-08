@@ -59,18 +59,30 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the CustomResourceDefinitions.
         /// </param>
+        /// <param name="limit">
+        ///     The maximum number of results to return.
+        ///     
+        ///     <para>
+        ///         If specified, <see cref="ListMetaV1.Continue"/> will be non-<c>null</c> if there are more results available.
+        ///     </para>
+        /// </param>
+        /// <param name="continue">
+        ///     The result of <see cref="ListMetaV1.Continue"/> from the previous call.
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     A <see cref="CustomResourceDefinitionListV1"/> containing the jobs.
         /// </returns>
-        public async Task<CustomResourceDefinitionListV1> List(string labelSelector = null, CancellationToken cancellationToken = default)
+        public async Task<CustomResourceDefinitionListV1> List(string? labelSelector = null, int? limit = null, string? @continue = null, CancellationToken cancellationToken = default)
         {
             return await GetResourceList<CustomResourceDefinitionListV1>(
                 Requests.Collection.WithTemplateParameters(new
                 {
-                    LabelSelector = labelSelector
+                    LabelSelector = labelSelector,
+                    Limit = limit,
+                    Continue = @continue,
                 }),
                 cancellationToken: cancellationToken
             );
@@ -108,7 +120,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<IResourceEventV1<CustomResourceDefinitionV1>> WatchAll(string labelSelector = null)
+        public IObservable<IResourceEventV1<CustomResourceDefinitionV1>> WatchAll(string? labelSelector = null)
         {
             return ObserveEvents<CustomResourceDefinitionV1>(
                 Requests.WatchCollection.WithTemplateParameters(new
@@ -172,7 +184,7 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level CustomResourceDefinition (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/apiextensions.k8s.io/v1/customresourcedefinitions?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/apiextensions.k8s.io/v1/customresourcedefinitions?labelSelector={LabelSelector?}&limit={Limit?}&continue={Continue?}");
 
             /// <summary>
             ///     A get-by-name CustomResourceDefinition (v1) request.
@@ -216,13 +228,23 @@ namespace KubeClient.ResourceClients
         /// <param name="labelSelector">
         ///     An optional Kubernetes label selector expression used to filter the CustomResourceDefinitions.
         /// </param>
+        /// <param name="limit">
+        ///     The maximum number of results to return.
+        ///     
+        ///     <para>
+        ///         If specified, <see cref="ListMetaV1.Continue"/> will be non-<c>null</c> if there are more results available.
+        ///     </para>
+        /// </param>
+        /// <param name="continue">
+        ///     The result of <see cref="ListMetaV1.Continue"/> from the previous call.
+        /// </param>
         /// <param name="cancellationToken">
         ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
         /// </param>
         /// <returns>
         ///     A <see cref="CustomResourceDefinitionListV1"/> containing the jobs.
         /// </returns>
-        Task<CustomResourceDefinitionListV1> List(string labelSelector = null, CancellationToken cancellationToken = default);
+        Task<CustomResourceDefinitionListV1> List(string? labelSelector = null, int? limit = null, string? @continue = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Watch for events relating to a specific CustomResourceDefinition.
@@ -244,7 +266,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        IObservable<IResourceEventV1<CustomResourceDefinitionV1>> WatchAll(string labelSelector = null);
+        IObservable<IResourceEventV1<CustomResourceDefinitionV1>> WatchAll(string? labelSelector = null);
 
         /// <summary>
         ///     Request creation of a <see cref="CustomResourceDefinitionV1"/>.

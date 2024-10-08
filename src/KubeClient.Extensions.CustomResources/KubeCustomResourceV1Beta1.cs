@@ -50,7 +50,7 @@ namespace KubeClient.Models
         ///     The resource specification.
         /// </summary>
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
-        public virtual TSpecification Specification { get; set; }
+        public virtual TSpecification? Specification { get; set; }
 
         /// <summary>
         ///     Generate a JSON schema for validating the specification model.

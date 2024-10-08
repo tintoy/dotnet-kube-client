@@ -8,6 +8,7 @@ using System.Reflection;
 namespace KubeClient.Extensions.CustomResources
 {
     using Models;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     ///     Generator for v1 Custom Resource Definition (CRD) validation schemas.
@@ -169,13 +170,7 @@ namespace KubeClient.Extensions.CustomResources
             };
 
             schema.Enum.AddRange(
-                Enum.GetNames(enumType).Select(
-                    memberName => new JSONV1
-                    {
-                        
-                        Raw = memberName
-                    }
-                )
+                Enum.GetNames(enumType)
             );
 
             return schema;
@@ -194,12 +189,12 @@ namespace KubeClient.Extensions.CustomResources
         {
             if (arrayType == null)
                 throw new ArgumentNullException(nameof(arrayType));
-            
+
             return new JSONSchemaPropsV1
             {
                 Type = "array",
                 Items = GenerateSchema(
-                    arrayType.GetElementType()
+                    arrayType.GetElementType() ?? throw new InvalidOperationException($"Cannot determine element type for CLR type '{arrayType.FullName}'.")
                 )
             };
         }
