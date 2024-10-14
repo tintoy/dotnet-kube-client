@@ -18,7 +18,7 @@ namespace KubeClient.Models
         public bool? Paused { get; set; }
 
         /// <summary>
-        ///     Template describes the pods that will be created.
+        ///     Template describes the pods that will be created. The only allowed template.spec.restartPolicy value is "Always".
         /// </summary>
         [YamlMember(Alias = "template")]
         [JsonProperty("template", NullValueHandling = NullValueHandling.Include)]
@@ -62,6 +62,7 @@ namespace KubeClient.Models
         /// <summary>
         ///     The deployment strategy to use to replace existing pods with new ones.
         /// </summary>
+        [RetainKeysStrategy]
         [YamlMember(Alias = "strategy")]
         [JsonProperty("strategy", NullValueHandling = NullValueHandling.Ignore)]
         public DeploymentStrategyV1 Strategy { get; set; }

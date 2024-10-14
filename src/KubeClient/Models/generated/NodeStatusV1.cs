@@ -68,7 +68,7 @@ namespace KubeClient.Models
         public NodeSystemInfoV1 NodeInfo { get; set; }
 
         /// <summary>
-        ///     List of addresses reachable to the node. Queried from cloud provider, if available. More info: https://kubernetes.io/docs/concepts/nodes/node/#addresses
+        ///     List of addresses reachable to the node. Queried from cloud provider, if available. More info: https://kubernetes.io/docs/concepts/nodes/node/#addresses Note: This field is declared as mergeable, but the merge key is not sufficiently unique, which can cause data corruption when it is merged. Callers should instead use a full-replacement patch. See https://pr.k8s.io/79391 for an example. Consumers should assume that addresses can change during the lifetime of a Node. However, there are some exceptions where this may not be possible, such as Pods that inherit a Node's address in its own status or consumers of the downward API (status.hostIP).
         /// </summary>
         [MergeStrategy(Key = "type")]
         [YamlMember(Alias = "addresses")]
@@ -101,6 +101,13 @@ namespace KubeClient.Models
         public NodeDaemonEndpointsV1 DaemonEndpoints { get; set; }
 
         /// <summary>
+        ///     Features describes the set of features implemented by the CRI implementation.
+        /// </summary>
+        [YamlMember(Alias = "features")]
+        [JsonProperty("features", NullValueHandling = NullValueHandling.Ignore)]
+        public NodeFeaturesV1 Features { get; set; }
+
+        /// <summary>
         ///     List of container images on this node
         /// </summary>
         [YamlMember(Alias = "images")]
@@ -113,7 +120,19 @@ namespace KubeClient.Models
         public bool ShouldSerializeImages() => Images.Count > 0;
 
         /// <summary>
-        ///     Capacity represents the total resources of a node. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity
+        ///     The available runtime handlers.
+        /// </summary>
+        [YamlMember(Alias = "runtimeHandlers")]
+        [JsonProperty("runtimeHandlers", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
+        public List<NodeRuntimeHandlerV1> RuntimeHandlers { get; } = new List<NodeRuntimeHandlerV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="RuntimeHandlers"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRuntimeHandlers() => RuntimeHandlers.Count > 0;
+
+        /// <summary>
+        ///     Capacity represents the total resources of a node. More info: https://kubernetes.io/docs/reference/node/node-status/#capacity
         /// </summary>
         [YamlMember(Alias = "capacity")]
         [JsonProperty("capacity", ObjectCreationHandling = ObjectCreationHandling.Reuse)]

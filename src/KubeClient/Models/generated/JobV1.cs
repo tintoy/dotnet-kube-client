@@ -26,14 +26,14 @@ namespace KubeClient.Models
     public partial class JobV1 : KubeResourceV1
     {
         /// <summary>
-        ///     Specification of the desired behavior of a job. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+        ///     Specification of the desired behavior of a job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public JobSpecV1 Spec { get; set; }
 
         /// <summary>
-        ///     Current status of a job. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+        ///     Current status of a job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
         /// </summary>
         [YamlMember(Alias = "status")]
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]

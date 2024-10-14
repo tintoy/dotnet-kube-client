@@ -39,7 +39,7 @@ namespace KubeClient.Models
         public string FieldPath { get; set; }
 
         /// <summary>
-        ///     Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
+        ///     Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
         /// </summary>
         [YamlMember(Alias = "resourceVersion")]
         [JsonProperty("resourceVersion", NullValueHandling = NullValueHandling.Ignore)]

@@ -38,7 +38,7 @@ namespace KubeClient.Models
         public bool ShouldSerializeConditions() => Conditions.Count > 0;
 
         /// <summary>
-        ///     Total number of ready pods targeted by this deployment.
+        ///     readyReplicas is the number of pods targeted by this Deployment with a Ready Condition.
         /// </summary>
         [YamlMember(Alias = "readyReplicas")]
         [JsonProperty("readyReplicas", NullValueHandling = NullValueHandling.Ignore)]

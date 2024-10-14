@@ -1,8 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Reactive.Disposables;
 using System.Reflection;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,6 +17,16 @@ namespace KubeClient.TestCommon
     public abstract class TestBase
         : IDisposable
     {
+        /// <summary>
+        ///     The test-level service provider.
+        /// </summary>
+        ServiceProvider _serviceProvider;
+
+        /// <summary>
+        ///     The test-level logger.
+        /// </summary>
+        ILogger _testLogger;
+
         /// <summary>
         ///     Create a new test-suite.
         /// </summary>
@@ -36,10 +47,6 @@ namespace KubeClient.TestCommon
             }
 
             TestOutput = testOutput;
-            LoggerFactory = new LoggerFactory()
-                .AddDebug()
-                .AddTestOutput(TestOutput, MinLogLevel);
-            Log = LoggerFactory.CreateLogger("CurrentTest");
 
             // Ugly hack to get access to the current test.
             CurrentTest = (ITest)
@@ -48,10 +55,6 @@ namespace KubeClient.TestCommon
                     .GetValue(TestOutput);
 
             Assert.True(CurrentTest != null, "Cannot retrieve current test from ITestOutputHelper.");
-
-            Disposal.Add(
-                Log.BeginScope("CurrentTest", CurrentTest.DisplayName)
-            );
         }
 
         /// <summary>
@@ -81,17 +84,13 @@ namespace KubeClient.TestCommon
         {
             if (disposing)
             {
-                try
+                using (Disposal)
                 {
-                    Disposal.Dispose();
-                }
-                finally
-                {
-                    if (LoggerFactory is IDisposable loggerFactoryDisposal)
-                        loggerFactoryDisposal.Dispose();
-
-                    if (Log is IDisposable logDisposal)
-                        logDisposal.Dispose();
+                    if (_serviceProvider != null)
+                    {
+                        _serviceProvider.Dispose();
+                        _serviceProvider = null;
+                    }
                 }
             }
         }
@@ -112,18 +111,126 @@ namespace KubeClient.TestCommon
         protected ITest CurrentTest { get; }
 
         /// <summary>
-        ///     The logger for the current test.
-        /// </summary>
-        protected ILogger Log { get; }
-
-        /// <summary>
         ///     The logger factory for the current test.
         /// </summary>
-        protected ILoggerFactory LoggerFactory { get; }
+        protected ILoggerFactory LoggerFactory => ServiceProvider.GetRequiredService<ILoggerFactory>();
+
+        /// <summary>
+        ///     The logger for the current test.
+        /// </summary>
+        protected ILogger Log
+        {
+            get
+            {
+                if (_testLogger == null)
+                {
+                    _testLogger = LoggerFactory.CreateLogger("CurrentTest");
+
+                    Disposal.Add(
+                        Log.BeginScope("{CurrentTest}", CurrentTest.DisplayName)
+                    );
+                }
+
+                return _testLogger;
+            }
+        }
 
         /// <summary>
         ///     The logging level for the current test.
         /// </summary>
         protected virtual LogLevel MinLogLevel => LogLevel.Information;
+
+        /// <summary>
+        ///     The test-level service provider.
+        /// </summary>
+        protected IServiceProvider ServiceProvider
+        {
+            get
+            {
+                if (_serviceProvider == null)
+                    _serviceProvider = BuildServiceProvider();
+
+                return _serviceProvider;
+            }
+        }
+
+        /// <summary>
+        ///     Create and use a scoped <see cref="IServiceProvider"/> (via <see cref="IServiceScope"/>).
+        /// </summary>
+        /// <param name="action">
+        ///     A delegate that uses the scoped service provider.
+        /// </param>
+        protected void UseScopedServiceProvider(Action<IServiceProvider> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            using (IServiceScope serviceScope = ServiceProvider.CreateScope())
+            {
+                action(serviceScope.ServiceProvider);
+            }
+        }
+
+        /// <summary>
+        ///     Create and use a scoped <see cref="IServiceProvider"/> (via <see cref="IServiceScope"/>).
+        /// </summary>
+        /// <typeparam name="TResult">
+        ///     The action result type.
+        /// </typeparam>
+        /// <param name="action">
+        ///     A delegate that uses the scoped service provider and returns a <typeparamref name="TResult"/>.
+        /// </param>
+        /// <returns>
+        ///     The result.
+        /// </returns>
+        protected TResult UseScopedServiceProvider<TResult>(Func<IServiceProvider, TResult> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            using (IServiceScope serviceScope = ServiceProvider.CreateScope())
+            {
+                return action(serviceScope.ServiceProvider);
+            }
+        }
+
+        /// <summary>
+        ///     Build a service provider using the test-level configuration.
+        /// </summary>
+        /// <returns>
+        ///     The configured <see cref="ServiceProvider"/>.
+        /// </returns>
+        protected ServiceProvider BuildServiceProvider()
+        {
+            ServiceCollection services = new ServiceCollection();
+
+            ConfigureServices(services);
+
+            return services.BuildServiceProvider(new ServiceProviderOptions
+            {
+                ValidateOnBuild = true,
+                ValidateScopes = true,
+            });
+        }
+
+        /// <summary>
+        ///     Configure services for dependency-injection.
+        /// </summary>
+        /// <param name="services">
+        ///     The service collection to configure.
+        /// </param>
+        protected virtual void ConfigureServices(IServiceCollection services)
+        {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+
+            services.AddLogging(logging =>
+            {
+                logging.SetMinimumLevel(MinLogLevel);
+                logging.AddDebug();
+
+                logging.AddTestOutput(TestOutput, MinLogLevel);
+            });
+        }
     }
 }

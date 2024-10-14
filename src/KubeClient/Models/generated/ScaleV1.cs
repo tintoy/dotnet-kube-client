@@ -24,14 +24,14 @@ namespace KubeClient.Models
     public partial class ScaleV1 : KubeResourceV1
     {
         /// <summary>
-        ///     defines the behavior of the scale. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status.
+        ///     spec defines the behavior of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
         public ScaleSpecV1 Spec { get; set; }
 
         /// <summary>
-        ///     current status of the scale. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status. Read-only.
+        ///     status is the current status of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status. Read-only.
         /// </summary>
         [YamlMember(Alias = "status")]
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]

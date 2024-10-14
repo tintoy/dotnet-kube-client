@@ -16,5 +16,12 @@ namespace KubeClient.Models
         [YamlMember(Alias = "uid")]
         [JsonProperty("uid", NullValueHandling = NullValueHandling.Ignore)]
         public string Uid { get; set; }
+
+        /// <summary>
+        ///     Specifies the target ResourceVersion
+        /// </summary>
+        [YamlMember(Alias = "resourceVersion")]
+        [JsonProperty("resourceVersion", NullValueHandling = NullValueHandling.Ignore)]
+        public string ResourceVersion { get; set; }
     }
 }

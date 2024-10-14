@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class VolumeNodeAffinityV1
     {
         /// <summary>
-        ///     Required specifies hard node constraints that must be met.
+        ///     required specifies hard node constraints that must be met.
         /// </summary>
         [YamlMember(Alias = "required")]
         [JsonProperty("required", NullValueHandling = NullValueHandling.Ignore)]

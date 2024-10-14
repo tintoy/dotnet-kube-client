@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class ConfigMapKeySelectorV1
     {
         /// <summary>
-        ///     Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+        ///     Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
         /// </summary>
         [YamlMember(Alias = "name")]
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
-        ///     Specify whether the ConfigMap or it's key must be defined
+        ///     Specify whether the ConfigMap or its key must be defined
         /// </summary>
         [YamlMember(Alias = "optional")]
         [JsonProperty("optional", NullValueHandling = NullValueHandling.Ignore)]

@@ -11,7 +11,7 @@ namespace KubeClient.Models
     public partial class HorizontalPodAutoscalerSpecV1
     {
         /// <summary>
-        ///     target average CPU utilization (represented as a percentage of requested CPU) over all the pods; if not specified the default autoscaling policy will be used.
+        ///     targetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods; if not specified the default autoscaling policy will be used.
         /// </summary>
         [YamlMember(Alias = "targetCPUUtilizationPercentage")]
         [JsonProperty("targetCPUUtilizationPercentage", NullValueHandling = NullValueHandling.Ignore)]
@@ -25,14 +25,14 @@ namespace KubeClient.Models
         public CrossVersionObjectReferenceV1 ScaleTargetRef { get; set; }
 
         /// <summary>
-        ///     upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
+        ///     maxReplicas is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
         /// </summary>
         [YamlMember(Alias = "maxReplicas")]
         [JsonProperty("maxReplicas", NullValueHandling = NullValueHandling.Include)]
         public int MaxReplicas { get; set; }
 
         /// <summary>
-        ///     lower limit for the number of pods that can be set by the autoscaler, default 1.
+        ///     minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured.  Scaling is active as long as at least one metric value is available.
         /// </summary>
         [YamlMember(Alias = "minReplicas")]
         [JsonProperty("minReplicas", NullValueHandling = NullValueHandling.Ignore)]

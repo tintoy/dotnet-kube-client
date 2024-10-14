@@ -32,7 +32,10 @@ namespace KubeClient.Extensions.WebSockets.Tests.Server
             {
                 logging.ClearProviders(); // Logger provider will be added by the calling test.
             });
-            services.AddMvc();
+            services.AddMvc(mvc =>
+            {
+                mvc.EnableEndpointRouting = true;
+            });
         }
 
         /// <summary>
@@ -46,9 +49,14 @@ namespace KubeClient.Extensions.WebSockets.Tests.Server
             app.UseWebSockets(new WebSocketOptions
             {
                 KeepAliveInterval = TimeSpan.FromSeconds(5),
-                ReceiveBufferSize = 2048
             });
-            app.UseMvc();
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+            });
         }
     }
 }

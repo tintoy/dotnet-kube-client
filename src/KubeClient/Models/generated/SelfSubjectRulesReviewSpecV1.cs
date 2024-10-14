@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     No description provided.
+    ///     SelfSubjectRulesReviewSpec defines the specification for SelfSubjectRulesReview.
     /// </summary>
     public partial class SelfSubjectRulesReviewSpecV1
     {

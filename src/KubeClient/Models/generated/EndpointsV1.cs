@@ -7,17 +7,18 @@ namespace KubeClient.Models
 {
     /// <summary>
     ///     Endpoints is a collection of endpoints that implement the actual service. Example:
-    ///       Name: "mysvc",
-    ///       Subsets: [
-    ///         {
-    ///           Addresses: [{"ip": "10.10.1.1"}, {"ip": "10.10.2.2"}],
-    ///           Ports: [{"name": "a", "port": 8675}, {"name": "b", "port": 309}]
-    ///         },
-    ///         {
-    ///           Addresses: [{"ip": "10.10.3.3"}],
-    ///           Ports: [{"name": "a", "port": 93}, {"name": "b", "port": 76}]
-    ///         },
-    ///      ]
+    ///     
+    ///     	 Name: "mysvc",
+    ///     	 Subsets: [
+    ///     	   {
+    ///     	     Addresses: [{"ip": "10.10.1.1"}, {"ip": "10.10.2.2"}],
+    ///     	     Ports: [{"name": "a", "port": 8675}, {"name": "b", "port": 309}]
+    ///     	   },
+    ///     	   {
+    ///     	     Addresses: [{"ip": "10.10.3.3"}],
+    ///     	     Ports: [{"name": "a", "port": 93}, {"name": "b", "port": 76}]
+    ///     	   },
+    ///     	]
     /// </summary>
     [KubeObject("Endpoints", "v1")]
     [KubeApi(KubeAction.List, "api/v1/endpoints")]

@@ -11,14 +11,14 @@ namespace KubeClient.Models
     public partial class PodTemplateSpecV1
     {
         /// <summary>
-        ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+        ///     Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
         /// </summary>
         [YamlMember(Alias = "metadata")]
         [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
         public ObjectMetaV1 Metadata { get; set; }
 
         /// <summary>
-        ///     Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+        ///     Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
         /// </summary>
         [YamlMember(Alias = "spec")]
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]

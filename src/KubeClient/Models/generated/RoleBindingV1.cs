@@ -23,7 +23,7 @@ namespace KubeClient.Models
     public partial class RoleBindingV1 : KubeResourceV1
     {
         /// <summary>
-        ///     RoleRef can reference a Role in the current namespace or a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error.
+        ///     RoleRef can reference a Role in the current namespace or a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error. This field is immutable.
         /// </summary>
         [YamlMember(Alias = "roleRef")]
         [JsonProperty("roleRef", NullValueHandling = NullValueHandling.Include)]

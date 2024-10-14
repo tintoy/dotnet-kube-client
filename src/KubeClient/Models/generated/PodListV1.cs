@@ -13,7 +13,7 @@ namespace KubeClient.Models
     public partial class PodListV1 : KubeResourceListV1<PodV1>
     {
         /// <summary>
-        ///     List of pods. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md
+        ///     List of pods. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md
         /// </summary>
         [JsonProperty("items", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public override List<PodV1> Items { get; } = new List<PodV1>();

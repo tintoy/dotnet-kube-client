@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 namespace KubeClient.Models
 {
     /// <summary>
-    ///     No description provided.
+    ///     APIServiceCondition describes the state of an APIService at a particular point
     /// </summary>
     public partial class APIServiceConditionV1
     {

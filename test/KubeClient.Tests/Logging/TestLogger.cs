@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Internal;
 
 namespace KubeClient.Tests.Logging
 {
@@ -67,8 +67,9 @@ namespace KubeClient.Tests.Logging
 			if (formatter == null)
 				throw new ArgumentNullException(nameof(formatter));
 
+            
 			ImmutableDictionary<string, object> properties =
-				(state is FormattedLogValues formattedLogValues)
+				(state is IEnumerable<KeyValuePair<string, object>> formattedLogValues)
 					? ImmutableDictionary.CreateRange(formattedLogValues)
 					: ImmutableDictionary<string, object>.Empty;
 

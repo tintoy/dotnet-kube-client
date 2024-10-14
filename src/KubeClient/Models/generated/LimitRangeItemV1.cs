@@ -14,7 +14,7 @@ namespace KubeClient.Models
         ///     Type of resource that this limit applies to.
         /// </summary>
         [YamlMember(Alias = "type")]
-        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
         public string Type { get; set; }
 
         /// <summary>

@@ -33,5 +33,10 @@ namespace KubeClient.Models
         [YamlMember(Alias = "rules")]
         [JsonProperty("rules", ObjectCreationHandling = ObjectCreationHandling.Reuse)]
         public List<PolicyRuleV1> Rules { get; } = new List<PolicyRuleV1>();
+
+        /// <summary>
+        ///     Determine whether the <see cref="Rules"/> property should be serialised.
+        /// </summary>
+        public bool ShouldSerializeRules() => Rules.Count > 0;
     }
 }

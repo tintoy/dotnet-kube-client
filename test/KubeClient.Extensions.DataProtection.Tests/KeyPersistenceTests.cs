@@ -9,10 +9,10 @@ using Xunit.Abstractions;
 
 namespace KubeClient.Extensions.DataProtection.Tests
 {
-    using Mocks;
     using Models;
     using TestCommon;
     using TestCommon.Logging;
+    using TestCommon.Mocks;
 
     /// <summary>
     ///     Tests for DataProtection key persistence using K8s secrets.
