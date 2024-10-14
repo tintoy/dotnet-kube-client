@@ -19,9 +19,10 @@ using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
-    using KubeClient.Models.ContractResolvers;
     using Models;
+    using Models.ContractResolvers;
     using Models.Converters;
+    using Utilities;
 
     /// <summary>
     ///     The base class for Kubernetes resource API clients.
@@ -595,7 +596,7 @@ namespace KubeClient.ResourceClients
                 {
                     HttpRequest request = requestFactory();
 
-                    logger.LogDebug("Start streaming {RequestMethod} request for {RequestUri}...", HttpMethod.Get.Method, request.Uri.PathAndQuery);
+                    logger.LogDebug("Start streaming {RequestMethod} request for {RequestUri}...", HttpMethod.Get.Method, request.Uri.SafeGetPathAndQuery());
 
                     using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, subscriptionCancellationToken).ConfigureAwait(false))
                     {

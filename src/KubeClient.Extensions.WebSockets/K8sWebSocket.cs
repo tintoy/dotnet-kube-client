@@ -25,6 +25,8 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Extensions.WebSockets
 {
+    using KubeClient.Utilities;
+
     /// <summary>
     ///     Connection factory for Kubernetes web sockets.
     /// </summary>
@@ -173,7 +175,7 @@ namespace KubeClient.Extensions.WebSockets
         {
             StringBuilder builder = new StringBuilder()
                 .Append("GET ")
-                .Append(uri.PathAndQuery)
+                .Append(uri.SafeGetPathAndQuery())
                 .Append(" HTTP/1.1\r\n");
 
             // Add all of the required headers, honoring Host header if set.
