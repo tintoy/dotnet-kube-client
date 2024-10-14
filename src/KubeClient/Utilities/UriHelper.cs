@@ -28,7 +28,7 @@ namespace KubeClient.Utilities
                 return uri.PathAndQuery;
 
             // Slightly ugly, but System.Uri doesn't attempt to parse relative URIs so we have to resort to System.UriBuilder.
-            UriBuilder uriComponents = new UriBuilder(uri);
+            UriBuilder uriComponents = new UriBuilder(uri.OriginalString);
 
             return $"{uriComponents.Path}{uriComponents.Query}";
         }
