@@ -8,6 +8,11 @@ namespace KubeClient.Utilities
     public static class UriHelper
     {
         /// <summary>
+        ///     A dummy URI to be used as the base URI when dealing with relative URIs.
+        /// </summary>
+        static readonly Uri DummyBaseUri = new Uri("https://dummy-host");
+
+        /// <summary>
         ///     Get the path (and, if present, the query) of a URI.
         /// </summary>
         /// <param name="uri">
@@ -27,10 +32,10 @@ namespace KubeClient.Utilities
             if (uri.IsAbsoluteUri)
                 return uri.PathAndQuery;
 
-            // Slightly ugly, but System.Uri doesn't attempt to parse relative URIs so we have to resort to System.UriBuilder.
-            UriBuilder uriComponents = new UriBuilder(uri.OriginalString);
+            // Slightly ugly, but System.Uri doesn't attempt to parse relative URIs so we have to convert it to an absolute URI.
+            Uri absoluteUri = new Uri(DummyBaseUri, relativeUri: uri);
 
-            return $"{uriComponents.Path}{uriComponents.Query}";
+            return absoluteUri.PathAndQuery;
         }
     }
 }
