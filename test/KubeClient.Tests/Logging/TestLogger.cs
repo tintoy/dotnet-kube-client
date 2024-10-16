@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Net.Http;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using Microsoft.Extensions.Logging;
@@ -104,5 +105,5 @@ namespace KubeClient.Tests.Logging
 		/// 	An <see cref="IDisposable"/> that ends the logical operation scope when disposed.
 		/// </returns>
 		public IDisposable BeginScope<TState>(TState state) => Disposable.Empty;
-	}
+    }
 }
