@@ -29,13 +29,30 @@ namespace KubeClient.Utilities
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
 
+            return uri.EnsureAbsolute().PathAndQuery;
+        }
+
+        /// <summary>
+        ///     Ensure that the URI is an absolute URI.
+        /// </summary>
+        /// <param name="uri">
+        ///     The target URI.
+        /// </param>
+        /// <returns>
+        ///     The target URI, if <see cref="Uri.IsAbsoluteUri"/> is <c>true</c>; otherwise, an absolute URI using <see cref="DummyBaseUri"/> as the base URI.
+        /// </returns>
+        static Uri EnsureAbsolute(this Uri uri)
+        {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
             if (uri.IsAbsoluteUri)
-                return uri.PathAndQuery;
+                return uri;
 
             // Slightly ugly, but System.Uri doesn't attempt to parse relative URIs so we have to convert it to an absolute URI.
             Uri absoluteUri = new Uri(DummyBaseUri, relativeUri: uri);
 
-            return absoluteUri.PathAndQuery;
+            return absoluteUri;
         }
     }
 }

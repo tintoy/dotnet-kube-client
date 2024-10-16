@@ -594,9 +594,10 @@ namespace KubeClient.ResourceClients
 
                 try
                 {
-                    HttpRequest request = requestFactory();
-
-                    logger.LogDebug("Start streaming {RequestMethod} request for {RequestUri}...", HttpMethod.Get.Method, request.Uri.SafeGetPathAndQuery());
+                    HttpRequest request = requestFactory().WithRequestAction((HttpRequestMessage requestMessage) =>
+                    {
+                        logger.LogDebug("Start streaming {RequestMethod} request for {RequestUri}...", HttpMethod.Get, requestMessage.RequestUri.SafeGetPathAndQuery());
+                    });
 
                     using (HttpResponseMessage responseMessage = await Http.GetStreamedAsync(request, subscriptionCancellationToken).ConfigureAwait(false))
                     {
