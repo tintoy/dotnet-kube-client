@@ -178,6 +178,9 @@ namespace KubeClient.Extensions.CustomResources.Schema
                     }
                     case "object":
                     {
+                        if (schema.Properties.Count == 0 && schema.KubernetesPreserveUnknownFields == true)
+                            return KubeDynamicObjectDataType.Instance;
+
                         Dictionary<string, KubeModelProperty> modelProperties = new Dictionary<string, KubeModelProperty>();
                         foreach ((string jsonPropertyName, JSONSchemaPropsV1 propertySchema) in schema.Properties)
                         {

@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.TestCommon.Tests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6CED6707-0ADD-484A-BFD8-EBCDF49B2344}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeClient.Tools.Generator", "src\tools\KubeClient.Tools.Generator\KubeClient.Tools.Generator.csproj", "{0FDFFE17-6F60-4523-AAFE-77F54A640D0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeClient.Tools.Generator", "src\tools\KubeClient.Tools.Generator\KubeClient.Tools.Generator.csproj", "{0FDFFE17-6F60-4523-AAFE-77F54A640D0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

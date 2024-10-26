@@ -1,12 +1,19 @@
 ﻿using HTTPlease;
 using KubeClient.Extensions.CustomResources;
+using KubeClient.Extensions.CustomResources.CodeGen;
 using KubeClient.Extensions.CustomResources.Schema;
 using KubeClient.Models;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Newtonsoft.Json;
+
+using Document = Microsoft.CodeAnalysis.Document;
 
 namespace KubeClient.Tools.Generator
 {
@@ -35,15 +42,14 @@ namespace KubeClient.Tools.Generator
 
                 IKubeApiClient kubeApiClient = KubeApiClient.Create(
                     K8sConfig.Load().ToKubeClientOptions(
-                        kubeContextName: "dev",
+                        kubeContextName: options.KubeContextName,
                         defaultKubeNamespace: "default",
                         loggerFactory: loggingServiceProvider.GetRequiredService<ILoggerFactory>()
                     )
                 );
 
                 CustomResourceDefinitionListV1 crds = await kubeApiClient.CustomResourceDefinitionsV1().List(cancellationToken: Cancellation.Token);
-                Log.LogInformation("CRD count: {CustomResourceDefinitionCount}", crds.Items.Count);
-
+                
                 Dictionary<KubeResourceKind, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceKind, CustomResourceDefinitionV1>();
                 foreach (CustomResourceDefinitionV1 crd in crds)
                 {
@@ -58,31 +64,41 @@ namespace KubeClient.Tools.Generator
                     }
                 }
 
-                KubeResourceKind kafaConnectorKind = new KubeResourceKind("kafka.strimzi.io", "v1beta2", "KafkaConnector");
+                using AdhocWorkspace workspace = new AdhocWorkspace();
+
+                Project project = workspace.AddProject("KubeClient.Generated", LanguageNames.CSharp);
+
+                KubeResourceKind kafaConnectorKind = new KubeResourceKind(options.Group, options.Version, options.Kind);
                 if (customResourceTypes.TryGetValue(kafaConnectorKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
                 {
-                    KubeSchema schema = JsonSchemaParserV1.FromCustomResourceDefinitions(kafkaConnectorDefinition);
-                    Log!.LogInformation("Parsed schema:\n{KubeSchema:l}", 
-                        JsonConvert.SerializeObject(schema, Formatting.Indented)
-                    );
+                    KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(kafkaConnectorDefinition);
+                    project = ModelGenerator.GenerateModels(schema, kafaConnectorKind, project, options.Namespace);
                 }
 
-                //using (HttpResponseMessage responseMessage = await kubeApiClient.Http.GetAsync($"/apis/apiextensions.k8s.io/v1/customresourcedefinitions?fieldSelector={Uri.EscapeDataString("spec.names.kind=KafkaConnector")}"))
-                //{
-                //    Log.LogInformation("HTTP status code is {HttpStatusCode}", responseMessage.StatusCode);
+                if (!workspace.TryApplyChanges(project.Solution))
+                {
+                    Log.LogError("Failed to apply solution changes to workspace.");
 
-                //    if (responseMessage.Content != null && responseMessage.Content.Headers.ContentLength > 0)
-                //    {
-                //        string responseBody = await responseMessage.Content.ReadAsStringAsync(Cancellation.Token);
-                //        Log.LogInformation("Response body:\n{ResponseBody:l}", responseBody);
-                //    }
-                //}
+                    return ExitCodes.UnexpectedError;
+                }
 
-                //CustomResourceDefinitionV1? crd = await kubeApiClient.CustomResourceDefinitionsV1().Get("kafka.strimzi.io.v1beta2.KafkaConnector", Cancellation.Token);
-                //if (crd == null)
-                //    throw new Exception("Cannot find CRD for KafkaConnector (v1beta2).");
+                foreach (Document document in project.Documents.OrderBy(document => document.Name, StringComparer.OrdinalIgnoreCase).Take(1))
+                {
+                    Document formattedDocument = await Formatter.FormatAsync(document, workspace.Options, cancellationToken: Cancellation.Token);
+                    if (formattedDocument.TryGetSyntaxRoot(out SyntaxNode? syntaxRoot))
+                    {
+                        string generatedCode = syntaxRoot.ToFullString();
+                        Log.LogInformation("{DocumentSourceText:l}", generatedCode);
 
-                // TODO: Generate.
+                        await File.WriteAllTextAsync(options.OutputFile, generatedCode);
+                    }
+                    else
+                    {
+                        Log.LogError("Failed to retrieve source text for document {DocumentName}.", document.Name);
+
+                        return ExitCodes.UnexpectedError;
+                    }
+                }
 
                 return ExitCodes.Success;
             }

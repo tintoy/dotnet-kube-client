@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
@@ -22,7 +23,27 @@ namespace KubeClient.Extensions.CustomResources.Schema
     /// </param>
     public record class KubeResourceKind(string? Group, string Version, string ResourceKind)
     {
-        
+        /// <summary>
+        ///     Convert the <see cref="KubeResourceKind"/> to a resource type name (e.g. v1/Pod).
+        /// </summary>
+        /// <returns>
+        ///     The resource type name.
+        /// </returns>
+        public string ToResourceTypeName()
+        {
+            if (!String.IsNullOrWhiteSpace(Group))
+                return $"{Group}/{Version}/{ResourceKind}";
+
+            return $"{Version}/{ResourceKind}";
+        }
+
+        /// <summary>
+        ///     Convert the <see cref="KubeResourceKind"/> to a resource type version suffix (e.g. V1Beta1).
+        /// </summary>
+        /// <returns>
+        ///     The resource type version suffix.
+        /// </returns>
+        public string ToVersionSuffix() => NameWrangler.CapitalizeName(Version);
     }
 
     /// <summary>
@@ -262,6 +283,32 @@ namespace KubeClient.Extensions.CustomResources.Schema
             return clrTypeName;
         }
     };
+
+    /// <summary>
+    ///     A JSON object datatype (with dynamic schema) in the Kubernetes API.
+    /// </summary>
+    public record class KubeDynamicObjectDataType()
+        : KubeDataType(Name: "JObject", Summary: "A JSON object with dynamic schema.")
+    {
+        /// <summary>
+        ///     A singleton instance of <see cref="KubeDynamicObjectDataType"/>.
+        /// </summary>
+        public static readonly KubeDynamicObjectDataType Instance = new KubeDynamicObjectDataType();
+
+        /// <summary>
+        ///     Get the name of the CLR <see cref="Type"/> that is used to represent the data type.
+        /// </summary>
+        /// <param name="isNullable">
+        ///     Require that the CLR <see cref="Type"/> is nullable?
+        /// </param>
+        public override string GetClrTypeName(bool isNullable = false)
+        {
+            if (isNullable)
+                return $"{nameof(JObject)}?";
+
+            return nameof(JObject);
+        }
+    }
 
     /// <summary>
     ///     An array data type in the Kubernetes API.
