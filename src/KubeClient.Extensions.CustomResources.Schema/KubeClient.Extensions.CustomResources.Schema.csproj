@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    
+    <Nullable>enable</Nullable>
+    <Description>Custom Resource Definition (CRD) schema-validation support for KubeClient</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KubeClient.Extensions.CustomResources\KubeClient.Extensions.CustomResources.csproj" />
+    <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+  </ItemGroup>
+</Project>

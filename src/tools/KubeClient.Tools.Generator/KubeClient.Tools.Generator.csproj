@@ -17,6 +17,8 @@
     <ProjectReference Include="../../KubeClient.Extensions.Configuration/KubeClient.Extensions.Configuration.csproj" />
     <ProjectReference Include="../../KubeClient.Extensions.CustomResources/KubeClient.Extensions.CustomResources.csproj" />
     <ProjectReference Include="../../KubeClient.Extensions.KubeConfig/KubeClient.Extensions.KubeConfig.csproj" />
+    <ProjectReference Include="..\..\KubeClient.Extensions.CustomResources.CodeGen\KubeClient.Extensions.CustomResources.CodeGen.csproj" />
+    <ProjectReference Include="..\..\KubeClient.Extensions.CustomResources.Schema\KubeClient.Extensions.CustomResources.Schema.csproj" />
   </ItemGroup>
 
   <ItemGroup>

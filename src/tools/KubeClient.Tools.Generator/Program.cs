@@ -72,7 +72,7 @@ namespace KubeClient.Tools.Generator
                 if (customResourceTypes.TryGetValue(kafaConnectorKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
                 {
                     KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(kafkaConnectorDefinition);
-                    project = ModelGenerator.GenerateModels(schema, kafaConnectorKind, project, options.Namespace);
+                    project = ModelGeneratorV1.GenerateModels(schema, kafaConnectorKind, project, options.Namespace);
                 }
 
                 if (!workspace.TryApplyChanges(project.Solution))
