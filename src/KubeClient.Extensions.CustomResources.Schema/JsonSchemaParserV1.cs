@@ -1,8 +1,12 @@
-﻿using KubeClient.Models;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
+    using Models;
+
     /// <summary>
     ///     Parses <see cref="KubeSchema"/> from <see cref="JSONSchemaPropsV1"/>.
     /// </summary>

@@ -1,7 +1,9 @@
-﻿using KubeClient.Models;
+﻿using System;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
+    using Models;
+
     /// <summary>
     ///     Schema-related extension methods for working with <see cref="KubeCustomResourceV1{TSpecification}"/> and related types.
     /// </summary>

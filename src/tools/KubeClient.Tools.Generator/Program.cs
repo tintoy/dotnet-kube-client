@@ -1,17 +1,14 @@
 ﻿using HTTPlease;
-using KubeClient.Extensions.CustomResources;
+using KubeClient.ApiMetadata;
 using KubeClient.Extensions.CustomResources.CodeGen;
 using KubeClient.Extensions.CustomResources.Schema;
 using KubeClient.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
-using Newtonsoft.Json;
 
 using Document = Microsoft.CodeAnalysis.Document;
 
@@ -38,8 +35,6 @@ namespace KubeClient.Tools.Generator
 
             try
             {
-                // TODO: Configure from ProgramOptions.
-
                 IKubeApiClient kubeApiClient = KubeApiClient.Create(
                     K8sConfig.Load().ToKubeClientOptions(
                         kubeContextName: options.KubeContextName,
@@ -64,15 +59,29 @@ namespace KubeClient.Tools.Generator
                     }
                 }
 
+                KubeApiMetadataCache metadataCache = new KubeApiMetadataCache();
+                await metadataCache.Load(kubeApiClient, cancellationToken: Cancellation.Token);
+
                 using AdhocWorkspace workspace = new AdhocWorkspace();
 
                 Project project = workspace.AddProject("KubeClient.Generated", LanguageNames.CSharp);
 
-                KubeResourceKind kafaConnectorKind = new KubeResourceKind(options.Group, options.Version, options.Kind);
-                if (customResourceTypes.TryGetValue(kafaConnectorKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
+                KubeResourceKind targetResourceKind = new KubeResourceKind(options.Group, options.Version, options.Kind);
+                if (customResourceTypes.TryGetValue(targetResourceKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
                 {
+                    KubeApiMetadata? resourceTypeMetadata = metadataCache.Get(
+                        kind: targetResourceKind.ResourceKind,
+                        apiVersion: targetResourceKind.Version
+                    );
+                    if (resourceTypeMetadata == null)
+                    {
+                        Log.LogError("Failed to retrieve metadata for resource type {@ResourceType}.", targetResourceKind);
+
+                        return ExitCodes.UnexpectedError;
+                    }
+
                     KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(kafkaConnectorDefinition);
-                    project = ModelGeneratorV1.GenerateModels(schema, kafaConnectorKind, project, options.Namespace);
+                    project = ModelGeneratorV1.GenerateModels(schema, targetResourceKind, project, options.Namespace);
                 }
 
                 if (!workspace.TryApplyChanges(project.Solution))
