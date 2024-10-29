@@ -14,17 +14,38 @@ using Document = Microsoft.CodeAnalysis.Document;
 
 namespace KubeClient.Tools.Generator
 {
-    static partial class Program
+    /// <summary>
+    ///     The KubeClient code-generator tool.
+    /// </summary>
+    static class Program
     {
+        /// <summary>
+        ///     The source for root-level cancellation tokens.
+        /// </summary>
         static readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
 
+        /// <summary>
+        ///     Standard console-app cancellation behaviour.
+        /// </summary>
         static Program()
         {
             Console.CancelKeyPress += OnConsoleCancellation;
         }
 
+        /// <summary>
+        ///     The root logger for the code-generator tool.
+        /// </summary>
         public static ILogger Log { get; private set; } = null!;
 
+        /// <summary>
+        ///     The tool's main program entry point.
+        /// </summary>
+        /// <param name="commandLineArguments">
+        ///     The tool's command-line arguments.
+        /// </param>
+        /// <returns>
+        ///     The program exit code.
+        /// </returns>
         static async Task<int> Main(string[] commandLineArguments)
         {
             ProgramOptions? options = ProgramOptions.Parse(commandLineArguments);
@@ -71,6 +92,7 @@ namespace KubeClient.Tools.Generator
                 {
                     KubeApiMetadata? resourceTypeMetadata = metadataCache.Get(
                         kind: targetResourceKind.ResourceKind,
+                        apiGroup: targetResourceKind.Group,
                         apiVersion: targetResourceKind.Version
                     );
                     if (resourceTypeMetadata == null)
@@ -80,7 +102,7 @@ namespace KubeClient.Tools.Generator
                         return ExitCodes.UnexpectedError;
                     }
 
-                    KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(kafkaConnectorDefinition);
+                    KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(metadataCache, kafkaConnectorDefinition);
                     project = ModelGeneratorV1.GenerateModels(schema, targetResourceKind, project, options.Namespace);
                 }
 
@@ -122,6 +144,13 @@ namespace KubeClient.Tools.Generator
                 Log.LogError(unexpectedError, "An unexpected error has occurred.");
 
                 return ExitCodes.UnexpectedError;
+            }
+            finally
+            {
+                using (Cancellation)
+                {
+                    Cancellation.Cancel();
+                }
             }
         }
 

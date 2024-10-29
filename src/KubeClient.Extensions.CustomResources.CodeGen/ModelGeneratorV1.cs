@@ -9,7 +9,9 @@ using System.Linq;
 // Some things we do, at the moment, are C#-specific.
 // If we want to be language-agnostic, we will probably need to create an MSBuildWorkspace,
 // load or create a real project that imports the required libraries and packages, and then get ITypeSymbols from there.
+using CS = Microsoft.CodeAnalysis.CSharp.Syntax;
 using CSFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using CSSyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
 namespace KubeClient.Extensions.CustomResources.CodeGen
 {
@@ -18,6 +20,73 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
     /// </summary>
     public static class ModelGeneratorV1
     {
+        static class Attributes
+        {
+            public static class CSharp
+            {
+                public static readonly CS.AttributeSyntax JsonExtensionData = CSFactory.Attribute(
+                    name: CSFactory.ParseName("JsonExtensionData")
+                );
+            }
+        }
+
+        static class Modifiers
+        { 
+            public static class CSharp
+            {
+                public static readonly SyntaxToken ReadOnly = CSFactory.Token(CSSyntaxKind.ReadOnlyKeyword);
+            }
+        }
+
+        static class FieldTypes
+        {
+            public static class CSharp
+            {
+                public static readonly CS.TypeSyntax JsonExtensionData = CSFactory.ParseTypeName("Dictionary<string, JToken>");
+            }
+        }
+
+        static class FieldDeclarations
+        {
+            public static class CSharp
+            {
+                public static readonly CS.FieldDeclarationSyntax JsonExtensionData =
+                    CSFactory.FieldDeclaration(
+                        attributeLists: [
+                            CSFactory.AttributeList([
+                                Attributes.CSharp.JsonExtensionData
+                            ])
+                        ],
+                        modifiers: [
+                            Modifiers.CSharp.ReadOnly
+                        ],
+                        declaration: CSFactory.VariableDeclaration(
+                            type: FieldTypes.CSharp.JsonExtensionData,
+                            variables: [
+                                CSFactory.VariableDeclarator("_jsonExtensionData").WithInitializer(
+                                    CSFactory.EqualsValueClause(
+                                        CSFactory.ObjectCreationExpression(
+                                            type: FieldTypes.CSharp.JsonExtensionData,
+                                            argumentList: CSFactory.ArgumentList(),
+                                            initializer: null
+                                        )
+                                    )
+                                )
+                            ]
+                        )
+                    )
+                    .WithDocumentation(
+                        CSFactory.XmlSummaryElement(
+                            CodeGenHelper.NewlineText,
+                            CodeGenHelper.IndentedText("Unmapped JSON data (i.e. not mapped to a member of the model type) to improve round-trip behaviour when updating resources via PUT.", indent: 1),
+                            CodeGenHelper.NewlineText
+                        )
+                    );
+            }
+        }
+
+        
+
         /// <summary>
         ///     Generate model code for a resource type (and any related complex types) in the specified <see cref="KubeSchema"/>.
         /// </summary>
@@ -108,11 +177,27 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
 
             foreach (KubeModel model in models.OrderBy(model => model.ClrTypeName))
             {
-                yield return syntaxGenerator
-                    .ClassDeclaration(
-                        model.ClrTypeName,
-                        accessibility: Accessibility.Public,
-                        members: GenerateProperties(model.Properties, syntaxGenerator)
+                yield return
+                    syntaxGenerator.AddAttributes(
+                        declaration: syntaxGenerator.ClassDeclaration(
+                            model.ClrTypeName,
+                            accessibility: Accessibility.Public,
+                            modifiers: DeclarationModifiers.Partial,
+                            members: [
+                                FieldDeclarations.CSharp.JsonExtensionData.WithTrailingNewline(),
+
+                                .. GenerateProperties(model.Properties, syntaxGenerator)
+                            ]
+                        ),
+                        attributes: model.ResourceApis.PrimaryApi.SupportedVerbs.Select(
+                            verb => syntaxGenerator.Attribute("KubeApi", attributeArguments: [
+                                syntaxGenerator.MemberAccessExpression(
+                                    CSFactory.ParseTypeName(nameof(KubeAction)),
+                                    CSFactory.IdentifierName(verb.KubeAction.ToString())
+                                ),
+                                syntaxGenerator.LiteralExpression(model.ResourceApis.PrimaryApi.Path)
+                            ])
+                        )
                     )
                     .WithDocumentation(
                         CSFactory.XmlSummaryElement(
@@ -139,7 +224,12 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                     .ClassDeclaration(
                         subModel.ClrTypeName,
                         accessibility: Accessibility.Public,
-                        members: GenerateProperties(subModel.Properties, syntaxGenerator)
+                        modifiers: DeclarationModifiers.Partial,
+                        members: [
+                            FieldDeclarations.CSharp.JsonExtensionData.WithTrailingNewline(),
+
+                            .. GenerateProperties(subModel.Properties, syntaxGenerator)
+                        ]
                     )
                     .WithDocumentation(
                         CSFactory.XmlSummaryElement(

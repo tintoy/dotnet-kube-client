@@ -1,9 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HTTPlease;
+using KubeClient.ApiMetadata;
+using KubeClient.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -69,7 +73,10 @@ namespace KubeClient.Extensions.CustomResources.Schema
     /// <param name="Properties">
     ///     Schema for the model's properties.
     /// </param>
-    public record class KubeModel(KubeResourceKind ResourceType, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties)
+    /// <param name="ResourceApis">
+    ///     Metadata for the resource's APIs.
+    /// </param>
+    public record class KubeModel(KubeResourceKind ResourceType, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties, KubeResourceApis ResourceApis)
     {
         /// <summary>
         ///     The namne of the CLR type used to represent the model.
@@ -376,6 +383,86 @@ namespace KubeClient.Extensions.CustomResources.Schema
             return $"Dictionary<string, {elementTypeName}>"; // Whereas Dictionary<T> is, itself, always nullable.
         }
     };
+
+    public record class KubeResourceApis(KubeResourceApi PrimaryApi, ImmutableList<KubeResourceApi> OtherApis);
+
+    public record class KubeResourceApi(string Path, bool IsNamespaced, ImmutableList<KubeResourceApiVerb> SupportedVerbs);
+
+    public record class KubeResourceApiVerb(string Name, KubeAction KubeAction, HttpMethod HttpMethod)
+    {
+        public static readonly KubeResourceApiVerb Get = new KubeResourceApiVerb(nameof(Get), KubeAction.Get, HttpMethod.Get);
+        public static readonly KubeResourceApiVerb List = new KubeResourceApiVerb(nameof(List), KubeAction.List, HttpMethod.Get);
+
+        public static readonly KubeResourceApiVerb Create = new KubeResourceApiVerb(nameof(Create), KubeAction.Create, HttpMethod.Post);
+        public static readonly KubeResourceApiVerb Update = new KubeResourceApiVerb(nameof(Update), KubeAction.Update, HttpMethod.Put);
+        public static readonly KubeResourceApiVerb Patch = new KubeResourceApiVerb(nameof(Patch), KubeAction.Patch, HttpMethod.Patch);
+
+        public static readonly KubeResourceApiVerb Delete = new KubeResourceApiVerb(nameof(Delete), KubeAction.Delete, HttpMethod.Delete);
+        public static readonly KubeResourceApiVerb DeleteCollection = new KubeResourceApiVerb(nameof(DeleteCollection), KubeAction.DeleteCollection, HttpMethod.Delete);
+
+        public static readonly KubeResourceApiVerb Watch = new KubeResourceApiVerb(nameof(Watch), KubeAction.Watch, HttpMethod.Get);
+        public static readonly KubeResourceApiVerb WatchList = new KubeResourceApiVerb(nameof(WatchList), KubeAction.WatchList, HttpMethod.Get);
+
+        public static readonly KubeResourceApiVerb Connect = new KubeResourceApiVerb(nameof(Connect), KubeAction.Connect, HttpMethod.Get);
+        public static readonly KubeResourceApiVerb Proxy = new KubeResourceApiVerb(nameof(Proxy), KubeAction.Proxy, HttpMethod.Get);
+
+        public static readonly KubeResourceApiVerb Unknown = new KubeResourceApiVerb(nameof(Unknown), KubeAction.Unknown, HttpMethod.Get);
+
+
+        public static KubeResourceApiVerb FromKubeAction(KubeAction kubeAction)
+        {
+            return kubeAction switch
+            {
+                KubeAction.Get => Get,
+                KubeAction.List => List,
+
+                KubeAction.Create => Create,
+                KubeAction.Update => Update,
+                KubeAction.Patch => Patch,
+                
+                KubeAction.Delete => Delete,
+                KubeAction.DeleteCollection => DeleteCollection,
+                
+                KubeAction.Watch => Watch,
+                KubeAction.WatchList => WatchList,
+
+                KubeAction.Connect => Connect,
+                KubeAction.Proxy => Proxy,
+
+                KubeAction.Unknown => Unknown,
+
+                _ => Enum.IsDefined(kubeAction) ? new KubeResourceApiVerb(kubeAction.ToString(), kubeAction, HttpMethod.Get) : Unknown,
+            };
+        }
+
+        public static KubeResourceApiVerb FromKubeApiVerb(string kubeApiVerb)
+        {
+            if (String.IsNullOrWhiteSpace(kubeApiVerb))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(kubeApiVerb)}.", nameof(kubeApiVerb));
+
+            return kubeApiVerb.ToLowerInvariant() switch
+            {
+                "get" => Get,
+                "list" => List,
+
+                "create" => Create,
+                "update" => Update,
+                "patch" => Patch,
+                
+                "delete" => Delete,
+                "deletecollection" => DeleteCollection,
+
+                "watch" => Watch,
+                "watchlist" => WatchList,
+
+                "connect" => Connect,
+                "proxy" => Proxy,
+
+                _ => new KubeResourceApiVerb(kubeApiVerb, KubeAction.Unknown, HttpMethod.Post)
+            };
+        }
+    }
+
 
     static class SchemaConstants
     {

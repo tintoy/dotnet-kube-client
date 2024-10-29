@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
+    using KubeClient.ApiMetadata;
     using Models;
 
     /// <summary>
@@ -15,25 +16,34 @@ namespace KubeClient.Extensions.CustomResources.Schema
         /// <summary>
         ///     Build a <see cref="KubeSchema"/> from one or more Custom Resource Definitions (CRDs).
         /// </summary>
+        /// <param name="apiMetadataCache">
+        ///     The Kubernetes API-metadata cache.
+        /// </param>
         /// <param name="customResourceDefinitions">
         ///     The <see cref="CustomResourceDefinitionV1"/>s.
         /// </param>
         /// <returns>
         ///     A <see cref="KubeSchema"/> representing the CRDs and any related types.
         /// </returns>
-        public static KubeSchema BuildKubeSchema(params CustomResourceDefinitionV1[] customResourceDefinitions) => BuildKubeSchema(customResourceDefinitions.AsEnumerable());
+        public static KubeSchema BuildKubeSchema(KubeApiMetadataCache apiMetadataCache, params CustomResourceDefinitionV1[] customResourceDefinitions) => BuildKubeSchema(apiMetadataCache, customResourceDefinitions.AsEnumerable());
 
         /// <summary>
         ///     Build a <see cref="KubeSchema"/> from one or more Custom Resource Definitions (CRDs).
         /// </summary>
+        /// <param name="apiMetadataCache">
+        ///     The Kubernetes API-metadata cache.
+        /// </param>
         /// <param name="customResourceDefinitions">
         ///     The <see cref="CustomResourceDefinitionV1"/>s.
         /// </param>
         /// <returns>
         ///     A <see cref="KubeSchema"/> representing the CRDs and any related types.
         /// </returns>
-        public static KubeSchema BuildKubeSchema(IEnumerable<CustomResourceDefinitionV1> customResourceDefinitions)
+        public static KubeSchema BuildKubeSchema(KubeApiMetadataCache apiMetadataCache, IEnumerable<CustomResourceDefinitionV1> customResourceDefinitions)
         {
+            if (apiMetadataCache == null)
+                throw new ArgumentNullException(nameof(apiMetadataCache));
+
             if (customResourceDefinitions == null)
                 throw new ArgumentNullException(nameof(customResourceDefinitions));
 
@@ -51,7 +61,15 @@ namespace KubeClient.Extensions.CustomResources.Schema
                 if (resourceTypes.ContainsKey(resourceType))
                     continue;
 
-                KubeModel resourceTypeModel = ParseResourceType(resourceType, primaryVersion.Schema.OpenAPIV3Schema, dataTypes);
+                KubeApiMetadata apiMetadata = apiMetadataCache.Get(
+                    kind: resourceType.ResourceKind,
+                    apiGroup: resourceType.Group,
+                    apiVersion: resourceType.Version
+                );
+                if (apiMetadata == null)
+                    throw new KubeClientException($"Cannot process custom resource definition (CRD) '{resourceType.ToResourceTypeName()}': no API metadata for this resource type was found in the cache.");
+
+                KubeModel resourceTypeModel = ParseResourceType(resourceType, apiMetadata, primaryVersion.Schema.OpenAPIV3Schema, dataTypes);
                 resourceTypes.Add(resourceType, resourceTypeModel);
             }
 
@@ -67,6 +85,9 @@ namespace KubeClient.Extensions.CustomResources.Schema
         /// <param name="resourceType">
         ///     A <see cref="KubeResourceKind"/> that identifies the target resource type.
         /// </param>
+        /// <param name="apiMetadata">
+        ///     The API metadata for the target resource type.
+        /// </param>
         /// <param name="resourceTypeSchema">
         ///     <see cref="JSONSchemaPropsV1"/> representing the schema for the target resource type.
         /// </param>
@@ -76,16 +97,22 @@ namespace KubeClient.Extensions.CustomResources.Schema
         /// <returns>
         ///     The new <see cref="KubeModel"/>.
         /// </returns>
-        static KubeModel ParseResourceType(KubeResourceKind resourceType, JSONSchemaPropsV1 resourceTypeSchema, Dictionary<string, KubeDataType> knownDataTypes)
+        static KubeModel ParseResourceType(KubeResourceKind resourceType, KubeApiMetadata apiMetadata, JSONSchemaPropsV1 resourceTypeSchema, Dictionary<string, KubeDataType> knownDataTypes)
         {
+            if (resourceType == null)
+                throw new ArgumentNullException(nameof(resourceType));
+
+            if (apiMetadata == null)
+                throw new ArgumentNullException(nameof(apiMetadata));
+
             if (resourceTypeSchema == null)
                 throw new ArgumentNullException(nameof(resourceTypeSchema));
 
-            if (knownDataTypes == null)
-                throw new ArgumentNullException(nameof(knownDataTypes));
-
             if (resourceTypeSchema.Type != "object")
                 throw new InvalidOperationException("Invalid resource-type schema ('type' is not 'object').");
+
+            if (knownDataTypes == null)
+                throw new ArgumentNullException(nameof(knownDataTypes));
 
             Stack<string> propertyPathSegments = new Stack<string>();
 
@@ -115,10 +142,13 @@ namespace KubeClient.Extensions.CustomResources.Schema
                 propertyPathSegments.Pop();
             }
 
+            KubeResourceApis resourceApis = ParseApiMetadata(resourceType, apiMetadata);
+
             return new KubeModel(
                 ResourceType: resourceType,
                 Summary: resourceTypeSchema.Description ?? "Documentation is not available for this resource type.",
-                Properties: ImmutableDictionary.CreateRange(modelProperties)
+                Properties: ImmutableDictionary.CreateRange(modelProperties),
+                ResourceApis: resourceApis
             );
         }
 
@@ -291,6 +321,63 @@ namespace KubeClient.Extensions.CustomResources.Schema
             );
 
             return $"{resourceType.ResourceKind}{typeNameFromPropertyPath}{prettyApiVersion}";
+        }
+
+        static KubeResourceApis ParseApiMetadata(KubeResourceKind resourceType, KubeApiMetadata apiMetadata)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException(nameof(resourceType));
+
+            if (apiMetadata == null)
+                throw new ArgumentNullException(nameof(apiMetadata));
+
+            KubeResourceApi? primaryApi = null;
+            if (apiMetadata.PrimaryPathMetadata != null)
+            {
+                ImmutableList<KubeResourceApiVerb> supportedVerbs = ImmutableList.CreateRange(
+                    apiMetadata.PrimaryPathMetadata.Verbs.Select(KubeResourceApiVerb.FromKubeApiVerb)
+                );
+
+                primaryApi = new KubeResourceApi(apiMetadata.PrimaryPathMetadata.Path, IsNamespaced: false, supportedVerbs);
+            }
+
+            KubeResourceApi? primaryNamespacedApi = null;
+            if (apiMetadata.PrimaryNamespacedPathMetadata != null)
+            {
+                ImmutableList<KubeResourceApiVerb> supportedVerbs = ImmutableList.CreateRange(
+                    apiMetadata.PrimaryNamespacedPathMetadata.Verbs.Select(KubeResourceApiVerb.FromKubeApiVerb)
+                );
+
+                primaryApi = new KubeResourceApi(apiMetadata.PrimaryNamespacedPathMetadata.Path, IsNamespaced: true, supportedVerbs);
+            }
+
+            primaryApi ??= primaryNamespacedApi;
+            if (primaryApi == null)
+                throw new KubeClientException($"Invalid API metadata for resource type '{resourceType.ToResourceTypeName()}' (resource API metadata must contain at least one of namespaced or global primary path).");
+
+            ImmutableList<KubeResourceApi> otherApis = ImmutableList.CreateRange(
+                apiMetadata.PathMetadata
+                    .Where(pathMetadata =>
+                    {
+                        if (ReferenceEquals(pathMetadata, apiMetadata.PrimaryPathMetadata))
+                            return false;
+
+                        if (ReferenceEquals(pathMetadata, apiMetadata.PrimaryNamespacedPathMetadata))
+                            return false;
+
+                        return true;
+                    })
+                    .Select(pathMetadata =>
+                    {
+                        ImmutableList<KubeResourceApiVerb> supportedVerbs = ImmutableList.CreateRange(
+                            pathMetadata.Verbs.Select(KubeResourceApiVerb.FromKubeApiVerb)
+                        );
+
+                        return new KubeResourceApi(pathMetadata.Path, pathMetadata.IsNamespaced, supportedVerbs);
+                    })
+            );
+
+            return new KubeResourceApis(primaryApi, otherApis);
         }
     }
 }
