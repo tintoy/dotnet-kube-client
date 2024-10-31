@@ -1,15 +1,11 @@
-﻿using HTTPlease;
-using KubeClient.ApiMetadata;
-using KubeClient.Models;
+﻿using KubeClient.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
@@ -25,10 +21,10 @@ namespace KubeClient.Extensions.CustomResources.Schema
     /// <param name="ResourceKind">
     ///     The resource"s type name (i.e. "kind").
     /// </param>
-    public record class KubeResourceKind(string? Group, string Version, string ResourceKind)
+    public record class KubeResourceType(string? Group, string Version, string ResourceKind)
     {
         /// <summary>
-        ///     Convert the <see cref="KubeResourceKind"/> to a resource type name (e.g. v1/Pod).
+        ///     Convert the <see cref="KubeResourceType"/> to a resource type name (e.g. v1/Pod).
         /// </summary>
         /// <returns>
         ///     The resource type name.
@@ -42,7 +38,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         }
 
         /// <summary>
-        ///     Convert the <see cref="KubeResourceKind"/> to a resource type version suffix (e.g. V1Beta1).
+        ///     Convert the <see cref="KubeResourceType"/> to a resource type version suffix (e.g. V1Beta1).
         /// </summary>
         /// <returns>
         ///     The resource type version suffix.
@@ -54,18 +50,18 @@ namespace KubeClient.Extensions.CustomResources.Schema
     ///     Schema for one or more Kubernetes resource types.
     /// </summary>
     /// <param name="ResourceTypes">
-    ///     Schemas for resource types, keyed by <see cref="KubeResourceKind"/>.
+    ///     Schemas for resource types, keyed by <see cref="KubeResourceType"/>.
     /// </param>
     /// <param name="DataTypes">
     ///     Schemas for data types, keyed by name.
     /// </param>
-    public record class KubeSchema(ImmutableDictionary<KubeResourceKind, KubeModel> ResourceTypes, ImmutableDictionary<string, KubeDataType> DataTypes);
+    public record class KubeSchema(ImmutableDictionary<KubeResourceType, KubeModel> ResourceTypes, ImmutableDictionary<string, KubeDataType> DataTypes);
 
     /// <summary>
     ///     A resource model in a Kubernetes API schema.
     /// </summary>
     /// <param name="ResourceType">
-    ///     A <see cref="KubeResourceKind"/> representing the model's "group/version/kind" in the Kubernetes API.
+    ///     A <see cref="KubeResourceType"/> representing the model's "group/version/kind" in the Kubernetes API.
     /// </param>
     /// <param name="Summary">
     ///     Summary documentation for the data type (if available).
@@ -76,7 +72,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
     /// <param name="ResourceApis">
     ///     Metadata for the resource's APIs.
     /// </param>
-    public record class KubeModel(KubeResourceKind ResourceType, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties, KubeResourceApis ResourceApis)
+    public record class KubeModel(KubeResourceType ResourceType, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties, KubeResourceApis ResourceApis)
     {
         /// <summary>
         ///     The namne of the CLR type used to represent the model.
@@ -85,21 +81,21 @@ namespace KubeClient.Extensions.CustomResources.Schema
     };
 
     /// <summary>
-    ///     A model (i.e. a complex data-type) in a Kubernetes API schema.
+    ///     A complex data-type in a Kubernetes API schema.
     /// </summary>
     /// <param name="Name">
-    ///     The model's name (generated from <see cref="KubeModel.ResourceType"/> and the property path where the sub-model is located).
+    ///     The model's name (except for shared complex types, this is generated from the containing <see cref="KubeModel.ResourceType"/> and the property path where the complex type is located).
     /// </param>
     /// <param name="Summary">
-    ///     Summary documentation for the data type (if available).
+    ///     Summary documentation for the complex type (if available).
     /// </param>
     /// <param name="Properties">
     ///     Schema for the model's properties.
     /// </param>
-    public record class KubeSubModel(string Name, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties)
+    public record class KubeComplexType(string Name, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties)
     {
         /// <summary>
-        ///     The name of the CLR type used to represent the model.
+        ///     The name of the CLR type used to represent the complex type.
         /// </summary>
         public string ClrTypeName => Name;
     };
@@ -257,13 +253,13 @@ namespace KubeClient.Extensions.CustomResources.Schema
     };
 
     /// <summary>
-    ///     A sub-model (i.e. complex) data type in the Kubernetes API.
+    ///     A complex type (i.e. complex) data type in the Kubernetes API.
     /// </summary>
-    /// <param name="SubModel">
-    ///     A <see cref="KubeModel"/> that describes the complex data-type.
+    /// <param name="ComplexType">
+    ///     A <see cref="KubeComplexType"/> that describes the complex data-type.
     /// </param>
-    public record class KubeSubModelDataType(KubeSubModel SubModel)
-        : KubeDataType(SubModel.ClrTypeName, Summary: SubModel.Summary)
+    public record class KubeComplexDataType(KubeComplexType ComplexType)
+        : KubeDataType(ComplexType.ClrTypeName, Summary: ComplexType.Summary)
     {
         /// <summary>
         ///     Is the data-type an intrinsic data type (such as number or string)?

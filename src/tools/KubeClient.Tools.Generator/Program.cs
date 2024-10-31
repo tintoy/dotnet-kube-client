@@ -66,12 +66,12 @@ namespace KubeClient.Tools.Generator
 
                 CustomResourceDefinitionListV1 crds = await kubeApiClient.CustomResourceDefinitionsV1().List(cancellationToken: Cancellation.Token);
                 
-                Dictionary<KubeResourceKind, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceKind, CustomResourceDefinitionV1>();
+                Dictionary<KubeResourceType, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceType, CustomResourceDefinitionV1>();
                 foreach (CustomResourceDefinitionV1 crd in crds)
                 {
                     foreach (CustomResourceDefinitionVersionV1 crdVersion in crd.Spec.Versions)
                     {
-                        KubeResourceKind versionedResourceType = new KubeResourceKind(
+                        KubeResourceType versionedResourceType = new KubeResourceType(
                             Group: crd.Spec.Group,
                             Version: crdVersion.Name,
                             ResourceKind: crd.Spec.Names.Kind
@@ -87,7 +87,7 @@ namespace KubeClient.Tools.Generator
 
                 Project project = workspace.AddProject("KubeClient.Generated", LanguageNames.CSharp);
 
-                KubeResourceKind targetResourceKind = new KubeResourceKind(options.Group, options.Version, options.Kind);
+                KubeResourceType targetResourceKind = new KubeResourceType(options.Group, options.Version, options.Kind);
                 if (customResourceTypes.TryGetValue(targetResourceKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
                 {
                     KubeApiMetadata? resourceTypeMetadata = metadataCache.Get(

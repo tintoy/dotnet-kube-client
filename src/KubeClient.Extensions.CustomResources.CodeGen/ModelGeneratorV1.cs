@@ -2,6 +2,8 @@
 using KubeClient.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,36 +22,72 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
     /// </summary>
     public static class ModelGeneratorV1
     {
+        /// <summary>
+        ///     Predefinued <see cref="SyntaxNode"/>s representing commonly-used attributes on model types and their members.
+        /// </summary>
         static class Attributes
         {
+            /// <summary>
+            ///     Predefinued <see cref="CS.AttributeSyntax"/> nodes representing commonly-used attributes on model types and their members.
+            /// </summary>
             public static class CSharp
             {
+                /// <summary>
+                ///     A predefined <see cref="CS.AttributeSyntax"/> node representing a <see cref="JsonExtensionDataAttribute"/> attribute on a member of a JSON-serialisable model.
+                /// </summary>
                 public static readonly CS.AttributeSyntax JsonExtensionData = CSFactory.Attribute(
                     name: CSFactory.ParseName("JsonExtensionData")
                 );
             }
         }
 
+        /// <summary>
+        ///     Predefinued <see cref="SyntaxToken"/>s representing commonly-used declaration modifiers.
+        /// </summary>
         static class Modifiers
-        { 
+        {
+            /// <summary>
+            ///     Predefinued <see cref="SyntaxToken"/>s representing commonly-used C# declaration modifiers.
+            /// </summary>
             public static class CSharp
             {
+                /// <summary>
+                ///     A <see cref="SyntaxToken"/> node representing the C# "readonly" declaration-modifier keyword (<see cref="CSSyntaxKind.ReadOnlyKeyword"/>).
+                /// </summary>
                 public static readonly SyntaxToken ReadOnly = CSFactory.Token(CSSyntaxKind.ReadOnlyKeyword);
             }
         }
 
-        static class FieldTypes
+        /// <summary>
+        ///     Predefinued <see cref="SyntaxToken"/>s representing commonly-used type references.
+        /// </summary>
+        static class TypeReferences
         {
+            /// <summary>
+            ///     Predefinued <see cref="CS.TypeSyntax"/> nodes representing commonly-used C# type references.
+            /// </summary>
             public static class CSharp
             {
-                public static readonly CS.TypeSyntax JsonExtensionData = CSFactory.ParseTypeName("Dictionary<string, JToken>");
+                /// <summary>
+                ///     A predefined <see cref="CS.TypeSyntax"/> node representing a JSON extension-data dictionary (a <see cref="Dictionary{TKey, TValue}"/> mapping <see cref="String"/> to <see cref="JToken"/>).
+                /// </summary>
+                public static readonly CS.TypeSyntax JsonExtensionData = CSFactory.ParseTypeName(nameof(Dictionary<string, JToken>));
             }
         }
 
+        /// <summary>
+        ///     Predefinued <see cref="SyntaxToken"/>s representing commonly-used field declarations.
+        /// </summary>
         static class FieldDeclarations
         {
+            /// <summary>
+            ///     Predefinued <see cref="CS.FieldDeclarationSyntax"/> nodes representing commonly-used C# field references.
+            /// </summary>
             public static class CSharp
             {
+                /// <summary>
+                ///     A predefined <see cref="CS.FieldDeclarationSyntax"/> node representing the "_jsonExtensionDataField" on a JSON-serialisable model.
+                /// </summary>
                 public static readonly CS.FieldDeclarationSyntax JsonExtensionData =
                     CSFactory.FieldDeclaration(
                         attributeLists: [
@@ -61,12 +99,12 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                             Modifiers.CSharp.ReadOnly
                         ],
                         declaration: CSFactory.VariableDeclaration(
-                            type: FieldTypes.CSharp.JsonExtensionData,
+                            type: TypeReferences.CSharp.JsonExtensionData,
                             variables: [
                                 CSFactory.VariableDeclarator("_jsonExtensionData").WithInitializer(
                                     CSFactory.EqualsValueClause(
                                         CSFactory.ObjectCreationExpression(
-                                            type: FieldTypes.CSharp.JsonExtensionData,
+                                            type: TypeReferences.CSharp.JsonExtensionData,
                                             argumentList: CSFactory.ArgumentList(),
                                             initializer: null
                                         )
@@ -94,7 +132,7 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
         ///     A <see cref="KubeSchema"/> representing the source schema.
         /// </param>
         /// <param name="resourceType">
-        ///     A <see cref="KubeResourceKind"/> that identifies the target resource type.
+        ///     A <see cref="KubeResourceType"/> that identifies the target resource type.
         /// </param>
         /// <param name="project">
         ///     The <see cref="Project"/> that the generated code will be added to.
@@ -105,7 +143,7 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
         /// <returns>
         ///     A modified copy of the <paramref name="project"/>  (it is the caller's responsibility to call <see cref="Workspace.TryApplyChanges(Solution)"/>).
         /// </returns>
-        public static Project GenerateModels(KubeSchema schema, KubeResourceKind resourceType, Project project, string targetNamespace)
+        public static Project GenerateModels(KubeSchema schema, KubeResourceType resourceType, Project project, string targetNamespace)
         {
             if (schema == null)
                 throw new ArgumentNullException(nameof(schema));
@@ -125,21 +163,39 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
 
             // TODO: Work out how, if we need to at all, to group shared complex types so we can put each resource type in its own file with any complex types that are only associated with that resource.
 
-            var subModels = new HashSet<KubeSubModel>();
-            DiscoverComplexTypes(model, subModels);
+            var complexTypes = new HashSet<KubeComplexType>();
+            DiscoverComplexTypes(model, complexTypes);
 
-            Document document = GenerateModels(project, model, subModels, targetNamespace);
+            Document document = GenerateModels(project, model, complexTypes, targetNamespace);
             
             return document.Project;
         }
 
-        static Document GenerateModels(Project project, KubeModel model, IEnumerable<KubeSubModel> subModels, string targetNamespace)
+        /// <summary>
+        ///     Generate type declarations for a resource model and its related complex types (if any).
+        /// </summary>
+        /// <param name="project">
+        ///     The <see cref="Project"/> that the generated code's containing <see cref="Document"/> will be added to.
+        /// </param>
+        /// <param name="model">
+        ///     A <see cref="KubeModel"/> representing the resource-model metadata.
+        /// </param>
+        /// <param name="complexTypes">
+        ///     A sequence of 0 or more <see cref="KubeComplexType"/> representing the complex type metadata (if any).
+        /// </param>
+        /// <param name="targetNamespace">
+        ///     The fully-qualified namespace for the generated code.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="Document"/> containing the generated code.
+        /// </returns>
+        static Document GenerateModels(Project project, KubeModel model, IEnumerable<KubeComplexType> complexTypes, string targetNamespace)
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            if (subModels == null)
-                throw new ArgumentNullException(nameof(subModels));
+            if (complexTypes == null)
+                throw new ArgumentNullException(nameof(complexTypes));
 
             if (project == null)
                 throw new ArgumentNullException(nameof(project));
@@ -157,7 +213,7 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                         GenerateResourceDeclarations([model], syntaxGenerator).Select(
                             classDeclaration => classDeclaration.WithTrailingNewline()
                         ).Concat(
-                            GenerateComplexTypeDeclarations(subModels, syntaxGenerator).Select(
+                            GenerateComplexTypeDeclarations(complexTypes, syntaxGenerator).Select(
                                 classDeclaration => classDeclaration.WithTrailingNewline()
                             )
                         )
@@ -167,6 +223,18 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             return project.AddDocument($"{model.ClrTypeName}.cs", generatedModel);
         }
 
+        /// <summary>
+        ///     Generate type declarations for resource models.
+        /// </summary>
+        /// <param name="models">
+        ///     A sequence of <see cref="KubeModel"/>s representing the resource models.
+        /// </param>
+        /// <param name="syntaxGenerator">
+        ///     The current (language-specific) <see cref="SyntaxGenerator"/> used to generate code.
+        /// </param>
+        /// <returns>
+        ///     A sequence of corresponding <see cref="SyntaxNode"/>s representing the resource type declarations.
+        /// </returns>
         static IEnumerable<SyntaxNode> GenerateResourceDeclarations(IEnumerable<KubeModel> models, SyntaxGenerator syntaxGenerator)
         {
             if (models == null)
@@ -210,31 +278,43 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             }
         }
 
-        static IEnumerable<SyntaxNode> GenerateComplexTypeDeclarations(IEnumerable<KubeSubModel> subModels, SyntaxGenerator syntaxGenerator)
+        /// <summary>
+        ///     Generate type declarations for complex type models.
+        /// </summary>
+        /// <param name="complexTypes">
+        ///     A sequence of <see cref="KubeComplexType"/>s representing the complex types.
+        /// </param>
+        /// <param name="syntaxGenerator">
+        ///     The current (language-specific) <see cref="SyntaxGenerator"/> used to generate code.
+        /// </param>
+        /// <returns>
+        ///     A sequence of corresponding <see cref="SyntaxNode"/>s representing the complex type declarations.
+        /// </returns>
+        static IEnumerable<SyntaxNode> GenerateComplexTypeDeclarations(IEnumerable<KubeComplexType> complexTypes, SyntaxGenerator syntaxGenerator)
         {
             if (syntaxGenerator == null)
                 throw new ArgumentNullException(nameof(syntaxGenerator));
 
-            if (subModels == null)
-                throw new ArgumentNullException(nameof(subModels));
+            if (complexTypes == null)
+                throw new ArgumentNullException(nameof(complexTypes));
 
-            foreach (KubeSubModel subModel in subModels.OrderBy(subModel => subModel.ClrTypeName))
+            foreach (KubeComplexType complexType in complexTypes.OrderBy(complexType => complexType.ClrTypeName))
             {
                 yield return syntaxGenerator
                     .ClassDeclaration(
-                        subModel.ClrTypeName,
+                        complexType.ClrTypeName,
                         accessibility: Accessibility.Public,
                         modifiers: DeclarationModifiers.Partial,
                         members: [
                             FieldDeclarations.CSharp.JsonExtensionData.WithTrailingNewline(),
 
-                            .. GenerateProperties(subModel.Properties, syntaxGenerator)
+                            .. GenerateProperties(complexType.Properties, syntaxGenerator)
                         ]
                     )
                     .WithDocumentation(
                         CSFactory.XmlSummaryElement(
                             CodeGenHelper.NewlineText,
-                            CodeGenHelper.IndentedText(subModel.Summary ?? "No description is available.", indent: 1),
+                            CodeGenHelper.IndentedText(complexType.Summary ?? "No description is available.", indent: 1),
                             CodeGenHelper.NewlineText
                         )
                     )
@@ -242,6 +322,18 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             }
         }
 
+        /// <summary>
+        ///     Generate property declarations for model properties.
+        /// </summary>
+        /// <param name="properties">
+        ///     A sequence of key-value pairs, each representing a property name and corresponding <see cref="KubeModelProperty"/>.
+        /// </param>
+        /// <param name="syntaxGenerator">
+        ///     The current (language-specific) <see cref="SyntaxGenerator"/> used to generate code.
+        /// </param>
+        /// <returns>
+        ///     A sequence of corresponding <see cref="SyntaxNode"/>s representing the property declarations.
+        /// </returns>
         static IEnumerable<SyntaxNode> GenerateProperties(IEnumerable<KeyValuePair<string, KubeModelProperty>> properties, SyntaxGenerator syntaxGenerator)
         {
             if (properties == null)
@@ -254,7 +346,7 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             {
                 SyntaxNode propertyType = property.DataType switch
                 {
-                    KubeIntrinsicDataType intrinsicDataType => GetDataType(intrinsicDataType, syntaxGenerator),
+                    KubeIntrinsicDataType intrinsicDataType => GetTypeReference(intrinsicDataType, syntaxGenerator),
                     KubeDataType dataType => GetDataType(dataType, syntaxGenerator),
                 };
 
@@ -294,7 +386,19 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             }
         }
 
-        static SyntaxNode GetDataType(KubeIntrinsicDataType intrinsicDataType, SyntaxGenerator syntaxGenerator)
+        /// <summary>
+        ///     Get a type reference corresponding to the specified intrinsic data-type.
+        /// </summary>
+        /// <param name="intrinsicDataType">
+        ///     A <see cref="KubeIntrinsicDataType"/> representing the intrinsic data-type.
+        /// </param>
+        /// <param name="syntaxGenerator">
+        ///     The current (language-specific) <see cref="SyntaxGenerator"/> used to generate code.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SyntaxNode"/> representing the type reference.
+        /// </returns>
+        static SyntaxNode GetTypeReference(KubeIntrinsicDataType intrinsicDataType, SyntaxGenerator syntaxGenerator)
         {
             if (intrinsicDataType == null)
                 throw new ArgumentNullException(nameof(intrinsicDataType));
@@ -322,6 +426,18 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             );
         }
 
+        /// <summary>
+        ///     Get a type reference corresponding to the specified data-type.
+        /// </summary>
+        /// <param name="dataType">
+        ///     A <see cref="KubeDataType"/> representing the data-type.
+        /// </param>
+        /// <param name="syntaxGenerator">
+        ///     The current (language-specific) <see cref="SyntaxGenerator"/> used to generate code.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="SyntaxNode"/> representing the type reference.
+        /// </returns>
         static SyntaxNode GetDataType(KubeDataType dataType, SyntaxGenerator syntaxGenerator)
         {
             if (dataType == null)
@@ -337,46 +453,64 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             );
         }
 
-        static void DiscoverComplexTypes(KubeModel containingModel, HashSet<KubeSubModel> complexTypeModels)
+        /// <summary>
+        ///     Recursively discover complex types referenced by a Kubernetes resource type.
+        /// </summary>
+        /// <param name="containingModel">
+        ///     A <see cref="KubeModel"/> representing the target resource type.
+        /// </param>
+        /// <param name="complexTypes">
+        ///     A set of <see cref="KubeComplexType"/>s representing all discovered complex types.
+        /// </param>
+        static void DiscoverComplexTypes(KubeModel containingModel, HashSet<KubeComplexType> complexTypes)
         {
             if (containingModel == null)
                 throw new ArgumentNullException(nameof(containingModel));
 
-            if (complexTypeModels == null)
-                throw new ArgumentNullException(nameof(complexTypeModels));
+            if (complexTypes == null)
+                throw new ArgumentNullException(nameof(complexTypes));
 
             foreach (KubeModelProperty property in containingModel.Properties.Values)
             {
-                KubeSubModelDataType? complexType = property.DataType as KubeSubModelDataType;
-                if (complexType is null)
+                KubeComplexDataType? complexDataType = property.DataType as KubeComplexDataType;
+                if (complexDataType is null)
                     continue;
 
-                if (!complexTypeModels.Add(complexType.SubModel))
+                if (!complexTypes.Add(complexDataType.ComplexType))
                     continue;
 
-                DiscoverComplexTypes(complexType.SubModel, complexTypeModels);
+                DiscoverComplexTypes(complexDataType.ComplexType, complexTypes);
             }
         }
 
-        static void DiscoverComplexTypes(KubeSubModel containingModel, HashSet<KubeSubModel> complexTypeModels)
+        /// <summary>
+        ///     Recursively discover complex types referenced by a Kubernetes complex type.
+        /// </summary>
+        /// <param name="containingType">
+        ///     A <see cref="KubeComplexType"/> representing the target complex type.
+        /// </param>
+        /// <param name="complexTypes">
+        ///     A set of <see cref="KubeComplexType"/>s representing all discovered complex types.
+        /// </param>
+        static void DiscoverComplexTypes(KubeComplexType containingType, HashSet<KubeComplexType> complexTypes)
         {
-            if (containingModel == null)
-                throw new ArgumentNullException(nameof(containingModel));
+            if (containingType == null)
+                throw new ArgumentNullException(nameof(containingType));
 
-            if (complexTypeModels == null)
-                throw new ArgumentNullException(nameof(complexTypeModels));
+            if (complexTypes == null)
+                throw new ArgumentNullException(nameof(complexTypes));
 
-            foreach (KubeModelProperty property in containingModel.Properties.Values)
+            foreach (KubeModelProperty property in containingType.Properties.Values)
             {
-                KubeSubModelDataType? complexType = property.DataType as KubeSubModelDataType;
+                KubeComplexDataType? complexType = property.DataType as KubeComplexDataType;
                 if (complexType is null)
                     continue;
 
-                if (!complexTypeModels.Add(complexType.SubModel))
+                if (!complexTypes.Add(complexType.ComplexType))
                     continue;
 
                 // Recurse.
-                DiscoverComplexTypes(complexType.SubModel, complexTypeModels);
+                DiscoverComplexTypes(complexType.ComplexType, complexTypes);
             }
         }
     }

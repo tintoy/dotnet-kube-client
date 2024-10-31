@@ -48,7 +48,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
                 throw new ArgumentNullException(nameof(customResourceDefinitions));
 
             Dictionary<string, KubeDataType> dataTypes = new Dictionary<string, KubeDataType>();
-            Dictionary<KubeResourceKind, KubeModel> resourceTypes = new Dictionary<KubeResourceKind, KubeModel>();
+            Dictionary<KubeResourceType, KubeModel> resourceTypes = new Dictionary<KubeResourceType, KubeModel>();
 
             foreach (CustomResourceDefinitionV1 customResourceDefinition in customResourceDefinitions)
             {
@@ -57,7 +57,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
 
                 CustomResourceDefinitionVersionV1 primaryVersion = customResourceDefinition.Spec.Versions[0];
 
-                KubeResourceKind resourceType = new KubeResourceKind(Group: customResourceDefinition.Spec.Group, Version: primaryVersion.Name, ResourceKind: customResourceDefinition.Spec.Names.Kind);
+                KubeResourceType resourceType = new KubeResourceType(Group: customResourceDefinition.Spec.Group, Version: primaryVersion.Name, ResourceKind: customResourceDefinition.Spec.Names.Kind);
                 if (resourceTypes.ContainsKey(resourceType))
                     continue;
 
@@ -83,7 +83,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         ///     Parse a resource type into a <see cref="KubeModel"/>.
         /// </summary>
         /// <param name="resourceType">
-        ///     A <see cref="KubeResourceKind"/> that identifies the target resource type.
+        ///     A <see cref="KubeResourceType"/> that identifies the target resource type.
         /// </param>
         /// <param name="apiMetadata">
         ///     The API metadata for the target resource type.
@@ -97,7 +97,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         /// <returns>
         ///     The new <see cref="KubeModel"/>.
         /// </returns>
-        static KubeModel ParseResourceType(KubeResourceKind resourceType, KubeApiMetadata apiMetadata, JSONSchemaPropsV1 resourceTypeSchema, Dictionary<string, KubeDataType> knownDataTypes)
+        static KubeModel ParseResourceType(KubeResourceType resourceType, KubeApiMetadata apiMetadata, JSONSchemaPropsV1 resourceTypeSchema, Dictionary<string, KubeDataType> knownDataTypes)
         {
             if (resourceType == null)
                 throw new ArgumentNullException(nameof(resourceType));
@@ -156,7 +156,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         ///     Parse a data-type schema into a <see cref="KubeDataType"/>.
         /// </summary>
         /// <param name="resourceType">
-        ///     A <see cref="KubeResourceKind"/> that identifies the target resource type.
+        ///     A <see cref="KubeResourceType"/> that identifies the target resource type.
         /// </param>
         /// <param name="propertyPathSegments">
         ///     A stack of property names representing the path from the current resource type to the current data-type.
@@ -170,7 +170,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         /// <returns>
         ///     The <see cref="KubeDataType"/>.
         /// </returns>
-        static KubeDataType ParseDataType(KubeResourceKind resourceType, Stack<string> propertyPathSegments, JSONSchemaPropsV1 schema, Dictionary<string, KubeDataType> dataTypes)
+        static KubeDataType ParseDataType(KubeResourceType resourceType, Stack<string> propertyPathSegments, JSONSchemaPropsV1 schema, Dictionary<string, KubeDataType> dataTypes)
         {
             if (resourceType == null)
                 throw new ArgumentNullException(nameof(resourceType));
@@ -239,12 +239,12 @@ namespace KubeClient.Extensions.CustomResources.Schema
                             propertyPathSegments.Pop();
                         }
 
-                        KubeSubModel subModel = new KubeSubModel(
+                        KubeComplexType subModel = new KubeComplexType(
                             Name: dataTypeName,
                             Summary: schema.Description ?? "No description is available",
                             Properties: ImmutableDictionary.CreateRange(modelProperties)
                         );
-                        KubeSubModelDataType subModelDataType = new KubeSubModelDataType(subModel);
+                        KubeComplexDataType subModelDataType = new KubeComplexDataType(subModel);
                         dataTypes.Add(dataTypeName, subModelDataType);
 
 
@@ -298,7 +298,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         ///     Detemine the name for a <see cref="KubeDataType"/> representing a complex data-type.
         /// </summary>
         /// <param name="resourceType">
-        ///     A <see cref="KubeResourceKind"/> that identifies the current resource type.
+        ///     A <see cref="KubeResourceType"/> that identifies the current resource type.
         /// </param>
         /// <param name="propertyPathSegments">
         ///     A stack of property names representing the path from the current resource type to the current data-type.
@@ -306,7 +306,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         /// <returns>
         ///     The data-type name.
         /// </returns>
-        static string GetDataTypeName(KubeResourceKind resourceType, Stack<string> propertyPathSegments)
+        static string GetDataTypeName(KubeResourceType resourceType, Stack<string> propertyPathSegments)
         {
             if (resourceType == null)
                 throw new ArgumentNullException(nameof(resourceType));
@@ -323,7 +323,19 @@ namespace KubeClient.Extensions.CustomResources.Schema
             return $"{resourceType.ResourceKind}{typeNameFromPropertyPath}{prettyApiVersion}";
         }
 
-        static KubeResourceApis ParseApiMetadata(KubeResourceKind resourceType, KubeApiMetadata apiMetadata)
+        /// <summary>
+        ///     Parse API metadata for the specified Kubernetes resource type.
+        /// </summary>
+        /// <param name="resourceType">
+        ///     A <see cref="KubeResourceType"/> representing the target resource type.
+        /// </param>
+        /// <param name="apiMetadata">
+        ///     API metadata (from a <see cref="KubeApiMetadataCache"/>) for the target resource type.
+        /// </param>
+        /// <returns>
+        ///     <see cref="KubeResourceApis"/> representing the parsed API metadata.
+        /// </returns>
+        static KubeResourceApis ParseApiMetadata(KubeResourceType resourceType, KubeApiMetadata apiMetadata)
         {
             if (resourceType == null)
                 throw new ArgumentNullException(nameof(resourceType));
