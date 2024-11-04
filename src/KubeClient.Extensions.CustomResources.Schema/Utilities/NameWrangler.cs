@@ -12,7 +12,15 @@ namespace KubeClient.Extensions.CustomResources.Schema.Utilities
         /// <summary>
         ///     A regular expression used to capitalise names/identifiers.
         /// </summary>
-        static readonly Regex Capitalizer = new Regex(@"([a-z]+)([A-Z0-9]+[a-z]+)");
+        /// <remarks>
+        ///     Used to split on either:
+        ///     <list type="bullet">
+        ///         <item>1 or more upper-case letters, NOT followed by 0 or more lower-case letters.</item>
+        ///         <item>0 or 1 upper-case letters, followed by 1 or more lower-case letters.</item>
+        ///         <item>1 or more digits.</item>
+        ///     </list>
+        /// </remarks>
+        static readonly Regex Capitalizer = new Regex(@"([A-Z]+(?![a-z])|[A-Z]?[a-z]+|\d+)");
 
         /// <summary>
         ///     A regular expression used to sanitise names/identifiers.
@@ -37,7 +45,7 @@ namespace KubeClient.Extensions.CustomResources.Schema.Utilities
         ///     This function is number-aware:
         ///     <list type="bullet">
         ///         <item>"v1" becomes "V1"</item>
-        ///         <item>"v1beta1" becomes "v1beta1"</item>
+        ///         <item>"v1beta1" becomes "V1Beta1"</item>
         ///         <item>"v12beta34" becomes "V12Beta34"</item>
         ///         <item>"v12etaBetaPi34" becomes "V12EtaBetaPi34"</item>
         ///         <item>"v12EtaBetaPi34" becomes "V12EtaBetaPi34"</item>
