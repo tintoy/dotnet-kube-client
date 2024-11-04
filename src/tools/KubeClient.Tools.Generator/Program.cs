@@ -119,7 +119,7 @@ namespace KubeClient.Tools.Generator
                     if (formattedDocument.TryGetSyntaxRoot(out SyntaxNode? syntaxRoot))
                     {
                         string generatedCode = syntaxRoot.ToFullString();
-                        Log.LogInformation("{DocumentSourceText:l}", generatedCode);
+                        Log.LogInformation("\n{DocumentSourceText:l}", generatedCode);
 
                         await File.WriteAllTextAsync(options.OutputFile, generatedCode);
                     }

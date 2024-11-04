@@ -25,7 +25,7 @@ namespace KubeClient.Extensions.CustomResources.Schema.Utilities
         /// <summary>
         ///     A regular expression used to sanitise names/identifiers.
         /// </summary>
-        static readonly Regex Sanitizer = new Regex(@"([a-z]+[\-\$0-9])");
+        static readonly Regex Sanitizer = new Regex(@"([\-\$0-9])");
 
         /// <summary>
         ///     <see cref="TextInfo"/> representing text behaviour for the invariant culture (<see cref="CultureInfo.InvariantCulture"/>).
@@ -75,14 +75,7 @@ namespace KubeClient.Extensions.CustomResources.Schema.Utilities
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            string[] nameComponents = Sanitizer.Split(name);
-            for (int componentIndex = 0; componentIndex < nameComponents.Length; componentIndex++)
-            {
-                string nameComponent = nameComponents[componentIndex];
-                nameComponents[componentIndex] = InvariantText.ToTitleCase(nameComponent);
-            }
-
-            return String.Join(String.Empty, nameComponents);
+            return Sanitizer.Replace(name, String.Empty);
         }
     }
 }

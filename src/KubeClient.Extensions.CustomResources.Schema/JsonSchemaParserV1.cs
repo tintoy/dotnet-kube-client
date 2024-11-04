@@ -5,13 +5,16 @@ using System.Linq;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
-    using KubeClient.ApiMetadata;
-    using KubeClient.Extensions.CustomResources.Schema.Utilities;
+    using ApiMetadata;
     using Models;
+    using Utilities;
 
     /// <summary>
     ///     Parses <see cref="KubeSchema"/> from <see cref="JSONSchemaPropsV1"/>.
     /// </summary>
+    /// <remarks>
+    ///     TODO: Handle required/nullable properties (and use nullable type support as required).
+    /// </remarks>
     public static class JsonSchemaParserV1
     {
         /// <summary>
@@ -124,7 +127,9 @@ namespace KubeClient.Extensions.CustomResources.Schema
 
                 KubeDataType propertyDataType = ParseDataType(resourceType, propertyPathSegments, propertySchema, knownDataTypes);
 
-                string sanitizedPropertyName = NameWrangler.SanitizeName(jsonPropertyName);
+                string sanitizedPropertyName = NameWrangler.CapitalizeName(
+                    NameWrangler.SanitizeName(jsonPropertyName)
+                );
 
                 string[] mergeStrategies = (resourceTypeSchema.KubernetesPatchMergeStrategy ?? String.Empty).Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
@@ -202,6 +207,9 @@ namespace KubeClient.Extensions.CustomResources.Schema
                     case "array":
                     {
                         JSONSchemaPropsV1 itemSchema = schema.Items;
+                        if (itemSchema.Description is null)
+                            itemSchema.Description = schema.Description;
+
                         KubeDataType elementDataType = ParseDataType(resourceType, propertyPathSegments, itemSchema, dataTypes);
 
                         dataType = new KubeArrayDataType(elementDataType);
@@ -220,7 +228,9 @@ namespace KubeClient.Extensions.CustomResources.Schema
 
                             KubeDataType propertyDataType = ParseDataType(resourceType, propertyPathSegments, propertySchema, dataTypes);
 
-                            string sanitizedPropertyName = NameWrangler.CapitalizeName(jsonPropertyName);
+                            string sanitizedPropertyName = NameWrangler.CapitalizeName(
+                                NameWrangler.SanitizeName(jsonPropertyName)
+                            );
 
                             string[] mergeStrategies = (propertySchema.KubernetesPatchMergeStrategy ?? String.Empty).Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
@@ -248,7 +258,6 @@ namespace KubeClient.Extensions.CustomResources.Schema
                         KubeComplexDataType subModelDataType = new KubeComplexDataType(subModel);
                         dataTypes.Add(dataTypeName, subModelDataType);
 
-
                         return subModelDataType;
                     }
                     case "number":
@@ -266,6 +275,11 @@ namespace KubeClient.Extensions.CustomResources.Schema
                             return new KubeIntrinsicDataType("long");
 
                         return new KubeIntrinsicDataType("int");
+                    }
+                    case "string":
+                    case "boolean":
+                    {
+                        return new KubeIntrinsicDataType(typeName);
                     }
                     default:
                     {

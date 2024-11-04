@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 // Some things we do, at the moment, are C#-specific.
@@ -71,7 +72,12 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                 /// <summary>
                 ///     A predefined <see cref="CS.TypeSyntax"/> node representing a JSON extension-data dictionary (a <see cref="Dictionary{TKey, TValue}"/> mapping <see cref="String"/> to <see cref="JToken"/>).
                 /// </summary>
-                public static readonly CS.TypeSyntax JsonExtensionData = CSFactory.ParseTypeName(nameof(Dictionary<string, JToken>));
+                public static readonly CS.TypeSyntax JsonExtensionData = CSFactory.ParseTypeName("Dictionary<string, JToken>");
+
+                /// <summary>
+                ///     A predefined <see cref="CS.TypeSyntax"/> node representing the <see cref="Models.KubeResourceV1"/> base class for resource models.
+                /// </summary>
+                public static readonly CS.TypeSyntax KubeResourceV1 = CSFactory.ParseTypeName("KubeResourceV1");
             }
         }
 
@@ -203,6 +209,7 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             SyntaxGenerator syntaxGenerator = SyntaxGenerator.GetGenerator(project);
 
             SyntaxNode generatedModel = syntaxGenerator.CompilationUnit(
+                syntaxGenerator.NamespaceImport("KubeClient.Models"),
                 syntaxGenerator.NamespaceImport("Newtonsoft.Json"),
                 syntaxGenerator.NamespaceImport("Newtonsoft.Json.Linq"),
                 syntaxGenerator.NamespaceImport("System"),
@@ -248,7 +255,8 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                 yield return
                     syntaxGenerator.AddAttributes(
                         declaration: syntaxGenerator.ClassDeclaration(
-                            model.ClrTypeName,
+                            name: model.ClrTypeName,
+                            baseType: TypeReferences.CSharp.KubeResourceV1,
                             accessibility: Accessibility.Public,
                             modifiers: DeclarationModifiers.Partial,
                             members: [
@@ -257,15 +265,22 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                                 .. GenerateProperties(model.Properties, syntaxGenerator)
                             ]
                         ),
-                        attributes: model.ResourceApis.PrimaryApi.SupportedVerbs.Select(
-                            verb => syntaxGenerator.Attribute("KubeApi", attributeArguments: [
-                                syntaxGenerator.MemberAccessExpression(
-                                    CSFactory.ParseTypeName(nameof(KubeAction)),
-                                    CSFactory.IdentifierName(verb.KubeAction.ToString())
-                                ),
-                                syntaxGenerator.LiteralExpression(model.ResourceApis.PrimaryApi.Path)
-                            ])
-                        )
+                        attributes: [
+                            syntaxGenerator.Attribute("KubeObject", attributeArguments: [
+                                syntaxGenerator.LiteralExpression(model.ResourceType.ResourceKind), // kind
+                                syntaxGenerator.LiteralExpression($"{model.ResourceType.Group}/{model.ResourceType.Version}") // groupVersion
+                            ]),
+
+                            .. model.ResourceApis.PrimaryApi.SupportedVerbs.Select(
+                                verb => syntaxGenerator.Attribute("KubeApi", attributeArguments: [
+                                    syntaxGenerator.MemberAccessExpression(
+                                        CSFactory.ParseTypeName(nameof(KubeAction)),
+                                        CSFactory.IdentifierName(verb.KubeAction.ToString())
+                                    ),
+                                    syntaxGenerator.LiteralExpression(model.ResourceApis.PrimaryApi.Path)
+                                ])
+                            )
+                        ]
                     )
                     .WithDocumentation(
                         CSFactory.XmlSummaryElement(
@@ -366,9 +381,6 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                     // [JsonProperty("myProperty")]
                     syntaxGenerator.Attribute("JsonProperty",
                         syntaxGenerator.AttributeArgument(
-                            syntaxGenerator.LiteralExpression(property.SerializedName)
-                        ),
-                        syntaxGenerator.AttributeArgument("Alias",
                             syntaxGenerator.LiteralExpression(property.SerializedName)
                         )
                     )
@@ -472,14 +484,14 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
 
             foreach (KubeModelProperty property in containingModel.Properties.Values)
             {
-                KubeComplexDataType? complexDataType = property.DataType as KubeComplexDataType;
-                if (complexDataType is null)
+                KubeComplexType? complexType;
+                if (!TryGetComplexType(property.DataType, out complexType))
                     continue;
 
-                if (!complexTypes.Add(complexDataType.ComplexType))
-                    continue;
+                if (!complexTypes.Add(complexType))
+                    continue; // Already processed.
 
-                DiscoverComplexTypes(complexDataType.ComplexType, complexTypes);
+                DiscoverComplexTypes(complexType, complexTypes);
             }
         }
 
@@ -502,16 +514,48 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
 
             foreach (KubeModelProperty property in containingType.Properties.Values)
             {
-                KubeComplexDataType? complexType = property.DataType as KubeComplexDataType;
-                if (complexType is null)
+                KubeComplexType? complexType;
+                if (!TryGetComplexType(property.DataType, out complexType))
                     continue;
 
-                if (!complexTypes.Add(complexType.ComplexType))
-                    continue;
+                if (!complexTypes.Add(complexType))
+                    continue; // Already processed.
 
                 // Recurse.
-                DiscoverComplexTypes(complexType.ComplexType, complexTypes);
+                DiscoverComplexTypes(complexType, complexTypes);
             }
+        }
+
+        /// <summary>
+        ///     Attempt to resolve a <see cref="KubeComplexType"/> from a <see cref="KubeDataType"/>.
+        /// </summary>
+        /// <param name="dataType">
+        ///     The <see cref="KubeDataType"/> to inspect.
+        /// </param>
+        /// <param name="complexType">
+        ///     If successful, receives the <see cref="KubeComplexType"/> (otherwise, <c>null</c>).
+        /// </param>
+        /// <returns>
+        ///     <c>true</c>, if successful; otherwise, <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        ///     Recurses into element types for array / dictionary data types.
+        /// </remarks>
+        static bool TryGetComplexType(KubeDataType dataType, [NotNullWhen(returnValue: true)] out KubeComplexType? complexType)
+        {
+            if (dataType == null)
+                throw new ArgumentNullException(nameof(dataType));
+
+            complexType = null;
+
+            if (dataType is KubeArrayDataType arrayDataType && arrayDataType.ElementType is KubeComplexDataType arrayElementDataType)
+                complexType = arrayElementDataType.ComplexType;
+            else if (dataType is KubeDictionaryDataType dictionaryDataType && dictionaryDataType.ElementType is KubeComplexDataType dictionaryElementDataType)
+                complexType = dictionaryElementDataType.ComplexType;
+            else if (dataType is KubeComplexDataType complexDataType)
+                complexType = complexDataType.ComplexType;
+
+            return complexType != null;
         }
     }
 }
