@@ -1,11 +1,9 @@
-﻿using KubeClient.Models;
+﻿using KubeClient.Extensions.CustomResources.Schema.Utilities;
+using KubeClient.Models;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
@@ -380,31 +378,114 @@ namespace KubeClient.Extensions.CustomResources.Schema
         }
     };
 
+    /// <summary>
+    ///     API metadata for a Kubernetes resource type.
+    /// </summary>
+    /// <param name="PrimaryApi">
+    ///     Metadata for the resource type's primary API.
+    /// </param>
+    /// <param name="OtherApis">
+    ///     Metadata for the resource type's other APIs (if any).
+    /// </param>
     public record class KubeResourceApis(KubeResourceApi PrimaryApi, ImmutableList<KubeResourceApi> OtherApis);
 
+    /// <summary>
+    ///     Metadata for a Kubernetes resource API.
+    /// </summary>
+    /// <param name="Path">
+    ///     The absolute path (or path template) to the API end-point.
+    /// </param>
+    /// <param name="IsNamespaced">
+    ///     Is the API namespaced?
+    /// </param>
+    /// <param name="SupportedVerbs">
+    ///     Metadata for verbs supported by the API.
+    /// </param>
     public record class KubeResourceApi(string Path, bool IsNamespaced, ImmutableList<KubeResourceApiVerb> SupportedVerbs);
 
+    /// <summary>
+    ///     Metadata for a well-known action that can be performed by a Kubernetes resource API.
+    /// </summary>
+    /// <param name="Name">
+    ///     The name of the verb.
+    /// </param>
+    /// <param name="KubeAction">
+    ///     A <see cref="KubeClient.Models.KubeAction"/> that identifies the well-known action (if any) that the verb represents.
+    /// </param>
+    /// <param name="HttpMethod">
+    ///     The HTTP method (e.g. GET/PUT/POST) that the verb represents.
+    /// </param>
     public record class KubeResourceApiVerb(string Name, KubeAction KubeAction, HttpMethod HttpMethod)
     {
+        /// <summary>
+        ///     Kubernetes resource-API verb: get a single resource.
+        /// </summary>
         public static readonly KubeResourceApiVerb Get = new KubeResourceApiVerb(nameof(Get), KubeAction.Get, HttpMethod.Get);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: list resources.
+        /// </summary>
         public static readonly KubeResourceApiVerb List = new KubeResourceApiVerb(nameof(List), KubeAction.List, HttpMethod.Get);
 
+        /// <summary>
+        ///     Kubernetes resource-API verb: create a resource.
+        /// </summary>
         public static readonly KubeResourceApiVerb Create = new KubeResourceApiVerb(nameof(Create), KubeAction.Create, HttpMethod.Post);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: update a resource (request includes a subset of resource fields).
+        /// </summary>
         public static readonly KubeResourceApiVerb Update = new KubeResourceApiVerb(nameof(Update), KubeAction.Update, HttpMethod.Put);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: patch a resource (request includes a list of patch operations to be performed server-side).
+        /// </summary>
         public static readonly KubeResourceApiVerb Patch = new KubeResourceApiVerb(nameof(Patch), KubeAction.Patch, HttpMethod.Patch);
 
+        /// <summary>
+        ///     Kubernetes resource-API verb: delete a single resource.
+        /// </summary>
         public static readonly KubeResourceApiVerb Delete = new KubeResourceApiVerb(nameof(Delete), KubeAction.Delete, HttpMethod.Delete);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: delete all matching resources.
+        /// </summary>
         public static readonly KubeResourceApiVerb DeleteCollection = new KubeResourceApiVerb(nameof(DeleteCollection), KubeAction.DeleteCollection, HttpMethod.Delete);
 
+        /// <summary>
+        ///     Kubernetes resource-API verb: watch a single resource for changes.
+        /// </summary>
         public static readonly KubeResourceApiVerb Watch = new KubeResourceApiVerb(nameof(Watch), KubeAction.Watch, HttpMethod.Get);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: watch all matching resources for changes.
+        /// </summary>
         public static readonly KubeResourceApiVerb WatchList = new KubeResourceApiVerb(nameof(WatchList), KubeAction.WatchList, HttpMethod.Get);
 
+        /// <summary>
+        ///     Kubernetes resource-API verb: open a WebSocket connection to a resource.
+        /// </summary>
         public static readonly KubeResourceApiVerb Connect = new KubeResourceApiVerb(nameof(Connect), KubeAction.Connect, HttpMethod.Get);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: open a WebSocket connection as a network proxy to a resource.
+        /// </summary>
         public static readonly KubeResourceApiVerb Proxy = new KubeResourceApiVerb(nameof(Proxy), KubeAction.Proxy, HttpMethod.Get);
 
+        /// <summary>
+        ///     An unknown Kubernetes resource-API verb.
+        /// </summary>
         public static readonly KubeResourceApiVerb Unknown = new KubeResourceApiVerb(nameof(Unknown), KubeAction.Unknown, HttpMethod.Get);
 
-
+        /// <summary>
+        ///     Get or create a <see cref="KubeResourceApiVerb"/> corresponding to a well-known Kubernetes resource-API action.
+        /// </summary>
+        /// <param name="kubeAction">
+        ///     A <see cref="Models.KubeAction"/> value representing the well-known action.
+        /// </param>
+        /// <returns>
+        ///     The corresponding <see cref="KubeResourceApiVerb"/> (for well-known <see cref="Models.KubeAction"/>s, this is a singleton-per-<paramref name="kubeAction"/>), or <see cref="Unknown"/> if the <see cref="Models.KubeAction"/> value is not recognised.
+        /// </returns>
         public static KubeResourceApiVerb FromKubeAction(KubeAction kubeAction)
         {
             return kubeAction switch
@@ -431,6 +512,15 @@ namespace KubeClient.Extensions.CustomResources.Schema
             };
         }
 
+        /// <summary>
+        ///     Get or create a <see cref="KubeResourceApiVerb"/> corresponding to a Kubernetes API verb (usually from <see cref="ApiMetadata.KubeApiMetadata"/>).
+        /// </summary>
+        /// <param name="kubeApiVerb">
+        ///     The resource API verb.
+        /// </param>
+        /// <returns>
+        ///     The corresponding <see cref="KubeResourceApiVerb"/> (for well-known verbs, this is a singleton-per-<paramref name="kubeApiVerb"/>), or <see cref="Unknown"/> if the resource API verb is not recognised.
+        /// </returns>
         public static KubeResourceApiVerb FromKubeApiVerb(string kubeApiVerb)
         {
             if (String.IsNullOrWhiteSpace(kubeApiVerb))
@@ -458,121 +548,4 @@ namespace KubeClient.Extensions.CustomResources.Schema
             };
         }
     }
-
-
-    static class SchemaConstants
-    {
-        public static IReadOnlySet<string> ValueTypeNames = ImmutableHashSet.CreateRange([
-            "bool",
-            "int",
-            "long",
-            "double",
-            "DateTime",
-        ]);
-
-        public static IReadOnlySet<string> IgnoreDataTypes = ImmutableHashSet.CreateRange([
-            "io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions",
-            "io.k8s.apimachinery.pkg.apis.meta.v1.Time",
-            "io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime",
-
-            "io.k8s.apimachinery.pkg.api.resource.Quantity",
-            "io.k8s.apimachinery.pkg.util.intstr.IntOrString",
-
-            // Present in both regular and and "extensions" groups:
-            "io.k8s.api.extensions.v1beta1.Deployment",
-            "io.k8s.api.extensions.v1beta1.DeploymentList",
-            "io.k8s.api.extensions.v1beta1.DeploymentRollback",
-            "io.k8s.api.extensions.v1beta1.NetworkPolicy",
-            "io.k8s.api.extensions.v1beta1.NetworkPolicyList",
-            "io.k8s.api.extensions.v1beta1.PodSecurityPolicy",
-            "io.k8s.api.extensions.v1beta1.PodSecurityPolicyList",
-            "io.k8s.api.extensions.v1beta1.ReplicaSet",
-            "io.k8s.api.extensions.v1beta1.ReplicaSetList",
-            "io.k8s.api.extensions.v1.Deployment",
-            "io.k8s.api.extensions.v1.DeploymentList",
-            "io.k8s.api.extensions.v1.DeploymentRollback",
-            "io.k8s.api.extensions.v1.NetworkPolicy",
-            "io.k8s.api.extensions.v1.NetworkPolicyList",
-            "io.k8s.api.extensions.v1.PodSecurityPolicy",
-            "io.k8s.api.extensions.v1.PodSecurityPolicyList",
-            "io.k8s.api.extensions.v1.ReplicaSet",
-            "io.k8s.api.extensions.v1.ReplicaSetList",
-            "io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevision",
-            "io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevisionList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Deployment",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DeploymentList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DeploymentRollback",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.NetworkPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.NetworkPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.PodSecurityPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.PodSecurityPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Scale",
-            "io.k8s.kubernetes.pkg.apis.apps.v1.ControllerRevision",
-            "io.k8s.kubernetes.pkg.apis.apps.v1.ControllerRevisionList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DaemonSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DaemonSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.Deployment",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DeploymentList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DeploymentRollback",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.NetworkPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.NetworkPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.PodSecurityPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.PodSecurityPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.ReplicaSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.ReplicaSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.Scale",
-
-            // Special case for EventV1
-            "io.k8s.api.events.v1.Event",
-            "io.k8s.api.events.v1.EventList",
-
-            // Hand-coded:
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResourceList",
-        ]);
-    }
-
-    static class NameWrangler
-    {
-        static readonly Regex Sanitizer = new Regex(@"([a-z]+[\-\$0-9])");
-        static readonly Regex Splitter = new Regex(@"([a-z]+)([A-Z0-9]+[a-z]+)");
-
-        static readonly TextInfo InvariantText = CultureInfo.InvariantCulture.TextInfo;
-
-        public static string CapitalizeName(string name)
-        {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
-            
-            string[] nameComponents = Splitter.Split(name);
-            for (int componentIndex = 0; componentIndex < nameComponents.Length; componentIndex++)
-            {
-                string nameComponent = nameComponents[componentIndex];
-                nameComponents[componentIndex] = InvariantText.ToTitleCase(nameComponent);
-            }
-
-            return String.Join(String.Empty, nameComponents);
-        }
-
-        public static string SanitizeName(string name)
-        {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
-
-            string[] nameComponents = Sanitizer.Split(name);
-            for (int componentIndex = 0; componentIndex < nameComponents.Length; componentIndex++)
-            {
-                string nameComponent = nameComponents[componentIndex];
-                nameComponents[componentIndex] = InvariantText.ToTitleCase(nameComponent);
-            }
-
-            return String.Join(String.Empty, nameComponents);
-        }
-
-    }
-
 }

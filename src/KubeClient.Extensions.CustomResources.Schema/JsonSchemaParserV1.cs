@@ -6,6 +6,7 @@ using System.Linq;
 namespace KubeClient.Extensions.CustomResources.Schema
 {
     using KubeClient.ApiMetadata;
+    using KubeClient.Extensions.CustomResources.Schema.Utilities;
     using Models;
 
     /// <summary>
