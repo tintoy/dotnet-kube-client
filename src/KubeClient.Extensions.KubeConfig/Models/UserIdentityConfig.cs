@@ -124,7 +124,11 @@ namespace KubeClient.Extensions.KubeConfig.Models
             string pemPassword = Guid.NewGuid().ToString("N"); // AF: Not cryptographically-secure, but honestly in this context who cares?
             byte[] pfxData = CryptoHelper.BuildPfx(certificatePem, keyPem, pemPassword);
 
-            return new X509Certificate2(pfxData, pemPassword);
+#if !NET9_0_OR_GREATER
+            return new X509Certificate2(pfxData, pemPassword, X509KeyStorageFlags.EphemeralKeySet);
+#else // !NET9_0_OR_GREATER
+            return X509CertificateLoader.LoadPkcs12(pfxData, pemPassword, X509KeyStorageFlags.EphemeralKeySet);
+#endif // !NET9_0_OR_GREATER
         }
     }
 }
