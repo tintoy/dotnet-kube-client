@@ -1,11 +1,12 @@
+using KubeClient.Models;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
-    using Models;
-
     /// <summary>
     ///     Generator for v1 Custom Resource Definition (CRD) validation schemas.
     /// </summary>

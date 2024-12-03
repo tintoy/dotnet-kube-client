@@ -229,9 +229,19 @@ namespace KubeClient
 
             string apiEndPoint = $"https://{kubeServiceHost}:{kubeServicePort}/";
             string accessToken = File.ReadAllText(Path.Combine(serviceAccountPath, "token"));
-            var kubeCACertificate = new X509Certificate2(
-                File.ReadAllBytes(Path.Combine(serviceAccountPath, "ca.crt"))
+
+            X509Certificate2 kubeCACertificate;
+
+#if !NET9_0_OR_GREATER
+            byte[] certificateData = File.ReadAllBytes(
+                Path.Combine(serviceAccountPath, "ca.crt")
             );
+            kubeCACertificate = new X509Certificate2(certificateData);
+#else // !NET9_0_OR_GREATER
+            kubeCACertificate = X509CertificateLoader.LoadCertificateFromFile(
+                Path.Combine(serviceAccountPath, "ca.crt")
+            );
+#endif // !NET9_0_OR_GREATER
 
             return new KubeClientOptions
             {

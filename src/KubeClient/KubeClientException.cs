@@ -1,11 +1,11 @@
 using HTTPlease;
 using System;
 
-#if NETSTANDARD2_0
+#if NETSTANDARD2_1
 
 using System.Runtime.Serialization;
 
-#endif // NETSTANDARD2_0
+#endif // NETSTANDARD2_1
 
 namespace KubeClient
 {
@@ -50,7 +50,7 @@ namespace KubeClient
         {
         }
 
-#if NETSTANDARD2_0   
+#if NETSTANDARD2_1   
 
         /// <summary>
         ///     Deserialisation constructor.
@@ -66,6 +66,6 @@ namespace KubeClient
         {
         }
 
-#endif // NETSTANDARD2_0
+#endif // NETSTANDARD2_1
     }
 }

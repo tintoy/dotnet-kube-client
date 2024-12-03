@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using System.Runtime.InteropServices.Marshalling;
 
 namespace KubeClient
 {

@@ -1,4 +1,5 @@
 ﻿using KubeClient.Models;
+using System;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {

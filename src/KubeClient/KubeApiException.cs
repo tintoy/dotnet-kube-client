@@ -1,11 +1,11 @@
 using HTTPlease;
 using System;
 
-#if NETSTANDARD2_0
+#if NETSTANDARD2_1
 
 using System.Runtime.Serialization;
 
-#endif // NETSTANDARD2_0
+#endif // NETSTANDARD2_1
 
 namespace KubeClient
 {
@@ -14,9 +14,9 @@ namespace KubeClient
     /// <summary>
     ///     Exception raised when an error result is returned by the Kubernetes API.
     /// </summary>
-#if NETSTANDARD2_0
+#if NETSTANDARD2_1
     [Serializable]
-#endif // NETSTANDARD2_0
+#endif // NETSTANDARD2_1
     public class KubeApiException
         : KubeClientException
     {
@@ -101,7 +101,7 @@ namespace KubeClient
             Status = requestException.Response;
         }
 
-#if NETSTANDARD2_0   
+#if NETSTANDARD2_1   
 
         /// <summary>
         ///     Deserialisation constructor.
@@ -117,7 +117,7 @@ namespace KubeClient
         {
         }
 
-#endif // NETSTANDARD2_0
+#endif // NETSTANDARD2_1
 
         /// <summary>
         ///     A Kubernetes <see cref="StatusV1"/> model that (if present) contains more information about the error.
