@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using KubeClient.Extensions.CustomResources.Schema.Utilities;
+using KubeClient.Models;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
+using System.Net.Http;
 
 namespace KubeClient.Extensions.CustomResources.Schema
 {
@@ -21,10 +19,10 @@ namespace KubeClient.Extensions.CustomResources.Schema
     /// <param name="ResourceKind">
     ///     The resource"s type name (i.e. "kind").
     /// </param>
-    public record class KubeResourceKind(string? Group, string Version, string ResourceKind)
+    public record class KubeResourceType(string? Group, string Version, string ResourceKind)
     {
         /// <summary>
-        ///     Convert the <see cref="KubeResourceKind"/> to a resource type name (e.g. v1/Pod).
+        ///     Convert the <see cref="KubeResourceType"/> to a resource type name (e.g. v1/Pod).
         /// </summary>
         /// <returns>
         ///     The resource type name.
@@ -38,7 +36,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
         }
 
         /// <summary>
-        ///     Convert the <see cref="KubeResourceKind"/> to a resource type version suffix (e.g. V1Beta1).
+        ///     Convert the <see cref="KubeResourceType"/> to a resource type version suffix (e.g. V1Beta1).
         /// </summary>
         /// <returns>
         ///     The resource type version suffix.
@@ -50,18 +48,18 @@ namespace KubeClient.Extensions.CustomResources.Schema
     ///     Schema for one or more Kubernetes resource types.
     /// </summary>
     /// <param name="ResourceTypes">
-    ///     Schemas for resource types, keyed by <see cref="KubeResourceKind"/>.
+    ///     Schemas for resource types, keyed by <see cref="KubeResourceType"/>.
     /// </param>
     /// <param name="DataTypes">
     ///     Schemas for data types, keyed by name.
     /// </param>
-    public record class KubeSchema(ImmutableDictionary<KubeResourceKind, KubeModel> ResourceTypes, ImmutableDictionary<string, KubeDataType> DataTypes);
+    public record class KubeSchema(ImmutableDictionary<KubeResourceType, KubeModel> ResourceTypes, ImmutableDictionary<string, KubeDataType> DataTypes);
 
     /// <summary>
     ///     A resource model in a Kubernetes API schema.
     /// </summary>
     /// <param name="ResourceType">
-    ///     A <see cref="KubeResourceKind"/> representing the model's "group/version/kind" in the Kubernetes API.
+    ///     A <see cref="KubeResourceType"/> representing the model's "group/version/kind" in the Kubernetes API.
     /// </param>
     /// <param name="Summary">
     ///     Summary documentation for the data type (if available).
@@ -69,7 +67,10 @@ namespace KubeClient.Extensions.CustomResources.Schema
     /// <param name="Properties">
     ///     Schema for the model's properties.
     /// </param>
-    public record class KubeModel(KubeResourceKind ResourceType, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties)
+    /// <param name="ResourceApis">
+    ///     Metadata for the resource's APIs.
+    /// </param>
+    public record class KubeModel(KubeResourceType ResourceType, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties, KubeResourceApis ResourceApis)
     {
         /// <summary>
         ///     The namne of the CLR type used to represent the model.
@@ -78,21 +79,21 @@ namespace KubeClient.Extensions.CustomResources.Schema
     };
 
     /// <summary>
-    ///     A model (i.e. a complex data-type) in a Kubernetes API schema.
+    ///     A complex data-type in a Kubernetes API schema.
     /// </summary>
     /// <param name="Name">
-    ///     The model's name (generated from <see cref="KubeModel.ResourceType"/> and the property path where the sub-model is located).
+    ///     The model's name (except for shared complex types, this is generated from the containing <see cref="KubeModel.ResourceType"/> and the property path where the complex type is located).
     /// </param>
     /// <param name="Summary">
-    ///     Summary documentation for the data type (if available).
+    ///     Summary documentation for the complex type (if available).
     /// </param>
     /// <param name="Properties">
     ///     Schema for the model's properties.
     /// </param>
-    public record class KubeSubModel(string Name, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties)
+    public record class KubeComplexType(string Name, string? Summary, ImmutableDictionary<string, KubeModelProperty> Properties)
     {
         /// <summary>
-        ///     The name of the CLR type used to represent the model.
+        ///     The name of the CLR type used to represent the complex type.
         /// </summary>
         public string ClrTypeName => Name;
     };
@@ -250,13 +251,13 @@ namespace KubeClient.Extensions.CustomResources.Schema
     };
 
     /// <summary>
-    ///     A sub-model (i.e. complex) data type in the Kubernetes API.
+    ///     A complex type (i.e. complex) data type in the Kubernetes API.
     /// </summary>
-    /// <param name="SubModel">
-    ///     A <see cref="KubeModel"/> that describes the complex data-type.
+    /// <param name="ComplexType">
+    ///     A <see cref="KubeComplexType"/> that describes the complex data-type.
     /// </param>
-    public record class KubeSubModelDataType(KubeSubModel SubModel)
-        : KubeDataType(SubModel.ClrTypeName, Summary: SubModel.Summary)
+    public record class KubeComplexDataType(KubeComplexType ComplexType)
+        : KubeDataType(ComplexType.ClrTypeName, Summary: ComplexType.Summary)
     {
         /// <summary>
         ///     Is the data-type an intrinsic data type (such as number or string)?
@@ -377,119 +378,174 @@ namespace KubeClient.Extensions.CustomResources.Schema
         }
     };
 
-    static class SchemaConstants
+    /// <summary>
+    ///     API metadata for a Kubernetes resource type.
+    /// </summary>
+    /// <param name="PrimaryApi">
+    ///     Metadata for the resource type's primary API.
+    /// </param>
+    /// <param name="OtherApis">
+    ///     Metadata for the resource type's other APIs (if any).
+    /// </param>
+    public record class KubeResourceApis(KubeResourceApi PrimaryApi, ImmutableList<KubeResourceApi> OtherApis);
+
+    /// <summary>
+    ///     Metadata for a Kubernetes resource API.
+    /// </summary>
+    /// <param name="Path">
+    ///     The absolute path (or path template) to the API end-point.
+    /// </param>
+    /// <param name="IsNamespaced">
+    ///     Is the API namespaced?
+    /// </param>
+    /// <param name="SupportedVerbs">
+    ///     Metadata for verbs supported by the API.
+    /// </param>
+    public record class KubeResourceApi(string Path, bool IsNamespaced, ImmutableList<KubeResourceApiVerb> SupportedVerbs);
+
+    /// <summary>
+    ///     Metadata for a well-known action that can be performed by a Kubernetes resource API.
+    /// </summary>
+    /// <param name="Name">
+    ///     The name of the verb.
+    /// </param>
+    /// <param name="KubeAction">
+    ///     A <see cref="KubeClient.Models.KubeAction"/> that identifies the well-known action (if any) that the verb represents.
+    /// </param>
+    /// <param name="HttpMethod">
+    ///     The HTTP method (e.g. GET/PUT/POST) that the verb represents.
+    /// </param>
+    public record class KubeResourceApiVerb(string Name, KubeAction KubeAction, HttpMethod HttpMethod)
     {
-        public static IReadOnlySet<string> ValueTypeNames = ImmutableHashSet.CreateRange([
-            "bool",
-            "int",
-            "long",
-            "double",
-            "DateTime",
-        ]);
+        /// <summary>
+        ///     Kubernetes resource-API verb: get a single resource.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Get = new KubeResourceApiVerb(nameof(Get), KubeAction.Get, HttpMethod.Get);
 
-        public static IReadOnlySet<string> IgnoreDataTypes = ImmutableHashSet.CreateRange([
-            "io.k8s.apimachinery.pkg.apis.meta.v1.DeleteOptions",
-            "io.k8s.apimachinery.pkg.apis.meta.v1.Time",
-            "io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime",
+        /// <summary>
+        ///     Kubernetes resource-API verb: list resources.
+        /// </summary>
+        public static readonly KubeResourceApiVerb List = new KubeResourceApiVerb(nameof(List), KubeAction.List, HttpMethod.Get);
 
-            "io.k8s.apimachinery.pkg.api.resource.Quantity",
-            "io.k8s.apimachinery.pkg.util.intstr.IntOrString",
+        /// <summary>
+        ///     Kubernetes resource-API verb: create a resource.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Create = new KubeResourceApiVerb(nameof(Create), KubeAction.Create, HttpMethod.Post);
 
-            // Present in both regular and and "extensions" groups:
-            "io.k8s.api.extensions.v1beta1.Deployment",
-            "io.k8s.api.extensions.v1beta1.DeploymentList",
-            "io.k8s.api.extensions.v1beta1.DeploymentRollback",
-            "io.k8s.api.extensions.v1beta1.NetworkPolicy",
-            "io.k8s.api.extensions.v1beta1.NetworkPolicyList",
-            "io.k8s.api.extensions.v1beta1.PodSecurityPolicy",
-            "io.k8s.api.extensions.v1beta1.PodSecurityPolicyList",
-            "io.k8s.api.extensions.v1beta1.ReplicaSet",
-            "io.k8s.api.extensions.v1beta1.ReplicaSetList",
-            "io.k8s.api.extensions.v1.Deployment",
-            "io.k8s.api.extensions.v1.DeploymentList",
-            "io.k8s.api.extensions.v1.DeploymentRollback",
-            "io.k8s.api.extensions.v1.NetworkPolicy",
-            "io.k8s.api.extensions.v1.NetworkPolicyList",
-            "io.k8s.api.extensions.v1.PodSecurityPolicy",
-            "io.k8s.api.extensions.v1.PodSecurityPolicyList",
-            "io.k8s.api.extensions.v1.ReplicaSet",
-            "io.k8s.api.extensions.v1.ReplicaSetList",
-            "io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevision",
-            "io.k8s.kubernetes.pkg.apis.apps.v1beta1.ControllerRevisionList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DaemonSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Deployment",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DeploymentList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.DeploymentRollback",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.NetworkPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.NetworkPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.PodSecurityPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.PodSecurityPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ReplicaSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.Scale",
-            "io.k8s.kubernetes.pkg.apis.apps.v1.ControllerRevision",
-            "io.k8s.kubernetes.pkg.apis.apps.v1.ControllerRevisionList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DaemonSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DaemonSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.Deployment",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DeploymentList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.DeploymentRollback",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.NetworkPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.NetworkPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.PodSecurityPolicy",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.PodSecurityPolicyList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.ReplicaSet",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.ReplicaSetList",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1.Scale",
+        /// <summary>
+        ///     Kubernetes resource-API verb: update a resource (request includes a subset of resource fields).
+        /// </summary>
+        public static readonly KubeResourceApiVerb Update = new KubeResourceApiVerb(nameof(Update), KubeAction.Update, HttpMethod.Put);
 
-            // Special case for EventV1
-            "io.k8s.api.events.v1.Event",
-            "io.k8s.api.events.v1.EventList",
+        /// <summary>
+        ///     Kubernetes resource-API verb: patch a resource (request includes a list of patch operations to be performed server-side).
+        /// </summary>
+        public static readonly KubeResourceApiVerb Patch = new KubeResourceApiVerb(nameof(Patch), KubeAction.Patch, HttpMethod.Patch);
 
-            // Hand-coded:
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResource",
-            "io.k8s.kubernetes.pkg.apis.extensions.v1beta1.ThirdPartyResourceList",
-        ]);
-    }
+        /// <summary>
+        ///     Kubernetes resource-API verb: delete a single resource.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Delete = new KubeResourceApiVerb(nameof(Delete), KubeAction.Delete, HttpMethod.Delete);
 
-    static class NameWrangler
-    {
-        static readonly Regex Sanitizer = new Regex(@"([a-z]+[\-\$0-9])");
-        static readonly Regex Splitter = new Regex(@"([a-z]+)([A-Z0-9]+[a-z]+)");
+        /// <summary>
+        ///     Kubernetes resource-API verb: delete all matching resources.
+        /// </summary>
+        public static readonly KubeResourceApiVerb DeleteCollection = new KubeResourceApiVerb(nameof(DeleteCollection), KubeAction.DeleteCollection, HttpMethod.Delete);
 
-        static readonly TextInfo InvariantText = CultureInfo.InvariantCulture.TextInfo;
+        /// <summary>
+        ///     Kubernetes resource-API verb: watch a single resource for changes.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Watch = new KubeResourceApiVerb(nameof(Watch), KubeAction.Watch, HttpMethod.Get);
 
-        public static string CapitalizeName(string name)
+        /// <summary>
+        ///     Kubernetes resource-API verb: watch all matching resources for changes.
+        /// </summary>
+        public static readonly KubeResourceApiVerb WatchList = new KubeResourceApiVerb(nameof(WatchList), KubeAction.WatchList, HttpMethod.Get);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: open a WebSocket connection to a resource.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Connect = new KubeResourceApiVerb(nameof(Connect), KubeAction.Connect, HttpMethod.Get);
+
+        /// <summary>
+        ///     Kubernetes resource-API verb: open a WebSocket connection as a network proxy to a resource.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Proxy = new KubeResourceApiVerb(nameof(Proxy), KubeAction.Proxy, HttpMethod.Get);
+
+        /// <summary>
+        ///     An unknown Kubernetes resource-API verb.
+        /// </summary>
+        public static readonly KubeResourceApiVerb Unknown = new KubeResourceApiVerb(nameof(Unknown), KubeAction.Unknown, HttpMethod.Get);
+
+        /// <summary>
+        ///     Get or create a <see cref="KubeResourceApiVerb"/> corresponding to a well-known Kubernetes resource-API action.
+        /// </summary>
+        /// <param name="kubeAction">
+        ///     A <see cref="Models.KubeAction"/> value representing the well-known action.
+        /// </param>
+        /// <returns>
+        ///     The corresponding <see cref="KubeResourceApiVerb"/> (for well-known <see cref="Models.KubeAction"/>s, this is a singleton-per-<paramref name="kubeAction"/>), or <see cref="Unknown"/> if the <see cref="Models.KubeAction"/> value is not recognised.
+        /// </returns>
+        public static KubeResourceApiVerb FromKubeAction(KubeAction kubeAction)
         {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
-            
-            string[] nameComponents = Splitter.Split(name);
-            for (int componentIndex = 0; componentIndex < nameComponents.Length; componentIndex++)
+            return kubeAction switch
             {
-                string nameComponent = nameComponents[componentIndex];
-                nameComponents[componentIndex] = InvariantText.ToTitleCase(nameComponent);
-            }
+                KubeAction.Get => Get,
+                KubeAction.List => List,
 
-            return String.Join(String.Empty, nameComponents);
+                KubeAction.Create => Create,
+                KubeAction.Update => Update,
+                KubeAction.Patch => Patch,
+                
+                KubeAction.Delete => Delete,
+                KubeAction.DeleteCollection => DeleteCollection,
+                
+                KubeAction.Watch => Watch,
+                KubeAction.WatchList => WatchList,
+
+                KubeAction.Connect => Connect,
+                KubeAction.Proxy => Proxy,
+
+                KubeAction.Unknown => Unknown,
+
+                _ => Enum.IsDefined(kubeAction) ? new KubeResourceApiVerb(kubeAction.ToString(), kubeAction, HttpMethod.Get) : Unknown,
+            };
         }
 
-        public static string SanitizeName(string name)
+        /// <summary>
+        ///     Get or create a <see cref="KubeResourceApiVerb"/> corresponding to a Kubernetes API verb (usually from <see cref="ApiMetadata.KubeApiMetadata"/>).
+        /// </summary>
+        /// <param name="kubeApiVerb">
+        ///     The resource API verb.
+        /// </param>
+        /// <returns>
+        ///     The corresponding <see cref="KubeResourceApiVerb"/> (for well-known verbs, this is a singleton-per-<paramref name="kubeApiVerb"/>), or <see cref="Unknown"/> if the resource API verb is not recognised.
+        /// </returns>
+        public static KubeResourceApiVerb FromKubeApiVerb(string kubeApiVerb)
         {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
+            if (String.IsNullOrWhiteSpace(kubeApiVerb))
+                throw new ArgumentException($"Argument cannot be null, empty, or entirely composed of whitespace: {nameof(kubeApiVerb)}.", nameof(kubeApiVerb));
 
-            string[] nameComponents = Sanitizer.Split(name);
-            for (int componentIndex = 0; componentIndex < nameComponents.Length; componentIndex++)
+            return kubeApiVerb.ToLowerInvariant() switch
             {
-                string nameComponent = nameComponents[componentIndex];
-                nameComponents[componentIndex] = InvariantText.ToTitleCase(nameComponent);
-            }
+                "get" => Get,
+                "list" => List,
 
-            return String.Join(String.Empty, nameComponents);
+                "create" => Create,
+                "update" => Update,
+                "patch" => Patch,
+                
+                "delete" => Delete,
+                "deletecollection" => DeleteCollection,
+
+                "watch" => Watch,
+                "watchlist" => WatchList,
+
+                "connect" => Connect,
+                "proxy" => Proxy,
+
+                _ => new KubeResourceApiVerb(kubeApiVerb, KubeAction.Unknown, HttpMethod.Post)
+            };
         }
-
     }
-
 }

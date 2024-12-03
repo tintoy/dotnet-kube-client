@@ -3,6 +3,7 @@
     <TargetFrameworks>net7.0;net8.0;net9.0</TargetFrameworks>
     
     <Nullable>enable</Nullable>
+    
     <Description>Custom Resource Definition (CRD) schema-validation support for KubeClient</Description>
   </PropertyGroup>
 

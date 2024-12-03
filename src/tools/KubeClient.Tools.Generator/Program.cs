@@ -1,33 +1,51 @@
 ﻿using HTTPlease;
-using KubeClient.Extensions.CustomResources;
+using KubeClient.ApiMetadata;
 using KubeClient.Extensions.CustomResources.CodeGen;
 using KubeClient.Extensions.CustomResources.Schema;
 using KubeClient.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
-using Newtonsoft.Json;
 
 using Document = Microsoft.CodeAnalysis.Document;
 
 namespace KubeClient.Tools.Generator
 {
-    static partial class Program
+    /// <summary>
+    ///     The KubeClient code-generator tool.
+    /// </summary>
+    static class Program
     {
+        /// <summary>
+        ///     The source for root-level cancellation tokens.
+        /// </summary>
         static readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
 
+        /// <summary>
+        ///     Standard console-app cancellation behaviour.
+        /// </summary>
         static Program()
         {
             Console.CancelKeyPress += OnConsoleCancellation;
         }
 
+        /// <summary>
+        ///     The root logger for the code-generator tool.
+        /// </summary>
         public static ILogger Log { get; private set; } = null!;
 
+        /// <summary>
+        ///     The tool's main program entry point.
+        /// </summary>
+        /// <param name="commandLineArguments">
+        ///     The tool's command-line arguments.
+        /// </param>
+        /// <returns>
+        ///     The program exit code.
+        /// </returns>
         static async Task<int> Main(string[] commandLineArguments)
         {
             ProgramOptions? options = ProgramOptions.Parse(commandLineArguments);
@@ -38,8 +56,6 @@ namespace KubeClient.Tools.Generator
 
             try
             {
-                // TODO: Configure from ProgramOptions.
-
                 IKubeApiClient kubeApiClient = KubeApiClient.Create(
                     K8sConfig.Load().ToKubeClientOptions(
                         kubeContextName: options.KubeContextName,
@@ -50,12 +66,12 @@ namespace KubeClient.Tools.Generator
 
                 CustomResourceDefinitionListV1 crds = await kubeApiClient.CustomResourceDefinitionsV1().List(cancellationToken: Cancellation.Token);
                 
-                Dictionary<KubeResourceKind, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceKind, CustomResourceDefinitionV1>();
+                Dictionary<KubeResourceType, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceType, CustomResourceDefinitionV1>();
                 foreach (CustomResourceDefinitionV1 crd in crds)
                 {
                     foreach (CustomResourceDefinitionVersionV1 crdVersion in crd.Spec.Versions)
                     {
-                        KubeResourceKind versionedResourceType = new KubeResourceKind(
+                        KubeResourceType versionedResourceType = new KubeResourceType(
                             Group: crd.Spec.Group,
                             Version: crdVersion.Name,
                             ResourceKind: crd.Spec.Names.Kind
@@ -64,15 +80,30 @@ namespace KubeClient.Tools.Generator
                     }
                 }
 
+                KubeApiMetadataCache metadataCache = new KubeApiMetadataCache();
+                await metadataCache.Load(kubeApiClient, cancellationToken: Cancellation.Token);
+
                 using AdhocWorkspace workspace = new AdhocWorkspace();
 
                 Project project = workspace.AddProject("KubeClient.Generated", LanguageNames.CSharp);
 
-                KubeResourceKind kafaConnectorKind = new KubeResourceKind(options.Group, options.Version, options.Kind);
-                if (customResourceTypes.TryGetValue(kafaConnectorKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
+                KubeResourceType targetResourceKind = new KubeResourceType(options.Group, options.Version, options.Kind);
+                if (customResourceTypes.TryGetValue(targetResourceKind, out CustomResourceDefinitionV1? kafkaConnectorDefinition))
                 {
-                    KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(kafkaConnectorDefinition);
-                    project = ModelGeneratorV1.GenerateModels(schema, kafaConnectorKind, project, options.Namespace);
+                    KubeApiMetadata? resourceTypeMetadata = metadataCache.Get(
+                        kind: targetResourceKind.ResourceKind,
+                        apiGroup: targetResourceKind.Group,
+                        apiVersion: targetResourceKind.Version
+                    );
+                    if (resourceTypeMetadata == null)
+                    {
+                        Log.LogError("Failed to retrieve metadata for resource type {@ResourceType}.", targetResourceKind);
+
+                        return ExitCodes.UnexpectedError;
+                    }
+
+                    KubeSchema schema = JsonSchemaParserV1.BuildKubeSchema(metadataCache, kafkaConnectorDefinition);
+                    project = ModelGeneratorV1.GenerateModels(schema, targetResourceKind, project, options.Namespace);
                 }
 
                 if (!workspace.TryApplyChanges(project.Solution))
@@ -88,7 +119,7 @@ namespace KubeClient.Tools.Generator
                     if (formattedDocument.TryGetSyntaxRoot(out SyntaxNode? syntaxRoot))
                     {
                         string generatedCode = syntaxRoot.ToFullString();
-                        Log.LogInformation("{DocumentSourceText:l}", generatedCode);
+                        Log.LogInformation("\n{DocumentSourceText:l}", generatedCode);
 
                         await File.WriteAllTextAsync(options.OutputFile, generatedCode);
                     }
@@ -113,6 +144,13 @@ namespace KubeClient.Tools.Generator
                 Log.LogError(unexpectedError, "An unexpected error has occurred.");
 
                 return ExitCodes.UnexpectedError;
+            }
+            finally
+            {
+                using (Cancellation)
+                {
+                    Cancellation.Cancel();
+                }
             }
         }
 

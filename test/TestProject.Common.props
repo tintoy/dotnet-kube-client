@@ -1,6 +1,12 @@
 <Project>
   <!-- Common settings and package references for test projects -->
-  
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- Common package references for test projects -->
+
   <!-- Test SDK (net7.0) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
