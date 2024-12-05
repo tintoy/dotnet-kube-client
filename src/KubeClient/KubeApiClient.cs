@@ -1,5 +1,4 @@
 using HTTPlease;
-using HTTPlease.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +7,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
 {
-    using MessageHandlers;
     using ResourceClients;
 
     /// <summary>
