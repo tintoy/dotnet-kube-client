@@ -1,12 +1,11 @@
-using HTTPlease;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -45,7 +44,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<PodV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -151,7 +150,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             HttpResponseMessage responseMessage = await Http.GetAsync(
                 Requests.Logs.WithTemplateParameters(new
                 {
@@ -205,7 +204,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return ObserveLines(
                 Requests.Logs.WithTemplateParameters(new
                 {
@@ -236,7 +235,7 @@ namespace KubeClient.ResourceClients
         {
             if (newPod == null)
                 throw new ArgumentNullException(nameof(newPod));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -282,17 +281,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/pods/{Name}");
 
             /// <summary>
             ///     A get-logs Pod (v1) request.
             /// </summary>
-            public static readonly HttpRequest Logs         = ByName.WithRelativeUri("log?container={ContainerName?}&follow={Follow?}&limitBytes={LimitBytes?}&tailLines={TailLines?}&previous={Previous?}");
+            public static readonly HttpRequest Logs = ByName.WithRelativeUri("log?container={ContainerName?}&follow={Follow?}&limitBytes={LimitBytes?}&tailLines={TailLines?}&previous={Previous?}");
         }
     }
 

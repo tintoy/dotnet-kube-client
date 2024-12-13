@@ -6,10 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease.Core" Version="1.9.2" />
-      <PackageReference Include="HTTPlease.Diagnostics" Version="1.9.2" />
-      <PackageReference Include="HTTPlease.Formatters.Json" Version="1.9.2" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
       <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
       <PackageReference Include="System.Reactive" Version="6.0.1" />
       <PackageReference Include="YamlDotNet" Version="16.1.3" />
@@ -17,18 +15,22 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
   </ItemGroup>
 
   <Import Project="..\Common.props" />

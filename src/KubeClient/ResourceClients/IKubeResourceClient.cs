@@ -1,7 +1,5 @@
 namespace KubeClient.ResourceClients
 {
-    using Models;
-
     /// <summary>
     ///     A client for a specific Kubernetes resource API.
     /// </summary>

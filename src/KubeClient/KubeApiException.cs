@@ -1,8 +1,9 @@
-using HTTPlease;
+
 using System;
 
 namespace KubeClient
 {
+    using KubeClient.Http;
     using Models;
 
     /// <summary>
@@ -84,7 +85,7 @@ namespace KubeClient
         ///     The exception that caused the current exception to be raised.
         /// </param>
         public KubeApiException(HttpRequestException<StatusV1> requestException)
-            : base(GetExceptionMessage(requestException?.Response), requestException)
+            : base(GetExceptionMessage(requestException?.Response), innerException: requestException)
         {
             if (requestException == null)
                 throw new ArgumentNullException(nameof(requestException));

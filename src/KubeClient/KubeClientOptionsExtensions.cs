@@ -1,10 +1,11 @@
-﻿using HTTPlease.Diagnostics;
-using HTTPlease;
+﻿using KubeClient.MessageHandlers;
 using System;
-using KubeClient.MessageHandlers;
 
 namespace KubeClient
 {
+    using Http.Clients;
+    using Http.Diagnostics;
+
     /// <summary>
     ///     Extension methods for <see cref="KubeClientOptions"/>.
     /// </summary>

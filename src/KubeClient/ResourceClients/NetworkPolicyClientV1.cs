@@ -1,11 +1,10 @@
-using HTTPlease;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -44,7 +43,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<NetworkPolicyV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -149,7 +148,7 @@ namespace KubeClient.ResourceClients
         {
             if (newNetworkPolicy == null)
                 throw new ArgumentNullException(nameof(newNetworkPolicy));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -193,22 +192,22 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level NetworkPolicy (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/networking.k8s.io/v1/namespaces/{Namespace}/networkpolicies?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("apis/networking.k8s.io/v1/namespaces/{Namespace}/networkpolicies?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name NetworkPolicy (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName           = KubeRequest.Create("apis/networking.k8s.io/v1/namespaces/{Namespace}/networkpolicies/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("apis/networking.k8s.io/v1/namespaces/{Namespace}/networkpolicies/{Name}");
 
             /// <summary>
             ///     A collection-level NetworkPolicy watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("apis/networking.k8s.io/v1/watch/namespaces/{Namespace}/networkpolicies?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest WatchCollection = KubeRequest.Create("apis/networking.k8s.io/v1/watch/namespaces/{Namespace}/networkpolicies?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A watch-by-name NetworkPolicy (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName      = KubeRequest.Create("apis/networking.k8s.io/v1/watch/namespaces/{Namespace}/networkpolicies/{Name}");
+            public static readonly HttpRequest WatchByName = KubeRequest.Create("apis/networking.k8s.io/v1/watch/namespaces/{Namespace}/networkpolicies/{Name}");
         }
     }
 

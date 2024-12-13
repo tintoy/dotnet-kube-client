@@ -1,12 +1,11 @@
-using HTTPlease;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -124,7 +123,7 @@ namespace KubeClient.ResourceClients
         {
             if (newController == null)
                 throw new ArgumentNullException(nameof(newController));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -164,7 +163,7 @@ namespace KubeClient.ResourceClients
 
             if (patchAction == null)
                 throw new ArgumentNullException(nameof(patchAction));
-            
+
             return await PatchResource(patchAction,
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -206,12 +205,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ReplicationController (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/replicationcontrollers?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/replicationcontrollers?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name ReplicationController (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/replicationcontrollers/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/replicationcontrollers/{Name}");
         }
     }
 
@@ -254,7 +253,7 @@ namespace KubeClient.ResourceClients
         ///     A <see cref="ReplicationControllerListV1"/> containing the ReplicationControllers.
         /// </returns>
         Task<ReplicationControllerListV1> List(string labelSelector = null, string kubeNamespace = null, CancellationToken cancellationToken = default);
-        
+
         /// <summary>
         ///     Watch for events relating to ReplicationControllers.
         /// </summary>

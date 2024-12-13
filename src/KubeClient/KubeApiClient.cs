@@ -1,4 +1,4 @@
-using HTTPlease;
+
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
 {
+    using Http.Clients;
     using ResourceClients;
 
     /// <summary>
@@ -15,6 +16,14 @@ namespace KubeClient
     public sealed class KubeApiClient
         : IKubeApiClient, IDisposable
     {
+        static ILoggerFactory CreateDefaultLoggerFactory()
+        {
+            return Microsoft.Extensions.Logging.LoggerFactory.Create(logging =>
+            {
+                logging.ClearProviders();
+            });
+        }
+
         /// <summary>
         ///     The default factory for <see cref="HttpClient"/>s used by <see cref="KubeApiClient"/>s.
         /// </summary>
@@ -46,7 +55,7 @@ namespace KubeClient
 
             Http = httpClient;
             Options = options.Clone();
-            LoggerFactory = options.LoggerFactory ?? new LoggerFactory();
+            LoggerFactory = options.LoggerFactory ?? CreateDefaultLoggerFactory();
 
             DefaultNamespace = options.KubeNamespace;
         }
@@ -282,7 +291,7 @@ namespace KubeClient
 
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
-            
+
             if (httpClient.BaseAddress == null)
                 throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
 

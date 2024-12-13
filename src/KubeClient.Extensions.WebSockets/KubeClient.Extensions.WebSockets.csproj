@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease.Core" Version="1.9.2" />
       <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
   </ItemGroup>
 

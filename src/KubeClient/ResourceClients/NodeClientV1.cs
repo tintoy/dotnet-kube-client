@@ -1,11 +1,11 @@
-using HTTPlease;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<NodeV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -111,7 +111,7 @@ namespace KubeClient.ResourceClients
         {
             if (newNode == null)
                 throw new ArgumentNullException(nameof(newNode));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection,
@@ -154,12 +154,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Node (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/nodes?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/nodes?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name Node (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/nodes/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/nodes/{Name}");
         }
     }
 

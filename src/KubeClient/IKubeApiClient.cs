@@ -4,7 +4,6 @@ using System.Net.Http;
 
 namespace KubeClient
 {
-    using MessageHandlers;
     using ResourceClients;
 
     /// <summary>

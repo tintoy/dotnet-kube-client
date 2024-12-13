@@ -1,19 +1,19 @@
-using HTTPlease;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
     using ApiMetadata;
+    using Http;
     using Models;
 
     // TODO: Always prefer namespaced API paths (except for List operations) and use client's default namespace.
@@ -300,7 +300,7 @@ namespace KubeClient.ResourceClients
         public async Task<TResource> Create<TResource>(TResource resource, bool isNamespaced = true, CancellationToken cancellationToken = default)
             where TResource : KubeResourceV1
         {
-            if ( resource == null )
+            if (resource == null)
                 throw new ArgumentNullException(nameof(resource));
 
             await EnsureApiMetadata(cancellationToken);
@@ -503,13 +503,13 @@ namespace KubeClient.ResourceClients
         /// </returns>
         public async Task<KubeResourceResultV1<KubeResourceV1>> Delete(string name, string kind, string apiVersion, string kubeNamespace = null, DeletePropagationPolicy? propagationPolicy = null, CancellationToken cancellationToken = default)
         {
-            if ( String.IsNullOrWhiteSpace(name) )
+            if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
 
-            if ( String.IsNullOrWhiteSpace(kind) )
+            if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
 
-            if ( String.IsNullOrWhiteSpace(apiVersion) )
+            if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
 
             bool isNamespaced = !String.IsNullOrWhiteSpace(kubeNamespace);
@@ -548,7 +548,7 @@ namespace KubeClient.ResourceClients
         async Task EnsureApiMetadata(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            
+
             if (ApiMetadata.IsEmpty)
             {
                 ApiMetadata.LoadFromMetadata(

@@ -1,12 +1,10 @@
-using HTTPlease;
-using Microsoft.AspNetCore.JsonPatch;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -42,7 +40,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<NamespaceV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -114,7 +112,7 @@ namespace KubeClient.ResourceClients
         {
             if (newNamespace == null)
                 throw new ArgumentNullException(nameof(newNamespace));
-            
+
             return await Http
                 .PostAsJsonAsync(Requests.Collection,
                     postBody: newNamespace,
@@ -151,17 +149,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Namespace (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name Namespace (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Name}");
 
             /// <summary>
             ///     A watch-by-name Namespace (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName  = KubeRequest.Create("api/v1/watch/namespaces/{Name}");
+            public static readonly HttpRequest WatchByName = KubeRequest.Create("api/v1/watch/namespaces/{Name}");
         }
     }
 

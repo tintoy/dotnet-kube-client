@@ -1,6 +1,3 @@
-using HTTPlease;
-using HTTPlease.Formatters;
-using HTTPlease.Formatters.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
+    using Http.Formatters;
+    using Http.Formatters.Json;
     using Models;
 
     /// <summary>
@@ -145,7 +145,7 @@ namespace KubeClient.ResourceClients
         {
             if (response == null)
                 throw new ArgumentNullException(nameof(response));
-            
+
             (string expectedKind, string expectedApiVersion) = KubeObjectV1.GetKubeKind<TResource>();
 
             HttpResponseMessage responseMessage = null;
@@ -209,17 +209,17 @@ namespace KubeClient.ResourceClients
         /// </exception>
         public static async Task<KubeResourceResultV1<KubeResourceV1>> ReadContentAsResourceOrStatusV1(this Task<HttpResponseMessage> response, Type modelType, string operationDescription, params HttpStatusCode[] successStatusCodes)
         {
-            if ( response == null )
+            if (response == null)
                 throw new ArgumentNullException(nameof(response));
 
-            if ( modelType == null )
+            if (modelType == null)
                 throw new ArgumentNullException(nameof(modelType));
 
-            if ( !KubeResourceV1TypeInfo.IsAssignableFrom(modelType.GetTypeInfo()) )
+            if (!KubeResourceV1TypeInfo.IsAssignableFrom(modelType.GetTypeInfo()))
                 throw new ArgumentException($"Model type '{modelType.FullName}' does not derive from '{KubeResourceV1TypeInfo.FullName}'.", nameof(modelType));
 
             (string expectedKind, string expectedApiVersion) = KubeObjectV1.GetKubeKind(modelType);
-            if ( String.IsNullOrWhiteSpace(expectedKind) )
+            if (String.IsNullOrWhiteSpace(expectedKind))
                 throw new ArgumentException($"Model type '{modelType.FullName}' has not been decorated with KubeResourceAttribute or KubeResourceListAttribute.", nameof(modelType));
 
             HttpResponseMessage responseMessage = null;
@@ -231,23 +231,23 @@ namespace KubeClient.ResourceClients
                 JObject responseJson = await responseMessage.ReadContentAsAsync<JObject, StatusV1>(successStatusCodes);
 
                 string actualKind = responseJson.Value<string>("kind");
-                if ( actualKind == null )
+                if (actualKind == null)
                     throw new KubeClientException($"Unable to {operationDescription}: received an invalid response from the Kubernetes API (expected a resource, but response was missing 'kind' property).");
 
                 string actualApiVersion = responseJson.Value<string>("apiVersion");
-                if ( actualKind == null )
+                if (actualKind == null)
                     throw new KubeClientException($"Unable to {operationDescription}: received an invalid response from the Kubernetes API (expected a resource, but response was missing 'apiVersion' property).");
 
                 JsonSerializer serializer = responseMessage.GetJsonSerializer();
 
-                if ( (actualKind, actualApiVersion) == (expectedKind, expectedApiVersion) )
-                    return (KubeResourceV1) serializer.Deserialize(responseJson.CreateReader(), modelType);
-                else if ( (actualKind, actualApiVersion) == ("Status", "v1") )
+                if ((actualKind, actualApiVersion) == (expectedKind, expectedApiVersion))
+                    return (KubeResourceV1)serializer.Deserialize(responseJson.CreateReader(), modelType);
+                else if ((actualKind, actualApiVersion) == ("Status", "v1"))
                     return serializer.Deserialize<StatusV1>(responseJson.CreateReader());
                 else
                     throw new KubeClientException($"Unable to {operationDescription}: received an unexpected response from the Kubernetes API (should be v1/Status or {expectedApiVersion}/{expectedKind}, but was {actualApiVersion}/{actualKind}).");
             }
-            catch ( HttpRequestException<StatusV1> requestError )
+            catch (HttpRequestException<StatusV1> requestError)
             {
                 throw new KubeApiException(requestError.Response, requestError);
             }

@@ -1,11 +1,10 @@
-using HTTPlease;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -44,7 +43,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<JobV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -149,7 +148,7 @@ namespace KubeClient.ResourceClients
         {
             if (newJob == null)
                 throw new ArgumentNullException(nameof(newJob));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -193,22 +192,22 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName           = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("apis/batch/v1/namespaces/{Namespace}/jobs/{Name}");
 
             /// <summary>
             ///     A collection-level Job watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest WatchCollection = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A watch-by-name Job (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName      = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}");
+            public static readonly HttpRequest WatchByName = KubeRequest.Create("apis/batch/v1/watch/namespaces/{Namespace}/jobs/{Name}");
         }
     }
 

@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease.Core" Version="1.9.2" />
-      <PackageReference Include="HTTPlease.Diagnostics" Version="1.9.2" />
-      <PackageReference Include="HTTPlease.Formatters.Json" Version="1.9.2" />
-      <PackageReference Include="HTTPlease.Testability.Xunit" Version="1.9.2" />
       <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
