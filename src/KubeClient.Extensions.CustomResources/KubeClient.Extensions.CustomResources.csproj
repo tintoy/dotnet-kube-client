@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+    <ProjectReference Include="../KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 </Project>

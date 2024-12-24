@@ -1,8 +1,3 @@
-using HTTPlease;
-using HTTPlease.Diagnostics;
-using HTTPlease.Formatters;
-using HTTPlease.Testability;
-using HTTPlease.Testability.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -14,6 +9,11 @@ using Newtonsoft.Json;
 
 namespace KubeClient.Tests
 {
+    using Http.Clients;
+    using Http.Diagnostics;
+    using Http.Formatters;
+    using Http.Testability;
+    using Http.Testability.Xunit;
     using Logging;
     using Models;
 

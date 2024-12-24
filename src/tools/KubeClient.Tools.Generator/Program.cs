@@ -1,7 +1,7 @@
-﻿using HTTPlease;
-using KubeClient.ApiMetadata;
+﻿using KubeClient.ApiMetadata;
 using KubeClient.Extensions.CustomResources.CodeGen;
 using KubeClient.Extensions.CustomResources.Schema;
+using KubeClient.Http;
 using KubeClient.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting;

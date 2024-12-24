@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeClient.Extensions.CustomResources\KubeClient.Extensions.CustomResources.csproj" />
-    <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+    <ProjectReference Include="../KubeClient.Extensions.CustomResources/KubeClient.Extensions.CustomResources.csproj" />
+    <ProjectReference Include="../KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 </Project>

@@ -1,5 +1,4 @@
-﻿using HTTPlease;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 namespace KubeClient.Samples.ConfigFromConfigMap
 {
     using Extensions.Configuration;
+    using Http;
     using Models;
 
     /// <summary>

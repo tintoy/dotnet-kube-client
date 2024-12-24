@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using HTTPlease;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Samples.DeploymentWithRollback
 {
+    using Http;
     using Models;
 
     /// <summary>

@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.Configuration\KubeClient.Extensions.Configuration.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.Configuration/KubeClient.Extensions.Configuration.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
 </Project>

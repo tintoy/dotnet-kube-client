@@ -41,8 +41,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 </Project>

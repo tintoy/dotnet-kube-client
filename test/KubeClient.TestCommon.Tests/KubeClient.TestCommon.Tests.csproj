@@ -5,13 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.DataProtection\KubeClient.Extensions.DataProtection.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.DependencyInjection\KubeClient.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.DataProtection/KubeClient.Extensions.DataProtection.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.DependencyInjection/KubeClient.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeClient.TestCommon\KubeClient.TestCommon.csproj" />
+    <ProjectReference Include="../KubeClient.TestCommon/KubeClient.TestCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +36,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
-  <Import Project="..\TestProject.Common.props" />
+  <Import Project="../Common.props" />
+  <Import Project="../TestProject.Common.props" />
 </Project>

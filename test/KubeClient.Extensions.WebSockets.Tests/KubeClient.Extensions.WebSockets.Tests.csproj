@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.DependencyInjection\KubeClient.Extensions.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.WebSockets\KubeClient.Extensions.WebSockets.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.KubeConfig\KubeClient.Extensions.KubeConfig.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.DependencyInjection/KubeClient.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.WebSockets/KubeClient.Extensions.WebSockets.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.KubeConfig/KubeClient.Extensions.KubeConfig.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
@@ -26,6 +26,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
-  <Import Project="..\TestProject.Common.props" />
+  <Import Project="../Common.props" />
+  <Import Project="../TestProject.Common.props" />
 </Project>

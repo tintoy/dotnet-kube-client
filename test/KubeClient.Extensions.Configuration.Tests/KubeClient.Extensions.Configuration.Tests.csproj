@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.Configuration\KubeClient.Extensions.Configuration.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.Configuration/KubeClient.Extensions.Configuration.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeClient.TestCommon\KubeClient.TestCommon.csproj" />
+    <ProjectReference Include="../KubeClient.TestCommon/KubeClient.TestCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +29,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
-  <Import Project="..\TestProject.Common.props" />
+  <Import Project="../Common.props" />
+  <Import Project="../TestProject.Common.props" />
 </Project>

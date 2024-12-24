@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+      <ProjectReference Include="../KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
       <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 </Project>

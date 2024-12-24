@@ -1,5 +1,4 @@
-﻿using HTTPlease;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -10,6 +9,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace KubeClient.Samples.WatchEvents
 {
+    using Http;
     using Models;
     using ResourceClients;
 

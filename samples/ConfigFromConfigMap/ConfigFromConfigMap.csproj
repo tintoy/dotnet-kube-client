@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.Configuration\KubeClient.Extensions.Configuration.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.KubeConfig\KubeClient.Extensions.KubeConfig.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.Configuration/KubeClient.Extensions.Configuration.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.KubeConfig/KubeClient.Extensions.KubeConfig.csproj" />
   </ItemGroup>
 
   <ItemGroup>

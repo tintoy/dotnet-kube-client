@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\KubeClient.Extensions.KubeConfig\KubeClient.Extensions.KubeConfig.csproj" />
+    <ProjectReference Include="../KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../KubeClient.Extensions.KubeConfig/KubeClient.Extensions.KubeConfig.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
@@ -37,6 +37,6 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 
 </Project>

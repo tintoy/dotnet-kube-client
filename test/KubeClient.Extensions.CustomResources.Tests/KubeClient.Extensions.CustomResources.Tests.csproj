@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.CustomResources\KubeClient.Extensions.CustomResources.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.CustomResources.CodeGen\KubeClient.Extensions.CustomResources.CodeGen.csproj" />
-    <ProjectReference Include="..\..\src\KubeClient.Extensions.CustomResources.Schema\KubeClient.Extensions.CustomResources.Schema.csproj" />
-    <ProjectReference Include="..\KubeClient.TestCommon\KubeClient.TestCommon.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.CustomResources/KubeClient.Extensions.CustomResources.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.CustomResources.CodeGen/KubeClient.Extensions.CustomResources.CodeGen.csproj" />
+    <ProjectReference Include="../../src/KubeClient.Extensions.CustomResources.Schema/KubeClient.Extensions.CustomResources.Schema.csproj" />
+    <ProjectReference Include="../KubeClient.TestCommon/KubeClient.TestCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +34,6 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
-  <Import Project="..\TestProject.Common.props" />
+  <Import Project="../Common.props" />
+  <Import Project="../TestProject.Common.props" />
 </Project>

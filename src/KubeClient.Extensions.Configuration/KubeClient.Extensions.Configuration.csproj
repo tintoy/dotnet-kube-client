@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <ProjectReference Include="..\KubeClient\KubeClient.csproj" />
+      <ProjectReference Include="../KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
@@ -29,5 +29,5 @@
       <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 </Project>
