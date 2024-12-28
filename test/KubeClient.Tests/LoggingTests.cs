@@ -9,11 +9,11 @@ using Newtonsoft.Json;
 
 namespace KubeClient.Tests
 {
-    using Http.Clients;
-    using Http.Diagnostics;
-    using Http.Formatters;
-    using Http.Testability;
-    using Http.Testability.Xunit;
+    using KubeClient.Http.Clients;
+    using KubeClient.Http.Diagnostics;
+    using KubeClient.Http.Formatters;
+    using KubeClient.Http.Testability;
+    using KubeClient.Http.Testability.Xunit;
     using Logging;
     using Models;
 

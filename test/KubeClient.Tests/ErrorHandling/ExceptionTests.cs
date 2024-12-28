@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace KubeClient.Tests.ErrorHandling
 {
-    using Http.Testability;
+    using KubeClient.Http.Testability;
     using Models;
     using TestCommon;
 
