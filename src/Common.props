@@ -7,7 +7,7 @@
 
   <!-- Common package properties -->
   <PropertyGroup>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>Package-README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     
     <PackageProjectUrl>https://github.com/tintoy/dotnet-kube-client/</PackageProjectUrl>
