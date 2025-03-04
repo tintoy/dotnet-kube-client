@@ -1,14 +1,15 @@
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Xunit;
-using Newtonsoft.Json;
 
 namespace KubeClient.Tests
 {
+    using KubeClient.Http;
     using KubeClient.Http.Clients;
     using KubeClient.Http.Diagnostics;
     using KubeClient.Http.Formatters;
@@ -16,6 +17,7 @@ namespace KubeClient.Tests
     using KubeClient.Http.Testability.Xunit;
     using Logging;
     using Models;
+    using Utilities;
 
     /// <summary>
     ///     Tests for <see cref="KubeApiClient"/> logging.
@@ -50,6 +52,7 @@ namespace KubeClient.Tests
                 return request.CreateResponse(HttpStatusCode.NotFound,
                     responseBody: JsonConvert.SerializeObject(new StatusV1
                     {
+                        Status = "Failure",
                         Reason = "NotFound"
                     }),
                     WellKnownMediaTypes.Json
@@ -164,6 +167,55 @@ namespace KubeClient.Tests
 			Assert.Equal(HttpStatusCode.OK,
 				logEntry2.Properties["StatusCode"]
 			);
+        }
+
+        /// <summary>
+        ///     Verify that the client's logger emits the correct log entry from a custom request action.
+        /// </summary>
+        [Fact(DisplayName = "Emit log entry from custom request action")]
+        public async Task Custom_Request_Action()
+        {
+            var logEntries = new List<LogEntry>();
+
+            TestLogger logger = new TestLogger(LogLevel.Information);
+            logger.LogEntries.Subscribe(
+                logEntry => logEntries.Add(logEntry)
+            );
+
+            ClientBuilder clientBuilder = new ClientBuilder()
+                .WithLogging(logger);
+
+            HttpClient httpClient = clientBuilder.CreateClient("http://localhost:1234/api", TestHandlers.RespondWith(request =>
+            {
+                return request.CreateResponse(HttpStatusCode.OK,
+                    responseBody: JsonConvert.SerializeObject(new StatusV1
+                    {
+                        Status = "Success",
+                    }),
+                    WellKnownMediaTypes.Json
+                );
+            }));
+
+            HttpRequest request = HttpRequest.Create("{Foo}/{Bar}?Baz={Baz}")
+                .WithRequestAction((HttpRequestMessage requestMessage) =>
+                {
+                    logger.LogDebug("Start streaming {RequestMethod} request for {RequestUri}...", HttpMethod.Get, requestMessage.RequestUri.SafeGetPathAndQuery());
+                }).WithTemplateParameters(new
+                {
+                    Foo = "foo",
+                    Bar = "bAr",
+                    Baz = "b4z",
+                });
+
+            using (HttpResponseMessage response = await httpClient.GetAsync(request))
+            {
+                // [0] = Custom message, [1] = Begin request, [2] End request
+                Assert.Equal(3, logEntries.Count);
+
+                Assert.Equal("Start streaming GET request for /api/foo/bAr?Baz=b4z...", logEntries[0].Message);
+                
+                response.EnsureSuccessStatusCode();
+            }
         }
     }
 }
