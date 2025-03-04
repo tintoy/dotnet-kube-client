@@ -5,7 +5,7 @@ namespace KubeClient.Http.Formatters.Json
 	/// <summary>
 	///		JSON request extension methods for <see cref="HttpRequestFactory{TContext}"/>.
 	/// </summary>
-	public static class JsonFormatterTypedFactoryExtensions
+	public static class NewtonsoftJsonFormatterTypedFactoryExtensions
     {
 		/// <summary>
 		///		Create a new HTTP request that expects and uses JSON as its primary format.

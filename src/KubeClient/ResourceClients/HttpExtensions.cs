@@ -307,7 +307,7 @@ namespace KubeClient.ResourceClients
         /// </summary>
         public static JsonSerializerSettings GetJsonSerializerSettings(this IEnumerable<IFormatter> formatters)
         {
-            return formatters.OfType<JsonFormatter>().FirstOrDefault()?.SerializerSettings
+            return formatters.OfType<NewtonsoftJsonFormatter>().FirstOrDefault()?.SerializerSettings
                    ?? KubeResourceClient.SerializerSettings;
         }
     }

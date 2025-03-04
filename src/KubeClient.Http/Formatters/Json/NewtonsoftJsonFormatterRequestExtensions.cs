@@ -8,7 +8,7 @@ namespace KubeClient.Http
 	/// <summary>
 	///		Formatter-related extension methods for <see cref="HttpRequest"/> / <see cref="HttpRequest{TContext}"/>.
 	/// </summary>
-	public static class JsonFormatterRequestExtensions
+	public static class NewtonsoftJsonFormatterRequestExtensions
 	{
 		/// <summary>
 		///		Create a copy of the <see cref="HttpRequest"/>, configuring it to only use the JSON formatters.
@@ -29,7 +29,7 @@ namespace KubeClient.Http
 
 			// TODO: Clear all existing formatters, first.
 
-			return request.WithFormatter(new JsonFormatter
+			return request.WithFormatter(new NewtonsoftJsonFormatter
 			{
 				SerializerSettings = serializerSettings
 			});
@@ -57,7 +57,7 @@ namespace KubeClient.Http
 
 			// TODO: Clear all existing formatters, first.
 
-			return request.WithFormatter(new JsonFormatter
+			return request.WithFormatter(new NewtonsoftJsonFormatter
 			{
 				SerializerSettings = serializerSettings
 			});

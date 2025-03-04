@@ -77,7 +77,7 @@ namespace KubeClient.ResourceClients
         ///     The factory for Kubernetes API requests.
         /// </summary>
         protected static HttpRequestFactory KubeRequest { get; } = new HttpRequestFactory(
-            HttpRequest.Empty.ExpectJson().WithFormatter(new JsonFormatter
+            HttpRequest.Empty.ExpectJson().WithFormatter(new NewtonsoftJsonFormatter
             {
                 SerializerSettings = SerializerSettings,
                 SupportedMediaTypes =

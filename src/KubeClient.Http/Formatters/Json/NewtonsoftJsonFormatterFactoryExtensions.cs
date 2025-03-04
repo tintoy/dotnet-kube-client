@@ -8,7 +8,7 @@ namespace KubeClient.Http
 	/// <summary>
 	///		JSON request extension methods for <see cref="HttpRequestFactory"/>.
 	/// </summary>
-	public static class JsonFormatterFactoryExtensions
+	public static class NewtonsoftJsonFormatterFactoryExtensions
     {
 		/// <summary>
 		///		Create a new HTTP request that expects and uses JSON as its primary format.
@@ -40,7 +40,7 @@ namespace KubeClient.Http
 		///		The request URI (can be relative or absolute).
 		/// </param>
 		/// <param name="serializerSettings">
-		///		The JSON serialiser settings used by the <see cref="JsonFormatter"/>.
+		///		The JSON serialiser settings used by the <see cref="NewtonsoftJsonFormatter"/>.
 		/// </param>
 		/// <returns>
 		///		The new <see cref="HttpRequest"/>.
@@ -89,7 +89,7 @@ namespace KubeClient.Http
 		///		The request URI (can be relative or absolute).
 		/// </param>
 		/// <param name="serializerSettings">
-		///		The JSON serialiser settings used by the <see cref="JsonFormatter"/>.
+		///		The JSON serialiser settings used by the <see cref="NewtonsoftJsonFormatter"/>.
 		/// </param>
 		/// <returns>
 		///		The new <see cref="HttpRequest"/>.

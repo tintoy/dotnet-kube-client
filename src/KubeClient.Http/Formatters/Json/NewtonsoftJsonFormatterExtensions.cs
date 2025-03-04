@@ -9,7 +9,7 @@ namespace KubeClient.Http
 	/// <summary>
 	///		Extension methods for content formatters.
 	/// </summary>
-    public static class JsonFormatterExtensions
+    public static class NewtonsoftJsonFormatterExtensions
     {
 		/// <summary>
 		///		Add the JSON content formatter.
@@ -28,7 +28,7 @@ namespace KubeClient.Http
 			if (formatters == null)
 				throw new ArgumentNullException(nameof(formatters));
 
-			formatters.Add(new JsonFormatter
+			formatters.Add(new NewtonsoftJsonFormatter
 			{
 				SerializerSettings = serializerSettings
 			});

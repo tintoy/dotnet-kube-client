@@ -32,7 +32,7 @@ namespace KubeClient.Tests.Http.Formatters
         public static HttpClient RespondWith<TBody>(HttpStatusCode statusCode, TBody body)
         {
             return TestClients.RespondWith(
-                request => request.CreateResponse(statusCode, body, WellKnownMediaTypes.Json, new JsonFormatter())
+                request => request.CreateResponse(statusCode, body, WellKnownMediaTypes.Json, new NewtonsoftJsonFormatter())
             );
         }
 
@@ -111,7 +111,7 @@ namespace KubeClient.Tests.Http.Formatters
         /// </returns>
         public static HttpClient ExpectJson<TResponseBody>(Uri expectedRequestUri, HttpMethod expectedRequestMethod, HttpStatusCode responseStatusCode, TResponseBody responseBody, Action<HttpRequestMessage> assertion)
         {
-            return Expect(expectedRequestUri, expectedRequestMethod, responseStatusCode, responseBody, WellKnownMediaTypes.Json, new JsonFormatter(), assertion);
+            return Expect(expectedRequestUri, expectedRequestMethod, responseStatusCode, responseBody, WellKnownMediaTypes.Json, new NewtonsoftJsonFormatter(), assertion);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace KubeClient.Tests.Http.Formatters
                     responseStatusCode,
                     responseBody,
                     responseMediaType,
-                    new JsonFormatter()
+                    new NewtonsoftJsonFormatter()
                 );
             });
         }
@@ -227,7 +227,7 @@ namespace KubeClient.Tests.Http.Formatters
         /// </returns>
         public static HttpClient ExpectJson<TResponseBody>(Uri expectedRequestUri, HttpMethod expectedRequestMethod, HttpStatusCode responseStatusCode, TResponseBody responseBody, Func<HttpRequestMessage, Task> asyncAssertion)
         {
-            return Expect(expectedRequestUri, expectedRequestMethod, responseStatusCode, responseBody, WellKnownMediaTypes.Json, new JsonFormatter(), asyncAssertion);
+            return Expect(expectedRequestUri, expectedRequestMethod, responseStatusCode, responseBody, WellKnownMediaTypes.Json, new NewtonsoftJsonFormatter(), asyncAssertion);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace KubeClient.Tests.Http.Formatters
                     responseStatusCode,
                     responseBody,
                     responseMediaType,
-                    new JsonFormatter()
+                    new NewtonsoftJsonFormatter()
                 );
             });
         }

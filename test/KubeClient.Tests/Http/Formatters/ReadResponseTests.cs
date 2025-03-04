@@ -43,7 +43,7 @@ namespace KubeClient.Tests.Http.Formatters
             {
                 TestBody actualBody = await client
                     .GetAsync(DefaultRequest)
-                    .ReadContentAsAsync<TestBody>(new JsonFormatter());
+                    .ReadContentAsAsync<TestBody>(new NewtonsoftJsonFormatter());
 
                 Assert.NotNull(actualBody);
                 Assert.NotSame(expectedBody, actualBody);
@@ -70,7 +70,7 @@ namespace KubeClient.Tests.Http.Formatters
             {
                 TestBody actualBody = await client
                     .GetAsync(DefaultRequest)
-                    .ReadContentAsAsync<TestBody>(new JsonFormatter(), HttpStatusCode.OK, HttpStatusCode.BadRequest);
+                    .ReadContentAsAsync<TestBody>(new NewtonsoftJsonFormatter(), HttpStatusCode.OK, HttpStatusCode.BadRequest);
 
                 Assert.NotNull(actualBody);
                 Assert.NotSame(expectedBody, actualBody);
@@ -103,7 +103,7 @@ namespace KubeClient.Tests.Http.Formatters
             {
                 TestBody actualBody = await client
                     .GetAsync(DefaultRequest)
-                    .ReadContentAsAsync(new JsonFormatter(),
+                    .ReadContentAsAsync(new NewtonsoftJsonFormatter(),
                         onFailureResponse: () => new TestBody
                         {
                             StringProperty = expectedBody.StringProperty,
