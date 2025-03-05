@@ -22,6 +22,26 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Needed for tests, since we're multi-targetning
+- task: DotNetCoreInstaller@1
+  displayName: Install .NET 7.0.x runtime
+
+  inputs:
+    packageType: runtime
+    version: 7.0.x
+- task: DotNetCoreInstaller@1
+  displayName: Install .NET 8.0.x runtime
+
+  inputs:
+    packageType: runtime
+    version: 8.0.x
+- task: DotNetCoreInstaller@1
+  displayName: Install .NET 9.0.x runtime
+
+  inputs:
+    packageType: runtime
+    version: 9.0.x
+
 - task: gitversion/setup@0
   displayName: 'Install GitVersion'
 
