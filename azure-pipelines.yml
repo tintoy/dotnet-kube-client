@@ -95,7 +95,7 @@ steps:
   
   inputs:
     command: 'pack'
-    projects: '$(Build.SourcesDirectory)/KubeClient.sln'
+    projects: '$(Build.SourcesDirectory)/src/**/*.csproj'
 
     arguments: '--configuration "$(buildConfiguration)"'
     outputDir: '$(Build.ArtifactStagingDirectory)/packages'

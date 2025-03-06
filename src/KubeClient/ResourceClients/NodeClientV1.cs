@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net;
 using System.Threading;
@@ -122,6 +123,42 @@ namespace KubeClient.ResourceClients
         }
 
         /// <summary>
+        ///     Request update (PATCH) of a <see cref="NodeV1"/>.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target Node.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="NodeV1"/> representing the current state for the updated Node.
+        /// </returns>
+        public async Task<NodeV1> Update(string name, Action<JsonPatchDocument<NodeV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
+
+            if (patchAction == null)
+                throw new ArgumentNullException(nameof(patchAction));
+
+            return await PatchResource(patchAction,
+                Requests.ByName.WithTemplateParameters(new
+                {
+                    Name = name,
+                    Namespace = kubeNamespace ?? KubeClient.DefaultNamespace
+                }),
+                cancellationToken
+            );
+        }
+
+        /// <summary>
         ///     Request deletion of the specified Node.
         /// </summary>
         /// <param name="name">
@@ -221,6 +258,26 @@ namespace KubeClient.ResourceClients
         ///     A <see cref="NodeV1"/> representing the current state for the newly-created Node.
         /// </returns>
         Task<NodeV1> Create(NodeV1 newNode, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Request update (PATCH) of a <see cref="NodeV1"/>.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the target Node.
+        /// </param>
+        /// <param name="patchAction">
+        ///     A delegate that customises the patch operation.
+        /// </param>
+        /// <param name="kubeNamespace">
+        ///     The target Kubernetes namespace (defaults to <see cref="KubeApiClient.DefaultNamespace"/>).
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     An optional <see cref="CancellationToken"/> that can be used to cancel the request.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="NodeV1"/> representing the current state for the updated Node.
+        /// </returns>
+        Task<NodeV1> Update(string name, Action<JsonPatchDocument<NodeV1>> patchAction, string kubeNamespace = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Request deletion of the specified Node.
