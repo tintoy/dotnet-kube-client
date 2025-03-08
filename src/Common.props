@@ -25,6 +25,4 @@
     <None Include="$(MSBuildThisFileDirectory)/../$(PackageReadmeFile)" Pack="true" PackagePath="/"/>
     <None Include="$(MSBuildThisFileDirectory)/../$(PackageLicenseFile)" Pack="true" PackagePath="/"/>
   </ItemGroup>
-
-  <Import Project="../DependencyVersions.props" />
 </Project>

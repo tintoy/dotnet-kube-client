@@ -292,7 +292,7 @@ using (StreamReader stdout = new StreamReader(connection.GetInputStream(1), Enco
 }
 ```
 
-For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at the [HTTPlease](https://tintoy.github.io/HTTPlease/) documentation (although these types have now beem rolled into `KubeClient.Http.*` so `HTTPlease.*` assemblies and types are no longer needed).
+For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at [`KubeClient.Http`](./src/KubeClient.Http) and [`KubeClient.Http.Tests`](./test/KubeClient.Http.Tests).
 
 ### Working out what APIs to call
 

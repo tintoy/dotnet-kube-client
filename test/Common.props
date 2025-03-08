@@ -3,6 +3,4 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <Import Project="..\DependencyVersions.props" />
 </Project>

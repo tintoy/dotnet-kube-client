@@ -8,9 +8,9 @@ namespace KubeClient.Http
     public static class MessageProperties
     {
         /// <summary>
-        ///		The prefix for HTTPlease property names.
+        ///		The prefix for KubeClient.Http property names.
         /// </summary>
-        static readonly string Prefix = "HTTPlease.";
+        static readonly string Prefix = "KubeClient.Http.";
 
         /// <summary>
         ///		The <see cref="IHttpRequest"/> that created the message.

@@ -106,7 +106,7 @@ namespace KubeClient.ResourceClients
             HttpRequest request = KubeRequest.Create(apiPath).WithRelativeUri("{name}")
                 .WithTemplateParameters(new
                 {
-                    name = name,
+                    name,
                     @namespace = kubeNamespace
                 });
 
@@ -114,7 +114,7 @@ namespace KubeClient.ResourceClients
             {
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    // Code is slightly ugly for types only known at runtime; see if KubeClient.Http could be improved here.
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {
@@ -175,7 +175,7 @@ namespace KubeClient.ResourceClients
             {
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    // Code is slightly ugly for types only known at runtime; see if KubeClient.Http could be improved here.
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {
@@ -249,7 +249,7 @@ namespace KubeClient.ResourceClients
             {
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    // Code is slightly ugly for types only known at runtime; see if KubeClient.Http could be improved here.
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {
@@ -449,7 +449,7 @@ namespace KubeClient.ResourceClients
             {
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    // Code is slightly ugly for types only known at runtime; see if HTTPlease could be improved here.
+                    // Code is slightly ugly for types only known at runtime; see if KubeClient.Http could be improved here.
                     using (Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     using (TextReader responseReader = new StreamReader(responseStream))
                     {

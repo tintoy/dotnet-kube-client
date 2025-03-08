@@ -16,7 +16,7 @@ namespace KubeClient.ResourceClients
     using Models;
 
     /// <summary>
-    ///     Extension methods for HTTPlease types.
+    ///     Extension methods for KubeClient.Http types.
     /// </summary>
     public static class HttpExtensions
     {

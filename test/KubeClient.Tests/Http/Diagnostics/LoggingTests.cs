@@ -16,7 +16,7 @@ namespace KubeClient.Tests.Http.Diagnostics
     using KubeClient.Http.Testability.MessageHandlers;
 
     /// <summary>
-    ///		Tests for the HTTPlease.Diagnostics logging facility.
+    ///		Tests for the KubeClient.Http.Diagnostics logging facility.
     /// </summary>
     public sealed class LoggingTests
     {
