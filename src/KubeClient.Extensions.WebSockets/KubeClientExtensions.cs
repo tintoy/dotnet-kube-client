@@ -1,8 +1,11 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net.Security;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +19,71 @@ namespace KubeClient
     /// </summary>
     public static class KubeClientExtensions
     {
+        /// <summary>
+        ///     Apply client web-socket options from the specified Kubernetes API client.
+        /// </summary>
+        /// <param name="socketOptions">
+        ///     The <see cref="ClientWebSocketOptions"/> to configure.
+        /// </param>
+        /// <param name="client">
+        ///     The <see cref="IKubeApiClient"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void ApplyClientOptions(this  ClientWebSocketOptions socketOptions, IKubeApiClient client)
+        {
+            if (socketOptions == null)
+                throw new ArgumentNullException(nameof(socketOptions));
+
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+
+            KubeClientOptions clientOptions = client.GetClientOptions();
+
+            if (!String.IsNullOrWhiteSpace(clientOptions.AccessToken))
+                socketOptions.SetRequestHeader("Authorization", $"Bearer {clientOptions.AccessToken}");
+
+            if (clientOptions.ClientCertificate != null)
+                socketOptions.ClientCertificates.Add(clientOptions.ClientCertificate);
+
+            if (clientOptions.CertificationAuthorityCertificate != null)
+            {
+                socketOptions.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+                {
+                    if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors)
+                        return false;
+
+                    try
+                    {
+                        using (X509Chain certificateChain = new X509Chain())
+                        {
+                            certificateChain.ChainPolicy.ExtraStore.Add(clientOptions.CertificationAuthorityCertificate);
+                            certificateChain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+                            certificateChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+
+                            return certificateChain.Build(
+                                (X509Certificate2)certificate
+                            );
+                        }
+                    }
+                    catch (Exception chainException)
+                    {
+                        ILoggerFactory loggerFactory = clientOptions.LoggerFactory;
+                        if (loggerFactory != null)
+                        {
+                            loggerFactory.CreateLogger(typeof(KubeClientExtensions))
+                                .LogError(chainException, "Failed to build X.509 certificate chain for remote certificate.");
+                        }
+                        else
+                            Debug.WriteLine(chainException);
+
+                        return false;
+                    }
+                };
+            }
+            else if (clientOptions.AllowInsecure)
+                socketOptions.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+        }
+
         /// <summary>
         ///     Open a WebSocket connection using the <see cref="K8sChannelProtocol.V1"/> sub-protocol.
         /// </summary>
@@ -57,7 +125,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="WebSocket"/>.
         /// </returns>
-        public static Task<WebSocket> ConnectWebSocket(this IKubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
+        public static async Task<WebSocket> ConnectWebSocket(this IKubeApiClient client, Uri targetUri, CancellationToken cancellationToken = default)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
@@ -96,14 +164,30 @@ namespace KubeClient
 
             targetUri = targetUriBuilder.Uri;
 
-            K8sWebSocketOptions webSocketOptions = K8sWebSocketOptions.FromClientOptions(client);
-            webSocketOptions.RequestedSubProtocols.Add(
-                K8sChannelProtocol.V1
-            );
-            webSocketOptions.SendBufferSize = 2048;
-            webSocketOptions.ReceiveBufferSize = 2048;
+            ClientWebSocket webSocket = new ClientWebSocket();
 
-            return K8sWebSocket.ConnectAsync(targetUri, webSocketOptions, cancellationToken);
+            try
+            {
+                ClientWebSocketOptions webSocketOptions = webSocket.Options;
+                webSocketOptions.ApplyClientOptions(client);
+                webSocketOptions.AddSubProtocol(K8sChannelProtocol.V1);
+                webSocketOptions.SetBuffer(
+                    receiveBufferSize: 2048,
+                    sendBufferSize: 2048
+                );
+
+                await webSocket.ConnectAsync(targetUri, cancellationToken).ConfigureAwait(false);
+
+                return webSocket;
+            }
+            catch (Exception)
+            {
+                // Clean up.
+                using (webSocket)
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>
