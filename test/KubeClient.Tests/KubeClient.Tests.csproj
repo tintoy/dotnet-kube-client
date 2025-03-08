@@ -1,29 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-
-    <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
+    <TargetFrameworks>net7.0;net8.0;net9.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-      <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
+    <Compile Remove="TestResults\**" />
+    <EmbeddedResource Remove="TestResults\**" />
+    <None Remove="TestResults\**" />
   </ItemGroup>
 
   <ItemGroup>
-      <ProjectReference Include="..\KubeClient.TestCommon\KubeClient.TestCommon.csproj" />
+      <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
-      <PackageReference Include="System.Reactive" Version="4.4.1" />
+      <ProjectReference Include="../KubeClient.TestCommon/KubeClient.TestCommon.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
-  <Import Project="..\TestProject.Common.props" />
+  <ItemGroup>
+      <PackageReference Include="System.Reactive" Version="6.0.1" />
+  </ItemGroup>
+
+  <Import Project="../Common.props" />
+  <Import Project="../TestProject.Common.props" />
 </Project>

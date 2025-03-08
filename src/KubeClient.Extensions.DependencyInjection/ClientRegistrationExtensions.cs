@@ -28,33 +28,16 @@ namespace KubeClient
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
-            
+
             if (usePodServiceAccount)
             {
-                // When running inside Kubernetes, use pod-level service account (e.g. access token from mounted Secret).
-                KubeApiClient ResolveWithPodServiceAccount(IServiceProvider serviceProvider)
-                {
-                    return KubeApiClient.CreateFromPodServiceAccount(
-                        loggerFactory: serviceProvider.GetService<ILoggerFactory>()
-                    );
-                }
-
                 services.AddScoped<KubeApiClient>(ResolveWithPodServiceAccount);
-                services.AddScoped<IKubeApiClient>(ResolveWithPodServiceAccount);
+                services.AddScopedPassThrough<IKubeApiClient, KubeApiClient>();
             }
             else
             {
-                KubeApiClient ResolveWithOptions(IServiceProvider serviceProvider)
-                {
-                    KubeClientOptions clientOptions = serviceProvider.GetRequiredService<IOptions<KubeClientOptions>>().Value;
-                    if (clientOptions.LoggerFactory == null)
-                        clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-                    return KubeApiClient.Create(clientOptions);
-                }
-
-                services.AddScoped<KubeApiClient>(ResolveWithOptions);
-                services.AddScoped<IKubeApiClient>(ResolveWithOptions);
+                services.AddScoped<KubeApiClient>(ResolveWithDefaultOptions);
+                services.AddScopedPassThrough<IKubeApiClient, KubeApiClient>();
             }
 
             return services;
@@ -82,17 +65,10 @@ namespace KubeClient
 
             options.EnsureValid();
 
-            KubeApiClient ResolveWithOptions(IServiceProvider serviceProvider)
-            {
-                KubeClientOptions clientOptions = options.Clone();
-                if (clientOptions.LoggerFactory == null)
-                    clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-                return KubeApiClient.Create(options);
-            }
-
-            services.AddScoped<KubeApiClient>(ResolveWithOptions);
-            services.AddScoped<IKubeApiClient>(ResolveWithOptions);
+            services.AddScoped<KubeApiClient>(
+                BuildResolverWithOptions(options)
+            );
+            services.AddScopedPassThrough<IKubeApiClient, KubeApiClient>();
 
             return services;
         }
@@ -172,6 +148,99 @@ namespace KubeClient
                 services.AddScoped<INamedKubeClients, NamedKubeClients>();
 
             return services;
+        }
+
+        /// <summary>
+        ///     When running inside Kubernetes, resolve a <see cref="KubeApiClient"/> using the pod-level service account (e.g. access token from mounted Secret).
+        /// </summary>
+        /// <param name="serviceProvider">
+        ///     The service provider used to resolve the <see cref="KubeApiClient"/>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="KubeApiClient"/>.
+        /// </returns>
+        static KubeApiClient ResolveWithPodServiceAccount(IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null)
+                throw new ArgumentNullException(nameof(serviceProvider));
+
+            return KubeApiClient.CreateFromPodServiceAccount(
+                loggerFactory: serviceProvider.GetService<ILoggerFactory>()
+            );
+        }
+
+        /// <summary>
+        ///     Resolve a <see cref="KubeApiClient"/> using the default registered options.
+        /// </summary>
+        /// <param name="serviceProvider">
+        ///     The service provider used to resolve the <see cref="KubeApiClient"/>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="KubeApiClient"/>.
+        /// </returns>
+        static KubeApiClient ResolveWithDefaultOptions(IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null)
+                throw new ArgumentNullException(nameof(serviceProvider));
+
+            KubeClientOptions clientOptions = serviceProvider.GetRequiredService<IOptionsMonitor<KubeClientOptions>>().CurrentValue;
+            if (clientOptions.LoggerFactory == null)
+                clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+            return KubeApiClient.Create(clientOptions);
+        }
+
+        /// <summary>
+        ///     Build a delegate that resolves a <see cref="KubeApiClient"/> using the specified <see cref="KubeClientOptions"/>.
+        /// </summary>
+        /// <param name="options">
+        ///     The <see cref="KubeClientOptions"/>.
+        /// </param>
+        /// <returns>
+        ///     The resolver delegate.
+        /// </returns>
+        static Func<IServiceProvider, KubeApiClient> BuildResolverWithOptions(KubeClientOptions options)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            KubeClientOptions optionsSnapshot = options.EnsureValid().Clone();
+
+            return (IServiceProvider serviceProvider) =>
+            {
+                KubeClientOptions clientOptions = optionsSnapshot.Clone();
+                if (clientOptions.LoggerFactory == null)
+                    clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                return KubeApiClient.Create(options);
+            };
+        }
+
+        /// <summary>
+        ///     Register a scoped service that resolves another service as its implementation.
+        /// </summary>
+        /// <typeparam name="TService">
+        ///     The service type.
+        /// </typeparam>
+        /// <typeparam name="TImplementation">
+        ///     The implementation type to resolve when the service is resolved.
+        /// </typeparam>
+        /// <param name="services">
+        ///     The service collection to configure.
+        /// </param>
+        /// <returns>
+        ///     The configured service collection.
+        /// </returns>
+        static IServiceCollection AddScopedPassThrough<TService, TImplementation>(this IServiceCollection services)
+            where TService : class
+            where TImplementation : class, TService
+        {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+
+            return services.AddScoped<TService>(
+                serviceProvider => serviceProvider.GetRequiredService<TImplementation>()
+            );
         }
     }
 }

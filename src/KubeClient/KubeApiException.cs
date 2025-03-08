@@ -1,22 +1,14 @@
-using HTTPlease;
+
 using System;
-
-#if NETSTANDARD2_0
-
-using System.Runtime.Serialization;
-
-#endif // NETSTANDARD2_0
 
 namespace KubeClient
 {
+    using KubeClient.Http;
     using Models;
 
     /// <summary>
     ///     Exception raised when an error result is returned by the Kubernetes API.
     /// </summary>
-#if NETSTANDARD2_0
-    [Serializable]
-#endif // NETSTANDARD2_0
     public class KubeApiException
         : KubeClientException
     {
@@ -93,31 +85,13 @@ namespace KubeClient
         ///     The exception that caused the current exception to be raised.
         /// </param>
         public KubeApiException(HttpRequestException<StatusV1> requestException)
-            : base(GetExceptionMessage(requestException?.Response), requestException)
+            : base(GetExceptionMessage(requestException?.Response), innerException: requestException)
         {
             if (requestException == null)
                 throw new ArgumentNullException(nameof(requestException));
 
             Status = requestException.Response;
         }
-
-#if NETSTANDARD2_0   
-
-        /// <summary>
-        ///     Deserialisation constructor.
-        /// </summary>
-        /// <param name="info">
-        ///     The serialisation data store.
-        /// </param>
-        /// <param name="context">
-        ///     A <see cref="StreamingContext"/> containing information about the origin of the serialised data.
-        /// </param>
-        protected KubeApiException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-#endif // NETSTANDARD2_0
 
         /// <summary>
         ///     A Kubernetes <see cref="StatusV1"/> model that (if present) contains more information about the error.

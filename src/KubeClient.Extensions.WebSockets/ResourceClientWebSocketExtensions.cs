@@ -1,13 +1,12 @@
-using HTTPlease;
 using System;
+using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace KubeClient
 {
-    using ResourceClients;
     using Extensions.WebSockets;
-    using System.Net.WebSockets;
+    using ResourceClients;
 
     /// <summary>
     ///     WebSocket-related extension methods for Kubernetes resource clients.

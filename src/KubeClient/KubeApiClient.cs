@@ -1,5 +1,4 @@
-using HTTPlease;
-using HTTPlease.Diagnostics;
+
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace KubeClient
 {
-    using MessageHandlers;
+    using Http.Clients;
     using ResourceClients;
 
     /// <summary>
@@ -17,6 +16,24 @@ namespace KubeClient
     public sealed class KubeApiClient
         : IKubeApiClient, IDisposable
     {
+        static ILoggerFactory CreateDefaultLoggerFactory()
+        {
+            return Microsoft.Extensions.Logging.LoggerFactory.Create(logging =>
+            {
+                logging.ClearProviders();
+            });
+        }
+
+        /// <summary>
+        ///     The default factory for <see cref="HttpClient"/>s used by <see cref="KubeApiClient"/>s.
+        /// </summary>
+        static readonly ClientBuilder HttpClientBuilder = new ClientBuilder();
+
+        /// <summary>
+        ///     The default factory for <see cref="HttpClient"/>s used by <see cref="KubeApiClient"/>s when using dependency injection.
+        /// </summary>
+        static readonly ClientBuilder<IServiceProvider> DependencyInjectionHttpClientBuilder = new ClientBuilder<IServiceProvider>();
+
         /// <summary>
         ///     Kubernetes resource clients.
         /// </summary>
@@ -38,7 +55,7 @@ namespace KubeClient
 
             Http = httpClient;
             Options = options.Clone();
-            LoggerFactory = options.LoggerFactory ?? new LoggerFactory();
+            LoggerFactory = options.LoggerFactory ?? CreateDefaultLoggerFactory();
 
             DefaultNamespace = options.KubeNamespace;
         }
@@ -124,93 +141,15 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(options));
 
             options.EnsureValid();
-            
-            var clientBuilder = new ClientBuilder();
 
-            switch (options.AuthStrategy)
+            HttpClient httpClient;
+            if (options.ServiceProvider != null)
             {
-                case KubeAuthStrategy.Basic:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new BasicAuthenticationHandler(options.Username, options.Password)
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.BearerToken:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new StaticBearerTokenHandler(options.AccessToken)
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.BearerTokenProvider:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new CommandBearerTokenHandler(
-                            accessTokenCommand: options.AccessTokenCommand,
-                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
-                            accessTokenSelector: options.AccessTokenSelector,
-                            accessTokenExpirySelector: options.AccessTokenExpirySelector,
-                            initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
-                            environmentVariables: options.EnvironmentVariables
-                        )
-                    );
-
-                    break;
-                }
-                case KubeAuthStrategy.CredentialPlugin:
-                {
-                    clientBuilder = clientBuilder.AddHandler(
-                        () => new CommandBearerTokenHandler(
-                            accessTokenCommand: options.AccessTokenCommand,
-                            accessTokenCommandArguments: options.AccessTokenCommandArguments,
-                            accessTokenSelector: options.AccessTokenSelector ?? ".status.token",
-                            accessTokenExpirySelector: options.AccessTokenExpirySelector ?? ".status.expirationTimestamp",
-                            initialAccessToken: options.InitialAccessToken,
-                            initialTokenExpiryUtc: options.InitialTokenExpiryUtc,
-                            environmentVariables: options.EnvironmentVariables
-                        )
-                    );
-                    
-                    break;
-                }
-                case KubeAuthStrategy.ClientCertificate:
-                {
-                    if (options.ClientCertificate == null)
-                        throw new KubeClientException("Cannot specify ClientCertificate authentication strategy without supplying a client certificate.");
-
-                    clientBuilder = clientBuilder.WithClientCertificate(options.ClientCertificate);
-
-                    break;
-                }
+                // TODO: services.Configure<KubeClientOptions>((serviceProvider, options) => options.ServiceProvider = serviceProvider);
+                httpClient = options.Configure(DependencyInjectionHttpClientBuilder).CreateClient(options.ServiceProvider, options.ApiEndPoint);
             }
-
-            if (options.AllowInsecure)
-                clientBuilder = clientBuilder.AcceptAnyServerCertificate();
-            else if (options.CertificationAuthorityCertificate != null)
-                clientBuilder = clientBuilder.WithServerCertificate(options.CertificationAuthorityCertificate);
-
-            if (options.LoggerFactory != null)
-            {
-                LogMessageComponents logComponents = LogMessageComponents.Basic;
-                if (options.LogHeaders)
-                    logComponents |= LogMessageComponents.Headers;
-                if (options.LogPayloads)
-                    logComponents |= LogMessageComponents.Body;
-
-                clientBuilder = clientBuilder.WithLogging(
-                    logger: options.LoggerFactory.CreateLogger(
-                        typeof(KubeApiClient).FullName + ".Http"
-                    ),
-                    requestComponents: logComponents,
-                    responseComponents: logComponents
-                );
-            }
-
-            HttpClient httpClient = clientBuilder.CreateClient(options.ApiEndPoint);
+            else
+                httpClient = options.Configure(HttpClientBuilder).CreateClient(options.ApiEndPoint);
 
             return new KubeApiClient(httpClient, options);
         }
@@ -352,7 +291,7 @@ namespace KubeClient
 
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
-            
+
             if (httpClient.BaseAddress == null)
                 throw new ArgumentException("The KubeApiClient's underlying HttpClient must specify a base address.", nameof(httpClient));
 

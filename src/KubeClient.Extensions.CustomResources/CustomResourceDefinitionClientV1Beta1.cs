@@ -1,13 +1,10 @@
-using HTTPlease;
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -43,7 +40,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<CustomResourceDefinitionV1Beta1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -65,7 +62,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="CustomResourceDefinitionListV1Beta1"/> containing the jobs.
         /// </returns>
-        public async Task<CustomResourceDefinitionListV1Beta1> List(string labelSelector = null, CancellationToken cancellationToken = default)
+        public async Task<CustomResourceDefinitionListV1Beta1> List(string? labelSelector = null, CancellationToken cancellationToken = default)
         {
             return await GetResourceList<CustomResourceDefinitionListV1Beta1>(
                 Requests.Collection.WithTemplateParameters(new
@@ -108,7 +105,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        public IObservable<IResourceEventV1<CustomResourceDefinitionV1Beta1>> WatchAll(string labelSelector = null)
+        public IObservable<IResourceEventV1<CustomResourceDefinitionV1Beta1>> WatchAll(string? labelSelector = null)
         {
             return ObserveEvents<CustomResourceDefinitionV1Beta1>(
                 Requests.WatchCollection.WithTemplateParameters(new
@@ -135,7 +132,7 @@ namespace KubeClient.ResourceClients
         {
             if (newCustomResourceDefinition == null)
                 throw new ArgumentNullException(nameof(newCustomResourceDefinition));
-            
+
             return await Http
                 .PostAsJsonAsync(Requests.Collection,
                     postBody: newCustomResourceDefinition,
@@ -172,22 +169,22 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level CustomResourceDefinition (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection       = KubeRequest.Create("apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name CustomResourceDefinition (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName           = KubeRequest.Create("apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{Name}");
 
             /// <summary>
             ///     A collection-level CustomResourceDefinition watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("/apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest WatchCollection = KubeRequest.Create("/apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A watch-by-name CustomResourceDefinition (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName      = KubeRequest.Create("/apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions/{Name}");
+            public static readonly HttpRequest WatchByName = KubeRequest.Create("/apis/apiextensions.k8s.io/v1beta1/watch/customresourcedefinitions/{Name}");
         }
     }
 
@@ -222,7 +219,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     A <see cref="CustomResourceDefinitionListV1Beta1"/> containing the jobs.
         /// </returns>
-        Task<CustomResourceDefinitionListV1Beta1> List(string labelSelector = null, CancellationToken cancellationToken = default);
+        Task<CustomResourceDefinitionListV1Beta1> List(string? labelSelector = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Watch for events relating to a specific CustomResourceDefinition.
@@ -244,7 +241,7 @@ namespace KubeClient.ResourceClients
         /// <returns>
         ///     An <see cref="IObservable{T}"/> representing the event stream.
         /// </returns>
-        IObservable<IResourceEventV1<CustomResourceDefinitionV1Beta1>> WatchAll(string labelSelector = null);
+        IObservable<IResourceEventV1<CustomResourceDefinitionV1Beta1>> WatchAll(string? labelSelector = null);
 
         /// <summary>
         ///     Request creation of a <see cref="CustomResourceDefinitionV1Beta1"/>.

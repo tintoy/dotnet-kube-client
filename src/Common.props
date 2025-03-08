@@ -7,7 +7,7 @@
 
   <!-- Common package properties -->
   <PropertyGroup>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>Package-README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     
     <PackageProjectUrl>https://github.com/tintoy/dotnet-kube-client/</PackageProjectUrl>
@@ -16,13 +16,13 @@
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/tintoy/dotnet-kube-client</RepositoryUrl>
+
+    <PackageOutputPath>$(MSBuildThisFileDirectory)/../out/packages</PackageOutputPath>
   </PropertyGroup>
 
   <!-- Common package files -->
   <ItemGroup>
-    <None Include="$(MSBuildProjectDirectory)\..\..\$(PackageReadmeFile)" Pack="true" PackagePath="\"/>
-    <None Include="$(MSBuildProjectDirectory)\..\..\$(PackageLicenseFile)" Pack="true" PackagePath="\"/>
+    <None Include="$(MSBuildThisFileDirectory)/../$(PackageReadmeFile)" Pack="true" PackagePath="/"/>
+    <None Include="$(MSBuildThisFileDirectory)/../$(PackageLicenseFile)" Pack="true" PackagePath="/"/>
   </ItemGroup>
-
-  <Import Project="..\DependencyVersions.props" />
 </Project>

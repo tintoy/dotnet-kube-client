@@ -1,12 +1,12 @@
-using HTTPlease;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<ConfigMapV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -151,7 +151,7 @@ namespace KubeClient.ResourceClients
         {
             if (newConfigMap == null)
                 throw new ArgumentNullException(nameof(newConfigMap));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -188,7 +188,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             if (patchAction == null)
                 throw new ArgumentNullException(nameof(patchAction));
 
@@ -239,17 +239,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/configmaps/{Name}");
 
             /// <summary>
             ///     A watch-by-name ConfigMap (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchByName  = KubeRequest.Create("api/v1/watch/namespaces/{Namespace}/configmaps/{Name}");
+            public static readonly HttpRequest WatchByName = KubeRequest.Create("api/v1/watch/namespaces/{Namespace}/configmaps/{Name}");
         }
     }
 

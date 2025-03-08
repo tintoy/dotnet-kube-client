@@ -50,7 +50,11 @@ namespace KubeClient.Extensions.KubeConfig.Models
             else
                 return null;
 
+#if !NET9_0_OR_GREATER
             return new X509Certificate2(certificateData);
+#else // !NET9_0_OR_GREATER
+            return X509CertificateLoader.LoadCertificate(certificateData);
+#endif // !NET9_0_OR_GREATER
         }
     }
 }

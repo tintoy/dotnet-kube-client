@@ -1,7 +1,3 @@
-using HTTPlease;
-using HTTPlease.Diagnostics;
-using HTTPlease.Formatters;
-using HTTPlease.Testability;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +9,12 @@ using Xunit;
 
 namespace KubeClient.Tests
 {
+    using KubeClient.Http;
+    using KubeClient.Http.Clients;
+    using KubeClient.Http.Diagnostics;
+    using KubeClient.Http.Formatters;
+    using KubeClient.Http.Testability;
+    using KubeClient.Http.Testability.Xunit;
     using Logging;
     using Models;
     using Utilities;
