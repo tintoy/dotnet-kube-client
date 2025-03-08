@@ -111,6 +111,8 @@ namespace KubeClient.TestCommon.Mocks
             return _testServer.CreateHandler();
         }
 
+#if !NET6_0
+
         /// <summary>
         ///     Create a custom <see cref="HttpMessageHandler" /> for processing HTTP requests/responses with custom configuration against the mock Kubernetes API.
         /// </summary>
@@ -120,6 +122,8 @@ namespace KubeClient.TestCommon.Mocks
 
             return _testServer.CreateHandler(additionalContextConfiguration);
         }
+
+#endif // !NET6_0
 
         /// <summary>
         ///     Create a <see cref="HttpClient" /> for processing HTTP requests/responses against the mock Kubernetes API.

@@ -145,7 +145,9 @@ namespace KubeClient.Tests
         /// <returns>
         ///     The configured <see cref="ISerializer"/>.
         /// </returns>
-        static ISerializer CreateSerializer() => new SerializerBuilder().Build();
+        static ISerializer CreateSerializer() => new SerializerBuilder()
+            .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
+            .Build();
 
         /// <summary>
         ///     Create a YAML <see cref="Deserializer"/> for use in tests.

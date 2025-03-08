@@ -1,12 +1,11 @@
-using HTTPlease;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -124,7 +123,7 @@ namespace KubeClient.ResourceClients
         {
             if (newStatefulSet == null)
                 throw new ArgumentNullException(nameof(newStatefulSet));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -162,7 +161,7 @@ namespace KubeClient.ResourceClients
 
             if (patchAction == null)
                 throw new ArgumentNullException(nameof(patchAction));
-            
+
             return await PatchResource(patchAction,
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -204,12 +203,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level StatefulSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("apis/apps/v1/namespaces/{Namespace}/statefulsets?labelSelector={LabelSelector?}&watch={Watch?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("apis/apps/v1/namespaces/{Namespace}/statefulsets?labelSelector={LabelSelector?}&watch={Watch?}");
 
             /// <summary>
             ///     A get-by-name StatefulSet (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("apis/apps/v1/namespaces/{Namespace}/statefulsets/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("apis/apps/v1/namespaces/{Namespace}/statefulsets/{Name}");
         }
     }
 

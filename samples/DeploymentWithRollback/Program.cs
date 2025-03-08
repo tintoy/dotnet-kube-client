@@ -1,6 +1,5 @@
-﻿using HTTPlease;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace KubeClient.Samples.DeploymentWithRollback
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -16,6 +16,11 @@ namespace KubeClient.Samples.DeploymentWithRollback
     /// </summary>
     static class Program
     {
+        /// <summary>
+        ///     The main program's logger.
+        /// </summary>
+        static ILogger Log { get; set; }
+
         /// <summary>
         ///     The main program entry-point.
         /// </summary>
@@ -31,7 +36,8 @@ namespace KubeClient.Samples.DeploymentWithRollback
             if (options == null)
                 return ExitCodes.InvalidArguments;
 
-            ILoggerFactory loggerFactory = ConfigureLogging(options);
+            using ServiceProvider loggingServiceProvider = ConfigureLogging(options);
+            ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
             try
             {
@@ -41,7 +47,7 @@ namespace KubeClient.Samples.DeploymentWithRollback
 
                 KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-                Log.Information("Looking for existing Deployment {DeploymentName} in namespace {KubeNamespace}...",
+                Log.LogInformation("Looking for existing Deployment {DeploymentName} in namespace {KubeNamespace}...",
                     options.DeploymentName,
                     options.KubeNamespace
                 );
@@ -49,7 +55,7 @@ namespace KubeClient.Samples.DeploymentWithRollback
                 DeploymentV1 existingDeployment = await client.DeploymentsV1().Get(options.DeploymentName, options.KubeNamespace);
                 if (existingDeployment != null)
                 {
-                    Log.Error("Cannot continue - deployment  {DeploymentName} in namespace {KubeNamespace} already exists.",
+                    Log.LogError("Cannot continue - deployment  {DeploymentName} in namespace {KubeNamespace} already exists.",
                         options.DeploymentName,
                         options.KubeNamespace
                     );
@@ -57,9 +63,9 @@ namespace KubeClient.Samples.DeploymentWithRollback
                     return ExitCodes.AlreadyExists;
                 }
 
-                Log.Information("Ok, Deployment does not exist yet - we're ready to go.");
+                Log.LogInformation("Ok, Deployment does not exist yet - we're ready to go.");
 
-                Log.Information("Creating Deployment {DeploymentName} in namespace {KubeNamespace}...",
+                Log.LogInformation("Creating Deployment {DeploymentName} in namespace {KubeNamespace}...",
                     options.DeploymentName,
                     options.KubeNamespace
                 );
@@ -67,20 +73,20 @@ namespace KubeClient.Samples.DeploymentWithRollback
                 int? initialRevision = initialDeployment.GetRevision();
                 if (initialRevision == null)
                 {
-                    Log.Error("Unable to determine initial revision of Deployment {DeploymentName} in namespace {KubeNamespace} (missing annotation).",
+                    Log.LogError("Unable to determine initial revision of Deployment {DeploymentName} in namespace {KubeNamespace} (missing annotation).",
                         options.DeploymentName,
                         options.KubeNamespace
                     );
 
                     return ExitCodes.UnexpectedError;
                 }
-                Log.Information("Created Deployment {DeploymentName} in namespace {KubeNamespace} (revision {DeploymentRevision}).",
+                Log.LogInformation("Created Deployment {DeploymentName} in namespace {KubeNamespace} (revision {DeploymentRevision}).",
                     options.DeploymentName,
                     options.KubeNamespace,
                     initialRevision
                 );
 
-                Log.Information("Updating Deployment {DeploymentName} in namespace {KubeNamespace}...",
+                Log.LogInformation("Updating Deployment {DeploymentName} in namespace {KubeNamespace}...",
                     options.DeploymentName,
                     options.KubeNamespace
                 );
@@ -88,20 +94,20 @@ namespace KubeClient.Samples.DeploymentWithRollback
                 int? updatedRevision = updatedDeployment.GetRevision();
                 if (updatedRevision == null)
                 {
-                    Log.Error("Unable to determine updated revision of Deployment {DeploymentName} in namespace {KubeNamespace} (missing annotation).",
+                    Log.LogError("Unable to determine updated revision of Deployment {DeploymentName} in namespace {KubeNamespace} (missing annotation).",
                         options.DeploymentName,
                         options.KubeNamespace
                     );
 
                     return ExitCodes.UnexpectedError;
                 }
-                Log.Information("Updated Deployment {DeploymentName} in namespace {KubeNamespace} (revision {DeploymentRevision}).",
+                Log.LogInformation("Updated Deployment {DeploymentName} in namespace {KubeNamespace} (revision {DeploymentRevision}).",
                     options.DeploymentName,
                     options.KubeNamespace,
                     updatedRevision
                 );
 
-                Log.Information("Searching for ReplicaSet that corresponds to revision {Revision} of {DeploymentName} in namespace {KubeNamespace}...",
+                Log.LogInformation("Searching for ReplicaSet that corresponds to revision {Revision} of {DeploymentName} in namespace {KubeNamespace}...",
                     options.DeploymentName,
                     options.KubeNamespace,
                     initialRevision
@@ -109,7 +115,7 @@ namespace KubeClient.Samples.DeploymentWithRollback
                 ReplicaSetV1 targetReplicaSet = await FindReplicaSetForRevision(client, updatedDeployment, initialRevision.Value);
                 if (targetReplicaSet == null)
                 {
-                    Log.Error("Cannot find ReplicaSet that corresponds to revision {Revision} of {DeploymentName} in namespace {KubeNamespace}...",
+                    Log.LogError("Cannot find ReplicaSet that corresponds to revision {Revision} of {DeploymentName} in namespace {KubeNamespace}...",
                         options.DeploymentName,
                         options.KubeNamespace,
                         initialRevision
@@ -117,18 +123,18 @@ namespace KubeClient.Samples.DeploymentWithRollback
 
                     return ExitCodes.NotFound;
                 }
-                Log.Information("Found ReplicaSet {ReplicaSetName} in namespace {KubeNamespace}.",
+                Log.LogInformation("Found ReplicaSet {ReplicaSetName} in namespace {KubeNamespace}.",
                     targetReplicaSet.Metadata.Name,
                     targetReplicaSet.Metadata.Namespace
                 );
 
-                Log.Information("Rolling Deployment {DeploymentName} in namespace {KubeNamespace} back to initial revision {DeploymentRevision}...",
+                Log.LogInformation("Rolling Deployment {DeploymentName} in namespace {KubeNamespace} back to initial revision {DeploymentRevision}...",
                     options.DeploymentName,
                     options.KubeNamespace,
                     initialRevision
                 );
                 DeploymentV1 rolledBackDeployment = await RollbackDeployment(client, updatedDeployment, targetReplicaSet);
-                Log.Information("Rollback initiated for Deployment {DeploymentName} in namespace {KubeNamespace} from revision {FromRevision} to {ToRevision} (new revision will be {NewRevision})...",
+                Log.LogInformation("Rollback initiated for Deployment {DeploymentName} in namespace {KubeNamespace} from revision {FromRevision} to {ToRevision} (new revision will be {NewRevision})...",
                     options.DeploymentName,
                     options.KubeNamespace,
                     updatedRevision,
@@ -140,13 +146,13 @@ namespace KubeClient.Samples.DeploymentWithRollback
             }
             catch (HttpRequestException<StatusV1> kubeError)
             {
-                Log.Error(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
+                Log.LogError(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
 
                 return ExitCodes.UnexpectedError;
             }
             catch (Exception unexpectedError)
             {
-                Log.Error(unexpectedError, "Unexpected error.");
+                Log.LogError(unexpectedError, "Unexpected error.");
 
                 return ExitCodes.UnexpectedError;
             }
@@ -384,31 +390,50 @@ namespace KubeClient.Samples.DeploymentWithRollback
         }
 
         /// <summary>
-        ///     Configure the global application logger.
+        ///     Configure application-level logging and populate <see cref="Log"/>.
         /// </summary>
         /// <param name="options">
         ///     Program options.
         /// </param>
         /// <returns>
-        ///     The MEL-style logger factory.
+        ///     The global logging service provider.
         /// </returns>
-        static ILoggerFactory ConfigureLogging(ProgramOptions options)
+        static ServiceProvider ConfigureLogging(ProgramOptions options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            var loggerConfiguration = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.LiterateConsole(
-                    outputTemplate: "[{Level:u3}] {Message:l}{NewLine}{Exception}"
-                );
+            ServiceProvider loggingServiceProvider = new ServiceCollection()
+                .AddLogging(logging =>
+                {
+                    logging.SetMinimumLevel(
+                        options.Verbose ? LogLevel.Trace : LogLevel.Information
+                    );
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+                .BuildServiceProvider(new ServiceProviderOptions
+                {
+                    ValidateOnBuild = true,
+                    ValidateScopes = true,
+                });
 
-            if (options.Verbose)
-                loggerConfiguration.MinimumLevel.Verbose();
+            try
+            {
+                ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
-            Log.Logger = loggerConfiguration.CreateLogger();
+                Log = loggerFactory.CreateLogger(typeof(Program));
 
-            return new LoggerFactory().AddSerilog(Log.Logger);
+                return loggingServiceProvider;
+            }
+            catch (Exception)
+            {
+                // Clean up, on failure (if possible).
+                using (loggingServiceProvider)
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>

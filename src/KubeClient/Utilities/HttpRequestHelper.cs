@@ -1,10 +1,10 @@
-﻿using HTTPlease;
-using HTTPlease.Core;
-using System;
+﻿using System;
 using System.Net.Http;
 
 namespace KubeClient.Utilities
 {
+    using Http;
+
     /// <summary>
     ///     Helper methods for working with <see cref="HttpRequest"/> and related types.
     /// </summary>

@@ -1,13 +1,11 @@
-using HTTPlease;
-using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>

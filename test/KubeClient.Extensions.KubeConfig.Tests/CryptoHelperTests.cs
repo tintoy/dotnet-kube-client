@@ -12,6 +12,7 @@ namespace KubeClient.Extensions.KubeConfig.Tests
 {
     using KubeClient.Extensions.KubeConfig.Models;
     using System.Linq;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using TestCommon;
 
@@ -62,7 +63,15 @@ namespace KubeClient.Extensions.KubeConfig.Tests
             Assert.NotNull(pfxData);
             Assert.NotEmpty(pfxData);
 
-            using (X509Certificate2 nativeCertificate = new X509Certificate2(pfxData, pfxPassword))
+            X509Certificate2 nativeCertificate;
+
+#if !NET9_0_OR_GREATER
+    nativeCertificate = new X509Certificate2(pfxData, pfxPassword, X509KeyStorageFlags.EphemeralKeySet);
+#else // !NET9_0_OR_GREATER
+            nativeCertificate = X509CertificateLoader.LoadPkcs12(pfxData, pfxPassword, X509KeyStorageFlags.EphemeralKeySet);
+#endif // !NET9_0_OR_GREATER
+
+            using (nativeCertificate)
             {
                 Assert.True(nativeCertificate.HasPrivateKey);
             }

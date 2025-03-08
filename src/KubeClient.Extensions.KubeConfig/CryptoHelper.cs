@@ -10,6 +10,10 @@ using System.Security.Cryptography;
 using BCX509Certificate = Org.BouncyCastle.X509.X509Certificate;
 using X509Certificate2 = System.Security.Cryptography.X509Certificates.X509Certificate2;
 
+#if NET9_0_OR_GREATER
+using X509CertificateLoader = System.Security.Cryptography.X509Certificates.X509CertificateLoader;
+#endif // NET9_0_OR_GREATER
+
 namespace KubeClient.Extensions.KubeConfig
 {
     /// <summary>
@@ -33,7 +37,11 @@ namespace KubeClient.Extensions.KubeConfig
 
             byte[] derEncodedCertificate = certificate.GetEncoded();
 
+#if !NET9_0_OR_GREATER
             return new X509Certificate2(derEncodedCertificate);
+#else // !NET9_0_OR_GREATER
+            return X509CertificateLoader.LoadCertificate(derEncodedCertificate);
+#endif // !NET9_0_OR_GREATER
         }
 
         /// <summary>

@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 
 namespace KubeClient.Models
 {
-    using Extensions.CustomResources;
-
     /// <summary>
     ///     The base class for models representing Kubernetes Custom Resources (CRDs).
     /// </summary>
@@ -19,14 +17,6 @@ namespace KubeClient.Models
             if (String.IsNullOrEmpty(Kind) || string.IsNullOrWhiteSpace(ApiVersion))
                 throw new KubeClientException($"Class '{GetType().Name}' derives from '{nameof(KubeCustomResourceV1Beta1)}' but is not decorated with the 'KubeResource' attribute.");
         }
-
-        /// <summary>
-        ///     Generate a JSON schema for validating the specification model.
-        /// </summary>
-        /// <returns>
-        ///     The configured <see cref="JSONSchemaPropsV1Beta1"/>.
-        /// </returns>
-        public abstract JSONSchemaPropsV1Beta1 GenerateSpecificationSchema();
     }
 
     /// <summary>
@@ -50,14 +40,6 @@ namespace KubeClient.Models
         ///     The resource specification.
         /// </summary>
         [JsonProperty("spec", NullValueHandling = NullValueHandling.Ignore)]
-        public virtual TSpecification Specification { get; set; }
-
-        /// <summary>
-        ///     Generate a JSON schema for validating the specification model.
-        /// </summary>
-        /// <returns>
-        ///     The configured <see cref="JSONSchemaPropsV1Beta1"/>.
-        /// </returns>
-        public override JSONSchemaPropsV1Beta1 GenerateSpecificationSchema() => SchemaGeneratorV1Beta1.GenerateSchema(modelType: typeof(TSpecification));
+        public virtual TSpecification? Specification { get; set; }
     }
 }

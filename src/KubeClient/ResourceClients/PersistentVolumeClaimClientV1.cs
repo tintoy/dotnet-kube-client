@@ -1,11 +1,10 @@
-using HTTPlease;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -44,7 +43,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<PersistentVolumeClaimV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -98,7 +97,7 @@ namespace KubeClient.ResourceClients
         {
             if (newPersistentVolumeClaim == null)
                 throw new ArgumentNullException(nameof(newPersistentVolumeClaim));
-            
+
             return await Http
                 .PostAsJsonAsync(
                     Requests.Collection.WithTemplateParameters(new
@@ -142,12 +141,12 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level PersistentVolumeClaim (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection   = KubeRequest.Create("api/v1/namespaces/{Namespace}/persistentvolumeclaims?labelSelector={LabelSelector?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("api/v1/namespaces/{Namespace}/persistentvolumeclaims?labelSelector={LabelSelector?}");
 
             /// <summary>
             ///     A get-by-name PersistentVolumeClaim (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName       = KubeRequest.Create("api/v1/namespaces/{Namespace}/persistentvolumeclaims/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("api/v1/namespaces/{Namespace}/persistentvolumeclaims/{Name}");
         }
     }
 

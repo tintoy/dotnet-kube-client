@@ -15,11 +15,17 @@ namespace KubeClient.ApiMetadata
         /// <param name="kind">
         ///     The resource kind.
         /// </param>
+        /// <param name="apiGroup">
+        ///     The resource API group.
+        /// </param>
         /// <param name="apiVersion">
         ///     The resource API version.
         /// </param>
         /// <param name="singularName">
-        ///     The singular name (if any) for the resource.
+        ///     The singular name (if any) for the resource (e.g. "NetworkPolicy").
+        /// </param>
+        /// <param name="pluralName">
+        ///     The plural name (if any) for the resource (e.g. "NetworkPolicies").
         /// </param>
         /// <param name="shortNames">
         ///     Short names (if any) for the resource.
@@ -32,16 +38,19 @@ namespace KubeClient.ApiMetadata
         /// 
         ///     At least 1 path must be supplied.
         /// </param>
-        public KubeApiMetadata(string kind, string apiVersion, string singularName, IReadOnlyCollection<string> shortNames, bool isPreferredVersion, IReadOnlyList<KubeApiPathMetadata> paths)
+        public KubeApiMetadata(string kind, string apiGroup, string apiVersion, string singularName, string pluralName, IReadOnlyCollection<string> shortNames, bool isPreferredVersion, IReadOnlyList<KubeApiPathMetadata> paths)
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
-            
+
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
             
             if (String.IsNullOrWhiteSpace(singularName))
                 singularName = null;
+
+            if (String.IsNullOrWhiteSpace(pluralName))
+                pluralName = null;
 
             if (shortNames == null)
                 throw new ArgumentNullException(nameof(shortNames));
@@ -53,8 +62,10 @@ namespace KubeClient.ApiMetadata
                 throw new ArgumentException("Metadata for a Kubernetes resource API must have at least one path.", nameof(paths));
 
             Kind = kind;
+            ApiGroup = apiGroup;
             ApiVersion = apiVersion;
             SingularName = singularName;
+            PluralName = pluralName;
             ShortNames = shortNames;
             IsPreferredVersion = isPreferredVersion;
             PathMetadata = paths;
@@ -66,14 +77,24 @@ namespace KubeClient.ApiMetadata
         public string Kind { get; }
 
         /// <summary>
+        ///     The resource API group.
+        /// </summary>
+        public string ApiGroup { get; }
+
+        /// <summary>
         ///     The resource API version.
         /// </summary>
         public string ApiVersion { get; }
 
         /// <summary>
-        ///     The singular name (if any) for the resource.
+        ///     The singular name (if any) for the resource (e.g. "NetworkPolicy").
         /// </summary>
         public string SingularName { get; }
+
+        /// <summary>
+        ///     The plural name (if any) for the resource (e.g. "NetworkPolicies").
+        /// </summary>
+        public string PluralName { get; }
 
         /// <summary>
         ///     Short names (if any) for the resource.

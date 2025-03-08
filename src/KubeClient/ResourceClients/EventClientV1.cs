@@ -1,11 +1,10 @@
-using HTTPlease;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
     using Models;
 
     /// <summary>
@@ -44,7 +43,7 @@ namespace KubeClient.ResourceClients
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'name'.", nameof(name));
-            
+
             return await GetSingleResource<EventV1>(
                 Requests.ByName.WithTemplateParameters(new
                 {
@@ -130,17 +129,17 @@ namespace KubeClient.ResourceClients
             /// <summary>
             ///     A collection-level Event (v1) request.
             /// </summary>
-            public static readonly HttpRequest Collection       = KubeRequest.Create("/api/v1/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&resourceVersion={ResourceVersion?}");
+            public static readonly HttpRequest Collection = KubeRequest.Create("/api/v1/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&resourceVersion={ResourceVersion?}");
 
             /// <summary>
             ///     A get-by-name Event (v1) request.
             /// </summary>
-            public static readonly HttpRequest ByName           = KubeRequest.Create("/api/v1/namespaces/{Namespace}/events/{Name}");
+            public static readonly HttpRequest ByName = KubeRequest.Create("/api/v1/namespaces/{Namespace}/events/{Name}");
 
             /// <summary>
             ///     A collection-level Event watch (v1) request.
             /// </summary>
-            public static readonly HttpRequest WatchCollection  = KubeRequest.Create("/api/v1/watch/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&resourceVersion={ResourceVersion?}");
+            public static readonly HttpRequest WatchCollection = KubeRequest.Create("/api/v1/watch/namespaces/{Namespace}/events?labelSelector={LabelSelector?}&fieldSelector={FieldSelector?}&resourceVersion={ResourceVersion?}");
         }
     }
 

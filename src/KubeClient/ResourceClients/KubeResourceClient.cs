@@ -1,5 +1,3 @@
-using HTTPlease;
-using HTTPlease.Formatters.Json;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -19,6 +17,8 @@ using System.Threading.Tasks;
 
 namespace KubeClient.ResourceClients
 {
+    using Http;
+    using Http.Formatters.Json;
     using Models;
     using Models.ContractResolvers;
     using Models.Converters;
@@ -78,7 +78,7 @@ namespace KubeClient.ResourceClients
         ///     The factory for Kubernetes API requests.
         /// </summary>
         protected static HttpRequestFactory KubeRequest { get; } = new HttpRequestFactory(
-            HttpRequest.Empty.ExpectJson().WithFormatter(new JsonFormatter
+            HttpRequest.Empty.ExpectJson().WithFormatter(new NewtonsoftJsonFormatter
             {
                 SerializerSettings = SerializerSettings,
                 SupportedMediaTypes =
@@ -585,7 +585,7 @@ namespace KubeClient.ResourceClients
 
             if (String.IsNullOrWhiteSpace(operationDescription))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'operationDescription'.", nameof(operationDescription));
-            
+
             return Observable.Create<string>(async (subscriber, subscriptionCancellationToken) =>
             {
                 // NOTE: The CancellationToken above represents the subscriber (i.e. IObserver) subscription to this sequence (i.e. IObservable), and is canceled only when their subscription is disposed.

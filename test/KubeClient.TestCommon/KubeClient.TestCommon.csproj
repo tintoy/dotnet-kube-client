@@ -1,29 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net7.0;net8.0;net9.0</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HTTPlease.Core" Version="$(PackageVersion_HTTPlease)" />
-    <PackageReference Include="HTTPlease.Diagnostics" Version="$(PackageVersion_HTTPlease)" />
-    <PackageReference Include="HTTPlease.Formatters" Version="$(PackageVersion_HTTPlease)" />
-    <PackageReference Include="HTTPlease.Formatters.Json" Version="$(PackageVersion_HTTPlease)" />
-    <PackageReference Include="HTTPlease.Testability.Xunit" Version="$(PackageVersion_HTTPlease)" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageReference Include="System.Reactive" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+
+    <PackageReference Include="xunit" Version="2.4.2" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="System.Reactive" Version="4.4.1" />
-    <PackageReference Include="xunit" Version="2.3.1" />
+
+    <PackageReference Include="xunit" Version="2.9.2" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+
+    <PackageReference Include="xunit" Version="2.9.2" />
+  </ItemGroup>
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KubeClient\KubeClient.csproj" />
+    <ProjectReference Include="../../src/KubeClient/KubeClient.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Common.props" />
+  <Import Project="../Common.props" />
 </Project>

@@ -114,13 +114,16 @@ namespace KubeClient.ApiMetadata
         /// <param name="kind">
         ///     The resource kind.
         /// </param>
+        /// <param name="apiGroup">
+        ///     The resource API group name.
+        /// </param>
         /// <param name="apiVersion">
         ///     The resource API version.
         /// </param>
         /// <returns>
         ///     The API metadata, or <c>null</c> if no metadata was found for the API.
         /// </returns>
-        public KubeApiMetadata Get(string kind, string apiVersion)
+        public KubeApiMetadata Get(string kind, string apiGroup, string apiVersion)
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
@@ -130,13 +133,27 @@ namespace KubeClient.ApiMetadata
 
             lock (_stateLock)
             {
-                string cacheKey = CreateCacheKey(kind, apiVersion);
+                string cacheKey = CreateCacheKey(kind, apiGroup, apiVersion);
                 if (_metadata.TryGetValue(cacheKey, out KubeApiMetadata metadata))
                     return metadata;
             }
 
             return null;
         }
+
+        /// <summary>
+        ///     Retrieve metadata for a Kubernetes resource API.
+        /// </summary>
+        /// <param name="kind">
+        ///     The resource kind.
+        /// </param>
+        /// <param name="apiVersion">
+        ///     The resource API version.
+        /// </param>
+        /// <returns>
+        ///     The API metadata, or <c>null</c> if no metadata was found for the API.
+        /// </returns>
+        public KubeApiMetadata Get(string kind, string apiVersion) => Get(kind, apiGroup: null, apiVersion);
 
         /// <summary>
         ///     Retrieve the primary path of a Kubernetes resource API.
@@ -253,6 +270,11 @@ namespace KubeClient.ApiMetadata
             var loadedMetadata = new List<KubeApiMetadata>();
             foreach (var kindAndApiVersion in modelMetadata.Keys)
             {
+                string kind = kindAndApiVersion.kind;
+                string[] apiGroupVersion = kindAndApiVersion.apiVersion.Split('/', count: 2);
+                string apiGroup = apiGroupVersion.Length == 2 ? apiGroupVersion[0] : null;
+                string apiVersion = apiGroupVersion.Length == 2 ? apiGroupVersion[1] : apiGroupVersion[0];
+
                 Type modelType = modelMetadata[kindAndApiVersion];
 
                 // TODO: Add SingularName and ShortNames to model metadata (as custom attributes), but where do we get them from? They appear to only be available at runtime (via the API).
@@ -296,9 +318,11 @@ namespace KubeClient.ApiMetadata
                     continue;
 
                 loadedMetadata.Add(new KubeApiMetadata(
-                    kindAndApiVersion.kind,
-                    kindAndApiVersion.apiVersion,
+                    kind,
+                    apiGroup,
+                    apiVersion,
                     singularName: null,
+                    pluralName: null,
                     shortNames: new string[0],
                     isPreferredVersion: true,
                     paths: apiPaths
@@ -423,6 +447,7 @@ namespace KubeClient.ApiMetadata
             foreach (var apisForKind in apis.Resources.GroupBy(api => api.Kind))
             {
                 string kind = apisForKind.Key;
+                string pluralName = null;
                 string singularName = null;
                 IReadOnlyCollection<string> shortNames = new string[0];
 
@@ -458,6 +483,9 @@ namespace KubeClient.ApiMetadata
                     // Only use aliases from preferred API version.
                     if (isPreferredVersion)
                     {
+                        if (pluralName == null)
+                            pluralName = api.Name;
+
                         if (singularName == null)
                             singularName = api.SingularName;
 
@@ -467,7 +495,7 @@ namespace KubeClient.ApiMetadata
                 }
 
                 apiMetadata.Add(
-                    new KubeApiMetadata(kind, groupVersion.Version ?? groupVersion.GroupVersion, singularName, shortNames, isPreferredVersion, apiPaths)
+                    new KubeApiMetadata(kind, apiGroup.Name, groupVersion.Version ?? groupVersion.GroupVersion.Split('/')[0], singularName, pluralName, shortNames, isPreferredVersion, apiPaths)
                 );
             }
 
@@ -533,7 +561,8 @@ namespace KubeClient.ApiMetadata
 
                 foreach (KubeApiMetadata apiMetadata in loadedMetadata)
                 {
-                    string cacheKey = CreateCacheKey(apiMetadata.Kind, apiMetadata.ApiVersion);
+                    string cacheKey = CreateCacheKey(apiMetadata.Kind, apiMetadata.ApiGroup, apiMetadata.ApiVersion);
+
                     _metadata[cacheKey] = apiMetadata;
 
                     // Special-case: pluralise the resource kind.
@@ -553,6 +582,9 @@ namespace KubeClient.ApiMetadata
                         if (apiMetadata.SingularName != null)
                             _metadata[apiMetadata.SingularName] = apiMetadata;
 
+                        if (apiMetadata.SingularName != null)
+                            _metadata[apiMetadata.SingularName] = apiMetadata;
+
                         foreach (string shortName in apiMetadata.ShortNames)
                             _metadata[shortName] = apiMetadata;
                     }
@@ -561,24 +593,30 @@ namespace KubeClient.ApiMetadata
         }
 
         /// <summary>
-        ///     Create a cache key based on the specified resource kind and API version.
+        ///     Create a cache key based on the specified resource kind and API group / version.
         /// </summary>
         /// <param name="kind">
-        ///     The Kubernetes resource kind (e.g. "Pod").
+        ///     The Kubernetes resource kind (e.g. "KafkaConnector").
+        /// </param>
+        /// <param name="apiGroup">
+        ///     The Kubernetes resource API group (e.g. "strimzi.kafka.io").
         /// </param>
         /// <param name="apiVersion">
-        ///     The Kubernetes resource API version (e.g. "v1").
+        ///     The Kubernetes resource API version (e.g. "v1beta2").
         /// </param>
         /// <returns>
         ///     The cache key.
         /// </returns>
-        static string CreateCacheKey(string kind, string apiVersion)
+        static string CreateCacheKey(string kind, string apiGroup, string apiVersion)
         {
             if (String.IsNullOrWhiteSpace(kind))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'kind'.", nameof(kind));
 
             if (String.IsNullOrWhiteSpace(apiVersion))
                 throw new ArgumentException("Argument cannot be null, empty, or entirely composed of whitespace: 'apiVersion'.", nameof(apiVersion));
+
+            if (!String.IsNullOrWhiteSpace(apiGroup))
+                return $"{apiGroup}/{apiVersion}/{kind}";
 
             return $"{apiVersion}/{kind}";
         }

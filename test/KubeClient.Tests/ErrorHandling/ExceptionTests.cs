@@ -1,4 +1,3 @@
-using HTTPlease.Testability;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -10,6 +9,7 @@ using Xunit.Abstractions;
 
 namespace KubeClient.Tests.ErrorHandling
 {
+    using KubeClient.Http.Testability;
     using Models;
     using TestCommon;
 

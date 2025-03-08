@@ -1,8 +1,7 @@
-﻿using HTTPlease;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Serilog;
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 namespace KubeClient.Samples.ConfigFromConfigMap
 {
     using Extensions.Configuration;
+    using Http;
     using Models;
 
     /// <summary>
@@ -18,6 +18,11 @@ namespace KubeClient.Samples.ConfigFromConfigMap
     /// </summary>
     static class Program
     {
+        /// <summary>
+        ///     The main program's logger.
+        /// </summary>
+        static ILogger Log { get; set; }
+
         /// <summary>
         ///     The main program entry-point.
         /// </summary>
@@ -33,7 +38,8 @@ namespace KubeClient.Samples.ConfigFromConfigMap
             if (options == null)
                 return ExitCodes.InvalidArguments;
 
-            ILoggerFactory loggerFactory = ConfigureLogging(options);
+            using ServiceProvider loggingServiceProvider = ConfigureLogging(options);
+            ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
             try
             {
@@ -48,27 +54,27 @@ namespace KubeClient.Samples.ConfigFromConfigMap
 
                 KubeApiClient client = KubeApiClient.Create(clientOptions);
 
-                Log.Information("Checking for existing ConfigMaps...");
+                Log.LogInformation("Checking for existing ConfigMaps...");
 
                 ConfigMapV1 configMap1 = await client.ConfigMapsV1().Get(configMap1Name, configMapNamespace);
                 if (configMap1 != null)
                 {
-                    Log.Information("Deleting existing ConfigMap {ConfigMapName}...", configMap1Name);
+                    Log.LogInformation("Deleting existing ConfigMap {ConfigMapName}...", configMap1Name);
                     await client.ConfigMapsV1().Delete(configMap1Name);
-                    Log.Information("Deleted existing ConfigMap {ConfigMapName}.", configMap1Name);
+                    Log.LogInformation("Deleted existing ConfigMap {ConfigMapName}.", configMap1Name);
                 }
 
                 ConfigMapV1 configMap2 = await client.ConfigMapsV1().Get(configMap2Name, configMapNamespace);
                 if ( configMap2 != null )
                 {
-                    Log.Information("Deleting existing ConfigMap {ConfigMapName}...", configMap2Name);
+                    Log.LogInformation("Deleting existing ConfigMap {ConfigMapName}...", configMap2Name);
                     await client.ConfigMapsV1().Delete(configMap2Name);
-                    Log.Information("Deleted existing ConfigMap {ConfigMapName}.", configMap2Name);
+                    Log.LogInformation("Deleted existing ConfigMap {ConfigMapName}.", configMap2Name);
                 }
 
-                Log.Information("Creating ConfigMaps...");
+                Log.LogInformation("Creating ConfigMaps...");
 
-                Log.Information("Creating ConfigMap {ConfigMapName}...", configMap1Name);
+                Log.LogInformation("Creating ConfigMap {ConfigMapName}...", configMap1Name);
                 configMap1 = await client.ConfigMapsV1().Create(new ConfigMapV1
                 {
                     Metadata = new ObjectMetaV1
@@ -84,7 +90,7 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                     }
                 });
 
-                Log.Information("Creating ConfigMap {ConfigMapName}...", configMap2Name);
+                Log.LogInformation("Creating ConfigMap {ConfigMapName}...", configMap2Name);
                 configMap2 = await client.ConfigMapsV1().Create(new ConfigMapV1
                 {
                     Metadata = new ObjectMetaV1
@@ -100,9 +106,9 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                     }
                 });
 
-                Log.Information("ConfigMaps created.");
+                Log.LogInformation("ConfigMaps created.");
 
-                Log.Information("Building configuration...");
+                Log.LogInformation("Building configuration...");
                 IConfiguration configuration = new ConfigurationBuilder()
                     .AddKubeConfigMap(clientOptions,
                         configMapName: configMap1Name,
@@ -113,33 +119,33 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                         reloadOnChange: true
                     )
                     .Build();
-                Log.Information("Configuration built.");
+                Log.LogInformation("Configuration built.");
 
-                Log.Information("Got configuration:");
+                Log.LogInformation("Got configuration:");
                 Dump(configuration);
 
-                Log.Information("Press enter to update ConfigMaps {ConfigMap1Name} and {ConfigMap2Name}:", configMap1Name, configMap2Name);
+                Log.LogInformation("Press enter to update ConfigMaps {ConfigMap1Name} and {ConfigMap2Name}:", configMap1Name, configMap2Name);
 
                 Console.ReadLine();
 
-                Log.Information("Registering callback for change-notifications...");
+                Log.LogInformation("Registering callback for change-notifications...");
 
                 ManualResetEvent configurationChanged = new ManualResetEvent(false);
 
                 // See ConfigurationExtensions class below.
                 IDisposable reloadNotifications = configuration.OnReload(() =>
                 {
-                    Log.Information("Got changed configuration:");
+                    Log.LogInformation("Got changed configuration:");
                     Dump(configuration);
 
                     configurationChanged.Set();
                 });
-                Log.Information("Change-notification callback registered.");
+                Log.LogInformation("Change-notification callback registered.");
 
                 using (configurationChanged)
                 using (reloadNotifications)
                 {
-                    Log.Information("Updating ConfigMap {ConfigMapName}...", configMap1Name);
+                    Log.LogInformation("Updating ConfigMap {ConfigMapName}...", configMap1Name);
 
                     configMap1.Data["key5"] = "FiveA";
                     configMap1.Data["key6"] = "SixA";
@@ -152,17 +158,17 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                         );
                     });
 
-                    Log.Information("Updated ConfigMap {ConfigMapName}.", configMap1Name);
+                    Log.LogInformation("Updated ConfigMap {ConfigMapName}.", configMap1Name);
 
-                    Log.Information("Waiting for configuration change...");
+                    Log.LogInformation("Waiting for configuration change...");
 
                     configurationChanged.WaitOne();
 
-                    Log.Information("Configuration changed via ConfigMap {ConfigMapName}.", configMap1Name);
+                    Log.LogInformation("Configuration changed via ConfigMap {ConfigMapName}.", configMap1Name);
 
                     configurationChanged.Reset();
 
-                    Log.Information("Updating ConfigMap {ConfigMapName}...", configMap2Name);
+                    Log.LogInformation("Updating ConfigMap {ConfigMapName}...", configMap2Name);
 
                     configMap2.Data["key5"] = "FiveB";
                     configMap2.Data["key6"] = "SixB";
@@ -175,24 +181,24 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                         );
                     });
 
-                    Log.Information("Updated ConfigMap {ConfigMapName}.", configMap2Name);
+                    Log.LogInformation("Updated ConfigMap {ConfigMapName}.", configMap2Name);
 
                     configurationChanged.WaitOne();
 
-                    Log.Information("Configuration changed via ConfigMap {ConfigMapName}.", configMap2Name);
+                    Log.LogInformation("Configuration changed via ConfigMap {ConfigMapName}.", configMap2Name);
                 }
 
                 return ExitCodes.Success;
             }
             catch (HttpRequestException<StatusV1> kubeError)
             {
-                Log.Error(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
+                Log.LogError(kubeError, "Kubernetes API error: {@Status}", kubeError.Response);
 
                 return ExitCodes.UnexpectedError;
             }
             catch (Exception unexpectedError)
             {
-                Log.Error(unexpectedError, "Unexpected error.");
+                Log.LogError(unexpectedError, "Unexpected error.");
 
                 return ExitCodes.UnexpectedError;
             }
@@ -208,35 +214,54 @@ namespace KubeClient.Samples.ConfigFromConfigMap
                 throw new ArgumentNullException(nameof(configuration));
 
             foreach ((string key, string value) in configuration.AsEnumerable().OrderBy(item => item.Key))
-                Log.Information("\t'{Key}' = '{Value}'", key, value);
+                Log.LogInformation("\t'{Key}' = '{Value}'", key, value);
         }
 
         /// <summary>
-        ///     Configure the global application logger.
+        ///     Configure application-level logging and populate <see cref="Log"/>.
         /// </summary>
         /// <param name="options">
         ///     Program options.
         /// </param>
         /// <returns>
-        ///     The MEL-style logger factory.
+        ///     The global logging service provider.
         /// </returns>
-        static ILoggerFactory ConfigureLogging(ProgramOptions options)
+        static ServiceProvider ConfigureLogging(ProgramOptions options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            var loggerConfiguration = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.LiterateConsole(
-                    outputTemplate: "[{Level:u3}] {Message:l}{NewLine}{Exception}"
-                );
+            ServiceProvider loggingServiceProvider = new ServiceCollection()
+                .AddLogging(logging =>
+                {
+                    logging.SetMinimumLevel(
+                        options.Verbose ? LogLevel.Trace : LogLevel.Information
+                    );
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+                .BuildServiceProvider(new ServiceProviderOptions
+                {
+                    ValidateOnBuild = true,
+                    ValidateScopes = true,
+                });
 
-            if (options.Verbose)
-                loggerConfiguration.MinimumLevel.Verbose();
+            try
+            {
+                ILoggerFactory loggerFactory = loggingServiceProvider.GetRequiredService<ILoggerFactory>();
 
-            Log.Logger = loggerConfiguration.CreateLogger();
+                Log = loggerFactory.CreateLogger(typeof(Program));
 
-            return new LoggerFactory().AddSerilog();
+                return loggingServiceProvider;
+            }
+            catch (Exception)
+            {
+                // Clean up, on failure (if possible).
+                using (loggingServiceProvider)
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>
