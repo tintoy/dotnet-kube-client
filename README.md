@@ -2,25 +2,25 @@
 
 [![Build Status](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_apis/build/status%2Ftintoy.dotnet-kube-client?branchName=refs%2Ftags%2Fv2.5.9)](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_build/latest?definitionId=4&branchName=refs%2Ftags%2Fv2.5.9)
 
-KubeClient is an extensible Kubernetes API client for .NET (targets `net8.0`).
+KubeClient is an extensible Kubernetes API client for .NET (targets `netstandard2.1`, `net7.0` `net8.0`, `net9.0`).
 
 Note - there is also an [official](https://github.com/kubernetes-client/csharp/) .NET client for Kubernetes (both clients actually share code in a couple of places). These two clients are philosophically-different (from a design perspective) but either can be bent to fit your needs. For more information about how KubeClient differs from the official client, see the section below on [extensibility](#extensibility).
 
 ## Packages
 
-* `KubeClient` (`net8.0` or newer)    
+* `KubeClient` (`netstandard2.1` / `net7.0` or newer)    
   The main client and models.  
   [![KubeClient](https://img.shields.io/nuget/v/KubeClient.svg)](https://www.nuget.org/packages/KubeClient)
-* `KubeClient.Extensions.Configuration` (`net8.0` or newer)  
+* `KubeClient.Extensions.Configuration` (`net7.0` or newer)  
   Support for sourcing `Microsoft.Extensions.Configuration` data from Kubernetes Secrets and ConfigMaps.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.Configuration.svg)](https://www.nuget.org/packages/KubeClient.Extensions.Configuration)
-* `KubeClient.Extensions.DependencyInjection` (`net8.0` or newer)  
+* `KubeClient.Extensions.DependencyInjection` (`net7.0` or newer)  
   Dependency-injection support.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.DependencyInjection.svg)](https://www.nuget.org/packages/KubeClient.Extensions.DependencyInjection)  
-* `KubeClient.Extensions.KubeConfig` (`net8.0` or newer)  
+* `KubeClient.Extensions.KubeConfig` (`net7.0` or newer)  
   Support for loading and parsing configuration from `~/.kube/config`.  
   [![KubeClient.Extensions.KubeConfig](https://img.shields.io/nuget/v/KubeClient.Extensions.KubeConfig.svg)](https://www.nuget.org/packages/KubeClient.Extensions.KubeConfig)
-* `KubeClient.Extensions.WebSockets` (`net8.0` or newer)  
+* `KubeClient.Extensions.WebSockets` (`net7.0` or newer)  
   Support for multiplexed WebSocket connections used by Kubernetes APIs (such as [exec](src/KubeClient.Extensions.WebSockets/ResourceClientWebSocketExtensions.cs#L56)).   
   This package also extends resource clients to add support for those APIs.  
 
@@ -292,7 +292,7 @@ using (StreamReader stdout = new StreamReader(connection.GetInputStream(1), Enco
 }
 ```
 
-For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at the [HTTPlease](https://tintoy.github.io/HTTPlease/) documentation.
+For information about `HttpRequest`, `UriTemplate`, and other features used to implement the client take a look at [`KubeClient.Http`](./src/KubeClient.Http) and [`KubeClient.Http.Tests`](./test/KubeClient.Http.Tests).
 
 ### Working out what APIs to call
 
@@ -300,7 +300,16 @@ If you want to replicate the behaviour of a `kubectl` command you can pass the f
 
 ### Building
 
-You will need to use v8.0.400 (or newer) of the .NET SDK to build KubeClient.
+You will need to use `v9.0.100` (or newer) of the .NET SDK to build KubeClient.
+
+## Migration from v2.x
+
+Note that KubeClient v3 introduces breaking changes, relative to v2.x:
+
+* KubeClient no longer supports `netstandard2.0`; it requires `net7.x` (or `netstandard2.1`).
+* `K8sWebSocket` (a custom implementation that was needed until .NET Core fully supported WebSockets) has been superseded by the (BCL-provided) [ClientWebSocket](https://learn.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=net-8.0).
+* [HTTPlease](https://tintoy.github.io/HTTPlease/), the underlying HTTP client library used by KubeClient, has been rolled into KubeClient. It is largely source-code-compatible, except that namespaces have changed from `HTTPlease.*` to `KubeClient.Http.*`.
+* Apart from these changes, existing consumer code that compiles against KubeClient v2.x assemblies should largely continue to compile, without modification, against KubeClient v3 assemblies.
 
 ## Questions / feedback
 
