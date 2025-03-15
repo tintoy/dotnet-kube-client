@@ -29,11 +29,14 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
   </ItemGroup>
 
   <Import Project="../Common.props" />
   <Import Project="../TestProject.Common.props" />
+  <ItemGroup>
+    <PackageReference Update="xunit" Version="2.9.3" />
+  </ItemGroup>
 </Project>
