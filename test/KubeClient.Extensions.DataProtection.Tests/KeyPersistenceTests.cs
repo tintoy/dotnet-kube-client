@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+
+using MSLoggerFactory = Microsoft.Extensions.Logging.LoggerFactory;
 
 namespace KubeClient.Extensions.DataProtection.Tests
 {
@@ -136,14 +137,14 @@ namespace KubeClient.Extensions.DataProtection.Tests
             if (mockApi == null)
                 throw new ArgumentNullException(nameof(mockApi));
 
-            IKubeApiClient testApiClient = KubeApiClient.Create(
+            IKubeApiClient testApiClient = KubeApiClient.CreateTestClient(
                 mockApi.CreateClient(),
                 new KubeClientOptions
                 {
                     ApiEndPoint = mockApi.BaseAddress,
                     AuthStrategy = KubeAuthStrategy.None,
                     KubeNamespace = "default",
-                    LoggerFactory = new LoggerFactory().AddTestOutput(TestOutput),
+                    LoggerFactory = MSLoggerFactory.Create(logging => logging.AddTestOutput(TestOutput)),
                     LogPayloads = true,
                 }
             );

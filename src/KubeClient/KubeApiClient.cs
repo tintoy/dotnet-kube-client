@@ -16,14 +16,6 @@ namespace KubeClient
     public sealed class KubeApiClient
         : IKubeApiClient, IDisposable
     {
-        static ILoggerFactory CreateDefaultLoggerFactory()
-        {
-            return Microsoft.Extensions.Logging.LoggerFactory.Create(logging =>
-            {
-                logging.ClearProviders();
-            });
-        }
-
         /// <summary>
         ///     The default factory for <see cref="HttpClient"/>s used by <see cref="KubeApiClient"/>s.
         /// </summary>
@@ -55,7 +47,7 @@ namespace KubeClient
 
             Http = httpClient;
             Options = options.Clone();
-            LoggerFactory = options.LoggerFactory ?? CreateDefaultLoggerFactory();
+            LoggerFactory = options.LoggerFactory;
 
             DefaultNamespace = options.KubeNamespace;
         }
@@ -273,7 +265,7 @@ namespace KubeClient
         }
 
         /// <summary>
-        ///     Create a new <see cref="KubeApiClient"/> (for testing purposes only).
+        ///     Create a new <see cref="KubeApiClient"/> that uses the specified <see cref="HttpClient"/> (for testing purposes only).
         /// </summary>
         /// <param name="httpClient">
         ///     The <see cref="HttpClient"/> used to communicate with the Kubernetes API.
@@ -284,7 +276,7 @@ namespace KubeClient
         /// <returns>
         ///     The configured <see cref="KubeApiClient"/>.
         /// </returns>
-        internal static KubeApiClient Create(HttpClient httpClient, KubeClientOptions options)
+        public static KubeApiClient CreateTestClient(HttpClient httpClient, KubeClientOptions options)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));

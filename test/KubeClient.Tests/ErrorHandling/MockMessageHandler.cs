@@ -181,12 +181,12 @@ namespace KubeClient.Tests.ErrorHandling
                 };
             }
 
-            HttpClient client = new HttpClient(this)
+            HttpClient httpClient = new HttpClient(this)
             {
                 BaseAddress = options.ApiEndPoint
             };
 
-            return KubeApiClient.Create(client, options ?? new KubeClientOptions { LoggerFactory = loggerFactory });
+            return KubeApiClient.CreateTestClient(httpClient, options ?? new KubeClientOptions { LoggerFactory = loggerFactory });
         }
     }
 }
