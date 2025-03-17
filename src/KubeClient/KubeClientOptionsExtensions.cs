@@ -99,22 +99,19 @@ namespace KubeClient
             else if (kubeClientOptions.CertificationAuthorityCertificate != null)
                 clientBuilder = clientBuilder.WithServerCertificate(kubeClientOptions.CertificationAuthorityCertificate);
 
-            if (kubeClientOptions.LoggerFactory != null)
-            {
-                LogMessageComponents logComponents = LogMessageComponents.Basic;
-                if (kubeClientOptions.LogHeaders)
-                    logComponents |= LogMessageComponents.Headers;
-                if (kubeClientOptions.LogPayloads)
-                    logComponents |= LogMessageComponents.Body;
+            LogMessageComponents logComponents = LogMessageComponents.Basic;
+            if (kubeClientOptions.LogHeaders)
+                logComponents |= LogMessageComponents.Headers;
+            if (kubeClientOptions.LogPayloads)
+                logComponents |= LogMessageComponents.Body;
 
-                clientBuilder = clientBuilder.WithLogging(
-                    logger: kubeClientOptions.LoggerFactory.CreateLogger(
-                        typeof(KubeApiClient).FullName + ".Http"
-                    ),
-                    requestComponents: logComponents,
-                    responseComponents: logComponents
-                );
-            }
+            clientBuilder = clientBuilder.WithLogging(
+                logger: kubeClientOptions.LoggerFactory.CreateLogger(
+                    typeof(KubeApiClient).FullName + ".Http"
+                ),
+                requestComponents: logComponents,
+                responseComponents: logComponents
+            );
 
             return clientBuilder;
         }
@@ -207,24 +204,57 @@ namespace KubeClient
             else if (kubeClientOptions.CertificationAuthorityCertificate != null)
                 clientBuilder = clientBuilder.WithServerCertificate(kubeClientOptions.CertificationAuthorityCertificate);
 
-            if (kubeClientOptions.LoggerFactory != null)
-            {
-                LogMessageComponents logComponents = LogMessageComponents.Basic;
-                if (kubeClientOptions.LogHeaders)
-                    logComponents |= LogMessageComponents.Headers;
-                if (kubeClientOptions.LogPayloads)
-                    logComponents |= LogMessageComponents.Body;
+            LogMessageComponents logComponents = LogMessageComponents.Basic;
+            if (kubeClientOptions.LogHeaders)
+                logComponents |= LogMessageComponents.Headers;
+            if (kubeClientOptions.LogPayloads)
+                logComponents |= LogMessageComponents.Body;
 
-                clientBuilder = clientBuilder.WithLogging(
-                    logger: kubeClientOptions.LoggerFactory.CreateLogger(
-                        typeof(KubeApiClient).FullName + ".Http"
-                    ),
-                    requestComponents: logComponents,
-                    responseComponents: logComponents
-                );
-            }
+            clientBuilder = clientBuilder.WithLogging(
+                logger: kubeClientOptions.LoggerFactory.CreateLogger(
+                    typeof(KubeApiClient).FullName + ".Http"
+                ),
+                requestComponents: logComponents,
+                responseComponents: logComponents
+            );
 
             return clientBuilder;
+        }
+
+        /// <summary>
+        ///     Determine if Kubernetes client options are configured to use the default (no-op) logger factory (<see cref="KubeClientOptions.DefaultLoggerFactory"/>).
+        /// </summary>
+        /// <param name="kubeClientOptions">
+        ///     The <see cref="KubeClientOptions"/> to examine.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c>, if the options are configured to use the default logger factory; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsUsingDefaultLoggerFactory(this KubeClientOptions kubeClientOptions)
+        {
+            if (kubeClientOptions == null)
+                throw new ArgumentNullException(nameof(kubeClientOptions));
+
+            return ReferenceEquals(kubeClientOptions.LoggerFactory, KubeClientOptions.DefaultLoggerFactory);
+        }
+
+        /// <summary>
+        ///     Configure Kubernetes client options to use the default (no-op) logger factory (<see cref="KubeClientOptions.DefaultLoggerFactory"/>).
+        /// </summary>
+        /// <param name="kubeClientOptions">
+        ///     The <see cref="KubeClientOptions"/> to configure.
+        /// </param>
+        /// <returns>
+        ///     The configured <see cref="KubeClientOptions"/>.
+        /// </returns>
+        public static KubeClientOptions UseDefaultLoggerFactory(this KubeClientOptions kubeClientOptions)
+        {
+            if (kubeClientOptions == null)
+                throw new ArgumentNullException(nameof(kubeClientOptions));
+
+            kubeClientOptions.LoggerFactory = KubeClientOptions.DefaultLoggerFactory;
+
+            return kubeClientOptions;
         }
     }
 }

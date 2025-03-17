@@ -184,7 +184,7 @@ namespace KubeClient
                 throw new ArgumentNullException(nameof(serviceProvider));
 
             KubeClientOptions clientOptions = serviceProvider.GetRequiredService<IOptionsMonitor<KubeClientOptions>>().CurrentValue;
-            if (clientOptions.LoggerFactory == null)
+            if (clientOptions.IsUsingDefaultLoggerFactory())
                 clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
             return KubeApiClient.Create(clientOptions);
@@ -209,7 +209,7 @@ namespace KubeClient
             return (IServiceProvider serviceProvider) =>
             {
                 KubeClientOptions clientOptions = optionsSnapshot.Clone();
-                if (clientOptions.LoggerFactory == null)
+                if (clientOptions.IsUsingDefaultLoggerFactory())
                     clientOptions.LoggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
                 return KubeApiClient.Create(options);

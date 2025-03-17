@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,16 @@ namespace KubeClient
     /// </summary>
     public class KubeClientOptions
     {
+        /// <summary>
+        ///     The default (no-op) logger factory.
+        /// </summary>
+        public static readonly ILoggerFactory DefaultLoggerFactory = NullLoggerFactory.Instance;
+
+        /// <summary>
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components (defaults to a factory that creates no-op loggers).
+        /// </summary>
+        ILoggerFactory _loggerFactory = DefaultLoggerFactory;
+
         /// <summary>
         ///     Create new <see cref="KubeClientOptions"/>.
         /// </summary>
@@ -129,9 +140,16 @@ namespace KubeClient
         public IServiceProvider ServiceProvider { get; set; }
 
         /// <summary>
-        ///     An optional <see cref="ILoggerFactory"/> used to create loggers for client components.
+        ///     The <see cref="ILoggerFactory"/> used to create loggers for client components (defaults to a no-op logger factory).
         /// </summary>
-        public ILoggerFactory LoggerFactory { get; set; }
+        /// <remarks>
+        ///     This property is never <c>null</c>; attempting to set its value to <c>null</c> will instead result in the default (no-op) logger factory (<see cref="DefaultLoggerFactory"/>) being used.
+        /// </remarks>
+        public ILoggerFactory LoggerFactory
+        {
+            get => _loggerFactory;
+            set => _loggerFactory = value ?? DefaultLoggerFactory;
+        }
 
         /// <summary>
         ///     Environment variables passed to external commands
