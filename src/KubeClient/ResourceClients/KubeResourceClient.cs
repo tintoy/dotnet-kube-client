@@ -748,25 +748,40 @@ namespace KubeClient.ResourceClients
 
             HttpRequest currentRequest = requestFactory();
 
+            ILogger logger = LoggerFactory.CreateLogger(GetType());
+
             return ObserveLines(requestFactory, operationDescription, bufferSize)
                 .RetryWhen(exceptions => Observable.Create((IObserver<Unit> retrySignal) =>
                 {
                     return exceptions.Subscribe(
                         onNext: (Exception sourceError) =>
                         {
-                            if (shouldRetry(sourceError))
-                                retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
+                            if (sourceError != null)
+                                logger.LogWarning(sourceError, "ObserveLinesWithRetry: encountered an exception in the retry-handler's source sequence.");
                             else
+                                logger.LogWarning("ObserveLinesWithRetry: encountered a null value in the retry-handler's source sequence.");
+
+                            if (shouldRetry(sourceError))
+                            {
+                                logger.LogDebug("ObserveLinesWithRetry: will seamlessly continue the event sequence, because shouldRetry returned true.");
+                                retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
+                            }
+                            else
+                            {
+                                logger.LogDebug("ObserveLinesWithRetry: will terminate the event sequence, propagating the exception to sequence subscribers, because shouldRetry returned false.");
                                 retrySignal.OnError(sourceError); // Bubble up (this will terminate the sequence with an error).
+                            }
                         },
                         onError: (Exception exceptionSourceError) =>
                         {
+                            logger.LogError(exceptionSourceError, "ObserveLinesWithRetry: encountered an exception in the retry-handler's signal sequence.");
+
                             // Under normal circumstances this should not be called, and so we never retry from here.
                             retrySignal.OnError(exceptionSourceError); // Bubble up (this will terminate the sequence with an error).
                         },
                         onCompleted: () =>
                         {
-                            if (shouldRetry(null))
+                            if (shouldRetry(null)) // Continue the sequence forever.
                                 retrySignal.OnNext(Unit.Default); // Retry (this will seamlessly continue the sequence).
                             else
                                 retrySignal.OnCompleted(); // Bubble up (this will terminate the sequence).
