@@ -331,3 +331,5 @@ ASALocalRun/
 
 # MSBuild Binary and Structured Log
 *.binlog
+.mono/registry/*
+

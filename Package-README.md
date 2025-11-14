@@ -1,8 +1,8 @@
 # KubeClient
 
-[![Build Status](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_apis/build/status%2Ftintoy.dotnet-kube-client?branchName=refs%2Ftags%2Fv2.5.9)](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_build/latest?definitionId=4&branchName=refs%2Ftags%2Fv2.5.9)
+[![Build Status](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_apis/build/status%2Ftintoy.dotnet-kube-client?branchName=refs%2Ftags%2Fv3.1.0)](https://dev.azure.com/tintoy-dev/dotnet-kube-client/_build/latest?definitionId=4&branchName=refs%2Ftags%2Fv3.1.0)
 
-KubeClient is an extensible Kubernetes API client for .NET (targets `netstandard2.1`, `net7.0` `net8.0`, `net9.0`).
+KubeClient is an extensible Kubernetes API client for .NET (targets `netstandard2.1`, `net7.0` `net8.0`, `net9.0`, and `net10.0`).
 
 **NOTE**: KubeClient v3.x introduces some breaking changes, relative to v2.x (see the [migration guide](#migration-from-v2x) below).
 
