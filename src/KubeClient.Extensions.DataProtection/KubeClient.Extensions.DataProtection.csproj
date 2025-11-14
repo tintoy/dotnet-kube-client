@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net8.0;net9.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net7.0;net8.0;net9.0;net10.0;netstandard2.1</TargetFrameworks>
 
     <Description>KubeClient extensions for ASP.NET Core data-protection</Description>
   </PropertyGroup>
@@ -30,6 +30,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.0" />
   </ItemGroup>
 
   <Import Project="../Common.props" />
