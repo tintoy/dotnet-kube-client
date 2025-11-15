@@ -89,7 +89,7 @@ steps:
   inputs:
     command: 'build'
     projects: '$(Build.SourcesDirectory)/KubeClient.sln'
-    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)" --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Run tests'
@@ -97,7 +97,7 @@ steps:
   inputs:
     command: 'test'
     projects: '$(Build.SourcesDirectory)/test/KubeClient.*.Tests/*.csproj'
-    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)"'
+    arguments: '--configuration "$(buildConfiguration)" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)" /p:VersionSuffix="$(GitVersion.PreReleaseTag)" --no-build'
 
 - task: DotNetCoreCLI@2
   displayName: 'Create packages'
