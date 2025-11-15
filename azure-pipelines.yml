@@ -29,12 +29,14 @@ steps:
   inputs:
     packageType: sdk # we shouldn't need the SDK (only the runtime), but this task is braindead and so tests will only find runtimes from SDK packages
     version: 7.0.x
+
 - task: UseDotNet@2
   displayName: Install .NET 8.0.x runtime
 
   inputs:
     packageType: sdk # we shouldn't need the SDK (only the runtime), but this task is braindead and so tests will only find runtimes from SDK packages
     version: 8.0.x
+    
 - task: UseDotNet@2
   displayName: Install .NET 9.0.x runtime
 
