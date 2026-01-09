@@ -67,7 +67,7 @@ namespace KubeClient.Tools.Generator
                 CustomResourceDefinitionListV1 crds = await kubeApiClient.CustomResourceDefinitionsV1().List(cancellationToken: Cancellation.Token);
                 
                 Dictionary<KubeResourceType, CustomResourceDefinitionV1> customResourceTypes = new Dictionary<KubeResourceType, CustomResourceDefinitionV1>();
-                foreach (CustomResourceDefinitionV1 crd in crds)
+                foreach (CustomResourceDefinitionV1 crd in crds.OrderBy(crd => crd.Spec.Group ?? String.Empty).ThenBy(crd => crd.Spec.Names.Kind))
                 {
                     foreach (CustomResourceDefinitionVersionV1 crdVersion in crd.Spec.Versions)
                     {

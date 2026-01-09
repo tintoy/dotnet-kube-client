@@ -17,6 +17,11 @@ namespace KubeClient.Extensions.CustomResources.Schema
     public static class JsonSchemaParserV1
     {
         /// <summary>
+        ///     The names of properties to ignore on Kubernetes resources.
+        /// </summary>
+        static readonly IReadOnlySet<string> IgnoreResourceProperties = ImmutableHashSet.Create("kind", "apiVersion", "metadata");
+
+        /// <summary>
         ///     Build a <see cref="KubeSchema"/> from one or more Custom Resource Definitions (CRDs).
         /// </summary>
         /// <param name="apiMetadataCache">
@@ -58,9 +63,16 @@ namespace KubeClient.Extensions.CustomResources.Schema
                 if (customResourceDefinition.Spec.Versions.Count == 0)
                     throw new KubeClientException($"Invalid custom resource definition (CRD) '{customResourceDefinition.Metadata.Name}': no versions declared.");
 
-                CustomResourceDefinitionVersionV1 primaryVersion = customResourceDefinition.Spec.Versions[0];
+                CustomResourceDefinitionVersionV1? preferredVersion = null;
 
-                KubeResourceType resourceType = new KubeResourceType(Group: customResourceDefinition.Spec.Group, Version: primaryVersion.Name, ResourceKind: customResourceDefinition.Spec.Names.Kind);
+                string preferredApiVersion = apiMetadataCache.GetPreferredApiVersion(customResourceDefinition.Spec.Group);
+                if (!String.IsNullOrWhiteSpace(preferredApiVersion))
+                    preferredVersion = customResourceDefinition.Spec.Versions.FirstOrDefault(version => version.Name == preferredApiVersion);
+
+                if (preferredVersion == null)
+                    preferredVersion = customResourceDefinition.Spec.Versions[0];
+
+                KubeResourceType resourceType = new KubeResourceType(Group: customResourceDefinition.Spec.Group, Version: preferredVersion.Name, ResourceKind: customResourceDefinition.Spec.Names.Kind);
                 if (resourceTypes.ContainsKey(resourceType))
                     continue;
 
@@ -72,7 +84,7 @@ namespace KubeClient.Extensions.CustomResources.Schema
                 if (apiMetadata == null)
                     throw new KubeClientException($"Cannot process custom resource definition (CRD) '{resourceType.ToResourceTypeName()}': no API metadata for this resource type was found in the cache.");
 
-                KubeModel resourceTypeModel = ParseResourceType(resourceType, apiMetadata, primaryVersion.Schema.OpenAPIV3Schema, dataTypes);
+                KubeModel resourceTypeModel = ParseResourceType(resourceType, apiMetadata, preferredVersion.Schema.OpenAPIV3Schema, dataTypes);
                 resourceTypes.Add(resourceType, resourceTypeModel);
             }
 
@@ -122,6 +134,9 @@ namespace KubeClient.Extensions.CustomResources.Schema
             Dictionary<string, KubeModelProperty> modelProperties = new Dictionary<string, KubeModelProperty>();
             foreach ((string jsonPropertyName, JSONSchemaPropsV1 propertySchema) in resourceTypeSchema.Properties)
             {
+                if (IgnoreResourceProperties.Contains(jsonPropertyName))
+                    continue;
+
                 propertyPathSegments.Push(jsonPropertyName);
 
                 KubeDataType propertyDataType = ParseDataType(resourceType, propertyPathSegments, propertySchema, knownDataTypes);
@@ -289,6 +304,35 @@ namespace KubeClient.Extensions.CustomResources.Schema
                         }
                             
                         return intrinsicDataType;
+                    }
+                }
+            }
+            else if (schema.AnyOf.Count == 2)
+            {
+                if (schema.AnyOf.Count(anyOf => anyOf.Type == "string") == 1)
+                {
+                    if (schema.AnyOf.Count(anyOf => anyOf.Type == "integer" && anyOf.Format == null) == 1)
+                    {
+                        // TODO: Create custom type to represent both kinds of value.
+                        return KubeDynamicValueDataType.Instance;
+                    }
+
+                    if (schema.AnyOf.Count(anyOf => anyOf.Type == "integer" && anyOf.Format == "int32") == 1)
+                    {
+                        // TODO: Create custom type to represent both kinds of value.
+                        return KubeDynamicValueDataType.Instance;
+                    }
+
+                    if (schema.AnyOf.Count(anyOf => anyOf.Type == "integer" && anyOf.Format == "int64") == 1)
+                    {
+                        // TODO: Create custom type to represent both kinds of value.
+                        return KubeDynamicValueDataType.Instance;
+                    }
+
+                    if (schema.AnyOf.Count(anyOf => anyOf.Type == "number" && anyOf.Format == "double") == 1)
+                    {
+                        // TODO: Create custom type to represent both kinds of value.
+                        return KubeDynamicValueDataType.Instance;
                     }
                 }
             }

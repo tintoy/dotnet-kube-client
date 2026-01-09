@@ -1,6 +1,7 @@
 ﻿using KubeClient.Extensions.CustomResources.Schema;
 using KubeClient.Models;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -283,11 +284,10 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                         ]
                     )
                     .WithDocumentation(
-                        CSFactory.XmlSummaryElement(
+                        CSFactory.XmlSummaryElement((XmlNodeSyntax[])[
                             CodeGenHelper.NewlineText,
-                            CodeGenHelper.IndentedText(model.Summary ?? "No description is available.", indent: 1),
-                            CodeGenHelper.NewlineText
-                        )
+                            ..CodeGenHelper.IndentedTextLines((model.Summary ?? "No description is available.").ReplaceLineEndings().Trim(), indent: 1)
+                        ])
                     )
                     .WithTrailingNewline();
             }
@@ -327,11 +327,10 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                         ]
                     )
                     .WithDocumentation(
-                        CSFactory.XmlSummaryElement(
+                        CSFactory.XmlSummaryElement((XmlNodeSyntax[])[
                             CodeGenHelper.NewlineText,
-                            CodeGenHelper.IndentedText(complexType.Summary ?? "No description is available.", indent: 1),
-                            CodeGenHelper.NewlineText
-                        )
+                            ..CodeGenHelper.IndentedTextLines((complexType.Summary ?? "No description is available.").ReplaceLineEndings().Trim(), indent: 1)
+                        ])
                     )
                     .WithTrailingNewline();
             }
@@ -387,11 +386,10 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
                 );
 
                 propertyDeclaration = propertyDeclaration.WithDocumentation(
-                    CSFactory.XmlSummaryElement(
+                    CSFactory.XmlSummaryElement((XmlNodeSyntax[])[
                         CodeGenHelper.NewlineText,
-                        CodeGenHelper.IndentedText(property.Summary ?? "No description is available.", indent: 1),
-                        CodeGenHelper.NewlineText
-                    )
+                        ..CodeGenHelper.IndentedTextLines((property.Summary ?? "No description is available.").ReplaceLineEndings().Trim(), indent: 1)
+                    ])
                 );
 
                 yield return propertyDeclaration.WithTrailingNewline();

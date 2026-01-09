@@ -286,6 +286,32 @@ namespace KubeClient.Extensions.CustomResources.Schema
     };
 
     /// <summary>
+    ///     A JSON Value datatype (with dynamic schema) in the Kubernetes API.
+    /// </summary>
+    public record class KubeDynamicValueDataType()
+        : KubeDataType(Name: "JValue", Summary: "A JSON value with dynamic schema.")
+    {
+        /// <summary>
+        ///     A singleton instance of <see cref="KubeDynamicValueDataType"/>.
+        /// </summary>
+        public static readonly KubeDynamicValueDataType Instance = new KubeDynamicValueDataType();
+
+        /// <summary>
+        ///     Get the name of the CLR <see cref="Type"/> that is used to represent the data type.
+        /// </summary>
+        /// <param name="isNullable">
+        ///     Require that the CLR <see cref="Type"/> is nullable?
+        /// </param>
+        public override string GetClrTypeName(bool isNullable = false)
+        {
+            if (isNullable)
+                return $"{nameof(JValue)}?";
+
+            return nameof(JValue);
+        }
+    }
+
+    /// <summary>
     ///     A JSON object datatype (with dynamic schema) in the Kubernetes API.
     /// </summary>
     public record class KubeDynamicObjectDataType()

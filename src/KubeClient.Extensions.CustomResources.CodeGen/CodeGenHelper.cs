@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Host.Mef;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -47,6 +48,19 @@ namespace KubeClient.Extensions.CustomResources.CodeGen
             return CSFactory.XmlText(
                 textBuilder.ToString()
             );
+        }
+
+        public static IEnumerable<XmlTextSyntax> IndentedTextLines(string text, int indent = 0)
+        {
+            using (TextReader textReader = new StringReader(text))
+            {
+                string? line;
+                while ((line = textReader.ReadLine()) != null)
+                {
+                    yield return IndentedText(line);
+                    yield return NewlineText;
+                }
+            }
         }
 
         public static string GetLanguageName(this SyntaxGenerator syntaxGenerator)
