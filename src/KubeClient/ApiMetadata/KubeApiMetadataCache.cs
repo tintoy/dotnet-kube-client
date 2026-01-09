@@ -30,6 +30,11 @@ namespace KubeClient.ApiMetadata
         readonly Dictionary<string, KubeApiMetadata> _metadata = new Dictionary<string, KubeApiMetadata>();
 
         /// <summary>
+        ///     Preferred versions for API groups (keyed by group name).
+        /// </summary>
+        readonly Dictionary<string, string> _preferredApiVersions = new Dictionary<string, string>();
+
+        /// <summary>
         ///     Create a new Kubernetes resource metadata cache.
         /// </summary>
         public KubeApiMetadataCache()
@@ -156,6 +161,29 @@ namespace KubeClient.ApiMetadata
         public KubeApiMetadata Get(string kind, string apiVersion) => Get(kind, apiGroup: null, apiVersion);
 
         /// <summary>
+        ///     Get the preferred version of the specified API group.
+        /// </summary>
+        /// <param name="apiGroup">
+        ///     The API group name.
+        /// </param>
+        /// <returns>
+        ///     The preferred version, if known; otherwise, <c>null</c>.
+        /// </returns>
+        public string GetPreferredApiVersion(string apiGroup)
+        {
+            if (apiGroup == null)
+                throw new ArgumentNullException(nameof(apiGroup));
+
+            lock (_stateLock)
+            {
+                if (_preferredApiVersions.TryGetValue(apiGroup, out string preferredApiVersion))
+                    return preferredApiVersion;
+
+                return null;
+            }
+        }
+
+        /// <summary>
         ///     Retrieve the primary path of a Kubernetes resource API.
         /// </summary>
         /// <typeparam name="TModel">
@@ -248,6 +276,7 @@ namespace KubeClient.ApiMetadata
             lock (_stateLock)
             {
                 _metadata.Clear();
+                _preferredApiVersions.Clear();
             }
         }
 
@@ -576,9 +605,12 @@ namespace KubeClient.ApiMetadata
                     if (!_metadata.ContainsKey(cacheKey))
                         _metadata.Add(cacheKey, apiMetadata);
 
-                    // Only cache aliases from preferred API version.
                     if (apiMetadata.IsPreferredVersion)
                     {
+                        if (!_preferredApiVersions.ContainsKey(apiMetadata.ApiGroup))
+                            _preferredApiVersions.Add(apiMetadata.ApiGroup, apiMetadata.ApiVersion);
+
+                        // Only cache aliases from preferred API version.
                         if (apiMetadata.SingularName != null)
                             _metadata[apiMetadata.SingularName] = apiMetadata;
 
